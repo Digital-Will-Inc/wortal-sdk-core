@@ -37,6 +37,7 @@ export class Wortal {
         Wortal.log("Initializing SDK Core..");
         Wortal._isDebugLog = isDebug;
         Wortal.data = new GameData();
+
         switch (Wortal.data.platform) {
             case Platform.WORTAL:
                 Wortal.log("Platform: Wortal");
@@ -55,6 +56,16 @@ export class Wortal {
                 Wortal.initCoreDebug();
                 break;
         }
+
+        // Preroll ads will only play on Platform.WORTAL currently. We set this flag anyway so that we can't pass
+        // Placement.PREROLL into a showInterstitial call later.
+        Wortal.hasShownPreroll = true;
+
+        window.addEventListener("visibilitychange", function () {
+            if (document.visibilityState === "hidden") {
+                Wortal.analytics.logGameEnd();
+            }
+        });
     }
 
     /**
@@ -121,7 +132,6 @@ export class Wortal {
             Wortal.data.isAdBlocked = true;
         });
 
-        Wortal.hasShownPreroll = true;
         Wortal.log("SDK Core initialized.");
     }
 
@@ -170,6 +180,8 @@ export class Wortal {
     }
 
     private static initCoreDebug(): void {
+        Wortal._isDebugLog = true;
+
         Wortal.ads = new DebugAds();
         Wortal.analytics = new DebugAnalytics();
         Wortal.auth = new DebugAuth();

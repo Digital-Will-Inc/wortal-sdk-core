@@ -9,6 +9,7 @@ export class GameData {
     public gameName: string = "";
     public platform: Platform = Platform.DEBUG;
     public playerId: string = "";
+    public isFirstPlay: boolean = false;
 
     public browser: string = "";
     public country: string = "";
