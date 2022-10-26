@@ -1,13 +1,13 @@
 {
     "compilerOptions": {
         "allowSyntheticDefaultImports": true,
-        "noImplicitAny": true,
-        "module": "es6",
-        "target": "es6",
+        "esModuleInterop": true,
+        "module": "commonJS",
+        "target": "es5",
         "allowJs": true,
-        "moduleResolution": "Node",
-    },
-    "files": [
-        "src/index.ts"
-    ]
+        "strict": true,
+        "outDir": "dist",
+        "declaration": true,
+        "types": ["node"]
+    }
 }
