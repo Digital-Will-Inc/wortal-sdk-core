@@ -22,6 +22,11 @@ export function showInterstitial(placement: PlacementType, description: string,
         return;
     }
 
+    if (placement === PlacementType.PREROLL && (sdk.session.platform === "link" || sdk.session.platform === "viber")) {
+        console.error("[Wortal] Link and Viber platforms do not support preroll ads.");
+        return;
+    }
+
     if (placement === PlacementType.PREROLL && (sdk.adConfig.hasPrerollShown || sdk.game.gameTimer > 10)) {
         console.error("[Wortal] Preroll ads can only be shown during game load.");
         return;
