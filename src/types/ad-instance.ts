@@ -2,7 +2,7 @@
  * Types of ad placements as defined by Google:
  * https://developers.google.com/ad-placement/docs/placement-types
  */
-export enum Placement {
+export enum PlacementType {
     /// Your game has not loaded its UI and is not playing sound. There can only be one ‘preroll’ placement in your game
     /// for each page load. Preroll ads can only use the adBreakDone callback.
     PREROLL = 'preroll',
@@ -16,5 +16,16 @@ export enum Placement {
     /// The player explores options outside of gameplay.
     BROWSE = 'browse',
     /// The player reaches a point in the game where they can be offered a reward.
-    REWARD = 'reward'
+    REWARD = 'reward',
+}
+
+/** @hidden */
+export interface AdInstanceData {
+    placementType: PlacementType;
+    adUnitId: string;
+    description: string;
+    beforeAd: Function;
+    afterAd: Function;
+    adDismissed?: Function;
+    adViewed?: Function;
 }
