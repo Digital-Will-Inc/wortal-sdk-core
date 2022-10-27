@@ -3,5 +3,6 @@ export interface PlayerData {
     id: string;
     name: string;
     photo: string;
-    firstPlay: boolean;
+    isFirstPlay: boolean;
+    daysSinceFirstPlay: number;
 }

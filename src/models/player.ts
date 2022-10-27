@@ -9,7 +9,8 @@ export default class Player {
         id: "",
         name: "",
         photo: "",
-        firstPlay: false,
+        isFirstPlay: false,
+        daysSinceFirstPlay: 0,
     };
 
     /** @hidden */
@@ -17,7 +18,7 @@ export default class Player {
         this._current.id = this.setId();
         this._current.name = this.setName();
         this._current.photo = this.setPhoto();
-        this._current.firstPlay = this.isFirstPlay();
+        this._current.isFirstPlay = this.setIsFirstPlay();
     }
 
     /**
@@ -48,17 +49,16 @@ export default class Player {
      * Is this the first time the player is playing this game or not.
      * @returns True if it is the first time.
      */
-    isFirstPlay(): boolean {
-        switch (sdk.session.platform) {
-            case "viber":
-            case "link":
-                return (window as any).wortalGame.player.hasPlayed();
-            case "wortal":
-            //TODO: implement first play check for Wortal
-            case "debug":
-            default:
-                return true;
-        }
+    get isFirstPlay(): boolean {
+        return this._current.isFirstPlay;
+    }
+
+    /**
+     * The number of days that have passed since the player's first time playing this game.
+     * @returns Number of days since first play.
+     */
+    get daysSinceFirstPlay(): number {
+        return this._current.daysSinceFirstPlay;
     }
 
     private setId(): string {
@@ -69,7 +69,7 @@ export default class Player {
             case "wortal":
             case "debug":
             default:
-                return "wortal-player-1";
+                return "wortal-player";
         }
     }
 
@@ -95,5 +95,55 @@ export default class Player {
             default:
                 return "wortal-player-photo";
         }
+    }
+
+    private setIsFirstPlay(): boolean {
+        switch (sdk.session.platform) {
+            case "viber":
+            case "link":
+                return (window as any).wortalGame.player.hasPlayed();
+            case "wortal":
+                return this.isWortalFirstPlay();
+            case "debug":
+            default:
+                return false;
+        }
+    }
+
+    private isWortalFirstPlay(): boolean {
+        const cookieDate = this.getCookie(sdk.session.gameId);
+        if (cookieDate !== "") {
+            this._current.daysSinceFirstPlay = this.getTimeFromCookieCreation(cookieDate);
+            return false;
+        } else {
+            this.setCookie(sdk.session.gameId);
+            return true;
+        }
+    }
+
+    private getCookie(gameId: string): string {
+        const value = "; " + document.cookie;
+        const parts = value.split("; wortal-" + gameId + "=");
+        return ((parts.length === 2 && parts.pop()?.split(";").shift()) || "");
+    }
+
+    private setCookie(gameId: string): void {
+        const key = "wortal-" + gameId;
+        const value = new Date().toISOString().slice(0, 10);
+        const date = new Date();
+        date.setTime(date.getTime() + (365 * 24 * 60 * 60 * 1000));
+        document.cookie = key + "=" + value + "; expires=" + date.toUTCString() + "; path=/";
+    }
+
+    // We store the creation date in the wortal-gameID cookie in this format: yyyy/mm/dd.
+    // We'll parse that here and then calculate approximately how many days have elapsed
+    // since then. We use that to track retention.
+    private getTimeFromCookieCreation(date: string): number {
+        const year: number = +date.substring(0, 4);
+        const month: number = +date.substring(5, 7) - 1; // Month range is 0 - 11.
+        const day: number = +date.substring(8, 10);
+        const lastPlay = Date.UTC(year, month, day);
+        let timeDelta = Date.now() - lastPlay;
+        return Math.round(timeDelta / 1000 / 60 / 60 / 24);
     }
 }
