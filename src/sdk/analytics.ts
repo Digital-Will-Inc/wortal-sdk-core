@@ -17,8 +17,9 @@ export function logGameStart(): void {
             platform: sdk.session.platform,
             country: sdk.session.country,
             player: sdk.player.id,
-            firstPlay: sdk.player.isFirstPlay,
-            adBlocked: sdk.adConfig.isAdBlocked,
+            isFirstPlay: sdk.player.isFirstPlay,
+            daysSinceFirstPlay: sdk.player.daysSinceFirstPlay,
+            isAdBlocked: sdk.adConfig.isAdBlocked,
         }
     };
     const event = new AnalyticsEvent(data);
