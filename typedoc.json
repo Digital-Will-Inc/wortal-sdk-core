@@ -1,0 +1,10 @@
+{
+    "entryPointStrategy": "expand",
+    "entryPoints": ["./src/sdk"],
+    "exclude": ["./src/utils/*.ts"],
+    "out": "docs",
+    "readme": "none",
+    "excludePrivate": true,
+    "excludeProtected": true,
+    "hideBreadcrumbs": true
+}
