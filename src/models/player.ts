@@ -5,7 +5,7 @@ import {sdk} from "../sdk";
  * Details about the current player.
  */
 export default class Player {
-    private _current: PlayerData = {
+    protected _current: PlayerData = {
         id: "",
         name: "",
         photo: "",
@@ -14,11 +14,12 @@ export default class Player {
     };
 
     /** @hidden */
-    constructor() {
+    init(): Player {
         this._current.id = this.setId();
         this._current.name = this.setName();
         this._current.photo = this.setPhoto();
         this._current.isFirstPlay = this.setIsFirstPlay();
+        return this;
     }
 
     /**
@@ -61,7 +62,7 @@ export default class Player {
         return this._current.daysSinceFirstPlay;
     }
 
-    private setId(): string {
+    protected setId(): string {
         switch (sdk.session.platform) {
             case "viber":
             case "link":
@@ -73,7 +74,7 @@ export default class Player {
         }
     }
 
-    private setName(): string {
+    protected setName(): string {
         switch (sdk.session.platform) {
             case "viber":
             case "link":
@@ -85,7 +86,7 @@ export default class Player {
         }
     }
 
-    private setPhoto(): string {
+    protected setPhoto(): string {
         switch (sdk.session.platform) {
             case "viber":
             case "link":
@@ -97,7 +98,7 @@ export default class Player {
         }
     }
 
-    private setIsFirstPlay(): boolean {
+    protected setIsFirstPlay(): boolean {
         switch (sdk.session.platform) {
             case "viber":
             case "link":
@@ -110,7 +111,7 @@ export default class Player {
         }
     }
 
-    private isWortalFirstPlay(): boolean {
+    protected isWortalFirstPlay(): boolean {
         const cookieDate = this.getCookie(sdk.session.gameId);
         if (cookieDate !== "") {
             this._current.daysSinceFirstPlay = this.getTimeFromCookieCreation(cookieDate);
@@ -121,13 +122,13 @@ export default class Player {
         }
     }
 
-    private getCookie(gameId: string): string {
+    protected getCookie(gameId: string): string {
         const value = "; " + document.cookie;
         const parts = value.split("; wortal-" + gameId + "=");
         return ((parts.length === 2 && parts.pop()?.split(";").shift()) || "");
     }
 
-    private setCookie(gameId: string): void {
+    protected setCookie(gameId: string): void {
         const key = "wortal-" + gameId;
         const value = new Date().toISOString().slice(0, 10);
         const date = new Date();
@@ -138,7 +139,7 @@ export default class Player {
     // We store the creation date in the wortal-gameID cookie in this format: yyyy/mm/dd.
     // We'll parse that here and then calculate approximately how many days have elapsed
     // since then. We use that to track retention.
-    private getTimeFromCookieCreation(date: string): number {
+    protected getTimeFromCookieCreation(date: string): number {
         const year: number = +date.substring(0, 4);
         const month: number = +date.substring(5, 7) - 1; // Month range is 0 - 11.
         const day: number = +date.substring(8, 10);
