@@ -21,9 +21,16 @@ export default class SDKData {
      */
     init(): void {
         this._session = new Session();
-        this._player = new Player();
-        this._adConfig = new AdConfig();
         this._game = new GameState();
+    }
+
+    /**
+     * Late initialization call that is platform dependent. We call this late because we need to give the platform
+     * SDKs time to be initialized before we can access their API.
+     */
+    lateInit(): void {
+        this._player = new Player().init();
+        this._adConfig = new AdConfig();
     }
 
     /**
