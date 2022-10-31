@@ -3,10 +3,7 @@ import Player from "../models/player";
 import Session from "../models/session";
 import GameState from "../models/game-data";
 
-/**
- * SDK data for the current session. Access to adConfig, game state, player and session properties are given
- * via this class.
- */
+/** @hidden */
 export default class SDKData {
     // We can't instantiate these in the constructor because that gets called before the Wortal backend script
     // is downloaded. These rely on some functions in that script to initialize, so we delay until Wortal.init
@@ -16,47 +13,36 @@ export default class SDKData {
     private _player!: Player;
     private _session!: Session;
 
-    /**
-     * Initializes the SDKData.
-     */
+    /** @hidden */
     init(): void {
         this._session = new Session();
         this._game = new GameState();
     }
 
-    /**
-     * Late initialization call that is platform dependent. We call this late because we need to give the platform
-     * SDKs time to be initialized before we can access their API.
-     */
+    /** @hidden */
     lateInit(): void {
+        // We call these late because they sometimes depend on a platform SDK to be initialized already so that we
+        // can use the platform's API.
         this._player = new Player().init();
         this._adConfig = new AdConfig();
     }
 
-    /**
-     * AdConfig API
-     */
+    /** @hidden */
     get adConfig(): AdConfig {
         return this._adConfig;
     }
 
-    /**
-     * GameState API
-     */
+    /** @hidden */
     get game(): GameState {
         return this._game;
     }
 
-    /**
-     * Player data API
-     */
+    /** @hidden */
     get player(): Player {
         return this._player;
     }
 
-    /**
-     * Session data API
-     */
+    /** @hidden */
     get session(): Session {
         return this._session;
     }
