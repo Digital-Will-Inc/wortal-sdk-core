@@ -69,11 +69,6 @@ export default class AdConfig {
     }
 
     private setLinkViberAdUnitIds(): void {
-        if (sdk.session.platform === "viber") {
-            console.warn("[Wortal] This call isn't implemented on Viber yet.");
-            return;
-        }
-
         if ((window as any).wortalGame) {
             (window as any).wortalGame.getAdUnitsAsync().then((adUnits: any[]) => {
                 console.log("[Wortal] AdUnit IDs returned: \n" + adUnits[0].id + "\n" + adUnits[1].id);
