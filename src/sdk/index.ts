@@ -1,6 +1,7 @@
 import * as _ads from './ads';
 import * as _analytics from './analytics';
 import * as _leaderboard from './leaderboard';
+import * as _social from './social';
 import {InitializationOptions} from "../types/initialization";
 import {PlacementType} from "../types/ad-instance";
 import SDKData from "../utils/sdk";
@@ -17,6 +18,10 @@ export const analytics = _analytics;
  * Leaderboard API
  */
 export const leaderboard = _leaderboard;
+/**
+ * Social API
+ */
+export const social = _social;
 /**
  * SDK data container
  */
