@@ -24,6 +24,19 @@ export function getId(): string {
 }
 
 /**
+ * Gets the data bound to the entry point.
+ * @returns Data about the entry point or an empty object if none exists.
+ */
+export function getEntryPointData(): Record<string, unknown> {
+    if (sdk.session.platform === "link" || sdk.session.platform === "viber") {
+        return (window as any).wortalGame.getEntryPointData();
+    } else {
+        console.log("[Wortal] Context not currently supported on platform: " + sdk.session.platform);
+        return {};
+    }
+}
+
+/**
  * Share messages to the player's friends.
  * @param payload Object defining the share message.
  * @returns Number of friends the message was shared with.
@@ -31,11 +44,11 @@ export function getId(): string {
 export function shareAsync(payload: ContextPayload): Promise<number> {
     if (sdk.session.platform === "link") {
         return (window as any).wortalGame.shareAsync(convertToLinkMessagePayload(payload))
-            .then((result: ShareResult) => result.sharedCount)
+            .then((result: ShareResult) => console.log(result.sharedCount))
             .catch((error: any) => console.error(error));
     } else if (sdk.session.platform === "viber") {
         return (window as any).wortalGame.shareAsync(convertToViberSharePayload(payload))
-            .then((result: ShareResult) => result.sharedCount)
+            .then((result: ShareResult) => console.log(result.sharedCount))
             .catch((error: any) => console.error(error));
     } else {
         console.log("[Wortal] Context not currently supported on platform: " + sdk.session.platform);
@@ -50,11 +63,9 @@ export function shareAsync(payload: ContextPayload): Promise<number> {
 export function updateAsync(payload: ContextPayload): Promise<void> {
     if (sdk.session.platform === "link") {
         return (window as any).wortalGame.updateAsync(convertToLinkMessagePayload(payload))
-            .then((result: ShareResult) => result.sharedCount)
             .catch((error: any) => console.error(error));
     } else if (sdk.session.platform === "viber") {
         return (window as any).wortalGame.updateAsync(convertToViberUpdatePayload(payload))
-            .then((result: ShareResult) => result.sharedCount)
             .catch((error: any) => console.error(error));
     } else {
         console.log("[Wortal] Context not currently supported on platform: " + sdk.session.platform);
