@@ -2,7 +2,6 @@ import AdConfig from "../models/ad-config";
 import Player from "../models/player";
 import Session from "../models/session";
 import GameState from "../models/game-data";
-import SocialGroup from "../models/social-group";
 
 /** @hidden */
 export default class SDKData {
@@ -13,13 +12,11 @@ export default class SDKData {
     private _game!: GameState;
     private _player!: Player;
     private _session!: Session;
-    private _socialGroup!: SocialGroup;
 
     /** @hidden */
     init(): void {
         this._session = new Session();
         this._game = new GameState();
-        this._socialGroup = new SocialGroup();
     }
 
     /** @hidden */
@@ -48,10 +45,5 @@ export default class SDKData {
     /** @hidden */
     get session(): Session {
         return this._session;
-    }
-
-    /** @hidden */
-    get socialGroup(): SocialGroup {
-        return this._socialGroup;
     }
 }
