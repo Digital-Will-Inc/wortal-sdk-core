@@ -13,6 +13,8 @@ export default class SDKData {
     private _player!: Player;
     private _session!: Session;
 
+    private _isIAPEnabled: boolean = false;
+
     /** @hidden */
     init(): void {
         this._session = new Session();
@@ -45,5 +47,15 @@ export default class SDKData {
     /** @hidden */
     get session(): Session {
         return this._session;
+    }
+
+    /** @hidden */
+    get isIAPEnabled(): boolean {
+        return this._isIAPEnabled;
+    }
+
+    /** @hidden */
+    enableIAP(): void {
+        this._isIAPEnabled = true;
     }
 }
