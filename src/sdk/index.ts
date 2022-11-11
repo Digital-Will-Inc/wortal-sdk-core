@@ -65,9 +65,9 @@ export function init(options: InitializationOptions = {}): void {
                     console.log("[Wortal] SDK Core initialization complete.");
                 });
         } else if (sdk.session.platform === "wortal") {
+            sdk.lateInit();
             ads.showInterstitial(PlacementType.PREROLL, "Preroll", () => {}, () => {
                 removeLoadingCover();
-                sdk.lateInit();
                 sdk.adConfig.setPrerollShown(true);
                 tryEnableIAP();
                 analytics.logGameStart();
