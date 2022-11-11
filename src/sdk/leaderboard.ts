@@ -1,6 +1,6 @@
 import Leaderboard from "../models/leaderboard";
 import LeaderboardEntry from "../models/leaderboard-entry";
-import {sdk} from "./index";
+import { sdk } from "./index";
 
 /**
  * Gets the leaderboard with the given name. Access the leaderboard API via the Leaderboard returned here.
@@ -8,9 +8,10 @@ import {sdk} from "./index";
  */
 export function getLeaderboardAsync(name: string): Promise<Leaderboard> {
     if (sdk.session.platform === "link" || sdk.session.platform === "viber") {
-        return (window as any).wortalGame
-            .getLeaderboardAsync(name)
-            .then((result: any) => new Leaderboard(result.getName(), result.getName(), result.getContextID()))
+        return (window as any).wortalGame.getLeaderboardAsync(name)
+            .then((result: any) => {
+                return new Leaderboard(result.getName(), result.getName(), result.getContextID());
+            })
             .catch((error: any) => console.error(error));
     } else {
         return Promise.reject("[Wortal] Leaderboards not currently supported on platform: " + sdk.session.platform);
@@ -28,8 +29,7 @@ export function getLeaderboardAsync(name: string): Promise<Leaderboard> {
  */
 export function sendEntryAsync(name: string, score: number, details: string = ""): Promise<LeaderboardEntry> {
     if (sdk.session.platform === "link" || sdk.session.platform === "viber") {
-        return (window as any).wortalGame
-            .getLeaderboardAsync(name)
+        return (window as any).wortalGame.getLeaderboardAsync(name)
             .then((leaderboard: any) => leaderboard.setScoreAsync(score, details))
             .catch((error: any) => console.error(error));
     } else {
@@ -46,8 +46,7 @@ export function sendEntryAsync(name: string, score: number, details: string = ""
  */
 export function getEntriesAsync(name: string, count: number, offset: number = 0): Promise<LeaderboardEntry[]> {
     if (sdk.session.platform === "link" || sdk.session.platform === "viber") {
-        return (window as any).wortalGame
-            .getLeaderboardAsync(name)
+        return (window as any).wortalGame.getLeaderboardAsync(name)
             .then((leaderboard: any) => leaderboard.getEntriesAsync(count, offset))
             .catch((error: any) => console.error(error));
     } else {
@@ -62,8 +61,7 @@ export function getEntriesAsync(name: string, count: number, offset: number = 0)
  */
 export function getPlayerEntryAsync(name: string): Promise<LeaderboardEntry> {
     if (sdk.session.platform === "link" || sdk.session.platform === "viber") {
-        return (window as any).wortalGame
-            .getLeaderboardAsync(name)
+        return (window as any).wortalGame.getLeaderboardAsync(name)
             .then((leaderboard: any) => leaderboard.getPlayerEntryAsync())
             .catch((error: any) => console.error(error));
     } else {
@@ -78,8 +76,7 @@ export function getPlayerEntryAsync(name: string): Promise<LeaderboardEntry> {
  */
 export function getEntryCountAsync(name: string): Promise<number> {
     if (sdk.session.platform === "link" || sdk.session.platform === "viber") {
-        return (window as any).wortalGame
-            .getLeaderboardAsync(name)
+        return (window as any).wortalGame.getLeaderboardAsync(name)
             .then((leaderboard: any) => leaderboard.getEntryCountAsync())
             .catch((error: any) => console.error(error));
     } else {
@@ -96,8 +93,7 @@ export function getEntryCountAsync(name: string): Promise<number> {
  */
 export function getConnectedPlayersEntriesAsync(name: string, count: number, offset: number): Promise<LeaderboardEntry[]> {
     if (sdk.session.platform === "link" || sdk.session.platform === "viber") {
-        return (window as any).wortalGame
-            .getLeaderboardAsync(name)
+        return (window as any).wortalGame.getLeaderboardAsync(name)
             .then((leaderboard: any) => leaderboard.getConnectedPlayerEntriesAsync(count, offset))
             .catch((error: any) => console.error(error));
     } else {

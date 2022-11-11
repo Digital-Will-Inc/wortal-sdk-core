@@ -16,19 +16,16 @@ export function isEnabled(): boolean {
  */
 export function getCatalogAsync(): Promise<Product[]> {
     if (!sdk.isIAPEnabled) {
-        console.log("[Wortal] IAP not enabled.");
         return Promise.reject("[Wortal] IAP not enabled.");
     }
 
     if (sdk.session.platform === "viber") {
         return (window as any).wortalGame.payments.getCatalogAsync()
             .then((products: Product[]) => {
-                console.log(products.length)
                 return products;
             })
             .catch((error: any) => console.error(error));
     } else {
-        console.log("[Wortal] IAP not currently supported on platform: " + sdk.session.platform);
         return Promise.reject("[Wortal] IAP not currently supported on platform: " + sdk.session.platform);
     }
 }
@@ -40,19 +37,16 @@ export function getCatalogAsync(): Promise<Product[]> {
  */
 export function getPurchasesAsync(): Promise<Purchase[]> {
     if (!sdk.isIAPEnabled) {
-        console.log("[Wortal] IAP not enabled.");
         return Promise.reject("[Wortal] IAP not enabled.");
     }
 
     if (sdk.session.platform === "viber") {
         return (window as any).wortalGame.payments.getPurchasesAsync()
             .then((purchases: Purchase[]) => {
-                console.log(purchases.length)
                 return purchases;
             })
             .catch((error: any) => console.error(error));
     } else {
-        console.log("[Wortal] IAP not currently supported on platform: " + sdk.session.platform);
         return Promise.reject("[Wortal] IAP not currently supported on platform: " + sdk.session.platform);
     }
 }
@@ -64,21 +58,16 @@ export function getPurchasesAsync(): Promise<Purchase[]> {
  */
 export function makePurchaseAsync(config: PurchaseConfig): Promise<Purchase> {
     if (!sdk.isIAPEnabled) {
-        console.log("[Wortal] IAP not enabled.");
         return Promise.reject("[Wortal] IAP not enabled.");
     }
 
     if (sdk.session.platform === "viber") {
         return (window as any).wortalGame.payments.purchaseAsync(config)
             .then((purchase: Purchase) => {
-                //TODO: remove these after testing
-                console.log("Payment ID: " + purchase.paymentID)
-                console.log("Purchase token: " + purchase.purchaseToken)
                 return purchase;
             })
             .catch((error: any) => console.error(error));
     } else {
-        console.log("[Wortal] IAP not currently supported on platform: " + sdk.session.platform);
         return Promise.reject("[Wortal] IAP not currently supported on platform: " + sdk.session.platform);
     }
 }
@@ -90,16 +79,13 @@ export function makePurchaseAsync(config: PurchaseConfig): Promise<Purchase> {
  */
 export function consumePurchaseAsync(token: string): Promise<void> {
     if (!sdk.isIAPEnabled) {
-        console.log("[Wortal] IAP not enabled.");
         return Promise.reject("[Wortal] IAP not enabled.");
     }
 
     if (sdk.session.platform === "viber") {
         return (window as any).wortalGame.payments.consumePurchaseAsync(token)
-            .then(() => console.log("Purchase consumed"))
             .catch((error: any) => console.error(error));
     } else {
-        console.log("[Wortal] IAP not currently supported on platform: " + sdk.session.platform);
         return Promise.reject("[Wortal] IAP not currently supported on platform: " + sdk.session.platform);
     }
 }
