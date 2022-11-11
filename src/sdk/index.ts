@@ -56,18 +56,14 @@ export function init(options: InitializationOptions = {}): void {
     (window as any).initWortal(() => {
         console.log("[Wortal] Platform: " + sdk.session.platform);
         if (sdk.session.platform === "link" || sdk.session.platform === "viber") {
-            if ((window as any).wortalGame) {
-                (window as any).wortalGame.initializeAsync()
-                    .then(() => {
-                        // We don't need to wait for startGameAsync to resolve to continue with initialization.
-                        // But we need to call it to remove the loading cover and allow the game to be played.
-                        (window as any).wortalGame.startGameAsync();
-                        sdk.lateInit();
-                        tryEnableIAP();
-                        analytics.logGameStart();
-                        console.log("[Wortal] SDK Core initialization complete.");
-                    });
-            }
+            (window as any).wortalGame.initializeAsync()
+                .then(() => {
+                    (window as any).wortalGame.startGameAsync();
+                    sdk.lateInit();
+                    tryEnableIAP();
+                    analytics.logGameStart();
+                    console.log("[Wortal] SDK Core initialization complete.");
+                });
         } else if (sdk.session.platform === "wortal") {
             ads.showInterstitial(PlacementType.PREROLL, "Preroll", () => {}, () => {
                 removeLoadingCover();
