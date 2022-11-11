@@ -38,8 +38,7 @@ module.exports = {
     devtool: IS_PRODUCTION ? 'hidden-source-map' : 'eval-source-map',
     plugins: [
         new webpack.DefinePlugin({
-            'process.env.npm_package_name': JSON.stringify(process.env.npm_package_name),
-            'process.env.npm_package_version': JSON.stringify(IS_PRODUCTION ? process.env.npm_package_version : 'next')
+            __VERSION__: JSON.stringify(require("./package.json").version)
         }),
         new webpack.optimize.ModuleConcatenationPlugin(),
     ]
