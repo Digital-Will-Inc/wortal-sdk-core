@@ -1,4 +1,4 @@
-import { LocalizableContent } from '../localizable-content'
+import { LocalizableContent } from './localizable-content'
 
 /** @hidden */
 export interface MessageOptionsLink {

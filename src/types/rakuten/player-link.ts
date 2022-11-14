@@ -1,4 +1,4 @@
-import ConnectedPlayerLink from "../../models/link/connected-player-link";
+import ConnectedPlayerLink from "../../models/rakuten/connected-player-link";
 import { CustomPermissionLink } from './custom-permission-link'
 
 /** @hidden */

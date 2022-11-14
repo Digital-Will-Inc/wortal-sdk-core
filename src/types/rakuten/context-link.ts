@@ -1,7 +1,7 @@
-import ContextPlayerLink from '../../models/link/context-player-link'
+import ContextPlayerLink from '../../models/rakuten/context-player-link'
 import { PlayerRawDataLink } from './player-link'
 import { MessageOptionsLink } from './message-options-link'
-import { LocalizableContent } from '../localizable-content'
+import { LocalizableContent } from './localizable-content'
 
 export interface ContextChoosePayloadLink extends MessageOptionsLink {
 }

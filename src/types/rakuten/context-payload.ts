@@ -1,5 +1,5 @@
 import { LocalizableContent } from "./localizable-content";
-import { ContextFilterViber } from "./viber/context-viber";
+import { ContextFilterViber } from "./context-viber";
 
 /**
  * Payload for various function calls in the context API.

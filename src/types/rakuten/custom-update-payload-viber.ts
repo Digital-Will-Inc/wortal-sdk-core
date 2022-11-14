@@ -1,4 +1,4 @@
-import { LocalizableContent } from '../localizable-content';
+import { LocalizableContent } from './localizable-content';
 
 export interface CustomUpdatePayloadViber {
     /** Message format to be used. */
