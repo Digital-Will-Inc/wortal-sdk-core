@@ -1,5 +1,5 @@
-import { LocalizableContent } from '../localizable-content'
-import ContextPlayerViber from '../../models/viber/context-player-viber'
+import { LocalizableContent } from './localizable-content'
+import ContextPlayerViber from '../../models/rakuten/context-player-viber'
 import { PlayerRawDataViber } from './player-viber'
 
 /**

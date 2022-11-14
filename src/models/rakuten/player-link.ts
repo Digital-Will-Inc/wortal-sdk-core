@@ -1,4 +1,4 @@
-import { PlayerRawDataLink } from '../../types/link/player-link';
+import { PlayerRawDataLink } from '../../types/rakuten/player-link';
 
 /**
  * Internal class representing a player.

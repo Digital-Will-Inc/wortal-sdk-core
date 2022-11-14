@@ -1,4 +1,4 @@
-import { PlayerRawDataViber } from '../../types/viber/player-viber';
+import { PlayerRawDataViber } from '../../types/rakuten/player-viber';
 
 /**
  * Representing a player.

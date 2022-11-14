@@ -1,4 +1,4 @@
-import ConnectedPlayerViber from "../../models/viber/connected-player-viber";
+import ConnectedPlayerViber from "../../models/rakuten/connected-player-viber";
 
 export interface PlayerDataViber {
     [key: string]: any;
