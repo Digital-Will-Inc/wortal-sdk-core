@@ -1,12 +1,9 @@
-// Link
-import { MessageOptionsLink } from "../types/link/message-options-link";
-// Viber
-import { ContextChoosePayloadViber } from "../types/viber/context-viber";
-import { CustomUpdatePayloadViber } from "../types/viber/custom-update-payload-viber";
-import { SharePayloadViber } from "../types/viber/share-payload-viber";
-// SDK
-import { ContextPayload } from "../types/context-payload";
-import { ShareResult } from "../types/share-result";
+import { MessageOptionsLink } from "../types/rakuten/message-options-link";
+import { ContextChoosePayloadViber } from "../types/rakuten/context-viber";
+import { CustomUpdatePayloadViber } from "../types/rakuten/custom-update-payload-viber";
+import { SharePayloadViber } from "../types/rakuten/share-payload-viber";
+import { ShareResult } from "../types/rakuten/share-result";
+import { ContextPayload } from "../types/rakuten/context-payload";
 import { sdk } from "./index";
 
 /**
@@ -28,11 +25,7 @@ export function getId(): string {
  */
 export function getEntryPointData(): Record<string, unknown> {
     if (sdk.session.platform === "link" || sdk.session.platform === "viber") {
-        return (window as any).wortalGame.getEntryPointData()
-            .then((data: Record<string, unknown>) => {
-                return data;
-            })
-            .catch((error: any) => console.error(error));
+        return (window as any).wortalGame.getEntryPointData();
     } else {
         return {};
     }
