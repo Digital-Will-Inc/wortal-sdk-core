@@ -1,5 +1,4 @@
 import { LocalizableContent } from "./localizable-content";
-import { ContextFilterViber } from "./context-viber";
 
 /**
  * Payload for various function calls in the context API.
@@ -17,7 +16,7 @@ export interface ContextPayload {
      */
     data?: Record<string, unknown>;
     /** An array of filters to be applied to the friend list. Only the first filter is currently used. */
-    filter?: [ContextFilterViber];
+    filter?: [ContextFilter];
     /** Context maximum size. */
     maxSize?: number;
     /** Context minimum size. */
@@ -53,3 +52,16 @@ export interface ContextPayload {
     /** Not used */
     template?: string;
 }
+
+/**
+ * Defines the filtering behavior
+ *
+ * `NEW_CONTEXT_ONLY` only enlists contexts that the current player is in, but never participated in (e.g. a new context created by a friend).
+ * `INCLUDE_EXISTING_CHALLENGES` enlists contexts that the current player has participated before.
+ * `NEW_PLAYERS_ONLY` only enlists friends who haven't played this game before.
+ * `NEW_INVITATIONS_ONLY` only enlists friends who haven't been sent an in-game message before. This filter can be fine-tuned with `hoursSinceInvitation` parameter.
+ */
+export type ContextFilter = 'NEW_CONTEXT_ONLY'
+    | 'INCLUDE_EXISTING_CHALLENGES'
+    | 'NEW_PLAYERS_ONLY'
+    | 'NEW_INVITATIONS_ONLY';

@@ -1,4 +1,4 @@
-import { Product, Purchase, PurchaseConfig } from "../types/rakuten/iap";
+import { Product, Purchase, PurchaseConfig } from "../types/iap";
 import { sdk } from "./index";
 
 /**
