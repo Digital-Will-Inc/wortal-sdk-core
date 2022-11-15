@@ -1,5 +1,5 @@
 import { AdConfigData } from "../types/ad-config";
-import { sdk } from "../sdk";
+import { config } from "../api";
 
 /** @hidden */
 export default class AdConfig {
@@ -11,7 +11,7 @@ export default class AdConfig {
     };
 
     constructor() {
-        if (sdk.session.platform === "link" || sdk.session.platform === "viber") {
+        if (config.session.platform === "link" || config.session.platform === "viber") {
             this.setLinkViberAdUnitIds();
         }
     }

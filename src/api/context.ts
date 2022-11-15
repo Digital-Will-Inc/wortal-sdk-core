@@ -1,5 +1,5 @@
 import { ContextPayload } from "../types/context-payload";
-import { sdk } from "./index";
+import { config } from "./index";
 
 /**
  * Gets the ID of the current context.
@@ -10,7 +10,7 @@ import { sdk } from "./index";
  * game is being played on a platform that does not currently support context.
  */
 export function getId(): string {
-    if (sdk.session.platform === "link" || sdk.session.platform === "viber") {
+    if (config.session.platform === "link" || config.session.platform === "viber") {
         return (window as any).wortalGame.context.getID();
     } else {
         return "";
@@ -25,7 +25,7 @@ export function getId(): string {
  * @returns Data about the entry point or an empty object if none exists.
  */
 export function getEntryPointData(): Record<string, unknown> {
-    if (sdk.session.platform === "link" || sdk.session.platform === "viber") {
+    if (config.session.platform === "link" || config.session.platform === "viber") {
         return (window as any).wortalGame.getEntryPointData();
     } else {
         return {};
@@ -45,20 +45,20 @@ export function getEntryPointData(): Record<string, unknown> {
  * @returns Number of friends the message was shared with.
  */
 export function shareAsync(payload: ContextPayload): Promise<number> {
-    if (sdk.session.platform === "link") {
+    if (config.session.platform === "link") {
         return (window as any).wortalGame.shareAsync(convertToLinkMessagePayload(payload))
             .then((result: any) => {
                 return result.sharedCount;
             })
             .catch((error: any) => console.error(error));
-    } else if (sdk.session.platform === "viber") {
+    } else if (config.session.platform === "viber") {
         return (window as any).wortalGame.shareAsync(convertToViberSharePayload(payload))
             .then((result: any) => {
                 return result.sharedCount;
             })
             .catch((error: any) => console.error(error));
     } else {
-        return Promise.reject("[Wortal] Context not currently supported on platform: " + sdk.session.platform);
+        return Promise.reject("[Wortal] Context not currently supported on platform: " + config.session.platform);
     }
 }
 
@@ -74,14 +74,14 @@ export function shareAsync(payload: ContextPayload): Promise<number> {
  * @param payload Object defining the update message.
  */
 export function updateAsync(payload: ContextPayload): Promise<void> {
-    if (sdk.session.platform === "link") {
+    if (config.session.platform === "link") {
         return (window as any).wortalGame.updateAsync(convertToLinkMessagePayload(payload))
             .catch((error: any) => console.error(error));
-    } else if (sdk.session.platform === "viber") {
+    } else if (config.session.platform === "viber") {
         return (window as any).wortalGame.updateAsync(convertToViberUpdatePayload(payload))
             .catch((error: any) => console.error(error));
     } else {
-        return Promise.reject("[Wortal] Share not currently supported on platform: " + sdk.session.platform);
+        return Promise.reject("[Wortal] Share not currently supported on platform: " + config.session.platform);
     }
 }
 
@@ -97,14 +97,14 @@ export function updateAsync(payload: ContextPayload): Promise<void> {
  * @param payload Object defining the options for the context choice.
  */
 export function chooseAsync(payload: ContextPayload): Promise<void> {
-    if (sdk.session.platform === "link") {
+    if (config.session.platform === "link") {
         return (window as any).wortalGame.context.chooseAsync(convertToLinkMessagePayload(payload))
             .catch((error: any) => console.error(error));
-    } else if (sdk.session.platform === "viber") {
+    } else if (config.session.platform === "viber") {
         return (window as any).wortalGame.context.chooseAsync(convertToViberChoosePayload(payload))
             .catch((error: any) => console.error(error));
     } else {
-        return Promise.reject("[Wortal] Context not currently supported on platform: " + sdk.session.platform);
+        return Promise.reject("[Wortal] Context not currently supported on platform: " + config.session.platform);
     }
 }
 
@@ -120,11 +120,11 @@ export function switchAsync(contextId: string): Promise<void> {
         return Promise.reject("[Wortal] Empty ID passed to switchAsync().");
     }
 
-    if (sdk.session.platform === "link" || sdk.session.platform === "viber") {
+    if (config.session.platform === "link" || config.session.platform === "viber") {
         return (window as any).wortalGame.context.switchAsync(contextId)
             .catch((error: any) => console.error(error));
     } else {
-        return Promise.reject("[Wortal] Context not currently supported on platform: " + sdk.session.platform);
+        return Promise.reject("[Wortal] Context not currently supported on platform: " + config.session.platform);
     }
 }
 
@@ -140,11 +140,11 @@ export function createAsync(playerId: string): Promise<void> {
         return Promise.reject("[Wortal] Empty ID passed to createAsync().");
     }
 
-    if (sdk.session.platform === "link" || sdk.session.platform === "viber") {
+    if (config.session.platform === "link" || config.session.platform === "viber") {
         return (window as any).wortalGame.context.createAsync(playerId)
             .catch((error: any) => console.error(error));
     } else {
-        return Promise.reject("[Wortal] Context not currently supported on platform: " + sdk.session.platform);
+        return Promise.reject("[Wortal] Context not currently supported on platform: " + config.session.platform);
     }
 }
 
