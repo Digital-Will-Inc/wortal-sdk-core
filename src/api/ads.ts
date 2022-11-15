@@ -1,6 +1,6 @@
 import { InterstitialAd, RewardedAd } from "../models/ad-instance";
 import { AdInstanceData, PlacementType } from "../types/ad-instance";
-import { sdk } from "./index";
+import { config } from "./index";
 
 /**
  * Shows an interstitial ad. These can be shown at various points in the game such as a level end, restart or a timed
@@ -35,18 +35,18 @@ export function showInterstitial(placement: PlacementType, description: string,
         console.error("[Wortal] showInterstitial called with placement type 'reward'. Call showRewarded instead.");
         return;
     }
-    if (placement === 'preroll' && (sdk.session.platform === "link" || sdk.session.platform === "viber")) {
+    if (placement === 'preroll' && (config.session.platform === "link" || config.session.platform === "viber")) {
         console.error("[Wortal] Link and Viber platforms do not support preroll ads.");
         return;
     }
-    if (placement === 'preroll' && (sdk.adConfig.hasPrerollShown || sdk.game.gameTimer > 10)) {
+    if (placement === 'preroll' && (config.adConfig.hasPrerollShown || config.game.gameTimer > 10)) {
         console.error("[Wortal] Preroll ads can only be shown during game load.");
         return;
     }
 
     // Don't bother calling if the ads are blocked, the Wortal backend will not respond which can lead to the
     // game being frozen, waiting for callbacks that will never come.
-    if (sdk.adConfig.isAdBlocked) {
+    if (config.adConfig.isAdBlocked) {
         console.log("[Wortal] Ads are blocked, skipping..");
         afterAd();
         return;
@@ -56,7 +56,7 @@ export function showInterstitial(placement: PlacementType, description: string,
     // want to be able to preload ads and allow the game to check whether an ad is filled and ready to show.
     let data: AdInstanceData = {
         placementType: placement,
-        adUnitId: sdk.adConfig.interstitialId,
+        adUnitId: config.adConfig.interstitialId,
         description: description,
         beforeAd: beforeAd,
         afterAd: afterAd,
@@ -102,7 +102,7 @@ export function showRewarded(description: string, beforeAd: Function, afterAd: F
 
     // Don't bother calling if the ads are blocked, the Wortal backend will not respond which can lead to the
     // game being frozen, waiting for callbacks that will never come.
-    if (sdk.adConfig.isAdBlocked) {
+    if (config.adConfig.isAdBlocked) {
         console.log("[Wortal] Ads are blocked, skipping..");
         // Call both of these as some situations might require resuming the game flow in adDismissed instead of afterAd.
         adDismissed();
@@ -114,7 +114,7 @@ export function showRewarded(description: string, beforeAd: Function, afterAd: F
     // want to be able to preload ads and allow the game to check whether an ad is filled and ready to show.
     let data: AdInstanceData = {
         placementType: 'reward',
-        adUnitId: sdk.adConfig.rewardedId,
+        adUnitId: config.adConfig.rewardedId,
         description: description,
         beforeAd: beforeAd,
         afterAd: afterAd,

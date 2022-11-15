@@ -1,4 +1,4 @@
-import * as _Wortal from './sdk';
+import * as _Wortal from './api';
 
 /**
  * Wortal API

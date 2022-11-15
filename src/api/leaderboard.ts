@@ -1,20 +1,20 @@
 import Leaderboard from "../models/leaderboard";
 import LeaderboardEntry from "../models/leaderboard-entry";
-import { sdk } from "./index";
+import { config } from "./index";
 
 /**
  * Gets the leaderboard with the given name. Access the leaderboard API via the Leaderboard returned here.
  * @param name Name of the leaderboard.
  */
 export function getLeaderboardAsync(name: string): Promise<Leaderboard> {
-    if (sdk.session.platform === "link" || sdk.session.platform === "viber") {
+    if (config.session.platform === "link" || config.session.platform === "viber") {
         return (window as any).wortalGame.getLeaderboardAsync(name)
             .then((result: any) => {
                 return new Leaderboard(result.getName(), result.getName(), result.getContextID());
             })
             .catch((error: any) => console.error(error));
     } else {
-        return Promise.reject("[Wortal] Leaderboards not currently supported on platform: " + sdk.session.platform);
+        return Promise.reject("[Wortal] Leaderboards not currently supported on platform: " + config.session.platform);
     }
 }
 
@@ -28,12 +28,12 @@ export function getLeaderboardAsync(name: string): Promise<Leaderboard> {
  * high score was achieved.
  */
 export function sendEntryAsync(name: string, score: number, details: string = ""): Promise<LeaderboardEntry> {
-    if (sdk.session.platform === "link" || sdk.session.platform === "viber") {
+    if (config.session.platform === "link" || config.session.platform === "viber") {
         return (window as any).wortalGame.getLeaderboardAsync(name)
             .then((leaderboard: any) => leaderboard.setScoreAsync(score, details))
             .catch((error: any) => console.error(error));
     } else {
-        return Promise.reject("[Wortal] Leaderboards not currently supported on platform: " + sdk.session.platform);
+        return Promise.reject("[Wortal] Leaderboards not currently supported on platform: " + config.session.platform);
     }
 }
 
@@ -45,12 +45,12 @@ export function sendEntryAsync(name: string, score: number, details: string = ""
  * @returns Array of LeaderboardEntry.
  */
 export function getEntriesAsync(name: string, count: number, offset: number = 0): Promise<LeaderboardEntry[]> {
-    if (sdk.session.platform === "link" || sdk.session.platform === "viber") {
+    if (config.session.platform === "link" || config.session.platform === "viber") {
         return (window as any).wortalGame.getLeaderboardAsync(name)
             .then((leaderboard: any) => leaderboard.getEntriesAsync(count, offset))
             .catch((error: any) => console.error(error));
     } else {
-        return Promise.reject("[Wortal] Leaderboards not currently supported on platform: " + sdk.session.platform);
+        return Promise.reject("[Wortal] Leaderboards not currently supported on platform: " + config.session.platform);
     }
 }
 
@@ -60,12 +60,12 @@ export function getEntriesAsync(name: string, count: number, offset: number = 0)
  * @returns LeaderboardEntry for the player.
  */
 export function getPlayerEntryAsync(name: string): Promise<LeaderboardEntry> {
-    if (sdk.session.platform === "link" || sdk.session.platform === "viber") {
+    if (config.session.platform === "link" || config.session.platform === "viber") {
         return (window as any).wortalGame.getLeaderboardAsync(name)
             .then((leaderboard: any) => leaderboard.getPlayerEntryAsync())
             .catch((error: any) => console.error(error));
     } else {
-        return Promise.reject("[Wortal] Leaderboards not currently supported on platform: " + sdk.session.platform);
+        return Promise.reject("[Wortal] Leaderboards not currently supported on platform: " + config.session.platform);
     }
 }
 
@@ -75,12 +75,12 @@ export function getPlayerEntryAsync(name: string): Promise<LeaderboardEntry> {
  * @returns Number of entries.
  */
 export function getEntryCountAsync(name: string): Promise<number> {
-    if (sdk.session.platform === "link" || sdk.session.platform === "viber") {
+    if (config.session.platform === "link" || config.session.platform === "viber") {
         return (window as any).wortalGame.getLeaderboardAsync(name)
             .then((leaderboard: any) => leaderboard.getEntryCountAsync())
             .catch((error: any) => console.error(error));
     } else {
-        return Promise.reject("[Wortal] Leaderboards not currently supported on platform: " + sdk.session.platform);
+        return Promise.reject("[Wortal] Leaderboards not currently supported on platform: " + config.session.platform);
     }
 }
 
@@ -92,11 +92,11 @@ export function getEntryCountAsync(name: string): Promise<number> {
  * @returns Array of LeaderboardEntry.
  */
 export function getConnectedPlayersEntriesAsync(name: string, count: number, offset: number): Promise<LeaderboardEntry[]> {
-    if (sdk.session.platform === "link" || sdk.session.platform === "viber") {
+    if (config.session.platform === "link" || config.session.platform === "viber") {
         return (window as any).wortalGame.getLeaderboardAsync(name)
             .then((leaderboard: any) => leaderboard.getConnectedPlayerEntriesAsync(count, offset))
             .catch((error: any) => console.error(error));
     } else {
-        return Promise.reject("[Wortal] Leaderboards not currently supported on platform: " + sdk.session.platform);
+        return Promise.reject("[Wortal] Leaderboards not currently supported on platform: " + config.session.platform);
     }
 }

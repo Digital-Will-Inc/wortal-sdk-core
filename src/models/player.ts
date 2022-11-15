@@ -1,5 +1,5 @@
 import { PlayerData } from "../types/player";
-import { sdk } from "../sdk";
+import { config } from "../api";
 
 /** @hidden */
 export default class Player {
@@ -40,7 +40,7 @@ export default class Player {
     }
 
     protected setId(): string {
-        switch (sdk.session.platform) {
+        switch (config.session.platform) {
             case "viber":
             case "link":
                 return (window as any).wortalGame.player.getID();
@@ -52,7 +52,7 @@ export default class Player {
     }
 
     protected setName(): string {
-        switch (sdk.session.platform) {
+        switch (config.session.platform) {
             case "viber":
             case "link":
                 return (window as any).wortalGame.player.getName();
@@ -64,7 +64,7 @@ export default class Player {
     }
 
     protected setPhoto(): string {
-        switch (sdk.session.platform) {
+        switch (config.session.platform) {
             case "viber":
             case "link":
                 return (window as any).wortalGame.player.getPhoto();
@@ -76,7 +76,7 @@ export default class Player {
     }
 
     protected setIsFirstPlay(): boolean {
-        switch (sdk.session.platform) {
+        switch (config.session.platform) {
             case "viber":
             case "link":
                 return (window as any).wortalGame.player.hasPlayed();
@@ -89,12 +89,12 @@ export default class Player {
     }
 
     protected isWortalFirstPlay(): boolean {
-        const cookieDate = this.getCookie(sdk.session.gameId);
+        const cookieDate = this.getCookie(config.session.gameId);
         if (cookieDate !== "") {
             this._current.daysSinceFirstPlay = this.getTimeFromCookieCreation(cookieDate);
             return false;
         } else {
-            this.setCookie(sdk.session.gameId);
+            this.setCookie(config.session.gameId);
             return true;
         }
     }
