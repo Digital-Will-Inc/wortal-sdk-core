@@ -1,9 +1,4 @@
-import { MessageOptionsLink } from "../types/rakuten/message-options-link";
-import { ContextChoosePayloadViber } from "../types/rakuten/context-viber";
-import { CustomUpdatePayloadViber } from "../types/rakuten/custom-update-payload-viber";
-import { SharePayloadViber } from "../types/rakuten/share-payload-viber";
-import { ShareResult } from "../types/rakuten/share-result";
-import { ContextPayload } from "../types/rakuten/context-payload";
+import { ContextPayload } from "../types/context-payload";
 import { sdk } from "./index";
 
 /**
@@ -52,14 +47,14 @@ export function getEntryPointData(): Record<string, unknown> {
 export function shareAsync(payload: ContextPayload): Promise<number> {
     if (sdk.session.platform === "link") {
         return (window as any).wortalGame.shareAsync(convertToLinkMessagePayload(payload))
-            .then((result: ShareResult) => {
-                return result;
+            .then((result: any) => {
+                return result.sharedCount;
             })
             .catch((error: any) => console.error(error));
     } else if (sdk.session.platform === "viber") {
         return (window as any).wortalGame.shareAsync(convertToViberSharePayload(payload))
-            .then((result: ShareResult) => {
-                return result;
+            .then((result: any) => {
+                return result.sharedCount;
             })
             .catch((error: any) => console.error(error));
     } else {
@@ -153,7 +148,7 @@ export function createAsync(playerId: string): Promise<void> {
     }
 }
 
-function convertToLinkMessagePayload(payload: ContextPayload): MessageOptionsLink {
+function convertToLinkMessagePayload(payload: ContextPayload): object {
     return {
         image: payload.image,
         text: payload.text,
@@ -162,7 +157,7 @@ function convertToLinkMessagePayload(payload: ContextPayload): MessageOptionsLin
     }
 }
 
-function convertToViberChoosePayload(payload: ContextPayload): ContextChoosePayloadViber {
+function convertToViberChoosePayload(payload: ContextPayload): object {
     return {
         filters: payload.filter,
         maxSize: payload.maxSize,
@@ -172,7 +167,7 @@ function convertToViberChoosePayload(payload: ContextPayload): ContextChoosePayl
     }
 }
 
-function convertToViberSharePayload(payload: ContextPayload): SharePayloadViber {
+function convertToViberSharePayload(payload: ContextPayload): object {
     return {
         intent: payload.type ?? "SHARE",
         image: payload.image ?? "",
@@ -187,7 +182,7 @@ function convertToViberSharePayload(payload: ContextPayload): SharePayloadViber 
     }
 }
 
-function convertToViberUpdatePayload(payload: ContextPayload): CustomUpdatePayloadViber {
+function convertToViberUpdatePayload(payload: ContextPayload): object {
     return {
         action: payload.action ?? "CUSTOM",
         template: payload.template ?? "",
