@@ -4,7 +4,6 @@ import * as _context from './context';
 import * as _iap from './iap';
 import * as _leaderboard from './leaderboard';
 import { InitializationOptions } from "../types/initialization";
-import { PlacementType } from "../types/ad-instance";
 import SDKData from "../utils/sdk";
 
 /**
@@ -34,10 +33,15 @@ export const sdk = new SDKData();
 declare var __VERSION__: string;
 
 /**
- * Initializes the SDK.
- * @param options Initialization options to include.
+ * Initializes the SDK. This is called automatically after the Wortal backend interface script is loaded. There is
+ * no need to call this from the game.
+ * @param options Initialization options to include. Currently not used.
  */
 export function init(options: InitializationOptions = {}): void {
+    if (sdk.isInit) {
+        console.log("[Wortal] SDK Core already initialized.");
+        return;
+    }
     console.log("[Wortal] Initializing SDK Core " + __VERSION__);
     sdk.init();
 
@@ -66,7 +70,7 @@ export function init(options: InitializationOptions = {}): void {
                 });
         } else if (sdk.session.platform === "wortal") {
             sdk.lateInit();
-            ads.showInterstitial(PlacementType.PREROLL, "Preroll", () => {}, () => {
+            ads.showInterstitial('preroll', "Preroll", () => {}, () => {
                 removeLoadingCover();
                 sdk.adConfig.setPrerollShown(true);
                 tryEnableIAP();
@@ -97,7 +101,16 @@ export function init(options: InitializationOptions = {}): void {
 }
 
 /**
- * Sets the loading progress value for the game build.
+ * Sets the loading progress value for the game. This is required on some platforms. Failure to call this with 100
+ * once the game is fully loaded will result in the game failing to start.
+ * @example
+ * onGameLoadProgress(percent) {
+ *     Wortal.setLoadingProgress(percent);
+ * }
+ *
+ * onGameLoaded() {
+ *     Wortal.setLoadingProgress(100);
+ * }
  * @param value Percentage of loading complete. Range is 0 to 100.
  */
 export function setLoadingProgress(value: number): void {
