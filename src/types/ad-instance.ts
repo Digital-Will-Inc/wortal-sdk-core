@@ -1,23 +1,20 @@
 /**
  * Types of ad placements as defined by Google:
  * https://developers.google.com/ad-placement/docs/placement-types
+ * <pre>
+ *     start: Your game has loaded, the UI is visible and sound is enabled, the player can interact with the game,
+ *     but the game play has not started yet.
+ *
+ *     pause: The player pauses the game.
+ *
+ *     next: The player navigates to the next level.
+ *
+ *     browse: The player explores options outside of gameplay.
+ * </pre>
+ * NOTE: preroll and reward are reserved for special ad calls. Do not pass these types to any ads API calls.
+ * Use ads.showRewarded() which will automatically add the 'reward' type.
  */
-export enum PlacementType {
-    /// Your game has not loaded its UI and is not playing sound. There can only be one ‘preroll’ placement in your game
-    /// for each page load. Preroll ads can only use the adBreakDone callback.
-    PREROLL = 'preroll',
-    /// Your game has loaded, the UI is visible and sound is enabled, the player can interact with the game, but the
-    /// game play has not started yet.
-    START = 'start',
-    /// The player pauses the game.
-    PAUSE = 'pause',
-    /// The player navigates to the next level.
-    NEXT = 'next',
-    /// The player explores options outside of gameplay.
-    BROWSE = 'browse',
-    /// The player reaches a point in the game where they can be offered a reward.
-    REWARD = 'reward',
-}
+export type PlacementType = 'preroll' | 'start' | 'pause' | 'next' | 'browse' | 'reward'
 
 /** @hidden */
 export interface AdInstanceData {
