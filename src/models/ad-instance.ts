@@ -25,7 +25,6 @@ class AdInstance implements IAdInstance {
     adData: AdData;
     callbacks: AdCallbacks;
 
-    /** @hidden */
     constructor(data: AdInstanceData) {
         this.adData = {
             adUnitId: data.adUnitId,
@@ -37,13 +36,11 @@ class AdInstance implements IAdInstance {
         };
     }
 
-    /** @hidden */
     show(): void { };
 }
 
 /** @hidden */
 export class InterstitialAd extends AdInstance {
-    /** @hidden */
     constructor(data: AdInstanceData) {
         super(data);
         this.adData.placementType = data.placementType;
@@ -67,7 +64,6 @@ export class InterstitialAd extends AdInstance {
 
 /** @hidden */
 export class RewardedAd extends AdInstance {
-    /** @hidden */
     constructor(data: AdInstanceData) {
         super(data);
         this.adData.placementType = 'reward';

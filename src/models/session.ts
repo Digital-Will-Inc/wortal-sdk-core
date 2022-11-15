@@ -1,11 +1,9 @@
-import {SessionData} from "../types/session";
+import { SessionData } from "../types/session";
 // Murphy's Laws of Combat: If it’s stupid and it works, it ain’t stupid.
 // @ts-ignore
 import country from "../utils/intl-data.json";
 
-/**
- * Details about the current game session.
- */
+/** @hidden */
 export default class Session {
     private _current: SessionData = {
         country: "",
@@ -14,7 +12,6 @@ export default class Session {
         browser: "",
     };
 
-    /** @hidden */
     constructor() {
         this._current.country = this.setCountry();
         this._current.platform = (window as any).getWortalPlatform();
@@ -27,34 +24,18 @@ export default class Session {
         this._current.browser = navigator.userAgent;
     }
 
-    /**
-     * ID of the current game.
-     * @returns String ID. This will vary per platform.
-     */
     get gameId(): string {
         return this._current.gameId;
     }
 
-    /**
-     * Browser the game is currently being played in.
-     * @returns User agent data.
-     */
     get browser(): string {
         return this._current.browser;
     }
 
-    /**
-     * Platform the game is currently being played on.
-     * @returns Current platform.
-     */
     get platform(): string {
         return this._current.platform;
     }
 
-    /**
-     * Country the current session is being played from.
-     * @returns Current country determined by the player's timezone setting.
-     */
     get country(): string {
         return this._current.country;
     }

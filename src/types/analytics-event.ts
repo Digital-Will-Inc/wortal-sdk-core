@@ -1,6 +1,4 @@
-/**
- * Types of analytics events.
- */
+/** @hidden */
 export type AnalyticsEventType = 'GameStart' | 'GameEnd' | 'LevelStart' | 'LevelEnd' | 'TutorialStart' | 'TutorialEnd'
     | 'LevelUp' | 'PostScore' | 'GameChoice'
 

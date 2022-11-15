@@ -1,9 +1,7 @@
-import {PlayerData} from "../types/player";
-import {sdk} from "../sdk";
+import { PlayerData } from "../types/player";
+import { sdk } from "../sdk";
 
-/**
- * Details about the current player.
- */
+/** @hidden */
 export default class Player {
     protected _current: PlayerData = {
         id: "",
@@ -13,7 +11,6 @@ export default class Player {
         daysSinceFirstPlay: 0,
     };
 
-    /** @hidden */
     init(): Player {
         this._current.id = this.setId();
         this._current.name = this.setName();
@@ -22,42 +19,22 @@ export default class Player {
         return this;
     }
 
-    /**
-     * Player's ID.
-     * @returns String ID.
-     */
     get id(): string {
         return this._current.id;
     }
 
-    /**
-     * Player's name.
-     * @returns String name.
-     */
     get name(): string {
         return this._current.name;
     }
 
-    /**
-     * Player's photo.
-     * @returns URL to the player's photo.
-     */
     get photo(): string {
         return this._current.photo;
     }
 
-    /**
-     * Is this the first time the player is playing this game or not.
-     * @returns True if it is the first time.
-     */
     get isFirstPlay(): boolean {
         return this._current.isFirstPlay;
     }
 
-    /**
-     * The number of days that have passed since the player's first time playing this game.
-     * @returns Number of days since first play.
-     */
     get daysSinceFirstPlay(): number {
         return this._current.daysSinceFirstPlay;
     }
