@@ -8,6 +8,9 @@ import { sdk } from "./index";
 
 /**
  * Gets the ID of the current context.
+ * @example
+ * let id = Wortal.context.getId();
+ * console.log(id);
  * @returns String ID of the current context if one exists. Null if the player is playing solo. Empty string if the
  * game is being played on a platform that does not currently support context.
  */
@@ -21,6 +24,9 @@ export function getId(): string {
 
 /**
  * Gets the data bound to the entry point.
+ * @example
+ * let data = Wortal.context.getEntryPointData();
+ * console.log(data.property);
  * @returns Data about the entry point or an empty object if none exists.
  */
 export function getEntryPointData(): Record<string, unknown> {
@@ -32,7 +38,14 @@ export function getEntryPointData(): Record<string, unknown> {
 }
 
 /**
- * Share messages to the player's friends.
+ * Shares a message to the player's friends. Will trigger a UI for the player to choose which friends to share with.
+ * @example
+ * Wortal.context.shareAsync({
+ *     image: 'https://link.to.img',
+ *     text: 'Share text',
+ *     caption: 'Play',
+ *     data: { exampleData: 'yourData' },
+ * }).then(result => console.log(result); // Contains shareCount with number of friends the share was sent to.
  * @param payload Object defining the share message.
  * @returns Number of friends the message was shared with.
  */
@@ -55,7 +68,14 @@ export function shareAsync(payload: ContextPayload): Promise<number> {
 }
 
 /**
- * Posts an update to the current context.
+ * Posts an update to the current context. Will send a message to the chat thread of the current context.
+ * @example
+ * Wortal.context.updateAsync({
+ *     image: 'https://link.to.img',
+ *     text: 'Update text',
+ *     caption: 'Play',
+ *     data: { exampleData: 'yourData' },
+ * });
  * @param payload Object defining the update message.
  */
 export function updateAsync(payload: ContextPayload): Promise<void> {
@@ -72,6 +92,13 @@ export function updateAsync(payload: ContextPayload): Promise<void> {
 
 /**
  * Opens the platform UI to select friends to invite and play with.
+ * @example
+ * Wortal.context.chooseAsync({
+ *    image: 'https://link.to.img',
+ *    text: 'Invite text',
+ *    caption: 'Play',
+ *    data: { exampleData: 'yourData' },
+ * });
  * @param payload Object defining the options for the context choice.
  */
 export function chooseAsync(payload: ContextPayload): Promise<void> {
@@ -88,6 +115,8 @@ export function chooseAsync(payload: ContextPayload): Promise<void> {
 
 /**
  * Switches the current context to the context with the given ID.
+ * @example
+ * Wortal.context.switchAsync('abc123');
  * @param contextId ID of the context to switch to.
  */
 export function switchAsync(contextId: string): Promise<void> {
@@ -106,6 +135,8 @@ export function switchAsync(contextId: string): Promise<void> {
 
 /**
  * Creates a context with the given player ID.
+ * @example
+ * Wortal.context.createAsync('player123');
  * @param playerId ID of player to create a context with.
  */
 export function createAsync(playerId: string): Promise<void> {

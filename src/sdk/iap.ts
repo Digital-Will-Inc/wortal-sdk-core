@@ -12,6 +12,9 @@ export function isEnabled(): boolean {
 
 /**
  * Gets the catalog of available products the player can purchase.
+ * @example
+ * Wortal.iap.getCatalogAsync()
+ *  .then(products => console.log(products));
  * @returns Array of products available to the player. Returns an empty list if
  */
 export function getCatalogAsync(): Promise<Product[]> {
@@ -33,6 +36,9 @@ export function getCatalogAsync(): Promise<Product[]> {
 /**
  * Gets the purchases the player has made that have not yet been consumed. Purchase signature should be
  * validated on the game developer's server or transaction database before provisioning the purchase to the player.
+ * @example
+ * Wortal.iap.getPurchasesAsync()
+ *  .then(purchases => console.log(purchases));
  * @returns Array of purchases.
  */
 export function getPurchasesAsync(): Promise<Purchase[]> {
@@ -53,6 +59,10 @@ export function getPurchasesAsync(): Promise<Purchase[]> {
 
 /**
  * Attempts to make a purchase of the given product. Will launch the native IAP screen and return the result.
+ * @example
+ * Wortal.iap.makePurchaseAsync({
+ *     productID: 'my_product_123',
+ * }).then(purchase => console.log(purchase));
  * @param config Object defining the product ID and purchase information.
  * @returns Information about the purchase.
  */
@@ -75,6 +85,8 @@ export function makePurchaseAsync(config: PurchaseConfig): Promise<Purchase> {
 /**
  * Consumes the given purchase. This will remove the purchase from the player's available purchases inventory and
  * reset its availability in the catalog.
+ * @example
+ * Wortal.iap.consumePurchaseAsync('abc123');
  * @param token String representing the purchaseToken of the item to consume.
  */
 export function consumePurchaseAsync(token: string): Promise<void> {
