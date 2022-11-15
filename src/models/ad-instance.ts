@@ -1,4 +1,4 @@
-import {AdInstanceData, PlacementType} from "../types/ad-instance";
+import { AdInstanceData, PlacementType } from "../types/ad-instance";
 
 /** @hidden */
 interface AdData {
@@ -20,7 +20,8 @@ interface IAdInstance {
     show: Function;
 }
 
-class AdInstance {
+/** @hidden */
+class AdInstance implements IAdInstance {
     adData: AdData;
     callbacks: AdCallbacks;
 
@@ -36,15 +37,11 @@ class AdInstance {
         };
     }
 
-    /**
-     * Shows the ad instance.
-     */
-    show(): void {};
+    /** @hidden */
+    show(): void { };
 }
 
-/**
- * Instance of an interstitial ad. Call show() after instantiating.
- */
+/** @hidden */
 export class InterstitialAd extends AdInstance {
     /** @hidden */
     constructor(data: AdInstanceData) {
@@ -61,20 +58,19 @@ export class InterstitialAd extends AdInstance {
                 afterAd: this.callbacks.afterAd,
                 noShow: this.callbacks.afterAd,
                 noBreak: this.callbacks.afterAd,
+                // Preroll ads on Wortal platform only take the adBreakDone callback.
                 adBreakDone: this.adData.placementType === "preroll" ?
                     this.callbacks.afterAd : () => console.log("[Wortal] AdBreakDone")
             });
     };
 }
 
-/**
- * Instance of a rewarded ad. Call show() after instantiating.
- */
+/** @hidden */
 export class RewardedAd extends AdInstance {
     /** @hidden */
     constructor(data: AdInstanceData) {
         super(data);
-        this.adData.placementType = PlacementType.REWARD;
+        this.adData.placementType = 'reward';
         this.callbacks.adDismissed = data.adDismissed;
         this.callbacks.adViewed = data.adViewed;
     }
@@ -90,6 +86,7 @@ export class RewardedAd extends AdInstance {
                 noBreak: this.callbacks.afterAd,
                 adDismissed: this.callbacks.adDismissed,
                 adViewed: this.callbacks.adViewed,
+                // This needs to be called on Wortal platform to trigger the ad to be shown after it is filled.
                 beforeReward: function (showAdFn: Function) { showAdFn(); },
                 adBreakDone: () => console.log("[Wortal] AdBreakDone")
             });
