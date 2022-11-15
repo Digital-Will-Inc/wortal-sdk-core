@@ -1,11 +1,8 @@
-import {LeaderboardPlayerData} from "../types/leaderboard";
+import { LeaderboardPlayerData } from "../types/leaderboard";
 import Player from "./player";
 
-/**
- * A player on the leaderboard.
- */
+/** @hidden */
 export default class LeaderboardPlayer extends Player {
-    /** @hidden */
     constructor(player: LeaderboardPlayerData) {
         super();
         this._current.id = player.id;

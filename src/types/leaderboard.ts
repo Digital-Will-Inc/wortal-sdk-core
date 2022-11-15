@@ -1,4 +1,4 @@
-import {PlayerData} from "./player";
+import { PlayerData } from "./player";
 
 /** @hidden */
 export interface LeaderboardEntryData {

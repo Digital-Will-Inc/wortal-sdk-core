@@ -1,4 +1,4 @@
-import {AnalyticsEventData, AnalyticsEventType} from "../types/analytics-event";
+import { AnalyticsEventData, AnalyticsEventType } from "../types/analytics-event";
 
 /** @hidden */
 interface AnalyticsData {
@@ -11,13 +11,10 @@ interface IAnalyticsEvent {
     send: Function;
 }
 
-/**
- * Instance of an analytics events. Call send() after instantiating.
- */
+/** @hidden */
 export default class AnalyticsEvent implements IAnalyticsEvent {
     data: AnalyticsData;
 
-    /** @hidden */
     constructor(event: AnalyticsEventData) {
         this.data = {
             name: event.name,
@@ -25,9 +22,6 @@ export default class AnalyticsEvent implements IAnalyticsEvent {
         };
     }
 
-    /**
-     * Sends the analytics event to Wombat.
-     */
     send(): void {
         const name = this.data.name;
         const features = this.data.features;
