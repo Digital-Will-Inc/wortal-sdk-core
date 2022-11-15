@@ -1,17 +1,8 @@
 /**
  * Types of analytics events.
  */
-export enum AnalyticsEventType {
-    GAME_START = "GameStart",
-    GAME_END = "GameEnd",
-    LEVEL_START = "LevelStart",
-    LEVEL_END = "LevelEnd",
-    TUTORIAL_START = "TutorialStart",
-    TUTORIAL_END = "TutorialEnd",
-    LEVEL_UP = "LevelUp",
-    POST_SCORE = "PostScore",
-    GAME_CHOICE = "GameChoice",
-}
+export type AnalyticsEventType = 'GameStart' | 'GameEnd' | 'LevelStart' | 'LevelEnd' | 'TutorialStart' | 'TutorialEnd'
+    | 'LevelUp' | 'PostScore' | 'GameChoice'
 
 /** @hidden */
 export interface AnalyticsEventData {

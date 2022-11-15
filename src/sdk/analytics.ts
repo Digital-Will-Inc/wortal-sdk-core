@@ -1,5 +1,5 @@
 import AnalyticsEvent from "../models/analytics-event";
-import { AnalyticsEventData, AnalyticsEventType } from "../types/analytics-event";
+import { AnalyticsEventData } from "../types/analytics-event";
 import { sdk } from "./index";
 
 /**
@@ -10,7 +10,7 @@ export function logGameStart(): void {
     sdk.game.startGameTimer();
 
     let data: AnalyticsEventData = {
-        name: AnalyticsEventType.GAME_START,
+        name: 'GameStart',
         features: {
             game: sdk.session.gameId,
             browser: sdk.session.browser,
@@ -32,7 +32,7 @@ export function logGameStart(): void {
  */
 export function logGameEnd(): void {
     let data: AnalyticsEventData = {
-        name: AnalyticsEventType.GAME_END,
+        name: 'GameEnd',
         features: {
             game: sdk.session.gameId,
             timePlayed: sdk.game.gameTimer,
@@ -55,7 +55,7 @@ export function logLevelStart(level: string): void {
     sdk.game.startLevelTimer();
 
     let data: AnalyticsEventData = {
-        name: AnalyticsEventType.LEVEL_START,
+        name: 'LevelStart',
         features: {
             game: sdk.session.gameId,
             level: level,
@@ -84,7 +84,7 @@ export function logLevelEnd(level: string, score: string, wasCompleted: boolean)
     }
 
     let data: AnalyticsEventData = {
-        name: AnalyticsEventType.LEVEL_END,
+        name: 'LevelEnd',
         features: {
             game: sdk.session.gameId,
             level: level,
@@ -110,7 +110,7 @@ export function logTutorialStart(tutorial: string): void {
     sdk.game.startLevelTimer();
 
     let data: AnalyticsEventData = {
-        name: AnalyticsEventType.TUTORIAL_START,
+        name: 'TutorialStart',
         features: {
             game: sdk.session.gameId,
             tutorial: tutorial,
@@ -138,7 +138,7 @@ export function logTutorialEnd(tutorial: string, wasCompleted: boolean): void {
     }
 
     let data: AnalyticsEventData = {
-        name: AnalyticsEventType.TUTORIAL_END,
+        name: 'TutorialEnd',
         features: {
             game: sdk.session.gameId,
             tutorial: tutorial,
@@ -158,7 +158,7 @@ export function logTutorialEnd(tutorial: string, wasCompleted: boolean): void {
  */
 export function logLevelUp(level: string): void {
     let data: AnalyticsEventData = {
-        name: AnalyticsEventType.LEVEL_UP,
+        name: 'LevelUp',
         features: {
             game: sdk.session.gameId,
             level: level,
@@ -176,7 +176,7 @@ export function logLevelUp(level: string): void {
  */
 export function logScore(score: string): void {
     let data: AnalyticsEventData = {
-        name: AnalyticsEventType.POST_SCORE,
+        name: 'PostScore',
         features: {
             game: sdk.session.gameId,
             score: score,
@@ -196,7 +196,7 @@ export function logScore(score: string): void {
  */
 export function logGameChoice(decision: string, choice: string): void {
     let data: AnalyticsEventData = {
-        name: AnalyticsEventType.GAME_CHOICE,
+        name: 'GameChoice',
         features: {
             game: sdk.session.gameId,
             decision: decision,
