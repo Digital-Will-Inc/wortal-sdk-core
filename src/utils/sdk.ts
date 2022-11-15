@@ -14,11 +14,13 @@ export default class SDKData {
     private _session!: Session;
 
     private _isIAPEnabled: boolean = false;
+    private _isInit: boolean = false;
 
     /** @hidden */
     init(): void {
         this._session = new Session();
         this._game = new GameState();
+        this._isInit = true;
     }
 
     /** @hidden */
@@ -57,5 +59,10 @@ export default class SDKData {
     /** @hidden */
     enableIAP(): void {
         this._isIAPEnabled = true;
+    }
+
+    /** @hidden */
+    get isInit(): boolean {
+        return this._isInit;
     }
 }
