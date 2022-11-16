@@ -37,15 +37,19 @@ module.exports = {
         ]
     },
     optimization: {
+        minimize: true,
         minimizer: [
             new TerserPlugin({
                 parallel: true,
                 terserOptions: {
+                    format: {
+                        comments: false
+                    },
                 },
+                extractComments: false,
             }),
         ],
     },
-    devtool: IS_PRODUCTION ? 'hidden-source-map' : 'eval-source-map',
     plugins: [
         new webpack.DefinePlugin({
             __VERSION__: JSON.stringify(require("./package.json").version)
