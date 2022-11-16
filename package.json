@@ -1,6 +1,6 @@
 {
     "name": "wortal-sdk-core",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "description": "Core JS library that is included in Wortal SDKs for game engines.",
     "main": "dist/wortal-core.js",
     "types": "dist/index",
@@ -16,10 +16,10 @@
         "@typescript-eslint/eslint-plugin": "^5.40.1",
         "@typescript-eslint/parser": "^5.40.1",
         "eslint": "^8.25.0",
+        "terser-webpack-plugin": "^5.3.6",
         "ts-loader": "^9.4.1",
         "typedoc": "^0.23.17",
         "typedoc-plugin-markdown": "^3.13.6",
-        "typedoc-plugin-missing-exports": "^1.0.0",
         "typescript": "^4.8.4",
         "webpack": "^5.74.0",
         "webpack-cli": "^4.10.0"

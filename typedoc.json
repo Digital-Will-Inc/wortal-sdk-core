@@ -4,7 +4,10 @@
     "exclude": ["./src/utils/*.ts"],
     "out": "docs",
     "readme": "none",
+    "name": "Wortal SDK Core",
+    "includeVersion": true,
     "excludePrivate": true,
     "excludeProtected": true,
+    "disableSources": true,
     "hideBreadcrumbs": true
 }
