@@ -4,6 +4,7 @@ import * as _context from './context';
 import * as _iap from './iap';
 import * as _leaderboard from './leaderboard';
 import * as _player from './player';
+import * as _session from './session';
 import { InitializationOptions } from "../types/initialization";
 import SDKConfig from "../utils/config";
 
@@ -31,6 +32,10 @@ export const leaderboard = _leaderboard;
  * Player API
  */
 export const player = _player;
+/**
+ * Session API
+ */
+export const session = _session;
 
 /** @hidden */
 export const config = new SDKConfig();

@@ -18,21 +18,6 @@ export function getId(): string {
 }
 
 /**
- * Gets the data bound to the entry point.
- * @example
- * let data = Wortal.context.getEntryPointData();
- * console.log(data.property);
- * @returns Data about the entry point or an empty object if none exists.
- */
-export function getEntryPointData(): Record<string, unknown> {
-    if (config.session.platform === "link" || config.session.platform === "viber") {
-        return (window as any).wortalGame.getEntryPointData();
-    } else {
-        return {};
-    }
-}
-
-/**
  * Shares a message to the player's friends. Will trigger a UI for the player to choose which friends to share with.
  * @example
  * Wortal.context.shareAsync('Share text', 'https://link.to.img', {
