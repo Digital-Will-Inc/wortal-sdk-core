@@ -10,13 +10,15 @@ export interface ContextPayload {
     text: string | LocalizableContent;
     /** Text of the call-to-action button. */
     caption?: string | LocalizableContent;
+    /** Text of the call-to-action button. */
+    cta?: string | LocalizableContent;
     /** Object passed to any session launched from this context message.
      *  Its size must be <=1000 chars when stringified.
      *  It can be accessed from `Wortal.context.getEntryPointData()`.
      */
     data?: Record<string, unknown>;
     /** An array of filters to be applied to the friend list. Only the first filter is currently used. */
-    filter?: [ContextFilter];
+    filters?: [ContextFilter];
     /** Context maximum size. */
     maxSize?: number;
     /** Context minimum size. */
@@ -31,7 +33,7 @@ export interface ContextPayload {
      */
     description?: string | LocalizableContent;
     /** Message format to be used. There's no visible difference among the available options. */
-    type?: 'INVITE' | 'REQUEST' | 'CHALLENGE' | 'SHARE';
+    intent?: 'INVITE' | 'REQUEST' | 'CHALLENGE' | 'SHARE';
     /** Optional property to switch share UI mode.
      * DEFAULT: Serial contact card with share and skip button.
      * MULTIPLE: Selectable contact list.
