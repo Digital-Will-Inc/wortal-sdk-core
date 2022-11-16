@@ -3,6 +3,7 @@ import * as _analytics from './analytics';
 import * as _context from './context';
 import * as _iap from './iap';
 import * as _leaderboard from './leaderboard';
+import * as _player from './player';
 import { InitializationOptions } from "../types/initialization";
 import SDKConfig from "../utils/config";
 
@@ -26,6 +27,10 @@ export const iap = _iap;
  * Leaderboard API
  */
 export const leaderboard = _leaderboard;
+/**
+ * Player API
+ */
+export const player = _player;
 
 /** @hidden */
 export const config = new SDKConfig();
