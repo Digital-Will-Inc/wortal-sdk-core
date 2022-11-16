@@ -35,24 +35,28 @@ export function getEntryPointData(): Record<string, unknown> {
 /**
  * Shares a message to the player's friends. Will trigger a UI for the player to choose which friends to share with.
  * @example
- * Wortal.context.shareAsync({
- *     image: 'https://link.to.img',
- *     text: 'Share text',
- *     caption: 'Play',
- *     data: { exampleData: 'yourData' },
- * }).then(result => console.log(result); // Contains shareCount with number of friends the share was sent to.
+ * Wortal.context.shareAsync('Share text', 'https://link.to.img', {
+ *         caption: 'Play',
+ *         data: { exampleData: 'yourData' },
+ *     }).then(result => console.log(result); // Contains shareCount with number of friends the share was sent to.
+ * @param text Message body of the share.
+ * @param image URL to the base64 image to include with this share.
  * @param payload Object defining the share message.
  * @returns Number of friends the message was shared with.
  */
-export function shareAsync(payload: ContextPayload): Promise<number> {
+export function shareAsync(text: string, image: string, payload?: ContextPayload): Promise<number> {
+    if (!isValidString(text) || !isValidString(image)) {
+        return Promise.reject("[Wortal] shareAsync() was passed invalid parameters. Text and image cannot be null or empty.");
+    }
+
     if (config.session.platform === "link") {
-        return (window as any).wortalGame.shareAsync(convertToLinkMessagePayload(payload))
+        return (window as any).wortalGame.shareAsync(convertToLinkMessagePayload(text, image, payload))
             .then((result: any) => {
                 return result.sharedCount;
             })
             .catch((error: any) => console.error(error));
     } else if (config.session.platform === "viber") {
-        return (window as any).wortalGame.shareAsync(convertToViberSharePayload(payload))
+        return (window as any).wortalGame.shareAsync(convertToViberSharePayload(text, image, payload))
             .then((result: any) => {
                 return result.sharedCount;
             })
@@ -65,20 +69,24 @@ export function shareAsync(payload: ContextPayload): Promise<number> {
 /**
  * Posts an update to the current context. Will send a message to the chat thread of the current context.
  * @example
- * Wortal.context.updateAsync({
- *     image: 'https://link.to.img',
- *     text: 'Update text',
- *     caption: 'Play',
- *     data: { exampleData: 'yourData' },
- * });
+ * Wortal.context.updateAsync('Update text', 'https://link.to.img', {
+ *         caption: 'Play',
+ *         data: { exampleData: 'yourData' },
+ *     });
+ * @param text Message body of the share.
+ * @param image URL to the base64 image to include with this share.
  * @param payload Object defining the update message.
  */
-export function updateAsync(payload: ContextPayload): Promise<void> {
+export function updateAsync(text: string, image: string, payload?: ContextPayload): Promise<void> {
+    if (!isValidString(text) || !isValidString(image)) {
+        return Promise.reject("[Wortal] updateAsync() was passed invalid parameters. Text and image cannot be null or empty.");
+    }
+
     if (config.session.platform === "link") {
-        return (window as any).wortalGame.updateAsync(convertToLinkMessagePayload(payload))
+        return (window as any).wortalGame.updateAsync(convertToLinkMessagePayload(text, image, payload))
             .catch((error: any) => console.error(error));
     } else if (config.session.platform === "viber") {
-        return (window as any).wortalGame.updateAsync(convertToViberUpdatePayload(payload))
+        return (window as any).wortalGame.updateAsync(convertToViberUpdatePayload(text, image, payload))
             .catch((error: any) => console.error(error));
     } else {
         return Promise.reject("[Wortal] Share not currently supported on platform: " + config.session.platform);
@@ -88,17 +96,21 @@ export function updateAsync(payload: ContextPayload): Promise<void> {
 /**
  * Opens the platform UI to select friends to invite and play with.
  * @example
- * Wortal.context.chooseAsync({
- *    image: 'https://link.to.img',
- *    text: 'Invite text',
- *    caption: 'Play',
- *    data: { exampleData: 'yourData' },
- * });
+ * Wortal.context.chooseAsync('Invite text', 'https://link.to.img', {
+ *         caption: 'Play',
+ *         data: { exampleData: 'yourData' },
+ *     })
+ * @param text Message body of the share.
+ * @param image URL to the base64 image to include with this share.
  * @param payload Object defining the options for the context choice.
  */
-export function chooseAsync(payload: ContextPayload): Promise<void> {
+export function chooseAsync(text: string, image: string, payload?: ContextPayload): Promise<void> {
+    if (!isValidString(text) || !isValidString(image)) {
+        return Promise.reject("[Wortal] chooseAsync() was passed invalid parameters. Text and image cannot be null or empty.");
+    }
+
     if (config.session.platform === "link") {
-        return (window as any).wortalGame.context.chooseAsync(convertToLinkMessagePayload(payload))
+        return (window as any).wortalGame.context.chooseAsync(convertToLinkMessagePayload(text, image, payload))
             .catch((error: any) => console.error(error));
     } else if (config.session.platform === "viber") {
         return (window as any).wortalGame.context.chooseAsync(convertToViberChoosePayload(payload))
@@ -116,8 +128,8 @@ export function chooseAsync(payload: ContextPayload): Promise<void> {
  */
 export function switchAsync(contextId: string): Promise<void> {
     //TODO: add options
-    if (contextId === null || contextId === "") {
-        return Promise.reject("[Wortal] Empty ID passed to switchAsync().");
+    if (!isValidString(contextId)) {
+        return Promise.reject("[Wortal] Invalid or empty ID passed to switchAsync().");
     }
 
     if (config.session.platform === "link" || config.session.platform === "viber") {
@@ -136,8 +148,8 @@ export function switchAsync(contextId: string): Promise<void> {
  */
 export function createAsync(playerId: string): Promise<void> {
     //TODO: add options
-    if (playerId === null || playerId === "") {
-        return Promise.reject("[Wortal] Empty ID passed to createAsync().");
+    if (!isValidString(playerId)) {
+        return Promise.reject("[Wortal] Invalid or empty ID passed to createAsync().");
     }
 
     if (config.session.platform === "link" || config.session.platform === "viber") {
@@ -148,49 +160,66 @@ export function createAsync(playerId: string): Promise<void> {
     }
 }
 
-function convertToLinkMessagePayload(payload: ContextPayload): object {
-    return {
-        image: payload.image,
-        text: payload.text,
-        caption: payload.caption,
-        data: payload.data,
+function convertToLinkMessagePayload(text: string, image: string, payload?: ContextPayload): ContextPayload {
+    let obj: ContextPayload = {
+        image: image,
+        text: text,
     }
+    if (payload?.cta) obj.caption = payload.cta;
+    if (payload?.caption) obj.caption = payload.caption;
+    if (payload?.data) obj.data = payload.data;
+    return obj;
 }
 
-function convertToViberChoosePayload(payload: ContextPayload): object {
-    return {
-        filters: payload.filter,
-        maxSize: payload.maxSize,
-        minSize: payload.minSize,
-        hoursSinceInvitation: payload.hoursSinceInvitation,
-        description: payload.description,
+function convertToViberChoosePayload(payload?: ContextPayload): ContextPayload {
+    let obj: ContextPayload = {
+        // Not used in this payload.
+        image: "",
+        text: "",
     }
+    if (payload?.filters) obj.filters = payload.filters;
+    if (payload?.maxSize) obj.maxSize = payload.maxSize;
+    if (payload?.minSize) obj.minSize = payload.minSize;
+    if (payload?.hoursSinceInvitation) obj.hoursSinceInvitation = payload.hoursSinceInvitation;
+    if (payload?.description) obj.description = payload.description;
+    return obj;
 }
 
-function convertToViberSharePayload(payload: ContextPayload): object {
-    return {
-        intent: payload.type ?? "SHARE",
-        image: payload.image ?? "",
-        text: payload.text ?? "",
-        data: payload.data,
-        filters: payload.filter,
-        hoursSinceInvitation: payload.hoursSinceInvitation,
-        minShare: payload.minShare,
-        description: payload.description,
-        ui: payload.ui,
-        cta: payload.caption,
+function convertToViberSharePayload(text: string, image: string, payload?: ContextPayload): ContextPayload {
+    let obj: ContextPayload = {
+        image: image,
+        text: text,
     }
+    if (payload?.data) obj.data = payload.data;
+    if (payload?.filters) obj.filters = payload.filters;
+    if (payload?.hoursSinceInvitation) obj.hoursSinceInvitation = payload.hoursSinceInvitation;
+    if (payload?.minShare) obj.minShare = payload.minShare;
+    if (payload?.description) obj.description = payload.description;
+    if (payload?.ui) obj.ui = payload.ui;
+    if (payload?.cta) obj.cta = payload.cta;
+    if (payload?.caption) obj.cta = payload.caption;
+    if (payload?.intent) obj.intent = payload.intent
+    else obj.intent = 'REQUEST';
+    return obj;
 }
 
-function convertToViberUpdatePayload(payload: ContextPayload): object {
-    return {
-        action: payload.action ?? "CUSTOM",
-        template: payload.template ?? "",
-        cta: payload.caption,
-        image: payload.image ?? "",
-        text: payload.text ?? "",
-        data: payload.data,
-        strategy: payload.strategy,
-        notification: payload.notifications,
+function convertToViberUpdatePayload(text: string, image: string, payload?: ContextPayload): ContextPayload {
+    let obj: ContextPayload = {
+        image: image,
+        text: text,
     }
+    if (payload?.cta) obj.cta = payload.cta;
+    if (payload?.caption) obj.cta = payload.caption;
+    if (payload?.data) obj.data = payload.data;
+    if (payload?.strategy) obj.strategy = payload.strategy;
+    if (payload?.notifications) obj.notifications = payload.notifications;
+    if (payload?.action) obj.action = payload.action;
+    else obj.action = "CUSTOM";
+    if (payload?.template) obj.template = payload.template;
+    else obj.template = "";
+    return obj;
+}
+
+function isValidString(obj: any): boolean {
+    return (typeof obj === "string" && obj !== "");
 }
