@@ -1,6 +1,6 @@
 {
     "entryPointStrategy": "expand",
-    "entryPoints": ["./src/sdk"],
+    "entryPoints": ["./src/api"],
     "exclude": ["./src/utils/*.ts"],
     "out": "docs",
     "readme": "none",
