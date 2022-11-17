@@ -4,6 +4,9 @@ import { config } from "./index";
 
 /**
  * Gets the leaderboard with the given name. Access the leaderboard API via the Leaderboard returned here.
+ * @example
+ * Wortal.leaderboard.getLeaderboardAsync('global')
+ *  .then(leaderboard => console.log(leaderboard.name());
  * @param name Name of the leaderboard.
  */
 export function getLeaderboardAsync(name: string): Promise<Leaderboard> {
@@ -21,6 +24,8 @@ export function getLeaderboardAsync(name: string): Promise<Leaderboard> {
 /**
  * Sends an entry to be added to the leaderboard, or updated if already existing. Will only update if the score
  * is a higher than the player's previous entry.
+ * @example
+ * Wortal.leaderboard.sendEntryAsync('global', 100);
  * @param name Name of the leaderboard.
  * @param score Score for the entry.
  * @param details Optional additional details about the entry.
@@ -39,6 +44,9 @@ export function sendEntryAsync(name: string, score: number, details: string = ""
 
 /**
  * Gets a list of leaderboard entries in the leaderboard.
+ * @example
+ * Wortal.leaderboard.getEntriesAsync('global', 10)
+ *  .then(entries => console.log(entries);
  * @param name Name of the leaderboard.
  * @param count Number of entries to get.
  * @param offset Offset from the first entry (top rank) to start the count from. Default is 0.
@@ -56,6 +64,9 @@ export function getEntriesAsync(name: string, count: number, offset: number = 0)
 
 /**
  * Gets the player's entry in the leaderboard.
+ * @example
+ * Wortal.leaderboard.getPlayerEntryAsync('global')
+ *  .then(entry => console.log(entry.rank());
  * @param name Name of the leaderboard.
  * @returns LeaderboardEntry for the player.
  */
@@ -71,6 +82,9 @@ export function getPlayerEntryAsync(name: string): Promise<LeaderboardEntry> {
 
 /**
  * Gets the total number of entries in the leaderboard.
+ * @example
+ * Wortal.leaderboard.getEntryCountAsync('global')
+ *  .then(entries => console.log(entries);
  * @param name Name of the leaderboard.
  * @returns Number of entries.
  */
@@ -86,6 +100,9 @@ export function getEntryCountAsync(name: string): Promise<number> {
 
 /**
  * Gets a list of leaderboard entries of connected players in the leaderboard.
+ * @example
+ * Wortal.leaderboard.getConnectedPlayersEntriesAsync('global')
+ *  .then(entries => console.log(entries);
  * @param name Name of the leaderboard.
  * @param count Number of entries to get.
  * @param offset Offset from the first entry (top rank) to start the count from. Default is 0.
