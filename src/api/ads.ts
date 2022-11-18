@@ -52,6 +52,11 @@ export function showInterstitial(placement: PlacementType, description: string,
         return;
     }
 
+    if (config.session.platform === 'viber') {
+        console.log("[Wortal] Ads not currently supported on Viber");
+        return;
+    }
+
     // We need to make sure we call show() after building the ad instance. We do this because in the future we
     // want to be able to preload ads and allow the game to check whether an ad is filled and ready to show.
     let data: AdInstanceData = {
@@ -107,6 +112,11 @@ export function showRewarded(description: string, beforeAd: Function, afterAd: F
         // Call both of these as some situations might require resuming the game flow in adDismissed instead of afterAd.
         adDismissed();
         afterAd();
+        return;
+    }
+
+    if (config.session.platform === 'viber') {
+        console.log("[Wortal] Ads not currently supported on Viber");
         return;
     }
 

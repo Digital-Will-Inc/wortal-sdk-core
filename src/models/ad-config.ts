@@ -11,7 +11,7 @@ export default class AdConfig {
     };
 
     constructor() {
-        if (config.session.platform === "link" || config.session.platform === "viber") {
+        if (config.session.platform === "link") {
             this.setLinkViberAdUnitIds();
         }
     }
