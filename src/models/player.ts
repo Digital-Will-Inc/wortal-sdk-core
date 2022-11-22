@@ -1,7 +1,10 @@
 import { PlayerData } from "../types/player";
 import { config } from "../api";
 
-/** @hidden */
+/**
+ * Represents a player in the game. To access info about the current player, use the Wortal.player API.
+ * This is used to access info about other players such as friends or leaderboard entries.
+ */
 export default class Player {
     protected _current: PlayerData = {
         id: "",
@@ -11,6 +14,7 @@ export default class Player {
         daysSinceFirstPlay: 0,
     };
 
+    /** @hidden */
     init(): Player {
         this._current.id = this.setId();
         this._current.name = this.setName();
@@ -19,22 +23,37 @@ export default class Player {
         return this;
     }
 
+    /**
+     * ID of the player. This is platform-dependent.
+     */
     get id(): string {
         return this._current.id;
     }
 
+    /**
+     * Name of the player.
+     */
     get name(): string {
         return this._current.name;
     }
 
+    /**
+     * Data URL for the player's photo.
+     */
     get photo(): string {
         return this._current.photo;
     }
 
+    /**
+     * Is this the first time the player has played this game or not.
+     */
     get isFirstPlay(): boolean {
         return this._current.isFirstPlay;
     }
 
+    /**
+     * Days since the first time the player has played this game.
+     */
     get daysSinceFirstPlay(): number {
         return this._current.daysSinceFirstPlay;
     }

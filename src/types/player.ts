@@ -7,7 +7,9 @@ export interface PlayerData {
     daysSinceFirstPlay: number;
 }
 
-/** @hidden */
+/**
+ * Payload used to find connected players.
+ */
 export interface ConnectedPlayerPayload {
     cursor?: number;
     filter?: ConnectedPlayerFilter;
@@ -15,5 +17,7 @@ export interface ConnectedPlayerPayload {
     size?: number;
 }
 
-/** @hidden */
+/**
+ * Filter used when searching for connected players.
+ */
 export type ConnectedPlayerFilter = 'ALL' | 'INCLUDE_PLAYERS' | 'INCLUDE_NON_PLAYERS' | 'NEW_INVITATIONS_ONLY'

@@ -1,6 +1,8 @@
 import { Signature } from './signature'
 
-/** @hidden */
+/**
+ * Info about a product in the game.
+ */
 export interface Product {
     /** Title of the product */
     title: string,
@@ -16,7 +18,9 @@ export interface Product {
     priceCurrencyCode: string
 }
 
-/** @hidden */
+/**
+ * Info used to make a purchase.
+ */
 export interface PurchaseConfig {
     /** ID of the product */
     productID: string,
@@ -24,7 +28,9 @@ export interface PurchaseConfig {
     developerPayload?: string
 }
 
-/** @hidden */
+/**
+ * Info returned after a purchase is made.
+ */
 export interface Purchase {
     /** Optional payload assigned by game developer, which will be also attached in the signed purchase request */
     developerPayload?: string,
