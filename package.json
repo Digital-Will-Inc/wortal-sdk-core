@@ -1,6 +1,6 @@
 {
     "name": "wortal-sdk-core",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "description": "Core JS library that is included in Wortal SDKs for game engines.",
     "main": "dist/wortal-core.js",
     "types": "dist/index",
