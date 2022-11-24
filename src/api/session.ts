@@ -25,13 +25,19 @@ export function getEntryPointData(): Record<string, unknown> {
  * @returns Details about where the game started from.
  */
 export function getEntryPointAsync(): Promise<string> {
-    if (config.session.platform === "link" || config.session.platform === "viber") {
-        return (window as any).wortalGame.getEntryPointAsync()
-            .then((entryPoint: string) => { return entryPoint; })
-            .catch((e: any) => { throw rethrowRakuten(e, "session.getEntryPointAsync"); });
-    } else {
-        throw notSupported("Session API not currently supported on platform: " + config.session.platform, "session.getEntryPointAsync");
-    }
+    return Promise.resolve().then(() => {
+        if (config.session.platform === "link" || config.session.platform === "viber") {
+            return (window as any).wortalGame.getEntryPointAsync()
+                .then((entryPoint: string) => {
+                    return entryPoint;
+                })
+                .catch((e: any) => {
+                    throw rethrowRakuten(e, "session.getEntryPointAsync");
+                });
+        } else {
+            throw notSupported("Session API not currently supported on platform: " + config.session.platform, "session.getEntryPointAsync");
+        }
+    });
 }
 
 /**

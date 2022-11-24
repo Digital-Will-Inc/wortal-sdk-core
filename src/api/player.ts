@@ -46,17 +46,23 @@ export function isFirstPlay(): boolean {
  * @param keys Array of keys for the data to get.
  */
 export function getDataAsync(keys: string[]): Promise<any> {
-    if (!Array.isArray(keys) || !keys.length) {
-        throw invalidParams("keys cannot be null or empty.", "player.getDataAsync");
-    }
+    return Promise.resolve().then(() => {
+        if (!Array.isArray(keys) || !keys.length) {
+            throw invalidParams("keys cannot be null or empty.", "player.getDataAsync");
+        }
 
-    if (config.session.platform === "link" || config.session.platform === "viber") {
-        return (window as any).wortalGame.player.getDataAsync(keys)
-            .then((data: any) => { return data; })
-            .catch((e: any) => { throw rethrowRakuten(e, "player.getDataAsync"); });
-    } else {
-        throw notSupported("Player API not currently supported on platform: " + config.session.platform, "player.getDataAsync");
-    }
+        if (config.session.platform === "link" || config.session.platform === "viber") {
+            return (window as any).wortalGame.player.getDataAsync(keys)
+                .then((data: any) => {
+                    return data;
+                })
+                .catch((e: any) => {
+                    throw rethrowRakuten(e, "player.getDataAsync");
+                });
+        } else {
+            throw notSupported("Player API not currently supported on platform: " + config.session.platform, "player.getDataAsync");
+        }
+    });
 }
 
 /**
@@ -72,12 +78,16 @@ export function getDataAsync(keys: string[]): Promise<any> {
  * @param data Key-value pairs of the data to upload. Nullable values will remove the data.
  */
 export function setDataAsync(data: Record<string, unknown>): Promise<void> {
-    if (config.session.platform === "link" || config.session.platform === "viber") {
-        return (window as any).wortalGame.player.setDataAsync(data)
-            .catch((e: any) => { throw rethrowRakuten(e, "player.setDataAsync"); });
-    } else {
-        throw notSupported("Player API not currently supported on platform: " + config.session.platform, "player.setDataAsync");
-    }
+    return Promise.resolve().then(() => {
+        if (config.session.platform === "link" || config.session.platform === "viber") {
+            return (window as any).wortalGame.player.setDataAsync(data)
+                .catch((e: any) => {
+                    throw rethrowRakuten(e, "player.setDataAsync");
+                });
+        } else {
+            throw notSupported("Player API not currently supported on platform: " + config.session.platform, "player.setDataAsync");
+        }
+    });
 }
 
 /**
@@ -92,24 +102,28 @@ export function setDataAsync(data: Record<string, unknown>): Promise<void> {
  * @returns Array of connected players.
  */
 export function getConnectedPlayersAsync(payload?: ConnectedPlayerPayload): Promise<ConnectedPlayer[]> {
-    if (config.session.platform === "link" || config.session.platform === "viber") {
-        return (window as any).wortalGame.player.getConnectedPlayersAsync(payload)
-            .then((players: any) => {
-                 return players.map((player:any) => {
-                    let playerData: PlayerData = {
-                        id: player.getID(),
-                        name: player.getName(),
-                        photo: player.getPhoto(),
-                        isFirstPlay: !player.hasPlayed,
-                        daysSinceFirstPlay: 0,
-                    };
-                    return new ConnectedPlayer(playerData);
+    return Promise.resolve().then(() => {
+        if (config.session.platform === "link" || config.session.platform === "viber") {
+            return (window as any).wortalGame.player.getConnectedPlayersAsync(payload)
+                .then((players: any) => {
+                    return players.map((player: any) => {
+                        let playerData: PlayerData = {
+                            id: player.getID(),
+                            name: player.getName(),
+                            photo: player.getPhoto(),
+                            isFirstPlay: !player.hasPlayed,
+                            daysSinceFirstPlay: 0,
+                        };
+                        return new ConnectedPlayer(playerData);
+                    });
+                })
+                .catch((e: any) => {
+                    throw rethrowRakuten(e, "player.getConnectedPlayersAsync");
                 });
-            })
-            .catch((e: any) => { throw rethrowRakuten(e, "player.getConnectedPlayersAsync"); });
-    } else {
-        throw notSupported("Player API not currently supported on platform: " + config.session.platform, "player.getConnectedPlayersAsync");
-    }
+        } else {
+            throw notSupported("Player API not currently supported on platform: " + config.session.platform, "player.getConnectedPlayersAsync");
+        }
+    });
 }
 
 /**
@@ -128,16 +142,20 @@ export function getConnectedPlayersAsync(payload?: ConnectedPlayerPayload): Prom
  *  @see Signature
  */
 export function getSignedPlayerInfoAsync(): Promise<object> {
-    if (config.session.platform === "link" || config.session.platform === "viber") {
-        return (window as any).wortalGame.player.getSignedPlayerInfoAsync()
-            .then((info: any) => {
-                return {
-                    id: info.getPlayerID(),
-                    signature: info.getSignature(),
-                };
-            })
-            .catch((e: any) => { throw rethrowRakuten(e, "player.getSignedPlayerInfoAsync"); });
-    } else {
-        throw notSupported("Player API not currently supported on platform: " + config.session.platform, "player.getSignedPlayerInfoAsync");
-    }
+    return Promise.resolve().then(() => {
+        if (config.session.platform === "link" || config.session.platform === "viber") {
+            return (window as any).wortalGame.player.getSignedPlayerInfoAsync()
+                .then((info: any) => {
+                    return {
+                        id: info.getPlayerID(),
+                        signature: info.getSignature(),
+                    };
+                })
+                .catch((e: any) => {
+                    throw rethrowRakuten(e, "player.getSignedPlayerInfoAsync");
+                });
+        } else {
+            throw notSupported("Player API not currently supported on platform: " + config.session.platform, "player.getSignedPlayerInfoAsync");
+        }
+    });
 }
