@@ -1,5 +1,7 @@
 import AnalyticsEvent from "../models/analytics-event";
 import { AnalyticsEventData } from "../types/analytics-event";
+import { invalidParams } from "../utils/error-handler";
+import { isValidString } from "../utils/validators";
 import { config } from "./index";
 
 /**
@@ -49,6 +51,10 @@ export function logGameEnd(): void {
  * @param level Name of the level.
  */
 export function logLevelStart(level: string): void {
+    if (!isValidString(level)) {
+        throw invalidParams("level cannot be null or empty", "analytics.logLevelStart");
+    }
+
     config.game.setLevelName(level);
     config.game.clearLevelTimerHandle();
     config.game.resetLevelTimer();
@@ -76,6 +82,10 @@ export function logLevelStart(level: string): void {
  * @param wasCompleted Was the level completed or not.
  */
 export function logLevelEnd(level: string, score: string, wasCompleted: boolean): void {
+    if (!isValidString(level)) {
+        throw invalidParams("level cannot be null or empty", "analytics.logLevelEnd");
+    }
+
     config.game.clearLevelTimerHandle();
 
     // We need a matching level name to track the time taken to pass the level.
@@ -157,6 +167,10 @@ export function logTutorialEnd(tutorial: string, wasCompleted: boolean): void {
  * @param level Level the player achieved.
  */
 export function logLevelUp(level: string): void {
+    if (!isValidString(level)) {
+        throw invalidParams("level cannot be null or empty", "analytics.logLevelUp");
+    }
+
     let data: AnalyticsEventData = {
         name: 'LevelUp',
         features: {
@@ -175,6 +189,10 @@ export function logLevelUp(level: string): void {
  * @param score Score the player achieved.
  */
 export function logScore(score: string): void {
+    if (!isValidString(score)) {
+        throw invalidParams("score cannot be null or empty", "analytics.logScore");
+    }
+
     let data: AnalyticsEventData = {
         name: 'PostScore',
         features: {
@@ -195,6 +213,12 @@ export function logScore(score: string): void {
  * @param choice Choice the player made.
  */
 export function logGameChoice(decision: string, choice: string): void {
+    if (!isValidString(decision)) {
+        throw invalidParams("decision cannot be null or empty", "analytics.logGameChoice");
+    } else if (!isValidString(choice)) {
+        throw invalidParams("choice cannot be null or empty", "analytics.logGameChoice");
+    }
+
     let data: AnalyticsEventData = {
         name: 'GameChoice',
         features: {

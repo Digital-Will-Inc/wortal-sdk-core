@@ -1,4 +1,5 @@
 import { TrafficSource } from "../types/traffic-source";
+import { notSupported, rethrowRakuten } from "../utils/error-handler";
 import { config } from "./index";
 
 /**
@@ -26,12 +27,10 @@ export function getEntryPointData(): Record<string, unknown> {
 export function getEntryPointAsync(): Promise<string> {
     if (config.session.platform === "link" || config.session.platform === "viber") {
         return (window as any).wortalGame.getEntryPointAsync()
-            .then((entryPoint: string) => {
-                return entryPoint;
-            })
-            .catch((error: any) => console.error(error));
+            .then((entryPoint: string) => { return entryPoint; })
+            .catch((e: any) => { throw rethrowRakuten(e, "session.getEntryPointAsync"); });
     } else {
-        return Promise.reject("[Wortal] Entry point not currently available on platform: " + config.session.platform);
+        throw notSupported("Session API not currently supported on platform: " + config.session.platform, "session.getEntryPointAsync");
     }
 }
 
@@ -48,7 +47,7 @@ export function setSessionData(data: Record<string, unknown>): void {
     if (config.session.platform === "viber") {
         (window as any).wortalGame.setSessionData(data);
     } else {
-        console.log("[Wortal] Session data not currently supported on platform: " + config.session.platform);
+        throw notSupported("Session API not currently supported on platform: " + config.session.platform, "session.setSessionData");
     }
 }
 

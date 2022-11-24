@@ -1,5 +1,6 @@
 import { InterstitialAd, RewardedAd } from "../models/ad-instance";
 import { AdInstanceData, PlacementType } from "../types/ad-instance";
+import { invalidParams, notSupported } from "../utils/error-handler";
 import { config } from "./index";
 
 /**
@@ -32,16 +33,13 @@ export function showInterstitial(placement: PlacementType, description: string,
 
     // Validate the placement type. Invalid types can cause policy violations.
     if (placement === 'reward') {
-        console.error("[Wortal] showInterstitial called with placement type 'reward'. Call showRewarded instead.");
-        return;
+        throw invalidParams("showInterstitial called with placement type 'reward'. Call showRewarded instead.", "ads.showInterstitial");
     }
     if (placement === 'preroll' && (config.session.platform === "link" || config.session.platform === "viber")) {
-        console.error("[Wortal] Link and Viber platforms do not support preroll ads.");
-        return;
+        throw invalidParams("Link and Viber platforms do not support preroll ads.", "ads.showInterstitial");
     }
     if (placement === 'preroll' && (config.adConfig.hasPrerollShown || config.game.gameTimer > 10)) {
-        console.error("[Wortal] Preroll ads can only be shown during game load.");
-        return;
+        throw invalidParams("Preroll ads can only be shown during game load.", "ads.showInterstitial");
     }
 
     // Don't bother calling if the ads are blocked, the Wortal backend will not respond which can lead to the
@@ -53,8 +51,7 @@ export function showInterstitial(placement: PlacementType, description: string,
     }
 
     if (config.session.platform === 'viber') {
-        console.log("[Wortal] Ads not currently supported on Viber");
-        return;
+        throw notSupported("Ads not currently supported on platform: " + config.session.platform, "ads.showInterstitial");
     }
 
     // We need to make sure we call show() after building the ad instance. We do this because in the future we
@@ -101,8 +98,7 @@ export function showRewarded(description: string, beforeAd: Function, afterAd: F
     if (adViewed === undefined || typeof adViewed !== "function") {
         // We cannot call for a rewarded ad without actually rewarding the player if successful, which
         // would be the case here.
-        console.error("[Wortal] AdViewed function missing or invalid.");
-        return;
+        throw invalidParams("AdViewed function missing or invalid.", "ads.showRewarded");
     }
 
     // Don't bother calling if the ads are blocked, the Wortal backend will not respond which can lead to the
@@ -116,8 +112,7 @@ export function showRewarded(description: string, beforeAd: Function, afterAd: F
     }
 
     if (config.session.platform === 'viber') {
-        console.log("[Wortal] Ads not currently supported on Viber");
-        return;
+        throw notSupported("Ads not currently supported on platform: " + config.session.platform, "ads.showRewarded");
     }
 
     // We need to make sure we call show() after building the ad instance. We do this because in the future we

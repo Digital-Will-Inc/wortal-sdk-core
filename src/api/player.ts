@@ -1,5 +1,6 @@
 import ConnectedPlayer from "../models/connected-player";
 import { ConnectedPlayerPayload, PlayerData } from "../types/player";
+import { invalidParams, notSupported, rethrowRakuten } from "../utils/error-handler";
 import { config } from "./index";
 
 /**
@@ -45,14 +46,16 @@ export function isFirstPlay(): boolean {
  * @param keys Array of keys for the data to get.
  */
 export function getDataAsync(keys: string[]): Promise<any> {
+    if (!Array.isArray(keys) || !keys.length) {
+        throw invalidParams("keys cannot be null or empty.", "player.getDataAsync");
+    }
+
     if (config.session.platform === "link" || config.session.platform === "viber") {
         return (window as any).wortalGame.player.getDataAsync(keys)
-            .then((data: any) => {
-                return data;
-            })
-            .catch((error: any) => console.error(error));
+            .then((data: any) => { return data; })
+            .catch((e: any) => { throw rethrowRakuten(e, "player.getDataAsync"); });
     } else {
-        return Promise.reject("[Wortal] Platform data not currently supported on platform: " + config.session.platform);
+        throw notSupported("Player API not currently supported on platform: " + config.session.platform, "player.getDataAsync");
     }
 }
 
@@ -71,9 +74,9 @@ export function getDataAsync(keys: string[]): Promise<any> {
 export function setDataAsync(data: Record<string, unknown>): Promise<void> {
     if (config.session.platform === "link" || config.session.platform === "viber") {
         return (window as any).wortalGame.player.setDataAsync(data)
-            .catch((error: any) => console.error(error));
+            .catch((e: any) => { throw rethrowRakuten(e, "player.setDataAsync"); });
     } else {
-        return Promise.reject("[Wortal] Platform data not currently supported on platform: " + config.session.platform);
+        throw notSupported("Player API not currently supported on platform: " + config.session.platform, "player.setDataAsync");
     }
 }
 
@@ -103,9 +106,9 @@ export function getConnectedPlayersAsync(payload?: ConnectedPlayerPayload): Prom
                     return new ConnectedPlayer(playerData);
                 });
             })
-            .catch((error: any) => console.error(error));
+            .catch((e: any) => { throw rethrowRakuten(e, "player.getConnectedPlayersAsync"); });
     } else {
-        return Promise.reject("[Wortal] Connected players not currently supported on platform: " + config.session.platform);
+        throw notSupported("Player API not currently supported on platform: " + config.session.platform, "player.getConnectedPlayersAsync");
     }
 }
 
@@ -133,8 +136,8 @@ export function getSignedPlayerInfoAsync(): Promise<object> {
                     signature: info.getSignature(),
                 };
             })
-            .catch((error: any) => console.error(error));
+            .catch((e: any) => { throw rethrowRakuten(e, "player.getSignedPlayerInfoAsync"); });
     } else {
-        return Promise.reject("[Wortal] Platform data not currently supported on platform: " + config.session.platform);
+        throw notSupported("Player API not currently supported on platform: " + config.session.platform, "player.getSignedPlayerInfoAsync");
     }
 }

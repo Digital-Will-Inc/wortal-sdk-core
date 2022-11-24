@@ -1,0 +1,11 @@
+/**
+ * Error message that is thrown by the SDK. Some messages are re-thrown from platform SDKs.
+ */
+export interface ErrorMessage {
+    /** Code for the error. */
+    code: string;
+    /** Message details about the error. */
+    message: string;
+    /** Context details about the error. */
+    context: string;
+}
