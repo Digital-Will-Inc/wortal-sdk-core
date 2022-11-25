@@ -1,3 +1,5 @@
+import Leaderboard from "../models/leaderboard";
+import LeaderboardEntry from "../models/leaderboard-entry";
 import { ContextPayload } from "../types/context-payload";
 
 /** @hidden */
@@ -62,4 +64,29 @@ export function contextToViberUpdatePayload(payload: ContextPayload): ContextPay
     if (payload?.template) obj.template = payload.template;
     else obj.template = "";
     return obj;
+}
+
+/** @hidden */
+export function rakutenLeaderboardToWortal(leaderboard: any): Leaderboard {
+    return new Leaderboard(
+        leaderboard.$leaderboard.id, leaderboard.$leaderboard.name, leaderboard.$leaderboard.contextId
+    );
+}
+
+/** @hidden */
+export function rakutenLeaderboardEntryToWortal(entry: any): LeaderboardEntry {
+    return new LeaderboardEntry({
+        formattedScore: entry.$leaderboardEntry.formattedScore,
+        player: {
+            id: entry.$leaderboardEntry.player.id,
+            name: entry.$leaderboardEntry.player.name,
+            photo: entry.$leaderboardEntry.player.photo,
+            isFirstPlay: false,
+            daysSinceFirstPlay: 0,
+        },
+        rank: entry.$leaderboardEntry.rank,
+        score: entry.$leaderboardEntry.score,
+        timestamp: entry.$leaderboardEntry.timestamp,
+        details: entry.$leaderboardEntry.extraData,
+    });
 }

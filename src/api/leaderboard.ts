@@ -1,5 +1,6 @@
 import Leaderboard from "../models/leaderboard";
 import LeaderboardEntry from "../models/leaderboard-entry";
+import { rakutenLeaderboardEntryToWortal, rakutenLeaderboardToWortal } from "../utils/converters";
 import { invalidParams, notSupported, rethrowRakuten } from "../utils/error-handler";
 import { isValidString } from "../utils/validators";
 import { config } from "./index";
@@ -20,7 +21,7 @@ export function getLeaderboardAsync(name: string): Promise<Leaderboard> {
         if (config.session.platform === "link" || config.session.platform === "viber") {
             return (window as any).wortalGame.getLeaderboardAsync(name)
                 .then((result: any) => {
-                    return new Leaderboard(result.getName(), result.getName(), result.getContextID());
+                    return rakutenLeaderboardToWortal(result);
                 })
                 .catch((e: any) => {
                     throw rethrowRakuten(e, "leaderboard.getLeaderboardAsync");
@@ -52,7 +53,7 @@ export function sendEntryAsync(name: string, score: number, details: string = ""
             return (window as any).wortalGame.getLeaderboardAsync(name)
                 .then((leaderboard: any) => leaderboard.setScoreAsync(score, details))
                 .then((entry: any) => {
-                    return entry;
+                    return rakutenLeaderboardEntryToWortal(entry);
                 })
                 .catch((e: any) => {
                     throw rethrowRakuten(e, "leaderboard.sendEntryAsync");
@@ -83,7 +84,9 @@ export function getEntriesAsync(name: string, count: number, offset: number = 0)
             return (window as any).wortalGame.getLeaderboardAsync(name)
                 .then((leaderboard: any) => leaderboard.getEntriesAsync(count, offset))
                 .then((entries: any) => {
-                    return entries;
+                    return entries.map((entry: any) => {
+                        return rakutenLeaderboardEntryToWortal(entry)
+                    })
                 })
                 .catch((e: any) => {
                     throw rethrowRakuten(e, "leaderboard.getEntriesAsync");
@@ -112,7 +115,7 @@ export function getPlayerEntryAsync(name: string): Promise<LeaderboardEntry> {
             return (window as any).wortalGame.getLeaderboardAsync(name)
                 .then((leaderboard: any) => leaderboard.getPlayerEntryAsync())
                 .then((entry: any) => {
-                    return entry;
+                    return rakutenLeaderboardEntryToWortal(entry);
                 })
                 .catch((e: any) => {
                     throw rethrowRakuten(e, "leaderboard.getPlayerEntryAsync");
@@ -172,7 +175,9 @@ export function getConnectedPlayersEntriesAsync(name: string, count: number, off
             return (window as any).wortalGame.getLeaderboardAsync(name)
                 .then((leaderboard: any) => leaderboard.getConnectedPlayerEntriesAsync(count, offset))
                 .then((entries: any) => {
-                    return entries;
+                    return entries.map((entry: any) => {
+                        return rakutenLeaderboardEntryToWortal(entry)
+                    })
                 })
                 .catch((e: any) => {
                     throw rethrowRakuten(e, "leaderboard.getConnectedPlayersEntriesAsync");
