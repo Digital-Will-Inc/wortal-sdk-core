@@ -53,7 +53,7 @@ export function setSessionData(data: Record<string, unknown>): void {
     if (config.session.platform === "viber") {
         (window as any).wortalGame.setSessionData(data);
     } else {
-        throw notSupported("Session API not currently supported on platform: " + config.session.platform, "session.setSessionData");
+        // Fail silently.
     }
 }
 
