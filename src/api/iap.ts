@@ -54,7 +54,6 @@ export function getCatalogAsync(): Promise<Product[]> {
  * @returns Array of purchases.
  * @throws {ErrorMessage} See error.message for details.
  * <ul>
- * <li>INVALID_PARAM</li>
  * <li>NOT_SUPPORTED</li>
  * <li>RETHROW_FROM_PLATFORM</li>
  * </ul>
