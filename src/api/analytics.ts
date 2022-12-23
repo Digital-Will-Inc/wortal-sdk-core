@@ -1,7 +1,7 @@
 import AnalyticsEvent from "../models/analytics-event";
 import { AnalyticsEventData } from "../types/analytics-event";
 import { invalidParams } from "../utils/error-handler";
-import { isValidString } from "../utils/validators";
+import { isValidNumber, isValidString } from "../utils/validators";
 import { config } from "./index";
 
 /**
@@ -51,9 +51,13 @@ export function logGameEnd(): void {
  * @param level Name of the level.
  * @throws {ErrorMessage} INVALID_PARAM
  */
-export function logLevelStart(level: string): void {
-    if (!isValidString(level)) {
+export function logLevelStart(level: string | number): void {
+    if (!isValidString(level) && !isValidNumber(level)) {
         throw invalidParams("level cannot be null or empty", "analytics.logLevelStart");
+    }
+
+    if (typeof level === "number") {
+        level = level.toString();
     }
 
     config.game.setLevelName(level);
@@ -83,9 +87,13 @@ export function logLevelStart(level: string): void {
  * @param wasCompleted Was the level completed or not.
  * @throws {ErrorMessage} INVALID_PARAM
  */
-export function logLevelEnd(level: string, score: string, wasCompleted: boolean): void {
-    if (!isValidString(level)) {
+export function logLevelEnd(level: string | number, score: string | number, wasCompleted: boolean): void {
+    if (!isValidString(level) && !isValidNumber(level)) {
         throw invalidParams("level cannot be null or empty", "analytics.logLevelEnd");
+    }
+
+    if (typeof level === "number") {
+        level = level.toString();
     }
 
     config.game.clearLevelTimerHandle();
@@ -169,8 +177,8 @@ export function logTutorialEnd(tutorial: string, wasCompleted: boolean): void {
  * @param level Level the player achieved.
  * @throws {ErrorMessage} INVALID_PARAM
  */
-export function logLevelUp(level: string): void {
-    if (!isValidString(level)) {
+export function logLevelUp(level: string | number): void {
+    if (!isValidString(level) && !isValidNumber(level)) {
         throw invalidParams("level cannot be null or empty", "analytics.logLevelUp");
     }
 
@@ -192,8 +200,8 @@ export function logLevelUp(level: string): void {
  * @param score Score the player achieved.
  * @throws {ErrorMessage} INVALID_PARAM
  */
-export function logScore(score: string): void {
-    if (!isValidString(score)) {
+export function logScore(score: string | number): void {
+    if (!isValidString(score) && !isValidNumber(score)) {
         throw invalidParams("score cannot be null or empty", "analytics.logScore");
     }
 

@@ -4,6 +4,15 @@ export function isValidString(obj: any): boolean {
 }
 
 /** @hidden */
+export function isValidNumber(obj: any): boolean {
+    if (typeof obj !== "number") {
+        return false;
+    } else {
+        return !isNaN(obj);
+    }
+}
+
+/** @hidden */
 export function isValidPayloadText(obj: any): boolean {
     if (typeof obj === "string" && obj !== "") {
         return true;
