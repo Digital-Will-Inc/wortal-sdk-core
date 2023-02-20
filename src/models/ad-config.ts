@@ -42,6 +42,16 @@ export default class AdConfig {
         return this._current.rewardedId;
     }
 
+    /**
+     * Fetches the ad unit IDs from Rakuten API.
+     * @example Object returned
+     *[
+     *  {
+     *    "id": "someID",
+     *    "type": "INTERSTITIAL"
+     *  }
+     *]
+     */
     private setLinkViberAdUnitIds(): void {
         if ((window as any).wortalGame) {
             (window as any).wortalGame.getAdUnitsAsync().then((adUnits: any[]) => {
@@ -50,8 +60,14 @@ export default class AdConfig {
                     return;
                 }
                 console.log("[Wortal] AdUnit IDs returned: \n" + adUnits);
-                this._current.interstitialId = adUnits[0].id;
-                this._current.rewardedId = adUnits[1].id;
+                for (let i = 0; i < adUnits.length; i++) {
+                    if (adUnits[i].type === "INTERSTITIAL") {
+                        this._current.interstitialId = adUnits[i].id;
+                    }
+                    else if (adUnits[i].type === "REWARDED_VIDEO") {
+                        this._current.rewardedId = adUnits[i].id;
+                    }
+                }
             });
         }
     }
