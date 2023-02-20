@@ -1,5 +1,8 @@
 import { ContextPayload } from "../types/context-payload";
 import {
+    contextToFBInstantChoosePayload,
+    contextToFBInstantSharePayload,
+    contextToFBInstantUpdatePayload,
     contextToLinkMessagePayload,
     contextToViberChoosePayload,
     contextToViberSharePayload,
@@ -18,7 +21,8 @@ import { config } from "./index";
  * game is being played on a platform that does not currently support context.
  */
 export function getId(): string {
-    if (config.session.platform === "link" || config.session.platform === "viber") {
+    let platform = config.session.platform;
+    if (platform === "link" || platform === "viber" || platform === "facebook") {
         return (window as any).wortalGame.context.getID();
     } else {
         return "";
@@ -44,32 +48,39 @@ export function getId(): string {
  * </ul>
  */
 export function shareAsync(payload: ContextPayload): Promise<number> {
+    let platform = config.session.platform;
     return Promise.resolve().then(() => {
+        // Validate
         if (!isValidPayloadText(payload.text)) {
             throw invalidParams("Text cannot be null or empty.", "context.shareAsync");
         } else if (!isValidPayloadImage(payload.image)) {
             throw invalidParams("Image needs to be a data URL for a base64 encoded image.", "context.shareAsync");
         }
 
-        if (config.session.platform === "link") {
-            return (window as any).wortalGame.shareAsync(contextToLinkMessagePayload(payload))
-                .then((result: any) => {
-                    return result.sharedCount;
-                })
-                .catch((e: any) => {
-                    throw rethrowRakuten(e, "context.shareAsync");
-                });
-        } else if (config.session.platform === "viber") {
-            return (window as any).wortalGame.shareAsync(contextToViberSharePayload(payload))
-                .then((result: any) => {
-                    return result.sharedCount;
-                })
-                .catch((e: any) => {
-                    throw rethrowRakuten(e, "context.shareAsync");
-                });
+        // Convert
+        let convertedPayload: ContextPayload;
+        if (platform === "link") {
+            convertedPayload = contextToLinkMessagePayload(payload);
+        } else if (platform === "viber") {
+            convertedPayload = contextToViberSharePayload(payload);
+        } else if (platform === "facebook") {
+            convertedPayload = contextToFBInstantSharePayload(payload);
         } else {
-            throw notSupported("Context API not currently supported on platform: " + config.session.platform, "context.shareAsync");
+            throw notSupported("Context API not currently supported on platform: " + platform, "context.shareAsync");
         }
+
+        // Call
+        return (window as any).wortalGame.shareAsync(convertedPayload)
+            .then((result: any) => {
+                return result.sharedCount;
+            })
+            .catch((e: any) => {
+                if (platform === "link" || platform === "viber") {
+                    throw rethrowRakuten(e, "context.shareAsync");
+                } else {
+                    throw Error(e);
+                }
+            });
     });
 }
 
@@ -91,26 +102,36 @@ export function shareAsync(payload: ContextPayload): Promise<number> {
  * </ul>
  */
 export function updateAsync(payload: ContextPayload): Promise<void> {
+    let platform = config.session.platform;
     return Promise.resolve().then(() => {
+        // Validate
         if (!isValidPayloadText(payload.text)) {
             throw invalidParams("Text cannot be null or empty.", "context.updateAsync");
         } else if (!isValidPayloadImage(payload.image)) {
             throw invalidParams("Image needs to be a data URL for a base64 encoded image.", "context.updateAsync");
         }
 
-        if (config.session.platform === "link") {
-            return (window as any).wortalGame.updateAsync(contextToLinkMessagePayload(payload))
-                .catch((e: any) => {
-                    throw rethrowRakuten(e, "context.updateAsync");
-                });
-        } else if (config.session.platform === "viber") {
-            return (window as any).wortalGame.updateAsync(contextToViberUpdatePayload(payload))
-                .catch((e: any) => {
-                    throw rethrowRakuten(e, "context.updateAsync");
-                });
+        // Convert
+        let convertedPayload: ContextPayload;
+        if (platform === "link") {
+            convertedPayload = contextToLinkMessagePayload(payload);
+        } else if (platform === "viber") {
+            convertedPayload = contextToViberUpdatePayload(payload);
+        } else if (platform === "facebook") {
+            convertedPayload = contextToFBInstantUpdatePayload(payload);
         } else {
-            throw notSupported("Context API not currently supported on platform: " + config.session.platform, "context.updateAsync");
+            throw notSupported("Context API not currently supported on platform: " + platform, "context.updateAsync");
         }
+
+        // Call
+        return (window as any).wortalGame.updateAsync(convertedPayload)
+            .catch((e: any) => {
+                if (platform === "link" || platform === "viber") {
+                    throw rethrowRakuten(e, "context.updateAsync");
+                } else {
+                    throw Error(e);
+                }
+            });
     });
 }
 
@@ -132,26 +153,36 @@ export function updateAsync(payload: ContextPayload): Promise<void> {
  * </ul>
  */
 export function chooseAsync(payload: ContextPayload): Promise<void> {
+    let platform = config.session.platform;
     return Promise.resolve().then(() => {
+        // Validate
         if (!isValidPayloadText(payload.text)) {
-            throw invalidParams('Text cannot be null or empty.', 'context.chooseAsync');
+            throw invalidParams("Text cannot be null or empty.", "context.chooseAsync");
         } else if (!isValidPayloadImage(payload.image)) {
-            throw invalidParams('Image needs to be a data URL for a base64 encoded image.', 'context.chooseAsync');
+            throw invalidParams("Image needs to be a data URL for a base64 encoded image.", "context.chooseAsync");
         }
 
-        if (config.session.platform === "link") {
-            return (window as any).wortalGame.context.chooseAsync(contextToLinkMessagePayload(payload))
-                .catch((e: any) => {
-                    throw rethrowRakuten(e, "context.chooseAsync");
-                });
-        } else if (config.session.platform === "viber") {
-            return (window as any).wortalGame.context.chooseAsync(contextToViberChoosePayload(payload))
-                .catch((e: any) => {
-                    throw rethrowRakuten(e, "context.chooseAsync");
-                });
+        // Convert
+        let convertedPayload: ContextPayload;
+        if (platform === "link") {
+            convertedPayload = contextToLinkMessagePayload(payload);
+        } else if (platform === "viber") {
+            convertedPayload = contextToViberChoosePayload(payload);
+        } else if (platform === "facebook") {
+            convertedPayload = contextToFBInstantChoosePayload(payload);
         } else {
-            throw notSupported("Context API not currently supported on platform: " + config.session.platform, "context.chooseAsync");
+            throw notSupported("Context API not currently supported on platform: " + platform, "context.chooseAsync");
         }
+
+        // Call
+        return (window as any).wortalGame.context.chooseAsync(convertedPayload)
+            .catch((e: any) => {
+                if (platform === "link" || platform === "viber") {
+                    throw rethrowRakuten(e, "context.chooseAsync");
+                } else {
+                    throw Error(e);
+                }
+            });
     });
 }
 
@@ -169,18 +200,23 @@ export function chooseAsync(payload: ContextPayload): Promise<void> {
  */
 export function switchAsync(contextId: string): Promise<void> {
     //TODO: add options
+    let platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (!isValidString(contextId)) {
             throw invalidParams("contextId cannot be null or empty.", "context.switchAsync");
         }
 
-        if (config.session.platform === "link" || config.session.platform === "viber") {
+        if (platform === "link" || platform === "viber" || platform === "facebook") {
             return (window as any).wortalGame.context.switchAsync(contextId)
                 .catch((e: any) => {
-                    throw rethrowRakuten(e, "context.switchAsync");
+                    if (platform === "link" || platform === "viber") {
+                        throw rethrowRakuten(e, "context.switchAsync");
+                    } else {
+                        throw Error(e);
+                    }
                 });
         } else {
-            throw notSupported("Context API not currently supported on platform: " + config.session.platform, "context.switchAsync");
+            throw notSupported("Context API not currently supported on platform: " + platform, "context.switchAsync");
         }
     });
 }
@@ -199,18 +235,23 @@ export function switchAsync(contextId: string): Promise<void> {
  */
 export function createAsync(playerId: string): Promise<void> {
     //TODO: add options
+    let platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (!isValidString(playerId)) {
             throw invalidParams("playerId cannot be null or empty.", "context.createAsync");
         }
 
-        if (config.session.platform === "link" || config.session.platform === "viber") {
+        if (platform === "link" || platform === "viber" || platform === "facebook") {
             return (window as any).wortalGame.context.createAsync(playerId)
                 .catch((e: any) => {
-                    throw rethrowRakuten(e, "context.createAsync");
+                    if (platform === "link" || platform === "viber") {
+                        throw rethrowRakuten(e, "context.createAsync");
+                    } else {
+                        throw Error(e);
+                    }
                 });
         } else {
-            throw notSupported("Context API not currently supported on platform: " + config.session.platform, "context.createAsync");
+            throw notSupported("Context API not currently supported on platform: " + platform, "context.createAsync");
         }
     });
 }

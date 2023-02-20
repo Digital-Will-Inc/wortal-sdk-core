@@ -52,21 +52,26 @@ export function isFirstPlay(): boolean {
  * </ul>
  */
 export function getDataAsync(keys: string[]): Promise<any> {
+    let platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (!Array.isArray(keys) || !keys.length) {
             throw invalidParams("keys cannot be null or empty.", "player.getDataAsync");
         }
 
-        if (config.session.platform === "link" || config.session.platform === "viber") {
+        if (platform === "link" || platform === "viber" || platform === "facebook") {
             return (window as any).wortalGame.player.getDataAsync(keys)
                 .then((data: any) => {
                     return data;
                 })
                 .catch((e: any) => {
-                    throw rethrowRakuten(e, "player.getDataAsync");
+                    if (platform === "link" || platform === "viber") {
+                        throw rethrowRakuten(e, "player.getDataAsync");
+                    } else {
+                        throw Error(e);
+                    }
                 });
         } else {
-            throw notSupported("Player API not currently supported on platform: " + config.session.platform, "player.getDataAsync");
+            throw notSupported("Player API not currently supported on platform: " + platform, "player.getDataAsync");
         }
     });
 }
@@ -89,14 +94,19 @@ export function getDataAsync(keys: string[]): Promise<any> {
  * </ul>
  */
 export function setDataAsync(data: Record<string, unknown>): Promise<void> {
+    let platform = config.session.platform;
     return Promise.resolve().then(() => {
-        if (config.session.platform === "link" || config.session.platform === "viber") {
+        if (platform === "link" || platform === "viber" || platform === "facebook") {
             return (window as any).wortalGame.player.setDataAsync(data)
                 .catch((e: any) => {
-                    throw rethrowRakuten(e, "player.setDataAsync");
+                    if (platform === "link" || platform === "viber") {
+                        throw rethrowRakuten(e, "player.setDataAsync");
+                    } else {
+                        throw Error(e);
+                    }
                 });
         } else {
-            throw notSupported("Player API not currently supported on platform: " + config.session.platform, "player.setDataAsync");
+            throw notSupported("Player API not currently supported on platform: " + platform, "player.setDataAsync");
         }
     });
 }
@@ -118,8 +128,9 @@ export function setDataAsync(data: Record<string, unknown>): Promise<void> {
  * </ul>
  */
 export function getConnectedPlayersAsync(payload?: ConnectedPlayerPayload): Promise<ConnectedPlayer[]> {
+    let platform = config.session.platform;
     return Promise.resolve().then(() => {
-        if (config.session.platform === "link" || config.session.platform === "viber") {
+        if (platform === "link" || platform === "viber" || platform === "facebook") {
             return (window as any).wortalGame.player.getConnectedPlayersAsync(payload)
                 .then((players: any) => {
                     return players.map((player: any) => {
@@ -127,17 +138,22 @@ export function getConnectedPlayersAsync(payload?: ConnectedPlayerPayload): Prom
                             id: player.getID(),
                             name: player.getName(),
                             photo: player.getPhoto(),
-                            isFirstPlay: !player.hasPlayed,
+                            // Facebook's player model doesn't have the hasPlayed flag.
+                            isFirstPlay: platform === "facebook" ? false : !player.hasPlayed,
                             daysSinceFirstPlay: 0,
                         };
                         return new ConnectedPlayer(playerData);
                     });
                 })
                 .catch((e: any) => {
-                    throw rethrowRakuten(e, "player.getConnectedPlayersAsync");
+                    if (platform === "link" || platform === "viber") {
+                        throw rethrowRakuten(e, "player.getConnectedPlayersAsync");
+                    } else {
+                        throw Error(e);
+                    }
                 });
         } else {
-            throw notSupported("Player API not currently supported on platform: " + config.session.platform, "player.getConnectedPlayersAsync");
+            throw notSupported("Player API not currently supported on platform: " + platform, "player.getConnectedPlayersAsync");
         }
     });
 }
@@ -163,8 +179,9 @@ export function getConnectedPlayersAsync(payload?: ConnectedPlayerPayload): Prom
  * </ul>
  */
 export function getSignedPlayerInfoAsync(): Promise<object> {
+    let platform = config.session.platform;
     return Promise.resolve().then(() => {
-        if (config.session.platform === "link" || config.session.platform === "viber") {
+        if (platform === "link" || platform === "viber" || platform === "facebook") {
             return (window as any).wortalGame.player.getSignedPlayerInfoAsync()
                 .then((info: any) => {
                     return {
@@ -173,10 +190,14 @@ export function getSignedPlayerInfoAsync(): Promise<object> {
                     };
                 })
                 .catch((e: any) => {
-                    throw rethrowRakuten(e, "player.getSignedPlayerInfoAsync");
+                    if (platform === "link" || platform === "viber") {
+                        throw rethrowRakuten(e, "player.getSignedPlayerInfoAsync");
+                    } else {
+                        throw Error(e);
+                    }
                 });
         } else {
-            throw notSupported("Player API not currently supported on platform: " + config.session.platform, "player.getSignedPlayerInfoAsync");
+            throw notSupported("Player API not currently supported on platform: " + platform, "player.getSignedPlayerInfoAsync");
         }
     });
 }

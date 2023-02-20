@@ -23,6 +23,7 @@ import { config } from "./index";
  */
 export function showInterstitial(placement: PlacementType, description: string,
                                  beforeAd: Function, afterAd: Function): void {
+    let platform = config.session.platform;
 
     // Validate the callbacks. Invalid params will cause the adBreak API to throw an error.
     if (beforeAd === undefined || typeof beforeAd !== "function") {
@@ -36,10 +37,12 @@ export function showInterstitial(placement: PlacementType, description: string,
     if (placement === 'reward') {
         throw invalidParams("showInterstitial called with placement type 'reward'. Call showRewarded instead.", "ads.showInterstitial");
     }
-    if (placement === 'preroll' && (config.session.platform === "link" || config.session.platform === "viber")) {
-        throw invalidParams("Link and Viber platforms do not support preroll ads.", "ads.showInterstitial");
+    if (placement === 'preroll' && (platform === "link" || platform === "viber" || platform === "facebook")) {
+        throw invalidParams("Current platform does not support preroll ads.", "ads.showInterstitial");
     }
-    if (placement === 'preroll' && (config.adConfig.hasPrerollShown || config.game.gameTimer > 10)) {
+    if (placement === 'preroll' && (
+        config.adConfig.hasPrerollShown ||
+        config.game.gameTimer > 10)) {
         throw invalidParams("Preroll ads can only be shown during game load.", "ads.showInterstitial");
     }
 

@@ -62,6 +62,7 @@ export default class Player {
         switch (config.session.platform) {
             case "viber":
             case "link":
+            case "facebook":
                 return (window as any).wortalGame.player.getID();
             case "wortal":
             case "gd":
@@ -75,6 +76,7 @@ export default class Player {
         switch (config.session.platform) {
             case "viber":
             case "link":
+            case "facebook":
                 return (window as any).wortalGame.player.getName();
             case "wortal":
             case "gd":
@@ -88,6 +90,7 @@ export default class Player {
         switch (config.session.platform) {
             case "viber":
             case "link":
+            case "facebook":
                 return (window as any).wortalGame.player.getPhoto();
             case "wortal":
             case "gd":
@@ -104,6 +107,7 @@ export default class Player {
                 return (window as any).wortalGame.player.hasPlayed();
             case "wortal":
                 return this.isWortalFirstPlay();
+            case "facebook":
             case "gd":
             case "debug":
             default:

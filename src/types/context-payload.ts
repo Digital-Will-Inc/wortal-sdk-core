@@ -49,6 +49,10 @@ export interface ContextPayload {
     strategy?: 'IMMEDIATE' | 'LAST' | 'IMMEDIATE_CLEAR';
     /** Specifies if the message should trigger push notification. */
     notifications?: 'NO_PUSH' | 'PUSH';
+    /** Specifies where the share should appear. */
+    shareDestination?: 'NEWSFEED' | 'GROUP' | 'COPY_LINK' | 'MESSENGER';
+    /** Should the player switch context or not. */
+    switchContext?: boolean;
     /** Not used */
     action?: 'CUSTOM';
     /** Not used */

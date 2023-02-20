@@ -26,21 +26,26 @@ export function isEnabled(): boolean {
  * </ul>
  */
 export function getCatalogAsync(): Promise<Product[]> {
+    let platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (!config.isIAPEnabled) {
             throw notSupported("IAP is currently disabled.", "iap.getCatalogAsync");
         }
 
-        if (config.session.platform === "viber") {
+        if (platform === "viber" || platform === "facebook") {
             return (window as any).wortalGame.payments.getCatalogAsync()
                 .then((products: Product[]) => {
                     return products;
                 })
                 .catch((e: any) => {
-                    throw rethrowRakuten(e, "iap.getCatalogAsync");
+                    if (platform === "link" || platform === "viber") {
+                        throw rethrowRakuten(e, "iap.getCatalogAsync");
+                    } else {
+                        throw Error(e);
+                    }
                 });
         } else {
-            throw notSupported("IAP API not currently supported on platform: " + config.session.platform, "iap.getCatalogAsync");
+            throw notSupported("IAP API not currently supported on platform: " + platform, "iap.getCatalogAsync");
         }
     });
 }
@@ -59,21 +64,26 @@ export function getCatalogAsync(): Promise<Product[]> {
  * </ul>
  */
 export function getPurchasesAsync(): Promise<Purchase[]> {
+    let platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (!config.isIAPEnabled) {
             throw notSupported("IAP is currently disabled.", "iap.getPurchasesAsync");
         }
 
-        if (config.session.platform === "viber") {
+        if (platform === "viber" || platform === "facebook") {
             return (window as any).wortalGame.payments.getPurchasesAsync()
                 .then((purchases: Purchase[]) => {
                     return purchases;
                 })
                 .catch((e: any) => {
-                    throw rethrowRakuten(e, "iap.getPurchasesAsync");
+                    if (platform === "link" || platform === "viber") {
+                        throw rethrowRakuten(e, "iap.getPurchasesAsync");
+                    } else {
+                        throw Error(e);
+                    }
                 });
         } else {
-            throw notSupported("IAP API not currently supported on platform: " + config.session.platform, "iap.getPurchasesAsync");
+            throw notSupported("IAP API not currently supported on platform: " + platform, "iap.getPurchasesAsync");
         }
     });
 }
@@ -94,6 +104,7 @@ export function getPurchasesAsync(): Promise<Purchase[]> {
  * </ul>
  */
 export function makePurchaseAsync(purchase: PurchaseConfig): Promise<Purchase> {
+    let platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (!config.isIAPEnabled) {
             throw notSupported("IAP is currently disabled.", "iap.makePurchaseAsync");
@@ -102,16 +113,20 @@ export function makePurchaseAsync(purchase: PurchaseConfig): Promise<Purchase> {
             throw invalidParams("productID cannot be null or empty.", "iap.makePurchaseAsync");
         }
 
-        if (config.session.platform === "viber") {
+        if (platform === "viber" || platform === "facebook") {
             return (window as any).wortalGame.payments.purchaseAsync(purchase)
                 .then((purchase: Purchase) => {
                     return purchase;
                 })
                 .catch((e: any) => {
-                    throw rethrowRakuten(e, "iap.makePurchaseAsync");
+                    if (platform === "link" || platform === "viber") {
+                        throw rethrowRakuten(e, "iap.makePurchaseAsync");
+                    } else {
+                        throw Error(e);
+                    }
                 });
         } else {
-            throw notSupported("IAP API not currently supported on platform: " + config.session.platform, "iap.makePurchaseAsync");
+            throw notSupported("IAP API not currently supported on platform: " + platform, "iap.makePurchaseAsync");
         }
     });
 }
@@ -130,6 +145,7 @@ export function makePurchaseAsync(purchase: PurchaseConfig): Promise<Purchase> {
  * </ul>
  */
 export function consumePurchaseAsync(token: string): Promise<void> {
+    let platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (!config.isIAPEnabled) {
             throw notSupported("IAP is currently disabled.", "iap.consumePurchaseAsync");
@@ -138,13 +154,17 @@ export function consumePurchaseAsync(token: string): Promise<void> {
             throw invalidParams("token cannot be null or empty.", "iap.consumePurchaseAsync");
         }
 
-        if (config.session.platform === "viber") {
+        if (platform === "viber" || platform === "facebook") {
             return (window as any).wortalGame.payments.consumePurchaseAsync(token)
                 .catch((e: any) => {
-                    throw rethrowRakuten(e, "iap.consumePurchaseAsync");
+                    if (platform === "link" || platform === "viber") {
+                        throw rethrowRakuten(e, "iap.consumePurchaseAsync");
+                    } else {
+                        throw Error(e);
+                    }
                 });
         } else {
-            throw notSupported("IAP API not currently supported on platform: " + config.session.platform, "iap.consumePurchaseAsync");
+            throw notSupported("IAP API not currently supported on platform: " + platform, "iap.consumePurchaseAsync");
         }
     });
 }

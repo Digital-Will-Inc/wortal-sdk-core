@@ -13,6 +13,8 @@ export default class AdConfig {
     constructor() {
         if (config.session.platform === "link") {
             this.setLinkViberAdUnitIds();
+        } else if (config.session.platform === "facebook") {
+            this.setFacebookAdUnitIds();
         }
     }
 
@@ -43,9 +45,52 @@ export default class AdConfig {
     private setLinkViberAdUnitIds(): void {
         if ((window as any).wortalGame) {
             (window as any).wortalGame.getAdUnitsAsync().then((adUnits: any[]) => {
-                console.log("[Wortal] AdUnit IDs returned: \n" + adUnits[0].id + "\n" + adUnits[1].id);
+                if (adUnits == null || undefined) {
+                    console.error("[Wortal] Failed to retrieve ad units.");
+                    return;
+                }
+                console.log("[Wortal] AdUnit IDs returned: \n" + adUnits);
                 this._current.interstitialId = adUnits[0].id;
                 this._current.rewardedId = adUnits[1].id;
+            });
+        }
+    }
+
+    /**
+     * Fetches the ad unit IDs from Wortal API.
+     * @example JSON returned
+     *{
+     *  "gameID": 68,
+     *  "ads": [
+     *     {
+     *      "display_format": "interstitial",
+     *      "placement_id": "1284783688986969_1317853085680029"
+     *     }
+     *   ]
+     *}
+     */
+    private setFacebookAdUnitIds(): void {
+        if ((window as any).wortalGame) {
+            (window as any).wortalGame.getAdUnitIDAsync().then((adUnits: any) => {
+                if (adUnits == null || undefined) {
+                    console.error("[Wortal] Failed to retrieve ad units.");
+                    return;
+                }
+                if (adUnits.ads == null || undefined) {
+                    console.error("[Wortal] Failed to retrieve ad units.");
+                    return;
+                }
+                console.log("[Wortal] AdUnit IDs returned: \n" + adUnits.ads);
+                for (let i = 0; i < adUnits.ads.length; i++) {
+                    if (adUnits.ads[i].display_format === "interstitial") {
+                        this._current.interstitialId = adUnits.ads[i].placement_id;
+                    } else if (adUnits.ads[i].display_format === "rewarded") {
+                        this._current.rewardedId = adUnits.ads[i].placement_id;
+                    }
+                }
+            })
+            .catch((e: any) => {
+                throw Error(e);
             });
         }
     }

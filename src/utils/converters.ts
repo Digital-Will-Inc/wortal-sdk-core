@@ -67,6 +67,49 @@ export function contextToViberUpdatePayload(payload: ContextPayload): ContextPay
 }
 
 /** @hidden */
+export function contextToFBInstantSharePayload(payload: ContextPayload): ContextPayload {
+    let obj: ContextPayload = {
+        image: payload.image,
+        text: payload.text,
+    }
+    if (payload?.data) obj.data = payload.data;
+    if (payload?.shareDestination) obj.shareDestination = payload.shareDestination;
+    if (payload?.switchContext) obj.switchContext = payload.switchContext;
+    return obj;
+}
+
+/** @hidden */
+export function contextToFBInstantUpdatePayload(payload: ContextPayload): ContextPayload {
+    let obj: ContextPayload = {
+        image: payload.image,
+        text: payload.text,
+    }
+    if (payload?.data) obj.data = payload.data;
+    if (payload?.cta) obj.cta = payload.cta;
+    if (payload?.caption) obj.cta = payload.caption;
+    if (payload?.strategy) obj.strategy = payload.strategy;
+    if (payload?.notifications) obj.notifications = payload.notifications;
+    if (payload?.action) obj.action = payload.action;
+    else obj.action = "CUSTOM";
+    if (payload?.template) obj.template = payload.template;
+    else obj.template = "";
+    return obj;
+}
+
+/** @hidden */
+export function contextToFBInstantChoosePayload(payload: ContextPayload): ContextPayload {
+    let obj: ContextPayload = {
+        // Not used in this payload.
+        image: "",
+        text: "",
+    }
+    if (payload?.filters) obj.filters = payload.filters;
+    if (payload?.maxSize) obj.maxSize = payload.maxSize;
+    if (payload?.minSize) obj.minSize = payload.minSize;
+    return obj;
+}
+
+/** @hidden */
 export function rakutenLeaderboardToWortal(leaderboard: any): Leaderboard {
     return new Leaderboard(
         leaderboard.$leaderboard.id, leaderboard.$leaderboard.name, leaderboard.$leaderboard.contextId

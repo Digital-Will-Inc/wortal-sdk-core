@@ -10,7 +10,8 @@ import { config } from "./index";
  * @returns Data about the entry point or an empty object if none exists.
  */
 export function getEntryPointData(): Record<string, unknown> {
-    if (config.session.platform === "link" || config.session.platform === "viber") {
+    let platform = config.session.platform;
+    if (platform === "link" || platform === "viber" || platform === "facebook") {
         return (window as any).wortalGame.getEntryPointData();
     } else {
         return {};
@@ -30,17 +31,22 @@ export function getEntryPointData(): Record<string, unknown> {
  * </ul>
  */
 export function getEntryPointAsync(): Promise<string> {
+    let platform = config.session.platform;
     return Promise.resolve().then(() => {
-        if (config.session.platform === "link" || config.session.platform === "viber") {
+        if (platform === "link" || platform === "viber" || platform === "facebook") {
             return (window as any).wortalGame.getEntryPointAsync()
                 .then((entryPoint: string) => {
                     return entryPoint;
                 })
                 .catch((e: any) => {
-                    throw rethrowRakuten(e, "session.getEntryPointAsync");
+                    if (platform === "link" || platform === "viber") {
+                        throw rethrowRakuten(e, "player.getEntryPointAsync");
+                    } else {
+                        throw Error(e);
+                    }
                 });
         } else {
-            throw notSupported("Session API not currently supported on platform: " + config.session.platform, "session.getEntryPointAsync");
+            throw notSupported("Session API not currently supported on platform: " + platform, "session.getEntryPointAsync");
         }
     });
 }
@@ -55,7 +61,8 @@ export function getEntryPointAsync(): Promise<string> {
  * @param data Data to set.
  */
 export function setSessionData(data: Record<string, unknown>): void {
-    if (config.session.platform === "viber") {
+    let platform = config.session.platform;
+    if (platform === "viber" || platform === "facebook") {
         (window as any).wortalGame.setSessionData(data);
     } else {
         // Fail silently.
