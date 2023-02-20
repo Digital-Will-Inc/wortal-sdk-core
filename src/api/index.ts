@@ -54,24 +54,25 @@ export function init(options?: InitializationOptions): void {
     }
     console.log("[Wortal] Initializing SDK Core " + __VERSION__);
     config.init();
+    let platform = config.session.platform;
 
     // Make sure we have the loading cover added to prevent the game canvas from being shown before the preroll ad finishes.
-    // Link/Viber use their own loading covers.
+    // Link/Viber/FB use their own loading covers.
     if (document.readyState === "loading") {
-        if (config.session.platform !== "link" && config.session.platform !== "viber") {
-            document.addEventListener('DOMContentLoaded', addLoadingCover);
+        if (platform !== "link" && platform !== "viber" && platform !== "facebook") {
+            document.addEventListener("DOMContentLoaded", addLoadingCover);
         }
     } else {
-        if (config.session.platform !== "link" && config.session.platform !== "viber") {
+        if (platform !== "link" && platform !== "viber" && platform !== "facebook") {
             addLoadingCover();
         }
     }
 
     (window as any).initWortal(() => {
         console.log("[Wortal] Platform: " + config.session.platform);
-        // Link and Viber have the same init sequence. No pre-roll ads. No loading cover is added.
-        // Initialize the Link/Viber SDK, report loading progress, game shows on 100% and startGameAsync.
-        if (config.session.platform === "link" || config.session.platform === "viber") {
+        // Link/Viber/FB have the same init sequence. No pre-roll ads. No loading cover is added.
+        // Initialize the Link/Viber/FB SDK, report loading progress, game shows on 100% and startGameAsync.
+        if (platform === "link" || platform === "viber" || platform === "facebook") {
             (window as any).wortalGame.initializeAsync()
                 .then(() => {
                     (window as any).wortalGame.startGameAsync();
@@ -80,22 +81,10 @@ export function init(options?: InitializationOptions): void {
                     analytics.logGameStart();
                     console.log("[Wortal] SDK Core initialization complete.");
                 });
-        // Wortal shows preroll ad, removes cover after.
-        } else if (config.session.platform === "wortal") {
+        // Wortal/GD shows preroll ad, removes cover after.
+        } else if (platform === "wortal" || platform === "gd") {
             config.lateInit();
-            ads.showInterstitial('preroll', "Preroll", () => {
-            }, () => {
-                removeLoadingCover();
-                config.adConfig.setPrerollShown(true);
-                tryEnableIAP();
-                analytics.logGameStart();
-                console.log("[Wortal] SDK Core initialization complete.");
-            });
-        // GD shows preroll ad, removes cover after. We keep this separate from Wortal because we may
-        // pass in some options later on.
-        } else if (config.session.platform === "gd") {
-            config.lateInit();
-            ads.showInterstitial('preroll', "Preroll", () => {
+            ads.showInterstitial("preroll", "Preroll", () => {
             }, () => {
                 removeLoadingCover();
                 config.adConfig.setPrerollShown(true);
@@ -142,15 +131,32 @@ export function init(options?: InitializationOptions): void {
  * @param value Percentage of loading complete. Range is 0 to 100.
  */
 export function setLoadingProgress(value: number): void {
-    if (config.session.platform === "link" || config.session.platform === "viber") {
+    let platform = config.session.platform;
+    if (platform === "link" || platform === "viber" || platform === "facebook") {
         if ((window as any).wortalGame) {
             (window as any).wortalGame.setLoadingProgress(value);
         }
     }
 }
 
+/**
+ * Sets a callback which will be invoked when the app is brought to the background,
+ * @param callback Callback to invoke.
+ */
+export function onPause(callback: Function): void {
+    let platform = config.session.platform;
+    if (platform === "link" || platform === "viber" || platform === "facebook") {
+        if ((window as any).wortalGame) {
+            (window as any).wortalGame.onPause(() => {
+                callback();
+            });
+        }
+    }
+}
+
 function tryEnableIAP(): void {
-    if (config.session.platform === "viber") {
+    let platform = config.session.platform;
+    if (platform === "viber" || platform === "facebook") {
         (window as any).wortalGame.payments.onReady(() => {
             config.enableIAP();
             console.log("[Wortal] IAP initialized for platform.");
