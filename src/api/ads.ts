@@ -54,10 +54,6 @@ export function showInterstitial(placement: PlacementType, description: string,
         return;
     }
 
-    if (config.session.platform === 'viber') {
-        throw notSupported("Ads not currently supported on platform: " + config.session.platform, "ads.showInterstitial");
-    }
-
     // We need to make sure we call show() after building the ad instance. We do this because in the future we
     // want to be able to preload ads and allow the game to check whether an ad is filled and ready to show.
     let data: AdInstanceData = {
@@ -114,10 +110,6 @@ export function showRewarded(description: string, beforeAd: Function, afterAd: F
         adDismissed();
         afterAd();
         return;
-    }
-
-    if (config.session.platform === 'viber') {
-        throw notSupported("Ads not currently supported on platform: " + config.session.platform, "ads.showRewarded");
     }
 
     // We need to make sure we call show() after building the ad instance. We do this because in the future we
