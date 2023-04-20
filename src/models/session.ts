@@ -1,3 +1,4 @@
+import { Platform } from "../types/platform";
 import { SessionData } from "../types/session";
 // Murphy's Laws of Combat: If it’s stupid and it works, it ain’t stupid.
 // @ts-ignore
@@ -32,7 +33,7 @@ export default class Session {
         return this._current.browser;
     }
 
-    get platform(): string {
+    get platform(): Platform {
         return this._current.platform;
     }
 

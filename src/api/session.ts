@@ -1,3 +1,4 @@
+import { Platform } from "../types/platform";
 import { TrafficSource } from "../types/traffic-source";
 import { notSupported, rethrowRakuten } from "../utils/error-handler";
 import { config } from "./index";
@@ -70,7 +71,7 @@ export function setSessionData(data: Record<string, unknown>): void {
 }
 
 /**
- * Gets the locale the player is using.
+ * Gets the locale the player is using. This is useful for localizing your game.
  * @example
  * let lang = Wortal.session.getLocale();
  * @returns Locale in [BCP47](http://www.ietf.org/rfc/bcp/bcp47.txt) format.
@@ -80,7 +81,8 @@ export function getLocale(): string {
 }
 
 /**
- * Gets the traffic source info for the game.
+ * Gets the traffic source info for the game. This is useful for tracking where players are coming from.
+ * For example, if you want to track where players are coming from for a specific campaign.
  * @example
  * let source = Wortal.session.getTrafficSource();
  * console.log(source['r_entrypoint']);
@@ -93,4 +95,16 @@ export function getTrafficSource(): TrafficSource {
     } else {
         return {};
     }
+}
+
+/**
+ * Gets the platform the game is running on. This is useful for platform specific code.
+ * For example, if you want to show a different social share asset on Facebook than on Link.
+ * @example
+ * let platform = Wortal.session.getPlatform();
+ * console.log(platform);
+ * @returns Platform the game is running on.
+ */
+export function getPlatform(): Platform {
+    return config.session.platform;
 }
