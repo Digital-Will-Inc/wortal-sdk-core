@@ -46,6 +46,7 @@ export default class Session {
         let url: string[] = [];
         let subdomain: string[] = [];
         let id: string;
+
         switch (this.platform) {
             case "wortal":
                 // Example URL: https://gameportal.digitalwill.co.jp/games/cactus-bowling/19/
@@ -61,23 +62,30 @@ export default class Session {
                 id = subdomain[0];
                 break;
             case "viber":
-                // Example URL: "https://r83ysr3u613lxyh8u93piwf0h0jbxbhk.g.vbrplsbx.io/44/index.html"
+                // Example URL: https://r83ysr3u613lxyh8u93piwf0h0jbxbhk.g.vbrplsbx.io/44/index.html
                 // ID: r83ysr3u613lxyh8u93piwf0h0jbxbhk
                 url = document.URL.split("/");
                 subdomain = url[2].split(".");
                 id = subdomain[0];
                 break;
             case "gd":
-                // Example URL: "https://revision.gamedistribution.com/b712105e1fff4bceb87667522d798f97"
+                // Example URL: https://revision.gamedistribution.com/b712105e1fff4bceb87667522d798f97
                 // ID: b712105e1fff4bceb87667522d798f97
                 url = document.URL.split("/");
                 id = url[3];
+                break;
+            case "facebook":
+                // Example URL: https://www.facebook.com/gaming/play/3417663501657679
+                // ID: 3417663501657679
+                url = document.URL.split("/");
+                id = url[5];
                 break;
             case "debug":
             default:
                 id = "debug";
                 break;
         }
+
         console.log("[Wortal] Game ID: " + id);
         return id;
     }
