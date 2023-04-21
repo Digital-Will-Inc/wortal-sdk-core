@@ -1,4 +1,6 @@
-import { ContextPayload } from "../types/context-payload";
+import ConnectedPlayer from "../models/connected-player";
+import { ContextPayload, ContextSizeResponse, ContextType } from "../types/context";
+import { PlayerData } from "../types/player";
 import {
     contextToFBInstantChoosePayload,
     contextToFBInstantSharePayload,
@@ -30,6 +32,69 @@ export function getId(): string {
 }
 
 /**
+ * Gets the type of the current context.
+ * @example
+ * let type = Wortal.context.getType();
+ * console.log(type);
+ * @returns The type of the current context. Possible values are: "SOLO", "THREAD", "GROUP", "POST". Default is "SOLO"
+ */
+export function getType(): ContextType {
+    let platform = config.session.platform;
+    if (platform === "link" || platform === "viber" || platform === "facebook") {
+        return (window as any).wortalGame.context.getType();
+    } else {
+        return "SOLO";
+    }
+}
+
+/**
+ * Gets the players in the current context.
+ * @example
+ * Wortal.context.getPlayersAsync()
+ *  .then(players => {
+ *    console.log(players.length);
+ *    console.log(players[0].id);
+ *    console.log(players[0].name);
+ *    });
+ * @returns Array of players in the current context.
+ * @throws {ErrorMessage} See error.message for details.
+ * <ul>
+ * <li>NOT_SUPPORTED</li>
+ * <li>RETHROW_FROM_PLATFORM</li>
+ * </ul>
+ */
+export function getPlayersAsync(): Promise<ConnectedPlayer[]> {
+    let platform = config.session.platform;
+    return Promise.resolve().then(() => {
+        if (platform === "link" || platform === "viber" || platform === "facebook") {
+            return (window as any).wortalGame.context.getPlayersAsync()
+                .then((players: any) => {
+                    return players.map((player: any) => {
+                        let playerData: PlayerData = {
+                            id: player.getID(),
+                            name: player.getName(),
+                            photo: player.getPhoto(),
+                            // Facebook's player model doesn't have the hasPlayed flag.
+                            isFirstPlay: platform === "facebook" ? false : !player.hasPlayed,
+                            daysSinceFirstPlay: 0,
+                        };
+                        return new ConnectedPlayer(playerData);
+                    });
+                })
+                .catch((e: any) => {
+                    if (platform === "link" || platform === "viber") {
+                        throw rethrowRakuten(e, "context.getPlayersAsync");
+                    } else {
+                        throw Error(e);
+                    }
+                });
+        } else {
+            throw notSupported("Context API not currently supported on platform: " + platform, "context.getPlayersAsync");
+        }
+    });
+}
+
+/**
  * Shares a message to the player's friends. Will trigger a UI for the player to choose which friends to share with.
  * @example
  * Wortal.context.shareAsync({
@@ -37,7 +102,7 @@ export function getId(): string {
  *     text: 'Share text',
  *     caption: 'Play',
  *     data: { exampleData: 'yourData' },
- * }).then(result => console.log(result); // Contains shareCount with number of friends the share was sent to.
+ * }).then(result => console.log(result)); // Contains shareCount with number of friends the share was sent to.
  * @param payload Object defining the share message.
  * @returns Number of friends the message was shared with.
  * @throws {ErrorMessage} See error.message for details.
@@ -78,6 +143,51 @@ export function shareAsync(payload: ContextPayload): Promise<number> {
                 if (platform === "link" || platform === "viber") {
                     throw rethrowRakuten(e, "context.shareAsync");
                 } else {
+                    throw Error(e);
+                }
+            });
+    });
+}
+
+/**
+ * This invokes a dialog that contains a custom game link that users can copy to their clipboard, or share.
+ * A blob of data can be attached to the custom link - game sessions initiated from the link will be able to access the
+ * data through FBInstant.getEntryPointData(). This data should be less than or equal to 1000 characters when
+ * stringified. The provided text and image will be used to generate the link preview, with the game name as the title
+ * of the preview. The text is recommended to be less than 44 characters. The image is recommended to either be a square
+ * or of the aspect ratio 1.91:1. The returned promise will resolve when the dialog is closed regardless if the user
+ * actually shared the link or not.
+ * @example
+ * Wortal.context.shareLinkAsync({
+ *    image: 'data:base64Image',
+ *    text: 'Share text',
+ *    data: { exampleData: 'yourData' },
+ * })
+ * .then(() => resumeGame);
+ * @param payload Object defining the payload for the custom link.
+ */
+export function shareLinkAsync(payload: ContextPayload) : Promise<void> {
+    let platform = config.session.platform;
+    return Promise.resolve().then(() => {
+        // Validate
+        if (!isValidPayloadText(payload.text)) {
+            throw invalidParams("Text cannot be null or empty.", "context.shareLinkAsync");
+        } else if (!isValidPayloadImage(payload.image)) {
+            throw invalidParams("Image needs to be a data URL for a base64 encoded image.", "context.shareLinkAsync");
+        }
+
+        // Convert
+        let convertedPayload: ContextPayload;
+        if (platform === "facebook") {
+            convertedPayload = contextToFBInstantSharePayload(payload);
+        } else {
+            throw notSupported("Context API not currently supported on platform: " + platform, "context.shareLinkAsync");
+        }
+
+        // Call
+        return (window as any).wortalGame.shareLinkAsync(convertedPayload)
+            .catch((e: any) => {
+                if (platform === "facebook") {
                     throw Error(e);
                 }
             });
@@ -254,4 +364,22 @@ export function createAsync(playerId: string): Promise<void> {
             throw notSupported("Context API not currently supported on platform: " + platform, "context.createAsync");
         }
     });
+}
+
+/**
+ * Check if the count of players in context is between given numbers.
+ * @example
+ * let result = Wortal.context.isSizeBetween(2, 4);
+ * console.log(result.answer);
+ * @param min Minimum number of players in context.
+ * @param max Maximum number of players in context.
+ * @returns {ContextSizeResponse} Object with the result of the check. Null if not supported.
+ */
+export function isSizeBetween(min?: number, max?: number): ContextSizeResponse | null {
+    let platform = config.session.platform;
+    if (platform === "link" || platform === "viber" || platform === "facebook") {
+        return (window as any).wortalGame.context.isSizeBetween(min, max);
+    } else {
+        return null;
+    }
 }

@@ -1,6 +1,6 @@
 import Leaderboard from "../models/leaderboard";
 import LeaderboardEntry from "../models/leaderboard-entry";
-import { ContextPayload } from "../types/context-payload";
+import { ContextPayload } from "../types/context";
 
 /** @hidden */
 export function contextToLinkMessagePayload(payload: ContextPayload): ContextPayload {
