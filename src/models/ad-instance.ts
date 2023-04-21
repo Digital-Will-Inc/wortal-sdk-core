@@ -13,6 +13,7 @@ interface AdCallbacks {
     afterAd: Function;
     adDismissed?: Function;
     adViewed?: Function;
+    noFill: Function;
 }
 
 /** @hidden */
@@ -33,6 +34,7 @@ class AdInstance implements IAdInstance {
         this.callbacks = {
             beforeAd: data.beforeAd,
             afterAd: data.afterAd,
+            noFill: data.noFill,
         };
     }
 
@@ -53,8 +55,8 @@ export class InterstitialAd extends AdInstance {
             this.adData.description, {
                 beforeAd: this.callbacks.beforeAd,
                 afterAd: this.callbacks.afterAd,
-                noShow: this.callbacks.afterAd,
-                noBreak: this.callbacks.afterAd,
+                noShow: this.callbacks.noFill,
+                noBreak: this.callbacks.noFill,
                 // Preroll ads on Wortal platform only take the adBreakDone callback.
                 adBreakDone: this.adData.placementType === "preroll" ?
                     this.callbacks.afterAd : () => console.log("[Wortal] AdBreakDone")
@@ -78,8 +80,8 @@ export class RewardedAd extends AdInstance {
             this.adData.description, {
                 beforeAd: this.callbacks.beforeAd,
                 afterAd: this.callbacks.afterAd,
-                noShow: this.callbacks.afterAd,
-                noBreak: this.callbacks.afterAd,
+                noShow: this.callbacks.noFill,
+                noBreak: this.callbacks.noFill,
                 adDismissed: this.callbacks.adDismissed,
                 adViewed: this.callbacks.adViewed,
                 // This needs to be called on Wortal platform to trigger the ad to be shown after it is filled.

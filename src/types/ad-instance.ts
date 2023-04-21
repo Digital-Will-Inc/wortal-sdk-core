@@ -25,4 +25,5 @@ export interface AdInstanceData {
     afterAd: Function;
     adDismissed?: Function;
     adViewed?: Function;
+    noFill: Function;
 }
