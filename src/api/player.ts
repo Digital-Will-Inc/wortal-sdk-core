@@ -201,3 +201,30 @@ export function getSignedPlayerInfoAsync(): Promise<object> {
         }
     });
 }
+
+/**
+ * Flushes any unsaved data to the platform's storage. This function is expensive, and should primarily be used for
+ * critical changes where persistence needs to be immediate and known by the game. Non-critical changes should rely on
+ * the platform to persist them in the background.
+ * NOTE: Calls to player.setDataAsync will be rejected while this function's result is pending.
+ * @example
+ * Wortal.player.flushDataAsync()
+ *  .then(() => console.log("Data flushed."));
+ */
+export function flushDataAsync(): Promise<void> {
+    let platform = config.session.platform;
+    return Promise.resolve().then(() => {
+        if (platform === "link" || platform === "viber" || platform === "facebook") {
+            return (window as any).wortalGame.player.flushDataAsync()
+                .catch((e: any) => {
+                    if (platform === "link" || platform === "viber") {
+                        throw rethrowRakuten(e, "player.flushDataAsync");
+                    } else {
+                        throw Error(e);
+                    }
+                });
+        } else {
+            throw notSupported("Player API not currently supported on platform: " + platform, "player.flushDataAsync");
+        }
+    });
+}
