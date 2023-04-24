@@ -24,6 +24,7 @@ export function logGameStart(): void {
             isAdBlocked: config.adConfig.isAdBlocked,
         }
     };
+
     const event = new AnalyticsEvent(data);
     event.send();
 }
@@ -40,6 +41,7 @@ export function logGameEnd(): void {
             timePlayed: config.game.gameTimer,
         }
     };
+
     const event = new AnalyticsEvent(data);
     event.send();
 }
@@ -49,7 +51,10 @@ export function logGameEnd(): void {
  * @example
  * Wortal.analytics.logLevelStart('Level 3');
  * @param level Name of the level.
- * @throws {ErrorMessage} INVALID_PARAM
+ * @throws {ErrorMessage} See error.message for more details.
+ * <ul>
+ * <li>INVALID_PARAM</li>
+ * </ul>
  */
 export function logLevelStart(level: string | number): void {
     if (!isValidString(level) && !isValidNumber(level)) {
@@ -72,6 +77,7 @@ export function logLevelStart(level: string | number): void {
             level: level,
         }
     };
+
     const event = new AnalyticsEvent(data);
     event.send();
 }
@@ -85,7 +91,10 @@ export function logLevelStart(level: string | number): void {
  * @param level Name of the level.
  * @param score Score the player achieved.
  * @param wasCompleted Was the level completed or not.
- * @throws {ErrorMessage} INVALID_PARAM
+ * @throws {ErrorMessage} See error.message for more details.
+ * <ul>
+ * <li>INVALID_PARAM</li>
+ * </ul>
  */
 export function logLevelEnd(level: string | number, score: string | number, wasCompleted: boolean): void {
     if (!isValidString(level) && !isValidNumber(level)) {
@@ -113,6 +122,7 @@ export function logLevelEnd(level: string | number, score: string | number, wasC
             time: config.game.levelTimer,
         }
     };
+
     const event = new AnalyticsEvent(data);
     event.send();
 }
@@ -136,6 +146,7 @@ export function logTutorialStart(tutorial: string): void {
             tutorial: tutorial,
         }
     };
+
     const event = new AnalyticsEvent(data);
     event.send();
 }
@@ -166,6 +177,7 @@ export function logTutorialEnd(tutorial: string, wasCompleted: boolean): void {
             time: config.game.levelTimer,
         }
     };
+
     const event = new AnalyticsEvent(data);
     event.send();
 }
@@ -175,7 +187,10 @@ export function logTutorialEnd(tutorial: string, wasCompleted: boolean): void {
  * @example
  * Wortal.analytics.logLevelUp('Level 7');
  * @param level Level the player achieved.
- * @throws {ErrorMessage} INVALID_PARAM
+ * @throws {ErrorMessage} See error.message for more details.
+ * <ul>
+ * <li>INVALID_PARAM</li>
+ * </ul>
  */
 export function logLevelUp(level: string | number): void {
     if (!isValidString(level) && !isValidNumber(level)) {
@@ -189,6 +204,7 @@ export function logLevelUp(level: string | number): void {
             level: level,
         }
     };
+
     const event = new AnalyticsEvent(data);
     event.send();
 }
@@ -198,7 +214,10 @@ export function logLevelUp(level: string | number): void {
  * @example
  * Wortal.analytics.logScore('100');
  * @param score Score the player achieved.
- * @throws {ErrorMessage} INVALID_PARAM
+ * @throws {ErrorMessage} See error.message for more details.
+ * <ul>
+ * <li>INVALID_PARAM</li>
+ * </ul>
  */
 export function logScore(score: string | number): void {
     if (!isValidString(score) && !isValidNumber(score)) {
@@ -212,6 +231,7 @@ export function logScore(score: string | number): void {
             score: score,
         }
     };
+
     const event = new AnalyticsEvent(data);
     event.send();
 }
@@ -223,7 +243,10 @@ export function logScore(score: string | number): void {
  * Wortal.analytics.logGameChoice('Character', 'Blue');
  * @param decision Decision the player was faced with.
  * @param choice Choice the player made.
- * @throws {ErrorMessage} INVALID_PARAM
+ * @throws {ErrorMessage} See error.message for more details.
+ * <ul>
+ * <li>INVALID_PARAM</li>
+ * </ul>
  */
 export function logGameChoice(decision: string, choice: string): void {
     if (!isValidString(decision)) {
@@ -240,6 +263,7 @@ export function logGameChoice(decision: string, choice: string): void {
             choice: choice,
         }
     };
+
     const event = new AnalyticsEvent(data);
     event.send();
 }

@@ -1,7 +1,7 @@
 import { ErrorMessage } from "../types/error-message";
 
 /** @hidden */
-export function rethrowRakuten(original: any, context: string): ErrorMessage {
+export function rethrowPlatformError(original: any, context: string): ErrorMessage {
     return {
         code: original.code,
         message: original.message,
