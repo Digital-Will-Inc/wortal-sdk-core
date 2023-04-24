@@ -133,3 +133,28 @@ export function rakutenLeaderboardEntryToWortal(entry: any): LeaderboardEntry {
         details: entry.$leaderboardEntry.extraData,
     });
 }
+
+/** @hidden */
+export function facebookLeaderboardToWortal(leaderboard: any): Leaderboard {
+    return new Leaderboard(
+        leaderboard.getName(), leaderboard.getName(), leaderboard.getContextID()
+    );
+}
+
+/** @hidden */
+export function facebookLeaderboardEntryToWortal(entry: any): LeaderboardEntry {
+    return new LeaderboardEntry({
+        formattedScore: entry.getFormattedScore(),
+        player: {
+            id: entry.getPlayer().getID(),
+            name: entry.getPlayer().getName(),
+            photo: entry.getPlayer().getPhoto(),
+            isFirstPlay: false,
+            daysSinceFirstPlay: 0,
+        },
+        rank: entry.getRank(),
+        score: entry.getScore(),
+        timestamp: entry.getTimestamp(),
+        details: entry.getExtraData(),
+    });
+}

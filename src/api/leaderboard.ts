@@ -1,6 +1,11 @@
 import Leaderboard from "../models/leaderboard";
 import LeaderboardEntry from "../models/leaderboard-entry";
-import { rakutenLeaderboardEntryToWortal, rakutenLeaderboardToWortal } from "../utils/converters";
+import {
+    facebookLeaderboardEntryToWortal,
+    facebookLeaderboardToWortal,
+    rakutenLeaderboardEntryToWortal,
+    rakutenLeaderboardToWortal
+} from "../utils/converters";
 import { invalidParams, notSupported, rethrowPlatformError } from "../utils/error-handler";
 import { isValidString } from "../utils/validators";
 import { config } from "./index";
@@ -32,7 +37,11 @@ export function getLeaderboardAsync(name: string): Promise<Leaderboard> {
         if (platform === "link" || platform === "viber" || platform === "facebook") {
             return (window as any).wortalGame.getLeaderboardAsync(name)
                 .then((result: any) => {
-                    return rakutenLeaderboardToWortal(result);
+                    if (platform === "link" || platform === "viber") {
+                        return rakutenLeaderboardToWortal(result);
+                    } else if (platform === "facebook") {
+                        return facebookLeaderboardToWortal(result);
+                    }
                 })
                 .catch((e: any) => {
                     throw rethrowPlatformError(e, "leaderboard.getLeaderboardAsync");
@@ -75,7 +84,11 @@ export function sendEntryAsync(name: string, score: number, details: string = ""
             return (window as any).wortalGame.getLeaderboardAsync(name)
                 .then((leaderboard: any) => leaderboard.setScoreAsync(score, details))
                 .then((entry: any) => {
-                    return rakutenLeaderboardEntryToWortal(entry);
+                    if (platform === "link" || platform === "viber") {
+                        return rakutenLeaderboardEntryToWortal(entry);
+                    } else if (platform === "facebook") {
+                        return facebookLeaderboardEntryToWortal(entry);
+                    }
                 })
                 .catch((e: any) => {
                     throw rethrowPlatformError(e, "leaderboard.sendEntryAsync");
@@ -115,7 +128,11 @@ export function getEntriesAsync(name: string, count: number, offset: number = 0)
                 .then((leaderboard: any) => leaderboard.getEntriesAsync(count, offset))
                 .then((entries: any) => {
                     return entries.map((entry: any) => {
-                        return rakutenLeaderboardEntryToWortal(entry)
+                        if (platform === "link" || platform === "viber") {
+                            return rakutenLeaderboardEntryToWortal(entry);
+                        } else if (platform === "facebook") {
+                            return facebookLeaderboardEntryToWortal(entry);
+                        }
                     })
                 })
                 .catch((e: any) => {
@@ -154,7 +171,11 @@ export function getPlayerEntryAsync(name: string): Promise<LeaderboardEntry> {
             return (window as any).wortalGame.getLeaderboardAsync(name)
                 .then((leaderboard: any) => leaderboard.getPlayerEntryAsync())
                 .then((entry: any) => {
-                    return rakutenLeaderboardEntryToWortal(entry);
+                    if (platform === "link" || platform === "viber") {
+                        return rakutenLeaderboardEntryToWortal(entry);
+                    } else if (platform === "facebook") {
+                        return facebookLeaderboardEntryToWortal(entry);
+                    }
                 })
                 .catch((e: any) => {
                     throw rethrowPlatformError(e, "leaderboard.getPlayerEntryAsync");
@@ -232,7 +253,11 @@ export function getConnectedPlayersEntriesAsync(name: string, count: number, off
                 .then((leaderboard: any) => leaderboard.getConnectedPlayerEntriesAsync(count, offset))
                 .then((entries: any) => {
                     return entries.map((entry: any) => {
-                        return rakutenLeaderboardEntryToWortal(entry)
+                        if (platform === "link" || platform === "viber") {
+                            return rakutenLeaderboardEntryToWortal(entry);
+                        } else if (platform === "facebook") {
+                            return facebookLeaderboardEntryToWortal(entry);
+                        }
                     })
                 })
                 .catch((e: any) => {

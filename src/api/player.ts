@@ -8,9 +8,9 @@ import { config } from "./index";
  * Gets the player's ID from the platform.
  * @example
  * Wortal.player.getID(); // 'Player123ABC'
- * @returns {string} The player's ID.
+ * @returns {string | null} The player's ID.
  */
-export function getID(): string {
+export function getID(): string | null {
     return config.player.id;
 }
 
@@ -18,9 +18,9 @@ export function getID(): string {
  * Gets the player's name on the platform.
  * @example
  * Wortal.player.getName(); // 'Ragnar Lothbrok'
- * @returns {string} The player's name.
+ * @returns {string | null} The player's name.
  */
-export function getName(): string {
+export function getName(): string | null {
     return config.player.name;
 }
 
@@ -28,9 +28,9 @@ export function getName(): string {
  * Gets the player's photo from the platform.
  * @example
  * Wortal.player.getPhoto(); // 'data:image/png;base64,iVBORw0KGgoAAAANSUh..' (base64 encoded image)
- * @returns {string} URL of base64 image for the player's photo.
+ * @returns {string | null} URL of base64 image for the player's photo.
  */
-export function getPhoto(): string {
+export function getPhoto(): string | null {
     return config.player.photo;
 }
 

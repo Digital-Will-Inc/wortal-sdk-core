@@ -19,15 +19,15 @@ import { config } from "./index";
  * @example
  * let id = Wortal.context.getId();
  * console.log(id);
- * @returns {string} String ID of the current context if one exists. Null if the player is playing solo.
- * Empty string if the game is being played on a platform that does not currently support context.
+ * @returns {string | null} String ID of the current context if one exists. Null if the player is playing solo or
+ * if the game is being played on a platform that does not currently support context.
  */
-export function getId(): string {
+export function getId(): string | null {
     let platform = config.session.platform;
     if (platform === "link" || platform === "viber" || platform === "facebook") {
         return (window as any).wortalGame.context.getID();
     } else {
-        return "";
+        return null;
     }
 }
 
@@ -36,7 +36,13 @@ export function getId(): string {
  * @example
  * let type = Wortal.context.getType();
  * console.log(type);
- * @returns {ContextType} The type of the current context. Possible values are: "SOLO", "THREAD", "GROUP", "POST". Default is "SOLO"
+ * @returns {ContextType} The type of the current context. Possible values:
+ * <ul>
+ * <li>SOLO - Default</li>
+ * <li>THREAD</li>
+ * <li>GROUP - Facebook only</li>
+ * <li>POST - Facebook only</li>
+ * </ul>
  */
 export function getType(): ContextType {
     let platform = config.session.platform;
@@ -107,7 +113,7 @@ export function getPlayersAsync(): Promise<ConnectedPlayer[]> {
  *     data: { exampleData: 'yourData' },
  * }).then(result => console.log(result)); // Contains shareCount with number of friends the share was sent to.
  * @param payload Object defining the share message.
- * @returns {Promise<number>} Number of friends the message was shared with.
+ * @returns {Promise<number>} Number of friends the message was shared with. Facebook will return 0.
  * @throws {ErrorMessage} See error.message for details.
  * <ul>
  * <li>NOT_SUPPORTED</li>
@@ -143,7 +149,11 @@ export function shareAsync(payload: ContextPayload): Promise<number> {
         // Call
         return (window as any).wortalGame.shareAsync(convertedPayload)
             .then((result: any) => {
-                return result.sharedCount;
+                if (result === undefined) {
+                    return 0;
+                } else {
+                    return result.sharedCount;
+                }
             })
             .catch((e: any) => {
                 throw rethrowPlatformError(e, "context.shareAsync");
@@ -326,7 +336,7 @@ export function chooseAsync(payload: ContextPayload): Promise<void> {
  * </ul>
  */
 export function switchAsync(contextId: string): Promise<void> {
-    //TODO: add options
+    //TODO: add switchSilentlyIfSolo param if necessary
     let platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (!isValidString(contextId)) {
@@ -355,7 +365,9 @@ export function switchAsync(contextId: string): Promise<void> {
  * resolve when the game has switched into the new context.</p>
  * @example
  * Wortal.context.createAsync('player123');
- * @param playerId ID of player to create a context with.
+ * @param playerId ID of player to create a context with, or a list of player IDs to create a context with. If not
+ * specified, a friend picker will be loaded to ask the player to create a context with friends to play with. Link
+ * and Viber will only accept a single, required player ID.
  * @returns {Promise<void>} A promise that resolves when the game has switched into the new context, or rejects otherwise.
  * @throws {ErrorMessage} See error.message for details.
  * <ul>
@@ -368,20 +380,27 @@ export function switchAsync(contextId: string): Promise<void> {
  * <li>CLIENT_UNSUPPORTED_OPERATION</li>
  * </ul>
  */
-export function createAsync(playerId: string): Promise<void> {
-    //TODO: add options
+export function createAsync(playerId?: string | string[]): Promise<void> {
     let platform = config.session.platform;
     return Promise.resolve().then(() => {
-        if (!isValidString(playerId)) {
-            throw invalidParams("playerId cannot be null or empty.", "context.createAsync");
-        }
+        // Link & Viber only support creating a context with a single player, and we must pass in a player ID.
+        if (platform === "link" || platform === "viber") {
+            if (!isValidString(playerId)) {
+                throw invalidParams("playerId cannot be null or empty.", "context.createAsync");
+            }
 
-        if (platform === "link" || platform === "viber" || platform === "facebook") {
             return (window as any).wortalGame.context.createAsync(playerId)
                 .catch((e: any) => {
                     throw rethrowPlatformError(e, "context.createAsync")
                 });
-        } else {
+        // Facebook supports creating a context with a single player, list of players, or no player (to open a friend picker).
+        } else if (platform === "facebook") {
+            return (window as any).wortalGame.context.createAsync(playerId)
+                .catch((e: any) => {
+                    throw rethrowPlatformError(e, "context.createAsync")
+                });
+        }
+        else {
             throw notSupported("Context API not currently supported on platform: " + platform, "context.createAsync");
         }
     });
