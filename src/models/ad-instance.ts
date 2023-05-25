@@ -25,8 +25,9 @@ interface IAdInstance {
 class AdInstance implements IAdInstance {
     adData: AdData;
     callbacks: AdCallbacks;
+    retryAttempts: number;
 
-    constructor(data: AdInstanceData) {
+    constructor(data: AdInstanceData, retryAttempts: number = 3) {
         this.adData = {
             adUnitId: data.adUnitId,
             description: data.description
@@ -36,6 +37,7 @@ class AdInstance implements IAdInstance {
             afterAd: data.afterAd,
             noFill: data.noFill,
         };
+        this.retryAttempts = retryAttempts;
     }
 
     show(): void { };
@@ -49,18 +51,44 @@ export class InterstitialAd extends AdInstance {
     }
 
     show(): void {
-        (window as any).triggerWortalAd(
-            this.adData.placementType,
-            this.adData.adUnitId,
-            this.adData.description, {
-                beforeAd: this.callbacks.beforeAd,
-                afterAd: this.callbacks.afterAd,
-                noShow: this.callbacks.noFill,
-                noBreak: this.callbacks.noFill,
-                // Preroll ads on Wortal platform only take the adBreakDone callback.
-                adBreakDone: this.adData.placementType === "preroll" ?
-                    this.callbacks.afterAd : () => console.log("[Wortal] AdBreakDone")
-            });
+        let attempt: number = 0;
+
+        const showAdFn = () => {
+            (window as any).triggerWortalAd(
+                this.adData.placementType,
+                this.adData.adUnitId,
+                this.adData.description,
+                {
+                    beforeAd: this.callbacks.beforeAd,
+                    afterAd: this.callbacks.afterAd,
+                    noShow: () => {
+                        if (attempt < this.retryAttempts && this.adData.placementType !== "preroll") {
+                            attempt++;
+                            console.log("[Wortal] Ad not filled, retrying.. \n Retry attempt: " + attempt);
+                            showAdFn();
+                        } else {
+                            console.log("[Wortal] Exceeded retry attempts. Show failed.");
+                            this.callbacks.noFill();
+                        }
+                    },
+                    noBreak: () => {
+                        if (attempt < this.retryAttempts&& this.adData.placementType !== "preroll") {
+                            attempt++;
+                            console.log("[Wortal] Ad not filled, retrying.. \n Retry attempt: " + attempt);
+                            showAdFn();
+                        } else {
+                            console.log("[Wortal] Exceeded retry attempts. Show failed.");
+                            this.callbacks.noFill();
+                        }
+                    },
+                    // Preroll ads on Wortal platform only take the adBreakDone callback.
+                    adBreakDone: this.adData.placementType === "preroll" ?
+                        this.callbacks.afterAd : () => console.log("[Wortal] AdBreakDone")
+                }
+            );
+        };
+
+        showAdFn();
     };
 }
 
@@ -74,19 +102,43 @@ export class RewardedAd extends AdInstance {
     }
 
     show(): void {
-        (window as any).triggerWortalAd(
-            this.adData.placementType,
-            this.adData.adUnitId,
-            this.adData.description, {
-                beforeAd: this.callbacks.beforeAd,
-                afterAd: this.callbacks.afterAd,
-                noShow: this.callbacks.noFill,
-                noBreak: this.callbacks.noFill,
-                adDismissed: this.callbacks.adDismissed,
-                adViewed: this.callbacks.adViewed,
-                // This needs to be called on Wortal platform to trigger the ad to be shown after it is filled.
-                beforeReward: function (showAdFn: Function) { showAdFn(); },
-                adBreakDone: () => console.log("[Wortal] AdBreakDone")
-            });
+        let attempt: number = 0;
+
+        const showAdFn = () => {
+            (window as any).triggerWortalAd(
+                this.adData.placementType,
+                this.adData.adUnitId,
+                this.adData.description, {
+                    beforeAd: this.callbacks.beforeAd,
+                    afterAd: this.callbacks.afterAd,
+                    adDismissed: this.callbacks.adDismissed,
+                    adViewed: this.callbacks.adViewed,
+                    noShow: () => {
+                        if (attempt < this.retryAttempts) {
+                            attempt++;
+                            console.log("[Wortal] Ad not filled, retrying.. \n Retry attempt: " + attempt);
+                            showAdFn();
+                        } else {
+                            console.log("[Wortal] Exceeded retry attempts. Show failed.");
+                            this.callbacks.noFill();
+                        }
+                    },
+                    noBreak: () => {
+                        if (attempt < this.retryAttempts) {
+                            attempt++;
+                            console.log("[Wortal] Ad not filled, retrying.. \n Retry attempt: " + attempt);
+                            showAdFn();
+                        } else {
+                            console.log("[Wortal] Exceeded retry attempts. Show failed.");
+                            this.callbacks.noFill();
+                        }
+                    },
+                    // This needs to be called on Wortal platform to trigger the ad to be shown after it is filled.
+                    beforeReward: function (showAdFn: Function) { showAdFn(); },
+                    adBreakDone: () => console.log("[Wortal] AdBreakDone")
+                });
+        }
+
+        showAdFn();
     };
 }
