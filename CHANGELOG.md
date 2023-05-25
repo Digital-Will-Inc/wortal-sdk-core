@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Retry ads on no fill
 
 ### Fixed
+- Facebook rewarded ad unit IDs not being parsed correctly
 - Context docs contains reference to FB SDK
 
 ## [1.4.0] - 2023-04-24
