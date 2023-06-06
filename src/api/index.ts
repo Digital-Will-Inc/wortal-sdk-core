@@ -40,6 +40,9 @@ export const session = _session;
 /** @hidden */
 export const config = new SDKConfig();
 
+/** Returns true if the SDK Core has been initialized. */
+export let isInitialized: boolean = false;
+
 declare var __VERSION__: string;
 
 /**
@@ -79,6 +82,7 @@ export function init(options?: InitializationOptions): void {
                     config.lateInit();
                     tryEnableIAP();
                     analytics.logGameStart();
+                    isInitialized = true;
                     console.log("[Wortal] SDK Core initialization complete.");
                 });
         // Wortal/GD shows preroll ad, removes cover after.
@@ -90,6 +94,7 @@ export function init(options?: InitializationOptions): void {
                 config.adConfig.setPrerollShown(true);
                 tryEnableIAP();
                 analytics.logGameStart();
+                isInitialized = true;
                 console.log("[Wortal] SDK Core initialization complete.");
             });
         // Debug or unknown platform.
@@ -97,6 +102,7 @@ export function init(options?: InitializationOptions): void {
             removeLoadingCover();
             config.lateInit();
             analytics.logGameStart();
+            isInitialized = true;
             console.log("[Wortal] SDK Core initialization complete.");
         }
     // Ads are blocked.
@@ -107,6 +113,7 @@ export function init(options?: InitializationOptions): void {
         config.adConfig.setAdBlocked(true);
         tryEnableIAP();
         analytics.logGameStart();
+        isInitialized = true;
         console.log("[Wortal] SDK Core initialization complete.");
     });
 
