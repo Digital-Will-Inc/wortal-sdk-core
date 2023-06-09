@@ -1,3 +1,4 @@
+import Wortal from "../index";
 import AnalyticsEvent from "../models/analytics-event";
 import { AnalyticsEventData } from "../types/analytics-event";
 import { invalidParams } from "../utils/error-handler";
@@ -266,4 +267,39 @@ export function logGameChoice(decision: string, choice: string): void {
 
     const event = new AnalyticsEvent(data);
     event.send();
+}
+
+/**
+ * Logs the player's entry point and traffic source data. This is called automatically when the SDK is initialized
+ * so there is no need to call this in the game.
+ */
+export function logTrafficSource(): void {
+    if (config.session.platform == "viber" || config.session.platform == "link") {
+        Wortal.session.getEntryPointAsync()
+            .then((entryPoint) => {
+                let data: AnalyticsEventData = {
+                    name: "TrafficSource",
+                    features: {
+                        entryPoint: entryPoint,
+                        data: JSON.stringify(Wortal.session.getTrafficSource()),
+                    }
+                };
+                const event = new AnalyticsEvent(data);
+                event.send();
+            })
+            .catch((err) => {
+                // Even if we get an error we should still try and send the traffic source.
+                // We don't need to rethrow the error because the SDK plugins should not be calling this API.
+                console.log(err);
+                let data: AnalyticsEventData = {
+                    name: "TrafficSource",
+                    features: {
+                        entryPoint: "unknown/error",
+                        data: JSON.stringify(Wortal.session.getTrafficSource()),
+                    }
+                };
+                const event = new AnalyticsEvent(data);
+                event.send();
+            });
+    }
 }

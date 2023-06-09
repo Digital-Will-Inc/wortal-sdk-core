@@ -1,6 +1,6 @@
 /** @hidden */
 export type AnalyticsEventType = 'GameStart' | 'GameEnd' | 'LevelStart' | 'LevelEnd' | 'TutorialStart' | 'TutorialEnd'
-    | 'LevelUp' | 'PostScore' | 'GameChoice'
+    | 'LevelUp' | 'PostScore' | 'GameChoice' | 'TrafficSource'
 
 /** @hidden */
 export interface AnalyticsEventData {
