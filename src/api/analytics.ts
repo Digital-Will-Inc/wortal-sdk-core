@@ -1,3 +1,4 @@
+import Wortal from "../index";
 import AnalyticsEvent from "../models/analytics-event";
 import { AnalyticsEventData } from "../types/analytics-event";
 import { invalidParams } from "../utils/error-handler";
@@ -12,7 +13,7 @@ export function logGameStart(): void {
     config.game.startGameTimer();
 
     let data: AnalyticsEventData = {
-        name: 'GameStart',
+        name: "GameStart",
         features: {
             game: config.session.gameId,
             browser: config.session.browser,
@@ -35,7 +36,7 @@ export function logGameStart(): void {
  */
 export function logGameEnd(): void {
     let data: AnalyticsEventData = {
-        name: 'GameEnd',
+        name: "GameEnd",
         features: {
             game: config.session.gameId,
             timePlayed: config.game.gameTimer,
@@ -71,7 +72,7 @@ export function logLevelStart(level: string | number): void {
     config.game.startLevelTimer();
 
     let data: AnalyticsEventData = {
-        name: 'LevelStart',
+        name: "LevelStart",
         features: {
             game: config.session.gameId,
             level: level,
@@ -113,7 +114,7 @@ export function logLevelEnd(level: string | number, score: string | number, wasC
     }
 
     let data: AnalyticsEventData = {
-        name: 'LevelEnd',
+        name: "LevelEnd",
         features: {
             game: config.session.gameId,
             level: level,
@@ -140,7 +141,7 @@ export function logTutorialStart(tutorial: string): void {
     config.game.startLevelTimer();
 
     let data: AnalyticsEventData = {
-        name: 'TutorialStart',
+        name: "TutorialStart",
         features: {
             game: config.session.gameId,
             tutorial: tutorial,
@@ -169,7 +170,7 @@ export function logTutorialEnd(tutorial: string, wasCompleted: boolean): void {
     }
 
     let data: AnalyticsEventData = {
-        name: 'TutorialEnd',
+        name: "TutorialEnd",
         features: {
             game: config.session.gameId,
             tutorial: tutorial,
@@ -198,7 +199,7 @@ export function logLevelUp(level: string | number): void {
     }
 
     let data: AnalyticsEventData = {
-        name: 'LevelUp',
+        name: "LevelUp",
         features: {
             game: config.session.gameId,
             level: level,
@@ -225,7 +226,7 @@ export function logScore(score: string | number): void {
     }
 
     let data: AnalyticsEventData = {
-        name: 'PostScore',
+        name: "PostScore",
         features: {
             game: config.session.gameId,
             score: score,
@@ -256,7 +257,7 @@ export function logGameChoice(decision: string, choice: string): void {
     }
 
     let data: AnalyticsEventData = {
-        name: 'GameChoice',
+        name: "GameChoice",
         features: {
             game: config.session.gameId,
             decision: decision,
@@ -266,4 +267,39 @@ export function logGameChoice(decision: string, choice: string): void {
 
     const event = new AnalyticsEvent(data);
     event.send();
+}
+
+/**
+ * Logs the player's entry point and traffic source data. This is called automatically when the SDK is initialized
+ * so there is no need to call this in the game.
+ */
+export function logTrafficSource(): void {
+    if (config.session.platform == "viber" || config.session.platform == "link") {
+        Wortal.session.getEntryPointAsync()
+            .then((entryPoint) => {
+                let data: AnalyticsEventData = {
+                    name: "TrafficSource",
+                    features: {
+                        entryPoint: entryPoint,
+                        data: JSON.stringify(Wortal.session.getTrafficSource()),
+                    }
+                };
+                const event = new AnalyticsEvent(data);
+                event.send();
+            })
+            .catch((err) => {
+                // Even if we get an error we should still try and send the traffic source.
+                // We don't need to rethrow the error because the SDK plugins should not be calling this API.
+                console.log(err);
+                let data: AnalyticsEventData = {
+                    name: "TrafficSource",
+                    features: {
+                        entryPoint: "unknown/error",
+                        data: JSON.stringify(Wortal.session.getTrafficSource()),
+                    }
+                };
+                const event = new AnalyticsEvent(data);
+                event.send();
+            });
+    }
 }

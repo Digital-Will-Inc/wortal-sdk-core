@@ -81,6 +81,7 @@ export function init(options?: InitializationOptions): void {
                     (window as any).wortalGame.startGameAsync();
                     config.lateInit();
                     tryEnableIAP();
+                    analytics.logTrafficSource(); // Only supported on Link/Viber.
                     analytics.logGameStart();
                     isInitialized = true;
                     console.log("[Wortal] SDK Core initialization complete.");
