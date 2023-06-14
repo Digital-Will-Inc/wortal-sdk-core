@@ -267,12 +267,8 @@ export function updateAsync(payload: ContextPayload): Promise<void> {
  * to switch into that context, and resolve if successful. Otherwise, if the player exits the menu or the client fails
  * to switch into the new context, this function will reject.
  * @example
- * Wortal.context.chooseAsync({
- *     image: 'data:base64Image',
- *     text: 'Invite text',
- *     caption: 'Play',
- *     data: { exampleData: 'yourData' },
- * });
+ * Wortal.context.chooseAsync()
+ *  .then(console.log(Wortal.context.getId()));
  * @param payload Object defining the options for the context choice.
  * @returns {Promise<void>} A promise that resolves with an array of player IDs of the players that were invited.
  * @throws {ErrorMessage} See error.message for details.
@@ -286,33 +282,31 @@ export function updateAsync(payload: ContextPayload): Promise<void> {
  * <li>CLIENT_UNSUPPORTED_OPERATION</li>
  * </ul>
  */
-export function chooseAsync(payload: ContextPayload): Promise<void> {
+export function chooseAsync(payload?: ContextPayload): Promise<void> {
     let platform = config.session.platform;
     return Promise.resolve().then(() => {
-        // Validate
-        if (!isValidPayloadText(payload.text)) {
-            throw invalidParams("Text cannot be null or empty.", "context.chooseAsync");
-        } else if (!isValidPayloadImage(payload.image)) {
-            throw invalidParams("Image needs to be a data URL for a base64 encoded image.", "context.chooseAsync");
-        }
+        if (typeof payload !== "undefined") {
+            let convertedPayload: ContextPayload;
+            if (platform === "link") {
+                convertedPayload = contextToLinkMessagePayload(payload);
+            } else if (platform === "viber") {
+                convertedPayload = contextToViberChoosePayload(payload);
+            } else if (platform === "facebook") {
+                convertedPayload = contextToFBInstantChoosePayload(payload);
+            } else {
+                throw notSupported("Context API not currently supported on platform: " + platform, "context.chooseAsync");
+            }
 
-        // Convert
-        let convertedPayload: ContextPayload;
-        if (platform === "link") {
-            convertedPayload = contextToLinkMessagePayload(payload);
-        } else if (platform === "viber") {
-            convertedPayload = contextToViberChoosePayload(payload);
-        } else if (platform === "facebook") {
-            convertedPayload = contextToFBInstantChoosePayload(payload);
+            return (window as any).wortalGame.context.chooseAsync(convertedPayload)
+                .catch((e: any) => {
+                    throw rethrowPlatformError(e, "context.chooseAsync");
+                });
         } else {
-            throw notSupported("Context API not currently supported on platform: " + platform, "context.chooseAsync");
+            return (window as any).wortalGame.context.chooseAsync()
+                .catch((e: any) => {
+                    throw rethrowPlatformError(e, "context.chooseAsync");
+                });
         }
-
-        // Call
-        return (window as any).wortalGame.context.chooseAsync(convertedPayload)
-            .catch((e: any) => {
-                throw rethrowPlatformError(e, "context.chooseAsync");
-            });
     });
 }
 
