@@ -1,3 +1,4 @@
+import { notSupported } from "../utils/error-handler";
 import * as _ads from './ads';
 import * as _analytics from './analytics';
 import * as _context from './context';
@@ -86,7 +87,7 @@ export function init(options?: InitializationOptions): void {
                     isInitialized = true;
                     console.log("[Wortal] SDK Core initialization complete.");
                 });
-        // Wortal/GD shows preroll ad, removes cover after.
+            // Wortal/GD shows preroll ad, removes cover after.
         } else if (platform === "wortal" || platform === "gd") {
             config.lateInit();
             ads.showInterstitial("preroll", "Preroll", () => {
@@ -98,7 +99,7 @@ export function init(options?: InitializationOptions): void {
                 isInitialized = true;
                 console.log("[Wortal] SDK Core initialization complete.");
             });
-        // Debug or unknown platform.
+            // Debug or unknown platform.
         } else {
             removeLoadingCover();
             config.lateInit();
@@ -106,7 +107,7 @@ export function init(options?: InitializationOptions): void {
             isInitialized = true;
             console.log("[Wortal] SDK Core initialization complete.");
         }
-    // Ads are blocked.
+        // Ads are blocked.
     }, () => {
         console.log("[Wortal] Ad blocker detected.");
         removeLoadingCover();
@@ -160,6 +161,27 @@ export function onPause(callback: Function): void {
             });
         }
     }
+}
+
+/**
+ * Requests and performs haptic feedback on supported devices.
+ * @returns {Promise<void>} Haptic feedback requested successfully
+ * @throws {ErrorMessage} See error.message for details.
+ * <ul>
+ * <li>NOT_SUPPORTED</li>
+ * <li>CLIENT_UNSUPPORTED_OPERATION</li>
+ * <li>INVALID_OPERATION</li>
+ * </ul>
+ */
+export function performHapticFeedbackAsync(): Promise<void> {
+    let platform = config.session.platform;
+    return Promise.resolve().then(() => {
+        if (platform === "facebook") {
+            return (window as any).wortalGame.performHapticFeedbackAsync();
+        } else {
+            throw notSupported("Haptic feedback not supported on platform: " + platform, "performHapticFeedbackAsync");
+        }
+    });
 }
 
 function tryEnableIAP(): void {

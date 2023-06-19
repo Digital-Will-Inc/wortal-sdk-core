@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Retry ads on no fill
 - Log traffic source on initialization
+- Haptic feedback
 
 ### Fixed
 - Facebook rewarded ad unit IDs not being parsed correctly
