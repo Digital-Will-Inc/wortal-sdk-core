@@ -41,17 +41,15 @@ export const session = _session;
 /** @hidden */
 export const config = new SDKConfig();
 
-/** Returns true if the SDK Core has been initialized. */
+/**
+ * Returns true if the SDK Core has been initialized.
+ * */
 export let isInitialized: boolean = false;
 
 declare var __VERSION__: string;
 
-/**
- * Initializes the SDK. This is called automatically after the Wortal backend interface script is loaded. There is
- * no need to call this from the game.
- * @param options Initialization options to include. Currently not used.
- */
-export function init(options?: InitializationOptions): void {
+/** @hidden */
+export function _init(options?: InitializationOptions): void {
     if (config.isInit) {
         console.warn("[Wortal] SDK Core already initialized.");
         return;
@@ -64,11 +62,11 @@ export function init(options?: InitializationOptions): void {
     // Link/Viber/FB use their own loading covers.
     if (document.readyState === "loading") {
         if (platform !== "link" && platform !== "viber" && platform !== "facebook") {
-            document.addEventListener("DOMContentLoaded", addLoadingCover);
+            document.addEventListener("DOMContentLoaded", _addLoadingCover);
         }
     } else {
         if (platform !== "link" && platform !== "viber" && platform !== "facebook") {
-            addLoadingCover();
+            _addLoadingCover();
         }
     }
 
@@ -81,9 +79,9 @@ export function init(options?: InitializationOptions): void {
                 .then(() => {
                     (window as any).wortalGame.startGameAsync();
                     config.lateInit();
-                    tryEnableIAP();
-                    analytics.logTrafficSource();
-                    analytics.logGameStart();
+                    _tryEnableIAP();
+                    analytics._logTrafficSource();
+                    analytics._logGameStart();
                     isInitialized = true;
                     console.log("[Wortal] SDK Core initialization complete.");
                 });
@@ -92,36 +90,36 @@ export function init(options?: InitializationOptions): void {
             config.lateInit();
             ads.showInterstitial("preroll", "Preroll", () => {
             }, () => {
-                removeLoadingCover();
+                _removeLoadingCover();
                 config.adConfig.setPrerollShown(true);
-                tryEnableIAP();
-                analytics.logGameStart();
+                _tryEnableIAP();
+                analytics._logGameStart();
                 isInitialized = true;
                 console.log("[Wortal] SDK Core initialization complete.");
             });
             // Debug or unknown platform.
         } else {
-            removeLoadingCover();
+            _removeLoadingCover();
             config.lateInit();
-            analytics.logGameStart();
+            analytics._logGameStart();
             isInitialized = true;
             console.log("[Wortal] SDK Core initialization complete.");
         }
         // Ads are blocked.
     }, () => {
         console.log("[Wortal] Ad blocker detected.");
-        removeLoadingCover();
+        _removeLoadingCover();
         config.lateInit();
         config.adConfig.setAdBlocked(true);
-        tryEnableIAP();
-        analytics.logGameStart();
+        _tryEnableIAP();
+        analytics._logGameStart();
         isInitialized = true;
         console.log("[Wortal] SDK Core initialization complete.");
     });
 
     window.addEventListener("visibilitychange", () => {
         if (document.visibilityState === "hidden") {
-            analytics.logGameEnd();
+            analytics._logGameEnd();
         }
     });
 }
@@ -184,7 +182,7 @@ export function performHapticFeedbackAsync(): Promise<void> {
     });
 }
 
-function tryEnableIAP(): void {
+function _tryEnableIAP(): void {
     let platform = config.session.platform;
     if (platform === "viber" || platform === "facebook") {
         (window as any).wortalGame.payments.onReady(() => {
@@ -196,14 +194,14 @@ function tryEnableIAP(): void {
     }
 }
 
-function addLoadingCover(): void {
+function _addLoadingCover(): void {
     let cover = document.createElement("div");
     cover.id = "loading-cover";
     cover.style.cssText = "background: #000000; width: 100%; height: 100%; position: fixed; z-index: 100;";
     document.body.prepend(cover);
 }
 
-function removeLoadingCover(): void {
+function _removeLoadingCover(): void {
     if (document.getElementById("loading-cover")) {
         document.getElementById("loading-cover")!.style.display = "none";
     }

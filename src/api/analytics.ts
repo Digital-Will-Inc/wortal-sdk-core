@@ -6,48 +6,6 @@ import { isValidNumber, isValidString } from "../utils/validators";
 import { config } from "./index";
 
 /**
- * Logs the start of the game. This is called automatically when the SDK is initialized so there is no need
- * to call this in the game.
- */
-export function logGameStart(): void {
-    config.game.startGameTimer();
-
-    let data: AnalyticsEventData = {
-        name: 'GameStart',
-        features: {
-            game: config.session.gameId,
-            browser: config.session.browser,
-            platform: config.session.platform,
-            country: config.session.country,
-            player: config.player.id,
-            isFirstPlay: config.player.isFirstPlay,
-            daysSinceFirstPlay: config.player.daysSinceFirstPlay,
-            isAdBlocked: config.adConfig.isAdBlocked,
-        }
-    };
-
-    const event = new AnalyticsEvent(data);
-    event.send();
-}
-
-/**
- * Logs the end of the game. This is called automatically when the document state changes to hidden so there is no
- * need to call this in the game.
- */
-export function logGameEnd(): void {
-    let data: AnalyticsEventData = {
-        name: 'GameEnd',
-        features: {
-            game: config.session.gameId,
-            timePlayed: config.game.gameTimer,
-        }
-    };
-
-    const event = new AnalyticsEvent(data);
-    event.send();
-}
-
-/**
  * Logs the start of a level.
  * @example
  * Wortal.analytics.logLevelStart('Level 3');
@@ -75,6 +33,9 @@ export function logLevelStart(level: string | number): void {
         name: 'LevelStart',
         features: {
             game: config.session.gameId,
+            player: config.player.id,
+            platform: config.session.platform,
+            country: config.session.country,
             level: level,
         }
     };
@@ -117,6 +78,9 @@ export function logLevelEnd(level: string | number, score: string | number, wasC
         name: 'LevelEnd',
         features: {
             game: config.session.gameId,
+            player: config.player.id,
+            platform: config.session.platform,
+            country: config.session.country,
             level: level,
             score: score,
             wasCompleted: wasCompleted,
@@ -144,6 +108,9 @@ export function logTutorialStart(tutorial: string): void {
         name: 'TutorialStart',
         features: {
             game: config.session.gameId,
+            player: config.player.id,
+            platform: config.session.platform,
+            country: config.session.country,
             tutorial: tutorial,
         }
     };
@@ -173,6 +140,9 @@ export function logTutorialEnd(tutorial: string, wasCompleted: boolean): void {
         name: 'TutorialEnd',
         features: {
             game: config.session.gameId,
+            player: config.player.id,
+            platform: config.session.platform,
+            country: config.session.country,
             tutorial: tutorial,
             wasCompleted: wasCompleted,
             time: config.game.levelTimer,
@@ -202,6 +172,9 @@ export function logLevelUp(level: string | number): void {
         name: 'LevelUp',
         features: {
             game: config.session.gameId,
+            player: config.player.id,
+            platform: config.session.platform,
+            country: config.session.country,
             level: level,
         }
     };
@@ -229,6 +202,9 @@ export function logScore(score: string | number): void {
         name: 'PostScore',
         features: {
             game: config.session.gameId,
+            player: config.player.id,
+            platform: config.session.platform,
+            country: config.session.country,
             score: score,
         }
     };
@@ -260,6 +236,9 @@ export function logGameChoice(decision: string, choice: string): void {
         name: 'GameChoice',
         features: {
             game: config.session.gameId,
+            player: config.player.id,
+            platform: config.session.platform,
+            country: config.session.country,
             decision: decision,
             choice: choice,
         }
@@ -270,10 +249,159 @@ export function logGameChoice(decision: string, choice: string): void {
 }
 
 /**
- * Logs the player's entry point and traffic source data. This is called automatically when the SDK is initialized
- * so there is no need to call this in the game.
+ * Logs the player's social invite.
+ * @example
+ * Wortal.analytics.logSocialInvite('Leaderboard View');
+ * @param placement Placement of the invite.
  */
-export function logTrafficSource(): void {
+export function logSocialInvite(placement: string): void {
+    if (!isValidString(placement)) {
+        throw invalidParams("placement cannot be null or empty", "analytics.logSocialInvite");
+    }
+
+    let data: AnalyticsEventData = {
+        name: 'SocialInvite',
+        features: {
+            game: config.session.gameId,
+            player: config.player.id,
+            platform: config.session.platform,
+            country: config.session.country,
+            placement: placement,
+        }
+    };
+
+    const event = new AnalyticsEvent(data);
+    event.send();
+}
+
+/**
+ * Logs the player's social share.
+ * @example
+ * Wortal.analytics.logSocialShare('Game Over UI');
+ * @param placement Placement of the share.
+ */
+export function logSocialShare(placement: string): void {
+    if (!isValidString(placement)) {
+        throw invalidParams("placement cannot be null or empty", "analytics.logSocialShare");
+    }
+
+    let data: AnalyticsEventData = {
+        name: 'SocialShare',
+        features: {
+            game: config.session.gameId,
+            player: config.player.id,
+            platform: config.session.platform,
+            country: config.session.country,
+            placement: placement,
+        }
+    };
+
+    const event = new AnalyticsEvent(data);
+    event.send();
+}
+
+/**
+ * Logs the player's purchase of an in-app product.
+ * @example
+ * Wortal.analytics.logPurchase('com.wortal.game.gems.100', '100 gems from shop sale');
+ * @param productID ID of the product the player purchased.
+ * @param details Additional details about the purchase.
+ * @throws {ErrorMessage} See error.message for more details.
+ * <ul>
+ * <li>INVALID_PARAM</li>
+ * </ul>
+ */
+export function logPurchase(productID: string, details?: string): void {
+    if (!isValidString(productID)) {
+        throw invalidParams("productID cannot be null or empty", "analytics.logPurchase");
+    }
+
+    let data: AnalyticsEventData = {
+        name: 'Purchase',
+        features: {
+            game: config.session.gameId,
+            player: config.player.id,
+            platform: config.session.platform,
+            country: config.session.country,
+            productID: productID,
+            ...details && {details},
+        }
+    }
+
+    const event = new AnalyticsEvent(data);
+    event.send();
+}
+
+/**
+ * Logs the player's purchase of an in-app subscription.
+ * @example
+ * Wortal.analytics.logPurchaseSubscription('com.wortal.game.seasonpass', 'Season pass from level up reward UI');
+ * @param productID ID of the subscription product the player purchased.
+ * @param details Additional details about the purchase.
+ * @throws {ErrorMessage} See error.message for more details.
+ * <ul>
+ * <li>INVALID_PARAM</li>
+ * </ul>
+ */
+export function logPurchaseSubscription(productID: string, details?: string): void {
+    if (!isValidString(productID)) {
+        throw invalidParams("productID cannot be null or empty", "analytics.logPurchaseSubscription");
+    }
+
+    let data: AnalyticsEventData = {
+        name: 'PurchaseSubscription',
+        features: {
+            game: config.session.gameId,
+            player: config.player.id,
+            platform: config.session.platform,
+            country: config.session.country,
+            productID: productID,
+            ...details && {details},
+        }
+    }
+
+    const event = new AnalyticsEvent(data);
+    event.send();
+}
+
+/** @hidden */
+export function _logGameStart(): void {
+    config.game.startGameTimer();
+
+    let data: AnalyticsEventData = {
+        name: 'GameStart',
+        features: {
+            game: config.session.gameId,
+            browser: config.session.browser,
+            platform: config.session.platform,
+            country: config.session.country,
+            player: config.player.id,
+            isFirstPlay: config.player.isFirstPlay,
+            daysSinceFirstPlay: config.player.daysSinceFirstPlay,
+            isAdBlocked: config.adConfig.isAdBlocked,
+        }
+    };
+
+    const event = new AnalyticsEvent(data);
+    event.send();
+}
+
+/** @hidden */
+export function _logGameEnd(): void {
+    let data: AnalyticsEventData = {
+        name: 'GameEnd',
+        features: {
+            game: config.session.gameId,
+            timePlayed: config.game.gameTimer,
+        }
+    };
+
+    const event = new AnalyticsEvent(data);
+    event.send();
+}
+
+/** @hidden */
+export function _logTrafficSource(): void {
     if (config.session.platform == "viber" || config.session.platform == "link") {
         Wortal.session.getEntryPointAsync()
             .then((entryPoint) => {
@@ -288,6 +416,7 @@ export function logTrafficSource(): void {
                         data: JSON.stringify(Wortal.session.getTrafficSource()),
                     }
                 };
+
                 const event = new AnalyticsEvent(data);
                 event.send();
             })
@@ -306,6 +435,7 @@ export function logTrafficSource(): void {
                         data: JSON.stringify(Wortal.session.getTrafficSource()),
                     }
                 };
+
                 const event = new AnalyticsEvent(data);
                 event.send();
             });
