@@ -1,14 +1,11 @@
 import ConnectedPlayer from "../models/connected-player";
-import { ContextPayload, ContextSizeResponse, ContextType } from "../types/context";
+import { ContextSizeResponse, ContextType } from "../types/context";
+import { ChoosePayload, LinkSharePayload, SharePayload, UpdatePayload } from "../types/payloads";
 import { PlayerData } from "../types/player";
 import {
-    contextToFBInstantChoosePayload,
-    contextToFBInstantSharePayload,
-    contextToFBInstantUpdatePayload,
-    contextToLinkMessagePayload,
-    contextToViberChoosePayload,
-    contextToViberSharePayload,
-    contextToViberUpdatePayload
+    convertToFBInstantSharePayload,
+    convertToFBInstantUpdatePayload,
+    convertToLinkMessagePayload,
 } from "../utils/converters";
 import { invalidParams, notSupported, rethrowPlatformError } from "../utils/error-handler";
 import { isValidPayloadImage, isValidPayloadText, isValidString } from "../utils/validators";
@@ -23,7 +20,7 @@ import { config } from "./index";
  * if the game is being played on a platform that does not currently support context.
  */
 export function getId(): string | null {
-    let platform = config.session.platform;
+    const platform = config.session.platform;
     if (platform === "link" || platform === "viber" || platform === "facebook") {
         return (window as any).wortalGame.context.getID();
     } else {
@@ -45,7 +42,7 @@ export function getId(): string | null {
  * </ul>
  */
 export function getType(): ContextType {
-    let platform = config.session.platform;
+    const platform = config.session.platform;
     if (platform === "link" || platform === "viber" || platform === "facebook") {
         return (window as any).wortalGame.context.getType();
     } else {
@@ -73,29 +70,29 @@ export function getType(): ContextType {
  * </ul>
  */
 export function getPlayersAsync(): Promise<ConnectedPlayer[]> {
-    let platform = config.session.platform;
+    const platform = config.session.platform;
+    if (platform === "wortal" || platform === "gd") {
+        throw notSupported(`context.getPlayersAsync not currently supported on platform: ${platform}`, "context.getPlayersAsync");
+    }
+
     return Promise.resolve().then(() => {
-        if (platform === "link" || platform === "viber" || platform === "facebook") {
-            return (window as any).wortalGame.context.getPlayersAsync()
-                .then((players: any) => {
-                    return players.map((player: any) => {
-                        let playerData: PlayerData = {
-                            id: player.getID(),
-                            name: player.getName(),
-                            photo: player.getPhoto(),
-                            // Facebook's player model doesn't have the hasPlayed flag.
-                            isFirstPlay: platform === "facebook" ? false : !player.hasPlayed,
-                            daysSinceFirstPlay: 0,
-                        };
-                        return new ConnectedPlayer(playerData);
-                    });
-                })
-                .catch((e: any) => {
-                    throw rethrowPlatformError(e, "context.getPlayersAsync");
+        return (window as any).wortalGame.context.getPlayersAsync()
+            .then((players: any) => {
+                return players.map((player: any) => {
+                    let playerData: PlayerData = {
+                        id: player.getID(),
+                        name: player.getName(),
+                        photo: player.getPhoto(),
+                        // Facebook's player model doesn't have the hasPlayed flag.
+                        isFirstPlay: platform === "facebook" ? false : !player.hasPlayed,
+                        daysSinceFirstPlay: 0,
+                    };
+                    return new ConnectedPlayer(playerData);
                 });
-        } else {
-            throw notSupported("Context API not currently supported on platform: " + platform, "context.getPlayersAsync");
-        }
+            })
+            .catch((e: any) => {
+                throw rethrowPlatformError(e, "context.getPlayersAsync");
+            });
     });
 }
 
@@ -109,11 +106,11 @@ export function getPlayersAsync(): Promise<ConnectedPlayer[]> {
  * Wortal.context.shareAsync({
  *     image: 'data:base64Image',
  *     text: 'Share text',
- *     caption: 'Play',
+ *     cta: 'Play',
  *     data: { exampleData: 'yourData' },
  * }).then(result => console.log(result)); // Contains shareCount with number of friends the share was sent to.
- * @param payload Object defining the share message.
- * @returns {Promise<number>} Number of friends the message was shared with. Facebook will return 0.
+ * @param {SharePayload} payload Object defining the share message.
+ * @returns {Promise<number>} Number of friends the message was shared with. Facebook will always return 0.
  * @throws {ErrorMessage} See error.message for details.
  * <ul>
  * <li>NOT_SUPPORTED</li>
@@ -124,32 +121,29 @@ export function getPlayersAsync(): Promise<ConnectedPlayer[]> {
  * <li>INVALID_OPERATION</li>
  * </ul>
  */
-export function shareAsync(payload: ContextPayload): Promise<number> {
-    let platform = config.session.platform;
+export function shareAsync(payload: SharePayload): Promise<number> {
+    const platform = config.session.platform;
+    if (platform === "wortal" || platform === "gd") {
+        throw notSupported(`context.shareAsync not currently supported on platform: ${platform}`, "context.shareAsync");
+    }
+    if (!isValidPayloadText(payload.text)) {
+        throw invalidParams("Text cannot be null or empty.", "context.shareAsync");
+    }
+    if (!isValidPayloadImage(payload.image)) {
+        throw invalidParams("Image needs to be a data URL for a base64 encoded image.", "context.shareAsync");
+    }
+
     return Promise.resolve().then(() => {
-        // Validate
-        if (!isValidPayloadText(payload.text)) {
-            throw invalidParams("Text cannot be null or empty.", "context.shareAsync");
-        } else if (!isValidPayloadImage(payload.image)) {
-            throw invalidParams("Image needs to be a data URL for a base64 encoded image.", "context.shareAsync");
-        }
-
-        // Convert
-        let convertedPayload: ContextPayload;
+        let convertedPayload: any = payload;
         if (platform === "link") {
-            convertedPayload = contextToLinkMessagePayload(payload);
-        } else if (platform === "viber") {
-            convertedPayload = contextToViberSharePayload(payload);
+            convertedPayload = convertToLinkMessagePayload(payload);
         } else if (platform === "facebook") {
-            convertedPayload = contextToFBInstantSharePayload(payload);
-        } else {
-            throw notSupported("Context API not currently supported on platform: " + platform, "context.shareAsync");
+            convertedPayload = convertToFBInstantSharePayload(payload);
         }
 
-        // Call
         return (window as any).wortalGame.shareAsync(convertedPayload)
             .then((result: any) => {
-                if (result === undefined) {
+                if (typeof result === "undefined") {
                     return 0;
                 } else {
                     return result.sharedCount;
@@ -187,26 +181,17 @@ export function shareAsync(payload: ContextPayload): Promise<number> {
  * <li>INVALID_OPERATION</li>
  * </ul>
  */
-export function shareLinkAsync(payload: ContextPayload): Promise<void> {
-    let platform = config.session.platform;
+export function shareLinkAsync(payload: LinkSharePayload): Promise<void> {
+    const platform = config.session.platform;
+    if (platform !== "facebook") {
+        throw notSupported(`context.shareLinkAsync not currently supported on platform: ${platform}`, "context.shareLinkAsync");
+    }
+    if (typeof payload.data === "undefined") {
+        throw invalidParams("Data cannot be null or empty.", "context.shareLinkAsync");
+    }
+
     return Promise.resolve().then(() => {
-        // Validate
-        if (!isValidPayloadText(payload.text)) {
-            throw invalidParams("Text cannot be null or empty.", "context.shareLinkAsync");
-        } else if (!isValidPayloadImage(payload.image)) {
-            throw invalidParams("Image needs to be a data URL for a base64 encoded image.", "context.shareLinkAsync");
-        }
-
-        // Convert
-        let convertedPayload: ContextPayload;
-        if (platform === "facebook") {
-            convertedPayload = contextToFBInstantSharePayload(payload);
-        } else {
-            throw notSupported("Context API not currently supported on platform: " + platform, "context.shareLinkAsync");
-        }
-
-        // Call
-        return (window as any).wortalGame.shareLinkAsync(convertedPayload)
+        return (window as any).wortalGame.shareLinkAsync(payload)
             .catch((e: any) => {
                 throw rethrowPlatformError(e, "context.shareLinkAsync");
             });
@@ -215,14 +200,16 @@ export function shareLinkAsync(payload: ContextPayload): Promise<void> {
 
 /**
  * Posts an update to the current context. Will send a message to the chat thread of the current context.
+ * When players launch the game from this message, those game sessions will be able to access the specified blob
+ * of data through Wortal.session.getEntryPointData().
  * @example
  * Wortal.context.updateAsync({
  *     image: 'data:base64Image',
  *     text: 'Update text',
- *     caption: 'Play',
+ *     cta: 'Play',
  *     data: { exampleData: 'yourData' },
  * });
- * @param payload Object defining the update message.
+ * @param {UpdatePayload} payload Object defining the update message.
  * @returns {Promise<void>} Promise that resolves when the update is sent.
  * @throws {ErrorMessage} See error.message for details.
  * <ul>
@@ -232,29 +219,26 @@ export function shareLinkAsync(payload: ContextPayload): Promise<void> {
  * <li>INVALID_OPERATION</li>
  * </ul>
  */
-export function updateAsync(payload: ContextPayload): Promise<void> {
-    let platform = config.session.platform;
+export function updateAsync(payload: UpdatePayload): Promise<void> {
+    const platform = config.session.platform;
+    if (platform === "wortal" || platform === "gd") {
+        throw notSupported(`context.updateAsync not currently supported on platform: ${platform}`, "context.updateAsync");
+    }
+    if (!isValidPayloadText(payload.text)) {
+        throw invalidParams("Text cannot be null or empty.", "context.updateAsync");
+    }
+    if (!isValidPayloadImage(payload.image)) {
+        throw invalidParams("Image needs to be a data URL for a base64 encoded image.", "context.updateAsync");
+    }
+
     return Promise.resolve().then(() => {
-        // Validate
-        if (!isValidPayloadText(payload.text)) {
-            throw invalidParams("Text cannot be null or empty.", "context.updateAsync");
-        } else if (!isValidPayloadImage(payload.image)) {
-            throw invalidParams("Image needs to be a data URL for a base64 encoded image.", "context.updateAsync");
-        }
-
-        // Convert
-        let convertedPayload: ContextPayload;
+        let convertedPayload: any = payload;
         if (platform === "link") {
-            convertedPayload = contextToLinkMessagePayload(payload);
-        } else if (platform === "viber") {
-            convertedPayload = contextToViberUpdatePayload(payload);
+            convertedPayload = convertToLinkMessagePayload(payload);
         } else if (platform === "facebook") {
-            convertedPayload = contextToFBInstantUpdatePayload(payload);
-        } else {
-            throw notSupported("Context API not currently supported on platform: " + platform, "context.updateAsync");
+            convertedPayload = convertToFBInstantUpdatePayload(payload);
         }
 
-        // Call
         return (window as any).wortalGame.updateAsync(convertedPayload)
             .catch((e: any) => {
                 throw rethrowPlatformError(e, "context.updateAsync");
@@ -269,7 +253,7 @@ export function updateAsync(payload: ContextPayload): Promise<void> {
  * @example
  * Wortal.context.chooseAsync()
  *  .then(console.log(Wortal.context.getId()));
- * @param payload Object defining the options for the context choice.
+ * @param {ChoosePayload} payload Object defining the options for the context choice.
  * @returns {Promise<void>} A promise that resolves with an array of player IDs of the players that were invited.
  * @throws {ErrorMessage} See error.message for details.
  * <ul>
@@ -282,27 +266,20 @@ export function updateAsync(payload: ContextPayload): Promise<void> {
  * <li>CLIENT_UNSUPPORTED_OPERATION</li>
  * </ul>
  */
-export function chooseAsync(payload?: ContextPayload): Promise<void> {
-    let platform = config.session.platform;
-    return Promise.resolve().then(() => {
-        if (typeof payload !== "undefined") {
-            let convertedPayload: ContextPayload;
-            if (platform === "link") {
-                convertedPayload = contextToLinkMessagePayload(payload);
-            } else if (platform === "viber") {
-                convertedPayload = contextToViberChoosePayload(payload);
-            } else if (platform === "facebook") {
-                convertedPayload = contextToFBInstantChoosePayload(payload);
-            } else {
-                throw notSupported("Context API not currently supported on platform: " + platform, "context.chooseAsync");
-            }
+export function chooseAsync(payload?: ChoosePayload): Promise<void> {
+    const platform = config.session.platform;
+    if (platform === "wortal" || platform === "gd") {
+        throw notSupported(`context.chooseAsync not currently supported on platform: ${platform}`, "context.chooseAsync");
+    }
 
-            return (window as any).wortalGame.context.chooseAsync(convertedPayload)
+    return Promise.resolve().then(() => {
+        if (typeof payload === "undefined" || platform === "link") {
+            return (window as any).wortalGame.context.chooseAsync()
                 .catch((e: any) => {
                     throw rethrowPlatformError(e, "context.chooseAsync");
                 });
         } else {
-            return (window as any).wortalGame.context.chooseAsync()
+            return (window as any).wortalGame.context.chooseAsync(payload)
                 .catch((e: any) => {
                     throw rethrowPlatformError(e, "context.chooseAsync");
                 });
@@ -331,20 +308,19 @@ export function chooseAsync(payload?: ContextPayload): Promise<void> {
  */
 export function switchAsync(contextId: string): Promise<void> {
     //TODO: add switchSilentlyIfSolo param if necessary
-    let platform = config.session.platform;
-    return Promise.resolve().then(() => {
-        if (!isValidString(contextId)) {
-            throw invalidParams("contextId cannot be null or empty.", "context.switchAsync");
-        }
+    const platform = config.session.platform;
+    if (platform === "wortal" || platform === "gd") {
+        throw notSupported(`context.switchAsync not currently supported on platform: ${platform}`, "context.switchAsync");
+    }
+    if (!isValidString(contextId)) {
+        throw invalidParams("contextId cannot be null or empty.", "context.switchAsync");
+    }
 
-        if (platform === "link" || platform === "viber" || platform === "facebook") {
-            return (window as any).wortalGame.context.switchAsync(contextId)
-                .catch((e: any) => {
-                    throw rethrowPlatformError(e, "context.switchAsync");
-                });
-        } else {
-            throw notSupported("Context API not currently supported on platform: " + platform, "context.switchAsync");
-        }
+    return Promise.resolve().then(() => {
+        return (window as any).wortalGame.context.switchAsync(contextId)
+            .catch((e: any) => {
+                throw rethrowPlatformError(e, "context.switchAsync");
+            });
     });
 }
 
@@ -361,7 +337,8 @@ export function switchAsync(contextId: string): Promise<void> {
  * Wortal.context.createAsync('player123');
  * @param playerId ID of player to create a context with, or a list of player IDs to create a context with. If not
  * specified, a friend picker will be loaded to ask the player to create a context with friends to play with. Link
- * and Viber will only accept a single, required player ID.
+ * and Viber will only accept a single, required player ID. If no ID is passed on these platforms the call will fail.
+ * If an array of IDs is passed on these platforms, the call will be made with the first ID in the array.
  * @returns {Promise<void>} A promise that resolves when the game has switched into the new context, or rejects otherwise.
  * @throws {ErrorMessage} See error.message for details.
  * <ul>
@@ -375,28 +352,26 @@ export function switchAsync(contextId: string): Promise<void> {
  * </ul>
  */
 export function createAsync(playerId?: string | string[]): Promise<void> {
-    let platform = config.session.platform;
-    return Promise.resolve().then(() => {
-        // Link & Viber only support creating a context with a single player, and we must pass in a player ID.
-        if (platform === "link" || platform === "viber") {
-            if (!isValidString(playerId)) {
-                throw invalidParams("playerId cannot be null or empty.", "context.createAsync");
-            }
+    const platform = config.session.platform;
+    if (platform === "wortal" || platform === "gd") {
+        throw notSupported(`context.createAsync not currently supported on platform: ${platform}`, "context.createAsync");
+    }
+    // Link & Viber only support creating a context with a single player, and we must pass in a player ID.
+    // Facebook supports creating a context with a single player, list of players, or no player (to open a friend picker).
+    if (platform === "link" || platform === "viber") {
+        if (Array.isArray(playerId)) {
+            playerId = playerId[0];
+        }
+    }
+    if (platform !== "facebook" && !isValidString(playerId)) {
+        throw invalidParams("playerId cannot be null or empty.", "context.createAsync");
+    }
 
-            return (window as any).wortalGame.context.createAsync(playerId)
-                .catch((e: any) => {
-                    throw rethrowPlatformError(e, "context.createAsync")
-                });
-        // Facebook supports creating a context with a single player, list of players, or no player (to open a friend picker).
-        } else if (platform === "facebook") {
-            return (window as any).wortalGame.context.createAsync(playerId)
-                .catch((e: any) => {
-                    throw rethrowPlatformError(e, "context.createAsync")
-                });
-        }
-        else {
-            throw notSupported("Context API not currently supported on platform: " + platform, "context.createAsync");
-        }
+    return Promise.resolve().then(() => {
+        return (window as any).wortalGame.context.createAsync(playerId)
+            .catch((e: any) => {
+                throw rethrowPlatformError(e, "context.createAsync")
+            });
     });
 }
 
@@ -414,7 +389,7 @@ export function createAsync(playerId?: string | string[]): Promise<void> {
  * @returns {ContextSizeResponse} Object with the result of the check. Null if not supported.
  */
 export function isSizeBetween(min?: number, max?: number): ContextSizeResponse | null {
-    let platform = config.session.platform;
+    const platform = config.session.platform;
     if (platform === "link" || platform === "viber" || platform === "facebook") {
         return (window as any).wortalGame.context.isSizeBetween(min, max);
     } else {

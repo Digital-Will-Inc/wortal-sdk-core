@@ -1,74 +1,21 @@
 import Wortal from "../index";
 import Leaderboard from "../models/leaderboard";
 import LeaderboardEntry from "../models/leaderboard-entry";
-import { ContextPayload } from "../types/context";
+import { LinkMessagePayload, SharePayload, UpdatePayload } from "../types/payloads";
 
 /** @hidden */
-export function contextToLinkMessagePayload(payload: ContextPayload): ContextPayload {
-    let obj: ContextPayload = {
+export function convertToLinkMessagePayload(payload: SharePayload | UpdatePayload): LinkMessagePayload {
+    let messagePayload: LinkMessagePayload = {
         image: payload.image,
         text: payload.text,
     }
-    if (payload?.cta) obj.caption = payload.cta;
-    if (payload?.caption) obj.caption = payload.caption;
-    if (payload?.data) obj.data = payload.data;
-    return obj;
+    if (payload?.cta) messagePayload.caption = payload.cta;
+    if (payload?.data) messagePayload.data = payload.data;
+    return messagePayload;
 }
 
 /** @hidden */
-export function contextToViberChoosePayload(payload: ContextPayload): ContextPayload {
-    let obj: ContextPayload = {
-        // Not used in this payload.
-        image: "",
-        text: "",
-    }
-    if (payload?.filters) obj.filters = payload.filters;
-    if (payload?.maxSize) obj.maxSize = payload.maxSize;
-    if (payload?.minSize) obj.minSize = payload.minSize;
-    if (payload?.hoursSinceInvitation) obj.hoursSinceInvitation = payload.hoursSinceInvitation;
-    if (payload?.description) obj.description = payload.description;
-    return obj;
-}
-
-/** @hidden */
-export function contextToViberSharePayload(payload: ContextPayload): ContextPayload {
-    let obj: ContextPayload = {
-        image: payload.image,
-        text: payload.text,
-    }
-    if (payload?.data) obj.data = payload.data;
-    if (payload?.filters) obj.filters = payload.filters;
-    if (payload?.hoursSinceInvitation) obj.hoursSinceInvitation = payload.hoursSinceInvitation;
-    if (payload?.minShare) obj.minShare = payload.minShare;
-    if (payload?.description) obj.description = payload.description;
-    if (payload?.ui) obj.ui = payload.ui;
-    if (payload?.cta) obj.cta = payload.cta;
-    if (payload?.caption) obj.cta = payload.caption;
-    if (payload?.intent) obj.intent = payload.intent
-    else obj.intent = 'REQUEST';
-    return obj;
-}
-
-/** @hidden */
-export function contextToViberUpdatePayload(payload: ContextPayload): ContextPayload {
-    let obj: ContextPayload = {
-        image: payload.image,
-        text: payload.text,
-    }
-    if (payload?.cta) obj.cta = payload.cta;
-    if (payload?.caption) obj.cta = payload.caption;
-    if (payload?.data) obj.data = payload.data;
-    if (payload?.strategy) obj.strategy = payload.strategy;
-    if (payload?.notifications) obj.notifications = payload.notifications;
-    if (payload?.action) obj.action = payload.action;
-    else obj.action = "CUSTOM";
-    if (payload?.template) obj.template = payload.template;
-    else obj.template = "";
-    return obj;
-}
-
-/** @hidden */
-export function contextToFBInstantSharePayload(payload: ContextPayload): ContextPayload {
+export function convertToFBInstantSharePayload(payload: SharePayload): SharePayload {
     // FB.shareAsync doesn't take LocalizableContent, so we need to pass a string.
     // We first check for an exact locale match, then a language match, then default. (en-US -> en -> default)
     // This may need to be revisited as its potentially problematic for some languages/dialects.
@@ -82,45 +29,16 @@ export function contextToFBInstantSharePayload(payload: ContextPayload): Context
             payload.text = payload.text.default;
         }
     }
-    let obj: ContextPayload = {
-        image: payload.image,
-        text: payload.text,
-    }
-    if (payload?.data) obj.data = payload.data;
-    if (payload?.shareDestination) obj.shareDestination = payload.shareDestination;
-    if (payload?.switchContext) obj.switchContext = payload.switchContext;
-    return obj;
+
+    return payload;
 }
 
 /** @hidden */
-export function contextToFBInstantUpdatePayload(payload: ContextPayload): ContextPayload {
-    let obj: ContextPayload = {
-        image: payload.image,
-        text: payload.text,
+export function convertToFBInstantUpdatePayload(payload: UpdatePayload): UpdatePayload {
+    if (payload.strategy === "IMMEDIATE_CLEAR") {
+        payload.strategy = "IMMEDIATE";
     }
-    if (payload?.data) obj.data = payload.data;
-    if (payload?.cta) obj.cta = payload.cta;
-    if (payload?.caption) obj.cta = payload.caption;
-    if (payload?.strategy) obj.strategy = payload.strategy;
-    if (payload?.notifications) obj.notifications = payload.notifications;
-    if (payload?.action) obj.action = payload.action;
-    else obj.action = "CUSTOM";
-    if (payload?.template) obj.template = payload.template;
-    else obj.template = "";
-    return obj;
-}
-
-/** @hidden */
-export function contextToFBInstantChoosePayload(payload: ContextPayload): ContextPayload {
-    let obj: ContextPayload = {
-        // Not used in this payload.
-        image: "",
-        text: "",
-    }
-    if (payload?.filters) obj.filters = payload.filters;
-    if (payload?.maxSize) obj.maxSize = payload.maxSize;
-    if (payload?.minSize) obj.minSize = payload.minSize;
-    return obj;
+    return payload;
 }
 
 /** @hidden */
