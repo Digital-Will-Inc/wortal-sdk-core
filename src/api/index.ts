@@ -1,4 +1,3 @@
-import { notSupported } from "../utils/error-handler";
 import * as _ads from './ads';
 import * as _analytics from './analytics';
 import * as _context from './context';
@@ -8,6 +7,7 @@ import * as _player from './player';
 import * as _session from './session';
 import { InitializationOptions } from "../types/initialization";
 import SDKConfig from "../utils/config";
+import { notSupported } from "../utils/error-handler";
 
 /**
  * Ads API
@@ -49,79 +49,32 @@ export let isInitialized: boolean = false;
 declare var __VERSION__: string;
 
 /** @hidden */
-export function _init(options?: InitializationOptions): void {
+export function _initInternal(options?: InitializationOptions): void {
     if (config.isInit) {
         console.warn("[Wortal] SDK Core already initialized.");
         return;
     }
+
     console.log("[Wortal] Initializing SDK Core " + __VERSION__);
     config.init();
-    let platform = config.session.platform;
+    const platform = config.session.platform;
 
-    // Make sure we have the loading cover added to prevent the game canvas from being shown before the preroll ad finishes.
-    // Link/Viber/FB use their own loading covers.
-    if (document.readyState === "loading") {
-        if (platform !== "link" && platform !== "viber" && platform !== "facebook") {
-            document.addEventListener("DOMContentLoaded", _addLoadingCover);
-        }
-    } else {
-        if (platform !== "link" && platform !== "viber" && platform !== "facebook") {
-            _addLoadingCover();
-        }
-    }
+    _addLoadingListener();
 
     (window as any).initWortal(() => {
-        console.log("[Wortal] Platform: " + config.session.platform);
-        // Link/Viber/FB have the same init sequence. No pre-roll ads. No loading cover is added.
-        // Initialize the Link/Viber/FB SDK, report loading progress, game shows on 100% and startGameAsync.
+        console.log("[Wortal] Platform: " + platform);
         if (platform === "link" || platform === "viber" || platform === "facebook") {
-            (window as any).wortalGame.initializeAsync()
-                .then(() => {
-                    (window as any).wortalGame.startGameAsync();
-                    config.lateInit();
-                    _tryEnableIAP();
-                    analytics._logTrafficSource();
-                    analytics._logGameStart();
-                    isInitialized = true;
-                    console.log("[Wortal] SDK Core initialization complete.");
-                });
-            // Wortal/GD shows preroll ad, removes cover after.
+            _initRakutenFacebook();
         } else if (platform === "wortal" || platform === "gd") {
-            config.lateInit();
-            ads.showInterstitial("preroll", "Preroll", () => {
-            }, () => {
-                _removeLoadingCover();
-                config.adConfig.setPrerollShown(true);
-                _tryEnableIAP();
-                analytics._logGameStart();
-                isInitialized = true;
-                console.log("[Wortal] SDK Core initialization complete.");
-            });
-            // Debug or unknown platform.
+            _initWortalGD();
         } else {
-            _removeLoadingCover();
-            config.lateInit();
-            analytics._logGameStart();
-            isInitialized = true;
-            console.log("[Wortal] SDK Core initialization complete.");
+            _initDebug();
         }
-        // Ads are blocked.
     }, () => {
-        console.log("[Wortal] Ad blocker detected.");
-        _removeLoadingCover();
-        config.lateInit();
-        config.adConfig.setAdBlocked(true);
-        _tryEnableIAP();
-        analytics._logGameStart();
-        isInitialized = true;
-        console.log("[Wortal] SDK Core initialization complete.");
+        _initAdBlocked();
     });
 
-    window.addEventListener("visibilitychange", () => {
-        if (document.visibilityState === "hidden") {
-            analytics._logGameEnd();
-        }
-    });
+    _addGameEndEventListener();
 }
 
 /**
@@ -138,7 +91,7 @@ export function _init(options?: InitializationOptions): void {
  * @param value Percentage of loading complete. Range is 0 to 100.
  */
 export function setLoadingProgress(value: number): void {
-    let platform = config.session.platform;
+    const platform = config.session.platform;
     if (platform === "link" || platform === "viber" || platform === "facebook") {
         if ((window as any).wortalGame) {
             (window as any).wortalGame.setLoadingProgress(value);
@@ -151,7 +104,7 @@ export function setLoadingProgress(value: number): void {
  * @param callback Callback to invoke.
  */
 export function onPause(callback: Function): void {
-    let platform = config.session.platform;
+    const platform = config.session.platform;
     if (platform === "link" || platform === "viber" || platform === "facebook") {
         if ((window as any).wortalGame) {
             (window as any).wortalGame.onPause(() => {
@@ -172,7 +125,7 @@ export function onPause(callback: Function): void {
  * </ul>
  */
 export function performHapticFeedbackAsync(): Promise<void> {
-    let platform = config.session.platform;
+    const platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (platform === "facebook") {
             return (window as any).wortalGame.performHapticFeedbackAsync();
@@ -182,8 +135,21 @@ export function performHapticFeedbackAsync(): Promise<void> {
     });
 }
 
+/**
+ * Gets the supported APIs for the current platform.
+ * @example
+ * let supportedAPIs = Wortal.getSupportedAPIs();
+ * if (supportedAPIs.includes("context.shareAsync")) {
+ *    shareWithFriendsDialog.show();
+ * }
+ * @returns {string[]} Array of supported APIs.
+ */
+export function getSupportedAPIs(): string[] {
+    return config._supportedAPIs[config.session.platform];
+}
+
 function _tryEnableIAP(): void {
-    let platform = config.session.platform;
+    const platform = config.session.platform;
     if (platform === "viber" || platform === "facebook") {
         (window as any).wortalGame.payments.onReady(() => {
             config.enableIAP();
@@ -205,4 +171,77 @@ function _removeLoadingCover(): void {
     if (document.getElementById("loading-cover")) {
         document.getElementById("loading-cover")!.style.display = "none";
     }
+}
+
+// Link/Viber/FB have the same init sequence. No pre-roll ads. No loading cover is added.
+// Initialize the Link/Viber/FB SDK, report loading progress, game shows on 100% and startGameAsync.
+function _initRakutenFacebook(): void {
+    (window as any).wortalGame.initializeAsync()
+        .then(() => {
+            (window as any).wortalGame.startGameAsync();
+            config.lateInit();
+            _tryEnableIAP();
+            analytics._logTrafficSource();
+            analytics._logGameStart();
+            isInitialized = true;
+            console.log("[Wortal] SDK Core initialization complete.");
+        });
+}
+
+// Wortal/GD shows preroll ad, removes cover after.
+function _initWortalGD(): void {
+    config.lateInit();
+    ads.showInterstitial("preroll", "Preroll", () => {
+    }, () => {
+        _removeLoadingCover();
+        config.adConfig.setPrerollShown(true);
+        _tryEnableIAP();
+        analytics._logGameStart();
+        isInitialized = true;
+        console.log("[Wortal] SDK Core initialization complete.");
+    });
+}
+
+// Debug or unknown platform.
+function _initDebug(): void {
+    _removeLoadingCover();
+    config.lateInit();
+    analytics._logGameStart();
+    isInitialized = true;
+    console.log("[Wortal] SDK Core initialization complete.");
+}
+
+// Ads are blocked.
+function _initAdBlocked(): void {
+    console.log("[Wortal] Ad blocker detected.");
+    _removeLoadingCover();
+    config.lateInit();
+    config.adConfig.setAdBlocked(true);
+    _tryEnableIAP();
+    analytics._logGameStart();
+    isInitialized = true;
+    console.log("[Wortal] SDK Core initialization complete.");
+}
+
+// Make sure we have the loading cover added to prevent the game canvas from being shown before the preroll ad finishes.
+// Link/Viber/FB use their own loading covers.
+function _addLoadingListener(): void {
+    const platform = config.session.platform;
+    if (document.readyState === "loading") {
+        if (platform === "wortal" || platform === "gd") {
+            document.addEventListener("DOMContentLoaded", _addLoadingCover);
+        }
+    } else {
+        if (platform === "wortal" || platform === "gd") {
+            _addLoadingCover();
+        }
+    }
+}
+
+function _addGameEndEventListener(): void {
+    window.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "hidden") {
+            analytics._logGameEnd();
+        }
+    });
 }
