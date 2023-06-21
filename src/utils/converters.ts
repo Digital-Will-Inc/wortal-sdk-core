@@ -1,7 +1,8 @@
 import Wortal from "../index";
 import Leaderboard from "../models/leaderboard";
 import LeaderboardEntry from "../models/leaderboard-entry";
-import { LinkMessagePayload, SharePayload, UpdatePayload } from "../types/payloads";
+import { ContextFilter, InviteFilter } from "../types/context";
+import { InvitePayload, LinkMessagePayload, SharePayload, UpdatePayload } from "../types/payloads";
 
 /** @hidden */
 export function convertToLinkMessagePayload(payload: SharePayload | UpdatePayload): LinkMessagePayload {
@@ -39,6 +40,20 @@ export function convertToFBInstantUpdatePayload(payload: UpdatePayload): UpdateP
         payload.strategy = "IMMEDIATE";
     }
     return payload;
+}
+
+/** @hidden */
+export function convertToViberSharePayload(payload: InvitePayload): SharePayload {
+    let sharePayload: SharePayload = {
+        image: payload.image,
+        text: payload.text,
+    }
+    if (payload?.cta) sharePayload.cta = payload.cta;
+    if (payload?.data) sharePayload.data = payload.data;
+    if (payload?.filters) {
+        sharePayload.filters = _convertInviteFilterToContextFilter(payload.filters);
+    }
+    return sharePayload;
 }
 
 /** @hidden */
@@ -89,4 +104,28 @@ export function facebookLeaderboardEntryToWortal(entry: any): LeaderboardEntry {
         timestamp: entry.getTimestamp(),
         details: entry.getExtraData(),
     });
+}
+
+function _convertInviteFilterToContextFilter(filter: InviteFilter | InviteFilter[]): [ContextFilter] | undefined {
+    if (typeof filter === "string") {
+        if (_isContextFilterValid(filter)) {
+            return [filter];
+        } else {
+            return undefined;
+        }
+    } else if (Array.isArray(filter)) {
+        // Viber only accepts the first filter so just return that.
+        for (let i = 0; i < filter.length; i++) {
+            if (_isContextFilterValid(filter[i])) {
+                return [filter[i]] as [ContextFilter];
+            }
+        }
+        return undefined;
+    } else {
+        return undefined;
+    }
+}
+
+function _isContextFilterValid(value: string): value is ContextFilter {
+    return ['NEW_CONTEXT_ONLY', 'INCLUDE_EXISTING_CHALLENGES', 'NEW_PLAYERS_ONLY', 'NEW_INVITATIONS_ONLY'].includes(value);
 }

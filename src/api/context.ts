@@ -1,11 +1,12 @@
 import ConnectedPlayer from "../models/connected-player";
 import { ContextSizeResponse, ContextType } from "../types/context";
-import { ChoosePayload, LinkSharePayload, SharePayload, UpdatePayload } from "../types/payloads";
+import { ChoosePayload, InvitePayload, LinkSharePayload, SharePayload, UpdatePayload } from "../types/payloads";
 import { PlayerData } from "../types/player";
 import {
     convertToFBInstantSharePayload,
     convertToFBInstantUpdatePayload,
     convertToLinkMessagePayload,
+    convertToViberSharePayload,
 } from "../utils/converters";
 import { invalidParams, notSupported, rethrowPlatformError } from "../utils/error-handler";
 import { isValidPayloadImage, isValidPayloadText, isValidString } from "../utils/validators";
@@ -33,13 +34,7 @@ export function getId(): string | null {
  * @example
  * let type = Wortal.context.getType();
  * console.log(type);
- * @returns {ContextType} The type of the current context. Possible values:
- * <ul>
- * <li>SOLO - Default</li>
- * <li>THREAD</li>
- * <li>GROUP - Facebook only</li>
- * <li>POST - Facebook only</li>
- * </ul>
+ * @returns {ContextType} The type of the current context.
  */
 export function getType(): ContextType {
     const platform = config.session.platform;
@@ -52,7 +47,7 @@ export function getType(): ContextType {
 
 /**
  * Gets an array of ConnectedPlayer objects containing information about active players in the current context
- * (people who played the game in the current context in the last 90 days). This may include the current player.
+ * (people who played the game in the current context in the last 90 days).
  * @example
  * Wortal.context.getPlayersAsync()
  *  .then(players => {
@@ -60,7 +55,8 @@ export function getType(): ContextType {
  *    console.log(players[0].id);
  *    console.log(players[0].name);
  *    });
- * @returns {Promise<ConnectedPlayer[]>} Array of players in the current context.
+ * @returns {Promise<ConnectedPlayer[]>} Promise that contains an array of players in the current context.
+ * This may include the current player.
  * @throws {ErrorMessage} See error.message for details.
  * <ul>
  * <li>NOT_SUPPORTED</li>
@@ -97,6 +93,79 @@ export function getPlayersAsync(): Promise<ConnectedPlayer[]> {
 }
 
 /**
+ * This invokes a dialog to let the user invite one or more people to the game. A blob of data can be attached to the
+ * invite which every game session launched from the invite will be able to access from Wortal.session.getEntryPointData().
+ * This data must be less than or equal to 1000 characters when stringified. The user may choose to cancel the action
+ * and close the dialog, and the returned promise will resolve when the dialog is closed regardless of whether the user
+ * actually invited people or not. The sections included in the dialog can be customized by using the sections parameter.
+ * This can specify which sections to include, how many results to include in each section, and what order the sections
+ * should appear in. The last section will include as many results as possible. If no sections are specified, the
+ * default section settings will be applied. The filters parameter allows for filtering the results. If no results are
+ * returned when the filters are applied, the results will be generated without the filters.
+ * @example
+ * Wortal.context.inviteAsync({
+ *    image: 'data:base64Image',
+ *    text: 'Invite text',
+ *    cta: 'Play',
+ *    data: { exampleData: 'yourData' },
+ * })
+ * .then(() => console.log("Invite sent!"))
+ * @param {InvitePayload} payload Specify what to share in the invite. See example for details.
+ * @returns {Promise<number>} Promise that resolves when the platform's friend picker has closed.
+ * Includes number of friends the invite was shared with. Facebook will always return 0.
+ * @throws {ErrorMessage} See error.message for details.
+ * <ul>
+ * <li>NOT_SUPPORTED</li>
+ * <li>INVALID_PARAM</li>
+ * <li>NETWORK_FAILURE</li>
+ * <li>PENDING_REQUEST</li>
+ * <li>CLIENT_UNSUPPORTED_OPERATION</li>
+ * <li>INVALID_OPERATION</li>
+ * </ul>
+ */
+export function inviteAsync(payload: InvitePayload): Promise<number> {
+    const platform = config.session.platform;
+    if (platform === "wortal" || platform === "gd") {
+        throw notSupported(`context.inviteAsync not currently supported on platform: ${platform}`, "context.inviteAsync");
+    }
+    if (!isValidPayloadText(payload.text)) {
+        throw invalidParams("Text cannot be null or empty.", "context.inviteAsync");
+    }
+    if (!isValidPayloadImage(payload.image)) {
+        throw invalidParams("Image needs to be a data URL for a base64 encoded image.", "context.inviteAsync");
+    }
+
+    return Promise.resolve().then(() => {
+        let convertedPayload: any = payload;
+        if (platform === "link") {
+            convertedPayload = convertToLinkMessagePayload(payload);
+        } else if (platform === "viber") {
+            convertedPayload = convertToViberSharePayload(payload);
+        }
+
+        // Viber/Link don't have inviteAsync, so we use shareAsync instead. An alternative would be to use
+        // chooseAsync then updateAsync in the callback, but it's simpler this way, and we're not losing any value here.
+        if (platform === "facebook") {
+            return (window as any).wortalGame.inviteAsync(convertedPayload)
+                .then(() => {
+                    return 0
+                })
+                .catch((e: any) => {
+                    throw rethrowPlatformError(e, "context.inviteAsync");
+                });
+        } else {
+            return (window as any).wortalGame.shareAsync(convertedPayload)
+                .then((result: any) => {
+                    return result.sharedCount;
+                })
+                .catch((e: any) => {
+                    throw rethrowPlatformError(e, "context.inviteAsync");
+                });
+        }
+    });
+}
+
+/**
  * This invokes a dialog to let the user share specified content, as a post on the user's timeline, for example.
  * A blob of data can be attached to the share which every game session launched from the share will be able to access
  * from Wortal.session.getEntryPointData(). This data must be less than or equal to 1000 characters when stringified.
@@ -110,7 +179,8 @@ export function getPlayersAsync(): Promise<ConnectedPlayer[]> {
  *     data: { exampleData: 'yourData' },
  * }).then(result => console.log(result)); // Contains shareCount with number of friends the share was sent to.
  * @param {SharePayload} payload Object defining the share message.
- * @returns {Promise<number>} Number of friends the message was shared with. Facebook will always return 0.
+ * @returns {Promise<number>} Promise that resolves when the platform's friend picker has closed.
+ * Includes number of friends the message was shared with. Facebook will always return 0.
  * @throws {ErrorMessage} See error.message for details.
  * <ul>
  * <li>NOT_SUPPORTED</li>
@@ -254,7 +324,7 @@ export function updateAsync(payload: UpdatePayload): Promise<void> {
  * Wortal.context.chooseAsync()
  *  .then(console.log(Wortal.context.getId()));
  * @param {ChoosePayload} payload Object defining the options for the context choice.
- * @returns {Promise<void>} A promise that resolves with an array of player IDs of the players that were invited.
+ * @returns {Promise<void>} Promise that resolves when the context is switched.
  * @throws {ErrorMessage} See error.message for details.
  * <ul>
  * <li>NOT_SUPPORTED</li>
@@ -294,7 +364,7 @@ export function chooseAsync(payload?: ChoosePayload): Promise<void> {
  * @example
  * Wortal.context.switchAsync('abc123');
  * @param contextId ID of the desired context or the string SOLO to switch into a solo context.
- * @returns {Promise<void>} A promise that resolves when the game has switched into the specified context, or rejects otherwise.
+ * @returns {Promise<void>} Promise that resolves when the game has switched into the specified context, or rejects otherwise.
  * @throws {ErrorMessage} See error.message for details.
  * <ul>
  * <li>NOT_SUPPORTED</li>
@@ -339,7 +409,7 @@ export function switchAsync(contextId: string): Promise<void> {
  * specified, a friend picker will be loaded to ask the player to create a context with friends to play with. Link
  * and Viber will only accept a single, required player ID. If no ID is passed on these platforms the call will fail.
  * If an array of IDs is passed on these platforms, the call will be made with the first ID in the array.
- * @returns {Promise<void>} A promise that resolves when the game has switched into the new context, or rejects otherwise.
+ * @returns {Promise<void>} Promise that resolves when the game has switched into the new context, or rejects otherwise.
  * @throws {ErrorMessage} See error.message for details.
  * <ul>
  * <li>NOT_SUPPORTED</li>

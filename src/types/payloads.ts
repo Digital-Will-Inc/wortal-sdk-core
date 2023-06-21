@@ -1,4 +1,5 @@
-import { ContextFilter, ShareDestination } from "./context";
+import { ContextFilter, InviteFilter, ShareDestination } from "./context";
+import { InviteSection } from "./invite-section";
 import { LocalizableContent } from "./localizable-content";
 import { MediaParams } from "./media";
 
@@ -19,6 +20,8 @@ export interface ChoosePayload {
      * Specify how long a friend should be filtered out after the current player sends them a message.
      * This parameter only applies when `NEW_INVITATIONS_ONLY` filter is used.
      * When not specified, it will filter out any friend who has been sent a message.
+     *
+     * PLATFORM NOTE: Viber only.
      */
     hoursSinceInvitation?: number;
     /**
@@ -32,7 +35,47 @@ export interface ChoosePayload {
 }
 
 export interface InvitePayload {
-
+    /**
+     * Data URL of base64 encoded image to be displayed. This is required for the payload to be sent.
+     */
+    image: string;
+    /**
+     * A text message, or an object with the default text as the value of 'default' and another object mapping locale keys to translations as the value of 'localizations'.
+     */
+    text: string | LocalizableContent;
+    /**
+     * Text of the call-to-action button.
+     */
+    cta?: string | LocalizableContent;
+    /**
+     * An optional title to display at the top of the invite dialog instead of the generic title.
+     * This param is not sent as part of the message, but only displays in the dialog header.
+     * The title can be either a string or an object with the default text as the value of 'default' and another object
+     * mapping locale keys to translations as the value of 'localizations'.
+     *
+     * PLATFORM NOTE: Facebook only.
+     */
+    dialogTitle? : string | LocalizableContent;
+    /**
+     * Object passed to any session launched from this context message.
+     * Its size must be <=1000 chars when stringified.
+     * It can be accessed from `Wortal.session.getEntryPointData()`.
+     */
+    data?: Record<string, unknown>;
+    /**
+     * The set of filters to apply to the suggestions. Multiple filters may be applied. If no results are returned when
+     * the filters are applied, the results will be generated without the filters.
+     */
+    filters?: InviteFilter[];
+    /**
+     * The set of sections to be included in the dialog. Each section can be assigned a maximum number of results to be
+     * returned (up to a maximum of 10). If no max is included, a default max will be applied. Sections will be included
+     * in the order they are listed in the array. The last section will include a larger maximum number of results, and
+     * if a maxResults is provided, it will be ignored. If this array is left empty, default sections will be used.
+     *
+     * PLATFORM NOTE: Facebook only.
+     */
+    sections?: InviteSection[];
 }
 
 /**
@@ -46,7 +89,7 @@ export interface SharePayload {
     /**
      * Object passed to any session launched from this context message.
      * Its size must be <=1000 chars when stringified.
-     * It can be accessed from `Wortal.context.getEntryPointData()`.
+     * It can be accessed from `Wortal.session.getEntryPointData()`.
      */
     data?: Record<string, unknown>;
     /**
@@ -62,6 +105,8 @@ export interface SharePayload {
      * Specify how long a friend should be filtered out after the current player sends them a message.
      * This parameter only applies when `NEW_INVITATIONS_ONLY` filter is used.
      * When not specified, it will filter out any friend who has been sent a message.
+     *
+     * PLATFORM NOTE: Viber only.
      */
     hoursSinceInvitation?: number;
     /**
@@ -78,11 +123,14 @@ export interface SharePayload {
     minShare?: number;
     /**
      * Optional property to directly send share messages to multiple players with a confirmation prompt.
-     * Selection UI will be skipped if this property is set. Viber only.
+     * Selection UI will be skipped if this property is set.
+     *
+     * PLATFORM NOTE: Viber only.
      */
     playerIds?: string[];
     /**
-     * Text of the message body.
+     * A text message, or an object with the default text as the value of 'default' and another object mapping locale
+     * keys to translations as the value of 'localizations'.
      */
     text: string | LocalizableContent;
     /**
@@ -94,11 +142,15 @@ export interface SharePayload {
     ui?: 'DEFAULT' | 'MULTIPLE';
     /**
      * Am optional array to set sharing destinations in the share dialog.
-     * If not specified all available sharing destinations will be displayed. Facebook only.
+     * If not specified all available sharing destinations will be displayed.
+     *
+     * PLATFORM NOTE: Facebook only.
      */
     shareDestination?: ShareDestination[];
     /**
-     * A flag indicating whether to switch the user into the new context created on sharing. Facebook only.
+     * A flag indicating whether to switch the user into the new context created on sharing.
+     *
+     * PLATFORM NOTE: Facebook only.
      */
     switchContext?: boolean;
 }
@@ -118,7 +170,7 @@ export interface UpdatePayload {
     /**
      * Object passed to any session launched from this context message.
      * Its size must be <=1000 chars when stringified.
-     * It can be accessed from `Wortal.context.getEntryPointData()`.
+     * It can be accessed from `Wortal.session.getEntryPointData()`.
      */
     data?: Record<string, unknown>;
     /**
@@ -127,7 +179,8 @@ export interface UpdatePayload {
     image: string;
     /**
      * Optional content for a gif or video. At least one image or media should be provided in order to render the update.
-     * Facebook only.
+     *
+     * PLATFORM NOTE: Facebook only.
      */
     media?: MediaParams;
     /**
@@ -148,11 +201,15 @@ export interface UpdatePayload {
     strategy?: 'IMMEDIATE' | 'LAST' | 'IMMEDIATE_CLEAR';
     /**
      * ID of the template this custom update is using. Templates should be predefined in fbapp-config.json.
-     * See the [Bundle Config documentation](https://developers.facebook.com/docs/games/instant-games/bundle-config) for documentation about fbapp-config.json.
+     * See the [Bundle Config documentation](https://developers.facebook.com/docs/games/instant-games/bundle-config)
+     * for documentation about fbapp-config.json.
+     *
+     * PLATFORM NOTE: Facebook only.
      */
     template?: string;
     /**
-     * Text of the message body.
+     * A text message, or an object with the default text as the value of 'default' and another object mapping locale
+     * keys to translations as the value of 'localizations'.
      */
     text: string | LocalizableContent;
 }
@@ -162,7 +219,8 @@ export interface UpdatePayload {
  */
 export interface LinkSharePayload {
     /**
-     * A base64 encoded image to be shown for the link preview. The image is recommended to either be a square or of the aspect ratio 1.91:1
+     * A base64 encoded image to be shown for the link preview. The image is recommended to either be a square or of
+     * the aspect ratio 1.91:1
      */
     image?: string;
     /**
