@@ -12,11 +12,13 @@ export default class AdConfig {
     };
 
     constructor() {
-        let platform = config.session.platform;
+        const platform = config.session.platform;
         if (platform === "link" || platform === "viber") {
-            this.setLinkViberAdUnitIds();
+            this._setLinkViberAdUnitIds();
         } else if (platform === "facebook") {
-            this.setFacebookAdUnitIds();
+            this._setFacebookAdUnitIds();
+        } else {
+            console.log("[Wortal] AdConfig initialized: ", this._current);
         }
     }
 
@@ -54,14 +56,13 @@ export default class AdConfig {
      *  }
      *]
      */
-    private setLinkViberAdUnitIds(): void {
+    private _setLinkViberAdUnitIds(): void {
         if ((window as any).wortalGame) {
             (window as any).wortalGame.getAdUnitsAsync().then((adUnits: any[]) => {
                 if (adUnits == null || undefined) {
                     console.error("[Wortal] Failed to retrieve ad units.");
                     return;
                 }
-                console.log("[Wortal] AdUnit IDs returned: \n" + adUnits);
                 for (let i = 0; i < adUnits.length; i++) {
                     if (adUnits[i].type === "INTERSTITIAL") {
                         this._current.interstitialId = adUnits[i].id;
@@ -69,10 +70,10 @@ export default class AdConfig {
                         this._current.rewardedId = adUnits[i].id;
                     }
                 }
-            })
-                .catch((e: any) => {
-                    rethrowPlatformError(e, "setLinkViberAdUnitIds()");
-                });
+                console.log("[Wortal] AdConfig initialized: ", this._current);
+            }).catch((e: any) => {
+                rethrowPlatformError(e, "setLinkViberAdUnitIds()");
+            });
         }
     }
 
@@ -89,14 +90,13 @@ export default class AdConfig {
      *   ]
      *}
      */
-    private setFacebookAdUnitIds(): void {
+    private _setFacebookAdUnitIds(): void {
         if ((window as any).wortalGame) {
             (window as any).wortalGame.getAdUnitIDAsync().then((adUnits: any) => {
                 if ((adUnits == null || undefined) || (adUnits.ads == null || undefined)) {
                     console.error("[Wortal] Failed to retrieve ad units.");
                     return;
                 }
-                console.log("[Wortal] AdUnit IDs returned: \n" + adUnits);
                 for (let i = 0; i < adUnits.ads.length; i++) {
                     if (adUnits.ads[i].display_format === "interstitial") {
                         this._current.interstitialId = adUnits.ads[i].placement_id;
@@ -104,10 +104,10 @@ export default class AdConfig {
                         this._current.rewardedId = adUnits.ads[i].placement_id;
                     }
                 }
-            })
-                .catch((e: any) => {
-                    rethrowPlatformError(e, "setFacebookAdUnitIds()");
-                });
+                console.log("[Wortal] AdConfig initialized: ", this._current);
+            }).catch((e: any) => {
+                rethrowPlatformError(e, "setFacebookAdUnitIds()");
+            });
         }
     }
 }
