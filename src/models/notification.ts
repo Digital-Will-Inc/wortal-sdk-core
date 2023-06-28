@@ -18,7 +18,7 @@ export default class Notification implements INotification {
             body: payload.body,
             ...payload.mediaURL && {mediaURL: payload.mediaURL},
             ...payload.label && {label: payload.label},
-            ...payload.scheduleInterval ? { scheduleInterval: payload.scheduleInterval } : { scheduleInterval: 86400 }
+            ...payload.scheduleInterval ? {scheduleInterval: payload.scheduleInterval} : {scheduleInterval: 86400}
         };
     }
 
@@ -26,28 +26,27 @@ export default class Notification implements INotification {
         const url: string = this.getScheduleURL_Facebook();
         const body: string = this.buildSchedulePayload_Facebook();
 
-        return new Promise(() => {
-            const request = new XMLHttpRequest();
-            request.open("POST", url);
-            request.setRequestHeader("Content-Type", "application/json");
-
-            request.onload = () => {
-                if (request.status === 200) {
-                    const response = JSON.parse(request.responseText);
-                    return {
-                        id: response.notification_id,
-                        success: response.success,
-                    }
+        return new Promise((resolve, reject) => {
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: body,
+            }).then(response => {
+                if (response.ok) {
+                    return response.json();
                 } else {
-                    throw operationFailed(`[Wortal] Failed to schedule notification. Request failed with status code: ${request.status}. \n Message: ${JSON.stringify(request.responseText)}`,"notifications.scheduleAsync");
+                    reject(operationFailed(`[Wortal] Failed to schedule notification. Request failed with status code: ${response.status}. \n Message: ${JSON.stringify(response.json())}`, "notifications.scheduleAsync"));
                 }
-            }
-
-            request.onerror = () => {
-                throw operationFailed("[Wortal] Failed to schedule notification. This may be caused by a server issue or a malformed request.", "notifications.scheduleAsync");
-            };
-
-            request.send(body);
+            }).then(response => {
+                resolve({
+                    id: response.notification_id,
+                    success: response.success,
+                });
+            }).catch(error => {
+                reject(operationFailed(`[Wortal] Failed to schedule notification. Error: ${error}`, "notifications.scheduleAsync"));
+            });
         });
     }
 
