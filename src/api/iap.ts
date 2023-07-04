@@ -1,4 +1,4 @@
-import { Product, Purchase, PurchaseConfig } from "../types/iap";
+import { Product, Purchase, PurchaseConfig } from "../interfaces/iap";
 import { invalidParams, notSupported, rethrowPlatformError } from "../utils/error-handler";
 import { isValidPurchaseConfig, isValidString } from "../utils/validators";
 import { config } from "./index";

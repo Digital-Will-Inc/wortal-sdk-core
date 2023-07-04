@@ -1,7 +1,5 @@
-import { NotificationPayload } from "../types/notification-payload";
-import { NotificationScheduleResult } from "../types/notification-schedule-result";
-import ScheduledNotification from "../models/scheduled-notification";
-import Notification from "../models/notification";
+import { Notification, ScheduledNotification } from "../classes/notification";
+import { NotificationPayload, NotificationScheduleResult } from "../interfaces/notifications";
 import { invalidParams, notSupported, operationFailed } from "../utils/error-handler";
 import { isValidString } from "../utils/validators";
 import { config } from "./index";

@@ -1,5 +1,4 @@
-import Leaderboard from "../models/leaderboard";
-import LeaderboardEntry from "../models/leaderboard-entry";
+import { Leaderboard, LeaderboardEntry } from "../classes/leaderboard";
 import {
     facebookLeaderboardEntryToWortal,
     facebookLeaderboardToWortal,

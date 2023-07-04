@@ -1,25 +1,6 @@
-import { AdInstanceData, PlacementType } from "../types/ad-instance";
-
-/** @hidden */
-interface AdData {
-    placementType?: PlacementType;
-    adUnitId: string;
-    description: string;
-}
-
-/** @hidden */
-interface AdCallbacks {
-    beforeAd: Function;
-    afterAd: Function;
-    adDismissed?: Function;
-    adViewed?: Function;
-    noFill: Function;
-}
-
-/** @hidden */
-interface IAdInstance {
-    show: Function;
-}
+import { config } from "../api";
+import { AdCallbacks, AdConfigData, AdData, AdInstanceData, IAdInstance } from "../interfaces/ads";
+import { rethrowPlatformError } from "../utils/error-handler";
 
 /** @hidden */
 class AdInstance implements IAdInstance {
@@ -141,4 +122,114 @@ export class RewardedAd extends AdInstance {
 
         showAdFn();
     };
+}
+
+/** @hidden */
+export class AdConfig {
+    private _current: AdConfigData = {
+        isAdBlocked: false,
+        hasPrerollShown: false,
+        interstitialId: "",
+        rewardedId: "",
+    };
+
+    constructor() {
+        const platform = config.session.platform;
+        if (platform === "link" || platform === "viber") {
+            this._setLinkViberAdUnitIds();
+        } else if (platform === "facebook") {
+            this._setFacebookAdUnitIds();
+        } else {
+            console.log("[Wortal] AdConfig initialized: ", this._current);
+        }
+    }
+
+    get isAdBlocked(): boolean {
+        return this._current.isAdBlocked;
+    }
+
+    setAdBlocked(isBlocked: boolean): void {
+        this._current.isAdBlocked = isBlocked;
+    }
+
+    get hasPrerollShown(): boolean {
+        return this._current.hasPrerollShown;
+    }
+
+    setPrerollShown(hasShown: boolean): void {
+        this._current.hasPrerollShown = hasShown;
+    }
+
+    get interstitialId(): string {
+        return this._current.interstitialId;
+    }
+
+    get rewardedId(): string {
+        return this._current.rewardedId;
+    }
+
+    /**
+     * Fetches the ad unit IDs from Rakuten API.
+     * @example Object returned
+     *[
+     *  {
+     *    "id": "someID",
+     *    "type": "INTERSTITIAL"
+     *  }
+     *]
+     */
+    private _setLinkViberAdUnitIds(): void {
+        if ((window as any).wortalGame) {
+            (window as any).wortalGame.getAdUnitsAsync().then((adUnits: any[]) => {
+                if (adUnits == null || undefined) {
+                    console.error("[Wortal] Failed to retrieve ad units.");
+                    return;
+                }
+                for (let i = 0; i < adUnits.length; i++) {
+                    if (adUnits[i].type === "INTERSTITIAL") {
+                        this._current.interstitialId = adUnits[i].id;
+                    } else if (adUnits[i].type === "REWARDED_VIDEO") {
+                        this._current.rewardedId = adUnits[i].id;
+                    }
+                }
+                console.log("[Wortal] AdConfig initialized: ", this._current);
+            }).catch((e: any) => {
+                rethrowPlatformError(e, "setLinkViberAdUnitIds()");
+            });
+        }
+    }
+
+    /**
+     * Fetches the ad unit IDs from Wortal API.
+     * @example JSON returned
+     *{
+     *  "gameID": 68,
+     *  "ads": [
+     *     {
+     *      "display_format": "interstitial",
+     *      "placement_id": "1284783688986969_1317853085680029"
+     *     }
+     *   ]
+     *}
+     */
+    private _setFacebookAdUnitIds(): void {
+        if ((window as any).wortalGame) {
+            (window as any).wortalGame.getAdUnitIDAsync().then((adUnits: any) => {
+                if ((adUnits == null || undefined) || (adUnits.ads == null || undefined)) {
+                    console.error("[Wortal] Failed to retrieve ad units.");
+                    return;
+                }
+                for (let i = 0; i < adUnits.ads.length; i++) {
+                    if (adUnits.ads[i].display_format === "interstitial") {
+                        this._current.interstitialId = adUnits.ads[i].placement_id;
+                    } else if (adUnits.ads[i].display_format === "rewarded_video") {
+                        this._current.rewardedId = adUnits.ads[i].placement_id;
+                    }
+                }
+                console.log("[Wortal] AdConfig initialized: ", this._current);
+            }).catch((e: any) => {
+                rethrowPlatformError(e, "setFacebookAdUnitIds()");
+            });
+        }
+    }
 }

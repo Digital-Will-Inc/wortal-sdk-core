@@ -1,8 +1,7 @@
-import Wortal from "../index";
-import Leaderboard from "../models/leaderboard";
-import LeaderboardEntry from "../models/leaderboard-entry";
+import { Leaderboard, LeaderboardEntry } from "../classes/leaderboard";
+import { InvitePayload, LinkMessagePayload, SharePayload, UpdatePayload } from "../interfaces/context";
 import { ContextFilter, InviteFilter } from "../types/context";
-import { InvitePayload, LinkMessagePayload, SharePayload, UpdatePayload } from "../types/payloads";
+import Wortal from "../index";
 
 /** @hidden */
 export function convertToLinkMessagePayload(payload: SharePayload | UpdatePayload): LinkMessagePayload {

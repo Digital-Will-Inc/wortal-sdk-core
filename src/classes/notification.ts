@@ -1,15 +1,15 @@
 import { config } from "../api";
-import { NotificationPayload } from "../types/notification-payload";
-import { NotificationScheduleResult } from "../types/notification-schedule-result";
+import {
+    INotification,
+    NotificationData,
+    NotificationPayload,
+    NotificationScheduleResult
+} from "../interfaces/notifications";
+import { NotificationStatus } from "../types/notifications";
 import { operationFailed } from "../utils/error-handler";
 
 /** @hidden */
-interface INotification {
-    send: Function;
-}
-
-/** @hidden */
-export default class Notification implements INotification {
+export class Notification implements INotification {
     schedulePayload: NotificationPayload;
 
     constructor(payload: NotificationPayload) {
@@ -66,5 +66,45 @@ export default class Notification implements INotification {
 
     getScheduleURL_Facebook(): string {
         return `https://html5gameportal.com/api/v1/notification/${config.session.gameId}/fb/${config.player.asid}`;
+    }
+}
+
+/**
+ * Notification that has been scheduled.
+ */
+export class ScheduledNotification {
+    private notificationData: NotificationData;
+
+    /** @hidden */
+    constructor(data: NotificationData) {
+        this.notificationData = data;
+    }
+
+    /**
+     * Unique ID of the notification.
+     */
+    get id(): string {
+        return this.notificationData.id;
+    }
+
+    /**
+     * Current status of the notification.
+     */
+    get status(): NotificationStatus {
+        return this.notificationData.status;
+    }
+
+    /**
+     * Optional label for the notification.
+     */
+    get label(): string | undefined {
+        return this.notificationData.label;
+    }
+
+    /**
+     * Time the notification was created.
+     */
+    get createdTime(): string {
+        return this.notificationData.createdTime;
     }
 }

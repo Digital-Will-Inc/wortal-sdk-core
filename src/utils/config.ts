@@ -1,9 +1,8 @@
-import AdConfig from "../models/ad-config";
-import Player from "../models/player";
-import Session from "../models/session";
-import GameState from "../models/game-data";
-import { InitializationOptions } from "../types/initialization";
-import { Platform } from "../types/platform";
+import { AdConfig } from "../classes/ads";
+import { Player } from "../classes/player";
+import { GameState, Session } from "../classes/session";
+import { InitializationOptions } from "../interfaces/session";
+import { Platform } from "../types/session";
 
 /** @hidden */
 export default class SDKConfig {

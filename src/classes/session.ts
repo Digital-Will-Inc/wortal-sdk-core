@@ -1,11 +1,10 @@
-import { Platform } from "../types/platform";
-import { SessionData } from "../types/session";
-// Murphy's Laws of Combat: If it’s stupid and it works, it ain’t stupid.
+import { GameData } from "../interfaces/session";
+import { Platform, SessionData } from "../types/session";
 // @ts-ignore
 import country from "../utils/intl-data.json";
 
 /** @hidden */
-export default class Session {
+export class Session {
     private _current: SessionData = {
         country: "",
         platform: "debug",
@@ -61,5 +60,54 @@ export default class Session {
             }
         }
         return false;
+    }
+}
+
+/** @hidden */
+export class GameState {
+    private _current: GameData = {
+        gameTimer: 0,
+        levelName: "",
+        levelTimer: 0,
+        levelTimerHandle: 0
+    };
+
+    get gameTimer(): number {
+        return this._current.gameTimer;
+    }
+
+    startGameTimer(): void {
+        window.setInterval(() => {
+            if (document.visibilityState !== "hidden") {
+                this._current.gameTimer += 1
+            }
+        }, 1000);
+    }
+
+    get levelName(): string {
+        return this._current.levelName;
+    }
+
+    setLevelName(name: string): void {
+        this._current.levelName = name;
+    }
+
+    get levelTimer(): number {
+        return this._current.levelTimer;
+    }
+
+    resetLevelTimer(): void {
+        this._current.levelTimer = 0;
+    }
+
+    startLevelTimer(): void {
+        this._current.levelTimerHandle = window.setInterval(() => this._current.levelTimer += 1, 1000);
+    }
+
+    clearLevelTimerHandle(): void {
+        if (this._current.levelTimerHandle !== null) {
+            clearInterval(this._current.levelTimerHandle);
+        }
+        this._current.levelTimerHandle = 0;
     }
 }

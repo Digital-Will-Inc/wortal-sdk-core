@@ -1,5 +1,5 @@
-import { Platform } from "../types/platform";
-import { TrafficSource } from "../types/traffic-source";
+import { TrafficSource } from "../interfaces/session";
+import { Platform } from "../types/session";
 import { notSupported, rethrowPlatformError } from "../utils/error-handler";
 import { config } from "./index";
 

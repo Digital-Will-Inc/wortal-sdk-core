@@ -1,4 +1,7 @@
-import { Platform } from "./platform";
+/**
+ * Platform the game is currently being played on.
+ */
+export type Platform = 'wortal' | 'link' | 'viber' | 'gd' | 'facebook' | 'debug'
 
 /** @hidden */
 export interface SessionData {

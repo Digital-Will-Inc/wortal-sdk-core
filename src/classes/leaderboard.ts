@@ -1,7 +1,39 @@
-import { LeaderboardEntryData } from "../types/leaderboard";
-import LeaderboardPlayer from "./leaderboard-player";
+import { LeaderboardData, LeaderboardEntryData } from "../interfaces/leaderboard";
+import { LeaderboardPlayer } from "./player";
 
-export default class LeaderboardEntry {
+/**
+ * Represents a leaderboard for the game.
+ */
+export class Leaderboard {
+    private _current: LeaderboardData = {
+        id: 0,
+        name: "",
+        contextId: ""
+    }
+
+    /** @hidden */
+    constructor(id: number, name: string, contextId: string = "") {
+        this._current.id = id;
+        this._current.name = name;
+        this._current.contextId = contextId;
+    }
+
+    /**
+     * Name of the leaderboard.
+     */
+    get name(): string {
+        return this._current.name;
+    }
+
+    /**
+     * Context ID of the leaderboard, if one exits.
+     */
+    get contextId(): string {
+        return this._current.contextId;
+    }
+}
+
+export class LeaderboardEntry {
     private _current: LeaderboardEntryData = {
         rank: 0,
         score: 0,

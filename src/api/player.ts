@@ -1,6 +1,5 @@
-import ConnectedPlayer from "../models/connected-player";
-import { ConnectedPlayerPayload, PlayerData } from "../types/player";
-import { SignedASID } from "../types/signed-asid";
+import { ConnectedPlayer } from "../classes/player";
+import { ConnectedPlayerPayload, PlayerData, SignedASID } from "../interfaces/player";
 import { invalidParams, notSupported, rethrowPlatformError } from "../utils/error-handler";
 import { config } from "./index";
 

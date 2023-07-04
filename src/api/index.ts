@@ -1,3 +1,6 @@
+import { InitializationOptions } from "../interfaces/session";
+import SDKConfig from "../utils/config";
+import { notSupported, rethrowPlatformError } from "../utils/error-handler";
 import * as _ads from './ads';
 import * as _analytics from './analytics';
 import * as _context from './context';
@@ -6,9 +9,6 @@ import * as _leaderboard from './leaderboard';
 import * as _notifications from './notifications';
 import * as _player from './player';
 import * as _session from './session';
-import { InitializationOptions } from "../types/initialization";
-import SDKConfig from "../utils/config";
-import { notSupported, rethrowPlatformError } from "../utils/error-handler";
 
 /**
  * Ads API
@@ -146,7 +146,7 @@ export function performHapticFeedbackAsync(): Promise<void> {
 /**
  * Gets the supported APIs for the current platform.
  * @example
- * let supportedAPIs = Wortal.getSupportedAPIs();
+ * const supportedAPIs = Wortal.getSupportedAPIs();
  * if (supportedAPIs.includes("context.shareAsync")) {
  *    shareWithFriendsDialog.show();
  * }

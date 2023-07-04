@@ -1,9 +1,9 @@
-import Wortal from "../index";
-import AnalyticsEvent from "../models/analytics-event";
-import { AnalyticsEventData } from "../types/analytics-event";
+import { AnalyticsEvent } from "../classes/analytics";
+import { AnalyticsEventData } from "../interfaces/analytics";
 import { invalidParams } from "../utils/error-handler";
 import { isValidNumber, isValidString } from "../utils/validators";
 import { config } from "./index";
+import Wortal from "../index";
 
 /**
  * Logs the start of a level.

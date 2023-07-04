@@ -1,7 +1,14 @@
-import ConnectedPlayer from "../models/connected-player";
-import { ContextSizeResponse, ContextType } from "../types/context";
-import { ChoosePayload, InvitePayload, LinkSharePayload, SharePayload, UpdatePayload } from "../types/payloads";
-import { PlayerData } from "../types/player";
+import { ConnectedPlayer } from "../classes/player";
+import {
+    ChoosePayload,
+    ContextSizeResponse,
+    InvitePayload,
+    LinkSharePayload,
+    SharePayload,
+    UpdatePayload
+} from "../interfaces/context";
+import { PlayerData } from "../interfaces/player";
+import { ContextType } from "../types/context";
 import {
     convertToFBInstantSharePayload,
     convertToFBInstantUpdatePayload,

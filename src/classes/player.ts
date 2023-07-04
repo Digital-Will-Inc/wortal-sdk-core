@@ -1,12 +1,13 @@
-import Wortal from "../index";
-import { PlayerData } from "../types/player";
 import { config } from "../api";
+import Wortal from "../index";
+import { PlayerData } from "../interfaces/player";
+import { LeaderboardPlayerData } from "../types/leaderboard";
 
 /**
  * Represents a player in the game. To access info about the current player, use the Wortal.player API.
  * This is used to access info about other players such as friends or leaderboard entries.
  */
-export default class Player {
+export class Player {
     protected _current: PlayerData = {
         id: "",
         name: "",
@@ -165,5 +166,29 @@ export default class Player {
         const lastPlay = Date.UTC(year, month, day);
         let timeDelta = Date.now() - lastPlay;
         return Math.round(timeDelta / 1000 / 60 / 60 / 24);
+    }
+}
+
+/** @hidden */
+export class ConnectedPlayer extends Player {
+    constructor(player: PlayerData) {
+        super();
+        this._current.id = player.id;
+        this._current.name = player.name;
+        this._current.photo = player.photo;
+        this._current.isFirstPlay = player.isFirstPlay;
+        this._current.daysSinceFirstPlay = player.daysSinceFirstPlay;
+    }
+}
+
+/** @hidden */
+export class LeaderboardPlayer extends Player {
+    constructor(player: LeaderboardPlayerData) {
+        super();
+        this._current.id = player.id;
+        this._current.name = player.name;
+        this._current.photo = player.photo;
+        this._current.isFirstPlay = player.isFirstPlay;
+        this._current.daysSinceFirstPlay = player.daysSinceFirstPlay;
     }
 }

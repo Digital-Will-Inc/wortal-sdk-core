@@ -1,4 +1,4 @@
-import { ErrorMessage } from "../types/error-message";
+import { ErrorMessage } from "../interfaces/wortal";
 
 /** @hidden */
 export function rethrowPlatformError(original: any, context: string): ErrorMessage {

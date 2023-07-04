@@ -1,19 +1,8 @@
-import { AnalyticsEventData, AnalyticsEventType } from "../types/analytics-event";
+import { AnalyticsEventData, IAnalyticsEvent } from "../interfaces/analytics";
 
 /** @hidden */
-interface AnalyticsData {
-    name: AnalyticsEventType;
-    features: object;
-}
-
-/** @hidden */
-interface IAnalyticsEvent {
-    send: Function;
-}
-
-/** @hidden */
-export default class AnalyticsEvent implements IAnalyticsEvent {
-    data: AnalyticsData;
+export class AnalyticsEvent implements IAnalyticsEvent {
+    data: AnalyticsEventData;
 
     constructor(event: AnalyticsEventData) {
         this.data = {

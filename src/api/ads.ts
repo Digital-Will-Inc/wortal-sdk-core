@@ -1,5 +1,6 @@
-import { InterstitialAd, RewardedAd } from "../models/ad-instance";
-import { AdInstanceData, PlacementType } from "../types/ad-instance";
+import { InterstitialAd, RewardedAd } from "../classes/ads";
+import { AdInstanceData } from "../interfaces/ads";
+import { PlacementType } from "../types/ads";
 import { invalidParams } from "../utils/error-handler";
 import { config } from "./index";
 

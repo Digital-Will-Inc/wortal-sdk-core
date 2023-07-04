@@ -1,7 +1,14 @@
-import { ContextFilter, InviteFilter, ShareDestination } from "./context";
-import { InviteSection } from "./invite-section";
-import { LocalizableContent } from "./localizable-content";
-import { MediaParams } from "./media";
+import {
+    Action,
+    ContextFilter,
+    Intent,
+    InviteFilter,
+    InviteSectionType,
+    Notifications,
+    ShareDestination,
+    Strategy,
+    UI
+} from "../types/context";
 
 /**
  * Payload for context.chooseAsync. Defines the filters and search parameters to apply to the friend list.
@@ -119,7 +126,7 @@ export interface SharePayload {
     /**
      * Message format to be used. There's no visible difference among the available options.
      */
-    intent?: 'INVITE' | 'REQUEST' | 'CHALLENGE' | 'SHARE';
+    intent?: Intent;
     /**
      * Defines the minimum number of players to be selected to start sharing.
      */
@@ -138,11 +145,8 @@ export interface SharePayload {
     text: string | LocalizableContent;
     /**
      * Optional property to switch share UI mode.
-     *
-     * - DEFAULT: Serial contact card with share and skip button.
-     * - MULTIPLE: Selectable contact list.
      */
-    ui?: 'DEFAULT' | 'MULTIPLE';
+    ui?: UI;
     /**
      * An optional array to set sharing destinations in the share dialog.
      * If not specified all available sharing destinations will be displayed.
@@ -165,7 +169,7 @@ export interface UpdatePayload {
     /**
      * Message format to be used.
      */
-    action?: 'CUSTOM';
+    action?: Action;
     /**
      * Text of the call-to-action button.
      */
@@ -191,17 +195,12 @@ export interface UpdatePayload {
      * Use push notification only for updates that are high-signal and immediately actionable for the recipients.
      * Also note that push notification is not always guaranteed, depending on user setting and platform policies.
      */
-    notifications?: 'NO_PUSH' | 'PUSH';
+    notifications?: Notifications;
     /**
      * Specifies how the update should be delivered. This can be one of the following:
-     *
-     * - 'IMMEDIATE' - The update should be posted immediately.
-     * - 'LAST' - The update should be posted when the game session ends. The most recent update sent using the 'LAST' strategy will be the one sent.
-     * - 'IMMEDIATE_CLEAR': will be sent immediately, and also discard any pending LAST payloads in the same session.
-     *
      * If no strategy is specified, we default to 'IMMEDIATE'.
      */
-    strategy?: 'IMMEDIATE' | 'LAST' | 'IMMEDIATE_CLEAR';
+    strategy?: Strategy;
     /**
      * ID of the template this custom update is using. Templates should be predefined in fbapp-config.json.
      * See the [Bundle Config documentation](https://developers.facebook.com/docs/games/instant-games/bundle-config)
@@ -261,4 +260,67 @@ export interface LinkMessagePayload {
      * Its size must be <=1000 chars when stringified.
      */
     data?: Record<string, unknown>,
+}
+
+
+/**
+ * Enable passing localizable content to API calls.
+ * SDK will use the current player's locale for locale matching.
+ */
+export interface LocalizableContent {
+    /**
+     * Text that will be used if a matching locale was not found.
+     */
+    default: string;
+    /**
+     * Key value pairs of localized strings.
+     */
+    localizations: Record<string, string>;
+}
+
+/**
+ * Response from context.isSizeBetween API. Contains the answer and the min and max size.
+ */
+export interface ContextSizeResponse {
+    answer: boolean,
+    maxSize: number,
+    minSize: number,
+}
+
+/**
+ * Represents a section in the inviteAsync dialog that contains suggested matches. The sections will be shown in the
+ * order they are included in the array, and the last section will contain as many results as possible.
+ */
+export interface InviteSection {
+    /**
+     * The type of section to include in the inviteAsync dialog
+     */
+    sectionType: InviteSectionType;
+    /**
+     * Optional maximum number of results to include in the section. This can be no higher than 10. This will be
+     * disregarded for the last section, which will contain as many results as possible. If not included, the default
+     * maximum number of results for that section type will be used.
+     */
+    maxResults?: number;
+}
+
+/**
+ * Represents the media payload used by custom update and custom share.
+ */
+export interface MediaParams {
+    /**
+     * URL of the gif to be displayed.
+     */
+    gif?: MediaContent;
+    /**
+     * URL of the video to be displayed.
+     */
+    video?: MediaContent;
+}
+
+/**
+ * Specifies the content for media.
+ */
+export interface MediaContent {
+    url: string;
 }
