@@ -9,3 +9,14 @@
  * 5. Optionally, developer can also validate the timestamp to see if the request is made recently.
  */
 export type Signature = string;
+
+/**
+ * Purchase Platforms that may be returned by subscriptions API, representing the platform by which the user made the purchase.
+ *
+ * - `FB`: The user made the purchase on web.
+ * - `GOOGLE`: The user made the purchase in the Android apps.
+ * - `APPLE`: Not eligible
+ * - `OC`: Not eligible
+ * - `UNKNOWN`: Unknown
+ */
+export type PurchasePlatform = 'FB' | 'GOOGLE' | 'APPLE' | 'OC' | 'UNKNOWN'
