@@ -23,7 +23,11 @@ export class Notification implements INotification {
     }
 
     send(): Promise<NotificationScheduleResult> {
-        const url: string = this.getScheduleURL_Facebook();
+        const url: string | undefined = this.getScheduleURL_Facebook();
+        if (typeof url === "undefined") {
+            return Promise.reject(operationFailed("Failed to schedule notification. ASID is not defined.", "notifications.scheduleAsync"));
+        }
+
         const body: string = this.buildSchedulePayload_Facebook();
 
         return new Promise((resolve, reject) => {
@@ -66,7 +70,10 @@ export class Notification implements INotification {
         return JSON.stringify(body);
     }
 
-    getScheduleURL_Facebook(): string {
+    getScheduleURL_Facebook(): string | undefined {
+        if (typeof config.player.asid !== "string") {
+            return undefined;
+        }
         return `https://html5gameportal.com/api/v1/notification/${config.session.gameId}/fb/${config.player.asid}`;
     }
 }
