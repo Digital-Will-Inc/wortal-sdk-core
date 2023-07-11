@@ -19,6 +19,7 @@ export interface AdCallbacks {
 /** @hidden */
 export interface IAdInstance {
     show: Function;
+    logEvent: Function;
 }
 
 /** @hidden */
@@ -39,4 +40,6 @@ export interface AdConfigData {
     hasPrerollShown: boolean;
     interstitialId: string;
     rewardedId: string;
+    adsCalled: number;
+    adsShown: number;
 }

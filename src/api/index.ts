@@ -199,10 +199,12 @@ function _initRakutenFacebook(): void {
 // Wortal/GD shows preroll ad, removes cover after.
 function _initWortalGD(): void {
     config.lateInit();
+    config.adConfig.adCalled();
     ads.showInterstitial("preroll", "Preroll", () => {
     }, () => {
         _removeLoadingCover();
         config.adConfig.setPrerollShown(true);
+        config.adConfig.adShown();
         _tryEnableIAP();
         analytics._logGameStart();
         isInitialized = true;

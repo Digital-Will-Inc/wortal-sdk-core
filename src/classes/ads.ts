@@ -1,6 +1,8 @@
 import { config } from "../api";
 import { AdCallbacks, AdConfigData, AdData, AdInstanceData, IAdInstance } from "../interfaces/ads";
+import { AdCallEventData, AnalyticsEventData } from "../interfaces/analytics";
 import { rethrowPlatformError } from "../utils/error-handler";
+import { AnalyticsEvent } from "./analytics";
 
 /** @hidden */
 class AdInstance implements IAdInstance {
@@ -22,6 +24,8 @@ class AdInstance implements IAdInstance {
     }
 
     show(): void { };
+
+    logEvent(success: boolean, viewedReward?: boolean) { };
 }
 
 /** @hidden */
@@ -35,30 +39,39 @@ export class InterstitialAd extends AdInstance {
         let attempt: number = 0;
 
         const showAdFn = () => {
+            config.adConfig.adCalled();
             (window as any).triggerWortalAd(
                 this.adData.placementType,
                 this.adData.adUnitId,
                 this.adData.description,
                 {
                     beforeAd: this.callbacks.beforeAd,
-                    afterAd: this.callbacks.afterAd,
+                    afterAd: () => {
+                        config.adConfig.adShown();
+                        this.logEvent(true);
+                        this.callbacks.afterAd();
+                    },
                     noShow: () => {
                         if (attempt < this.retryAttempts && this.adData.placementType !== "preroll") {
                             attempt++;
                             console.log("[Wortal] Ad not filled, retrying.. \n Retry attempt: " + attempt);
+                            this.logEvent(false);
                             showAdFn();
                         } else {
                             console.log("[Wortal] Exceeded retry attempts. Show failed.");
+                            this.logEvent(false);
                             this.callbacks.noFill();
                         }
                     },
                     noBreak: () => {
-                        if (attempt < this.retryAttempts&& this.adData.placementType !== "preroll") {
+                        if (attempt < this.retryAttempts && this.adData.placementType !== "preroll") {
                             attempt++;
                             console.log("[Wortal] Ad not filled, retrying.. \n Retry attempt: " + attempt);
+                            this.logEvent(false);
                             showAdFn();
                         } else {
                             console.log("[Wortal] Exceeded retry attempts. Show failed.");
+                            this.logEvent(false);
                             this.callbacks.noFill();
                         }
                     },
@@ -70,6 +83,30 @@ export class InterstitialAd extends AdInstance {
         };
 
         showAdFn();
+    };
+
+    logEvent(success: boolean) {
+        // wortal.js already logs the ad events for us.
+        if (config.session.platform === "wortal" || config.session.platform === "debug") {
+            return;
+        }
+
+        const analyticsData: AdCallEventData = {
+            format: "interstitial",
+            placement: this.adData.placementType,
+            success: success,
+            playerID: config.player.id,
+            gameID: config.session.gameId,
+            playTimeAtCall: config.game.gameTimer,
+        };
+
+        const eventData: AnalyticsEventData = {
+            name: "AdCall",
+            features: analyticsData,
+        };
+
+        const event = new AnalyticsEvent(eventData);
+        event.send();
     };
 }
 
@@ -86,21 +123,33 @@ export class RewardedAd extends AdInstance {
         let attempt: number = 0;
 
         const showAdFn = () => {
+            config.adConfig.adCalled();
             (window as any).triggerWortalAd(
                 this.adData.placementType,
                 this.adData.adUnitId,
                 this.adData.description, {
                     beforeAd: this.callbacks.beforeAd,
-                    afterAd: this.callbacks.afterAd,
-                    adDismissed: this.callbacks.adDismissed,
-                    adViewed: this.callbacks.adViewed,
+                    afterAd: () => {
+                        config.adConfig.adShown();
+                        this.callbacks.afterAd();
+                    },
+                    adDismissed: () => {
+                        this.logEvent(true, false);
+                        this.callbacks.adDismissed?.();
+                    },
+                    adViewed: () => {
+                        this.logEvent(true, true);
+                        this.callbacks.adViewed?.();
+                    },
                     noShow: () => {
                         if (attempt < this.retryAttempts) {
                             attempt++;
                             console.log("[Wortal] Ad not filled, retrying.. \n Retry attempt: " + attempt);
+                            this.logEvent(false);
                             showAdFn();
                         } else {
                             console.log("[Wortal] Exceeded retry attempts. Show failed.");
+                            this.logEvent(false);
                             this.callbacks.noFill();
                         }
                     },
@@ -108,9 +157,11 @@ export class RewardedAd extends AdInstance {
                         if (attempt < this.retryAttempts) {
                             attempt++;
                             console.log("[Wortal] Ad not filled, retrying.. \n Retry attempt: " + attempt);
+                            this.logEvent(false);
                             showAdFn();
                         } else {
                             console.log("[Wortal] Exceeded retry attempts. Show failed.");
+                            this.logEvent(false);
                             this.callbacks.noFill();
                         }
                     },
@@ -122,6 +173,31 @@ export class RewardedAd extends AdInstance {
 
         showAdFn();
     };
+
+    logEvent(success: boolean, viewedReward?: boolean) {
+        // wortal.js already logs the ad events for us.
+        if (config.session.platform === "wortal" || config.session.platform === "debug") {
+            return;
+        }
+
+        const analyticsData: AdCallEventData = {
+            format: "rewarded",
+            placement: this.adData.placementType,
+            success: success,
+            viewedRewarded: viewedReward,
+            playerID: config.player.id,
+            gameID: config.session.gameId,
+            playTimeAtCall: config.game.gameTimer,
+        };
+
+        const eventData: AnalyticsEventData = {
+            name: "AdCall",
+            features: analyticsData,
+        };
+
+        const event = new AnalyticsEvent(eventData);
+        event.send();
+    }
 }
 
 /** @hidden */
@@ -131,6 +207,8 @@ export class AdConfig {
         hasPrerollShown: false,
         interstitialId: "",
         rewardedId: "",
+        adsCalled: 0,
+        adsShown: 0,
     };
 
     constructor() {
@@ -166,6 +244,22 @@ export class AdConfig {
 
     get rewardedId(): string {
         return this._current.rewardedId;
+    }
+
+    get adsCalled(): number {
+        return this._current.adsCalled;
+    }
+
+    get adsShown(): number {
+        return this._current.adsShown;
+    }
+
+    adCalled(): void {
+        this._current.adsCalled++;
+    }
+
+    adShown(): void {
+        this._current.adsShown++;
     }
 
     /**

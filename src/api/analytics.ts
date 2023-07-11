@@ -395,6 +395,8 @@ export function _logGameEnd(): void {
             timePlayed: config.game.gameTimer,
             platform: config.session.platform,
             player: config.player.id,
+            adsCalled: config.adConfig.adsCalled,
+            adsShown: config.adConfig.adsShown,
         }
     };
 

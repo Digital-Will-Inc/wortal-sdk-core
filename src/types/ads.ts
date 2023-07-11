@@ -12,3 +12,6 @@
  * Use ads.showRewarded() which will automatically add the 'reward' type.
  */
 export type PlacementType = 'preroll' | 'start' | 'pause' | 'next' | 'browse' | 'reward'
+
+/** @hidden */
+export type AdType = 'interstitial' | 'rewarded'
