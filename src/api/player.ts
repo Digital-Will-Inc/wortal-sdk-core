@@ -47,16 +47,16 @@ export function isFirstPlay(): boolean {
 }
 
 /**
- * Retrieve data from the designated cloud storage of the current player. Please note that JSON objects stored as
- * string values would be returned back as JSON objects.
+ * Retrieve data from the designated cloud storage of the current player.
  * @example
  * Wortal.player.getDataAsync(['items', 'lives'])
  *  .then(data => {
- *      console.log(data['items]);
+ *      data = JSON.parse(data);
+ *      console.log(data['items']);
  *      console.log(data['lives']);
  *  });
  * @param keys Array of keys for the data to get.
- * @returns {Promise<any>} Promise that resolves with an object which contains the current key-value pairs for each
+ * @returns {Promise<string>} Promise that resolves with a JSON string which contains the current key-value pairs for each
  * key specified in the input array, if they exist.
  * @throws {ErrorMessage} See error.message for details.
  * <ul>
@@ -66,7 +66,7 @@ export function isFirstPlay(): boolean {
  * <li>CLIENT_UNSUPPORTED_OPERATION</li>
  * </ul>
  */
-export function getDataAsync(keys: string[]): Promise<any> {
+export function getDataAsync(keys: string[]): Promise<string> {
     let platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (!Array.isArray(keys) || !keys.length) {
@@ -76,7 +76,7 @@ export function getDataAsync(keys: string[]): Promise<any> {
         if (platform === "link" || platform === "viber" || platform === "facebook") {
             return (window as any).wortalGame.player.getDataAsync(keys)
                 .then((data: any) => {
-                    return data;
+                    return JSON.stringify(data);
                 })
                 .catch((e: any) => {
                     throw rethrowPlatformError(e, "player.getDataAsync");
