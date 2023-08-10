@@ -2,8 +2,12 @@ import { config } from "../api";
 import Wortal from "../index";
 import { ShareTo } from "../types/wortal";
 import { invalidParams } from "./error-handler";
-import { debug } from "./logger";
+import { debug, exception } from "./logger";
 import { isValidShareDestination } from "./validators";
+
+//
+// UTILITY FUNCTIONS
+//
 
 /**
  * Gets a parameter from the URL.
@@ -132,11 +136,20 @@ export function gdEventTrigger(value: string): void {
             debug(`GD event triggered, but no callback is defined for this event. Event: ${value}}`);
         }
     } else {
-        console.error("[Wortal] GD event triggered, but GDCallbacks in undefined.");
+        exception("GD event triggered, but GDCallbacks is undefined. This is a fatal error that should have been caught during initialization.");
     }
 }
 
-/** @hidden */
+//
+// PLATFORM FUNCTIONS
+//
+
+/**
+ * Shares the game on the specified platform. This is only supported on Wortal and was ported over from the now
+ * deprecated wortal.js. It is not recommended to use this function, as it is called from the page
+ * displaying the game.
+ * @hidden
+ */
 (window as any).shareGame = function(destination: ShareTo, message: string): void {
     if (!isValidShareDestination(destination)) {
         throw invalidParams("[Wortal] Invalid share destination.", "shareGame()");

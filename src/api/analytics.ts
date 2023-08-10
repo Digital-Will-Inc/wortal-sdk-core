@@ -17,7 +17,7 @@ import Wortal from "../index";
  */
 export function logLevelStart(level: string | number): void {
     if (!isValidString(level) && !isValidNumber(level)) {
-        throw invalidParams("level cannot be null or empty", "analytics.logLevelStart");
+        throw invalidParams("level cannot be null or empty. Please provide a valid string or number for the level parameter.", "analytics.logLevelStart");
     }
 
     if (typeof level === "number") {
@@ -60,7 +60,7 @@ export function logLevelStart(level: string | number): void {
  */
 export function logLevelEnd(level: string | number, score: string | number, wasCompleted: boolean): void {
     if (!isValidString(level) && !isValidNumber(level)) {
-        throw invalidParams("level cannot be null or empty", "analytics.logLevelEnd");
+        throw invalidParams("level cannot be null or empty. Please provide a valid string or number for the level parameter.", "analytics.logLevelEnd");
     }
 
     if (typeof level === "number") {
@@ -165,7 +165,7 @@ export function logTutorialEnd(tutorial: string, wasCompleted: boolean): void {
  */
 export function logLevelUp(level: string | number): void {
     if (!isValidString(level) && !isValidNumber(level)) {
-        throw invalidParams("level cannot be null or empty", "analytics.logLevelUp");
+        throw invalidParams("level cannot be null or empty. Please provide a valid string or number for the level parameter.", "analytics.logLevelUp");
     }
 
     let data: AnalyticsEventData = {
@@ -195,7 +195,7 @@ export function logLevelUp(level: string | number): void {
  */
 export function logScore(score: string | number): void {
     if (!isValidString(score) && !isValidNumber(score)) {
-        throw invalidParams("score cannot be null or empty", "analytics.logScore");
+        throw invalidParams("score cannot be null or empty. Please provide a valid string or number for the score parameter.", "analytics.logScore");
     }
 
     let data: AnalyticsEventData = {
@@ -227,9 +227,9 @@ export function logScore(score: string | number): void {
  */
 export function logGameChoice(decision: string, choice: string): void {
     if (!isValidString(decision)) {
-        throw invalidParams("decision cannot be null or empty", "analytics.logGameChoice");
+        throw invalidParams("decision cannot be null or empty. Please provide a valid string for the decision parameter.", "analytics.logGameChoice");
     } else if (!isValidString(choice)) {
-        throw invalidParams("choice cannot be null or empty", "analytics.logGameChoice");
+        throw invalidParams("choice cannot be null or empty. Please provide a valid string for the choice parameter.", "analytics.logGameChoice");
     }
 
     let data: AnalyticsEventData = {
@@ -256,7 +256,7 @@ export function logGameChoice(decision: string, choice: string): void {
  */
 export function logSocialInvite(placement: string): void {
     if (!isValidString(placement)) {
-        throw invalidParams("placement cannot be null or empty", "analytics.logSocialInvite");
+        throw invalidParams("placement cannot be null or empty. Please provide a valid string for the placement parameter.", "analytics.logSocialInvite");
     }
 
     let data: AnalyticsEventData = {
@@ -282,7 +282,7 @@ export function logSocialInvite(placement: string): void {
  */
 export function logSocialShare(placement: string): void {
     if (!isValidString(placement)) {
-        throw invalidParams("placement cannot be null or empty", "analytics.logSocialShare");
+        throw invalidParams("placement cannot be null or empty.. Please provide a valid string for the placement parameter.", "analytics.logSocialShare");
     }
 
     let data: AnalyticsEventData = {
@@ -313,7 +313,7 @@ export function logSocialShare(placement: string): void {
  */
 export function logPurchase(productID: string, details?: string): void {
     if (!isValidString(productID)) {
-        throw invalidParams("productID cannot be null or empty", "analytics.logPurchase");
+        throw invalidParams("productID cannot be null or empty. . Please provide a valid string for the productID parameter.", "analytics.logPurchase");
     }
 
     let data: AnalyticsEventData = {
@@ -345,7 +345,7 @@ export function logPurchase(productID: string, details?: string): void {
  */
 export function logPurchaseSubscription(productID: string, details?: string): void {
     if (!isValidString(productID)) {
-        throw invalidParams("productID cannot be null or empty", "analytics.logPurchaseSubscription");
+        throw invalidParams("productID cannot be null or empty. Please provide a valid string for the productID parameter.", "analytics.logPurchaseSubscription");
     }
 
     let data: AnalyticsEventData = {

@@ -30,7 +30,7 @@ export function getLeaderboardAsync(name: string): Promise<Leaderboard> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (!isValidString(name)) {
-            throw invalidParams("name cannot be null or empty.", "leaderboard.getLeaderboardAsync");
+            throw invalidParams("name cannot be null or empty. Please provide a valid string for the name parameter.", "leaderboard.getLeaderboardAsync");
         }
 
         if (platform === "link" || platform === "viber" || platform === "facebook") {
@@ -46,7 +46,7 @@ export function getLeaderboardAsync(name: string): Promise<Leaderboard> {
                     throw rethrowPlatformError(e, "leaderboard.getLeaderboardAsync");
                 });
         } else {
-            throw notSupported("Leaderboard API not currently supported on platform: " + platform, "leaderboard.getLeaderboardAsync");
+            throw notSupported(`Leaderboard API not currently supported on platform: ${platform}`, "leaderboard.getLeaderboardAsync");
         }
     });
 }
@@ -76,7 +76,7 @@ export function sendEntryAsync(name: string, score: number, details: string = ""
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (!isValidString(name)) {
-            throw invalidParams("name cannot be null or empty.", "leaderboard.sendEntryAsync");
+            throw invalidParams("name cannot be null or empty. Please provide a valid string for the name parameter.", "leaderboard.sendEntryAsync");
         }
 
         if (platform === "link" || platform === "viber" || platform === "facebook") {
@@ -93,7 +93,7 @@ export function sendEntryAsync(name: string, score: number, details: string = ""
                     throw rethrowPlatformError(e, "leaderboard.sendEntryAsync");
                 });
         } else {
-            throw notSupported("Leaderboard API not currently supported on platform: " + platform, "leaderboard.sendEntryAsync");
+            throw notSupported(`Leaderboard API not currently supported on platform: ${platform}`, "leaderboard.sendEntryAsync");
         }
     });
 }
@@ -120,7 +120,7 @@ export function getEntriesAsync(name: string, count: number, offset: number = 0)
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (!isValidString(name)) {
-            throw invalidParams("name cannot be null or empty.", "leaderboard.getEntriesAsync");
+            throw invalidParams("name cannot be null or empty. Please provide a valid string for the name parameter.", "leaderboard.getEntriesAsync");
         }
 
         if (platform === "link" || platform === "viber" || platform === "facebook") {
@@ -139,7 +139,7 @@ export function getEntriesAsync(name: string, count: number, offset: number = 0)
                     throw rethrowPlatformError(e, "leaderboard.getEntriesAsync");
                 });
         } else {
-            throw notSupported("Leaderboard API not currently supported on platform: " + platform, "leaderboard.getEntriesAsync");
+            throw notSupported(`Leaderboard API not currently supported on platform: ${platform}`, "leaderboard.getEntriesAsync");
         }
     });
 }
@@ -164,7 +164,7 @@ export function getPlayerEntryAsync(name: string): Promise<LeaderboardEntry> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (!isValidString(name)) {
-            throw invalidParams("name cannot be null or empty.", "leaderboard.getPlayerEntryAsync");
+            throw invalidParams("name cannot be null or empty. Please provide a valid string for the name parameter.", "leaderboard.getPlayerEntryAsync");
         }
 
         if (platform === "link" || platform === "viber" || platform === "facebook") {
@@ -181,7 +181,7 @@ export function getPlayerEntryAsync(name: string): Promise<LeaderboardEntry> {
                     throw rethrowPlatformError(e, "leaderboard.getPlayerEntryAsync");
                 });
         } else {
-            throw notSupported("Leaderboard API not currently supported on platform: " + platform, "leaderboard.getPlayerEntryAsync");
+            throw notSupported(`Leaderboard API not currently supported on platform: ${platform}`, "leaderboard.getPlayerEntryAsync");
         }
     });
 }
@@ -205,7 +205,7 @@ export function getEntryCountAsync(name: string): Promise<number> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (!isValidString(name)) {
-            throw invalidParams("name cannot be null or empty.", "leaderboard.getEntryCountAsync");
+            throw invalidParams("name cannot be null or empty. Please provide a valid string for the name parameter.", "leaderboard.getEntryCountAsync");
         }
 
         if (platform === "link" || platform === "viber" || platform === "facebook") {
@@ -218,7 +218,7 @@ export function getEntryCountAsync(name: string): Promise<number> {
                     throw rethrowPlatformError(e, "leaderboard.getEntryCountAsync");
                 });
         } else {
-            throw notSupported("Leaderboard API not currently supported on platform: " + platform, "leaderboard.getEntryCountAsync");
+            throw notSupported(`Leaderboard API not currently supported on platform: ${platform}`, "leaderboard.getEntryCountAsync");
         }
     });
 }
@@ -246,7 +246,7 @@ export function getConnectedPlayersEntriesAsync(name: string, count: number, off
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (!isValidString(name)) {
-            throw invalidParams("name cannot be null or empty.", "leaderboard.getConnectedPlayersEntriesAsync");
+            throw invalidParams("name cannot be null or empty. Please provide a valid string for the name parameter.", "leaderboard.getConnectedPlayersEntriesAsync");
         }
 
         if (platform === "link" || platform === "viber" || platform === "facebook") {
@@ -265,7 +265,7 @@ export function getConnectedPlayersEntriesAsync(name: string, count: number, off
                     throw rethrowPlatformError(e, "leaderboard.getConnectedPlayersEntriesAsync");
                 });
         } else {
-            throw notSupported("Leaderboard API not currently supported on platform: " + platform, "leaderboard.getConnectedPlayersEntriesAsync");
+            throw notSupported(`Leaderboard API not currently supported on platform: ${platform}`, "leaderboard.getConnectedPlayersEntriesAsync");
         }
     });
 }

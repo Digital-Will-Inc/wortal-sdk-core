@@ -46,7 +46,7 @@ export function getEntryPointAsync(): Promise<string> {
                     throw rethrowPlatformError(e, "player.getEntryPointAsync");
                 });
         } else {
-            throw notSupported("Session API not currently supported on platform: " + platform, "session.getEntryPointAsync");
+            throw notSupported(`Session API not currently supported on platform: ${platform}`, "session.getEntryPointAsync");
         }
     });
 }

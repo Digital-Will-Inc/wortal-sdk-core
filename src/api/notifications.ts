@@ -1,12 +1,10 @@
 import { Notification, ScheduledNotification } from "../classes/notification";
 import { NotificationPayload, NotificationScheduleResult } from "../interfaces/notifications";
+import { APIEndpoints } from "../types/wortal";
 import { invalidParams, notSupported, operationFailed } from "../utils/error-handler";
 import { debug } from "../utils/logger";
 import { isValidString } from "../utils/validators";
 import { config } from "./index";
-
-/** @hidden */
-const URL_PREFIX: string = "https://html5gameportal.com/api/v1/notification";
 
 /**
  * Schedule a notification to be delivered to the player at a later time.
@@ -34,13 +32,13 @@ export function scheduleAsync(payload: NotificationPayload): Promise<Notificatio
 
     return Promise.resolve().then(() => {
         if (platform !== "facebook") {
-            return Promise.reject(notSupported("Notifications not supported on platform: " + platform, "notifications.scheduleAsync"));
+            return Promise.reject(notSupported(`Notifications not supported on platform: ${platform}`, "notifications.scheduleAsync"));
         }
         if (!isValidString(payload.title)) {
-            return Promise.reject(invalidParams("Title cannot be null or empty.", "notifications.scheduleAsync"));
+            return Promise.reject(invalidParams("title cannot be null or empty. Please provide a valid string for the payload.title property.", "notifications.scheduleAsync"));
         }
         if (!isValidString(payload.body)) {
-            return Promise.reject(invalidParams("Body cannot be null or empty.", "notifications.scheduleAsync"));
+            return Promise.reject(invalidParams("body cannot be null or empty. Please provide a valid string for the payload.body property.", "notifications.scheduleAsync"));
         }
 
         const notification = new Notification(payload);
@@ -68,7 +66,7 @@ export function getHistoryAsync(): Promise<ScheduledNotification[]> {
     const url: string = _getHistoryURL_Facebook();
 
     if (platform !== "facebook") {
-        return Promise.reject(notSupported("Notifications not supported on platform: " + platform, "notifications.getHistoryAsync"));
+        return Promise.reject(notSupported(`Notifications not supported on platform: ${platform}`, "notifications.getHistoryAsync"));
     }
 
     return new Promise((resolve, reject) => {
@@ -98,7 +96,7 @@ export function getHistoryAsync(): Promise<ScheduledNotification[]> {
             });
             resolve(notifications);
         }).catch(error => {
-            reject(operationFailed(`[Wortal] Failed to get notifications. Error: ${error}`, "notifications.getHistoryAsync"));
+            reject(operationFailed(`Failed to get notifications. Error: ${error}`, "notifications.getHistoryAsync"));
         });
     });
 }
@@ -121,10 +119,10 @@ export function cancelAsync(id: string): Promise<boolean> {
     const url = _getCancelURL_Facebook();
 
     if (platform !== "facebook") {
-        return Promise.reject(notSupported("Notifications not supported on platform: " + platform, "notifications.cancelAsync"));
+        return Promise.reject(notSupported(`Notifications not supported on platform: ${platform}`, "notifications.cancelAsync"));
     }
     if (!isValidString(id)) {
-        return Promise.reject(invalidParams("ID cannot be null or empty.", "notifications.cancelAsync"));
+        return Promise.reject(invalidParams("id cannot be null or empty. Please provide a valid string for the id parameter.", "notifications.cancelAsync"));
     }
 
     return new Promise((resolve, reject) => {
@@ -147,7 +145,7 @@ export function cancelAsync(id: string): Promise<boolean> {
             debug(`cancelAsync data: ${JSON.stringify(data)}`);
             resolve(data.success)
         }).catch(error => {
-            reject(operationFailed(`[Wortal] Failed to cancel notifications. Error: ${error}`, "notifications.cancelAsync"));
+            reject(operationFailed(`Failed to cancel notifications. Error: ${error}`, "notifications.cancelAsync"));
         });
     });
 }
@@ -170,7 +168,7 @@ export function cancelAllAsync(label?: string): Promise<boolean> {
     const url = _getCancelAllURL_Facebook();
 
     if (platform !== "facebook") {
-        return Promise.reject(notSupported("Notifications not supported on platform: " + platform, "notifications.cancelAllAsync"));
+        return Promise.reject(notSupported(`Notifications not supported on platform: ${platform}`, "notifications.cancelAllAsync"));
     }
 
     return new Promise((resolve, reject) => {
@@ -193,19 +191,19 @@ export function cancelAllAsync(label?: string): Promise<boolean> {
             debug(`cancelAllAsync data: ${JSON.stringify(data)}`);
             resolve(data.success);
         }).catch(error => {
-            reject(operationFailed(`[Wortal] Failed to cancel all notifications. Error: ${error}`, "notifications.cancelAllAsync"));
+            reject(operationFailed(`Failed to cancel all notifications. Error: ${error}`, "notifications.cancelAllAsync"));
         });
     });
 }
 
 function _getHistoryURL_Facebook(): string {
-    return `${URL_PREFIX}/${config.session.gameId}/fb/${config.player.asid}`;
+    return `${APIEndpoints.NOTIFICATIONS}${config.session.gameId}/fb/${config.player.asid}`;
 }
 
 function _getCancelURL_Facebook(): string {
-    return `${URL_PREFIX}/${config.session.gameId}/fb/${config.player.asid}/cancel_notification`;
+    return `${APIEndpoints.NOTIFICATIONS}${config.session.gameId}/fb/${config.player.asid}/cancel_notification`;
 }
 
 function _getCancelAllURL_Facebook(): string {
-    return `${URL_PREFIX}/${config.session.gameId}/fb/${config.player.asid}/cancel_all_notifications`;
+    return `${APIEndpoints.NOTIFICATIONS}${config.session.gameId}/fb/${config.player.asid}/cancel_all_notifications`;
 }

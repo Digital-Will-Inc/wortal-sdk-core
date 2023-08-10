@@ -1,4 +1,4 @@
-import { debug, info } from "../utils/logger";
+import { debug, exception, info } from "../utils/logger";
 import * as _ads from './ads';
 import * as _analytics from './analytics';
 import * as _context from './context';
@@ -192,7 +192,6 @@ export async function _initializeInternal(options?: InitializationOptions): Prom
     }
 
     info("Initializing SDK " + __VERSION__);
-    config.initialize();
     addLoadingListener();
     addGameEndEventListener();
 
@@ -215,7 +214,7 @@ export async function _initializeInternal(options?: InitializationOptions): Prom
     }).catch((error) => {
         // We don't reject here because this might be a recoverable error. We'll try to initialize the SDK in debug
         // mode and if that fails then we'll reject.
-        console.error("[Wortal] Failed to initialize platform SDK: " + error.message);
+        exception("Failed to initialize platform SDK: " + error.message);
         return _initializeSDK_Debug();
     });
 }

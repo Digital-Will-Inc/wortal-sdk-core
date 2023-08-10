@@ -71,7 +71,7 @@ export function getDataAsync(keys: string[]): Promise<any> {
     let platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (!Array.isArray(keys) || !keys.length) {
-            throw invalidParams("keys cannot be null or empty.", "player.getDataAsync");
+            throw invalidParams("keys cannot be null or empty. Please provide a valid string array for the keys parameter.", "player.getDataAsync");
         }
 
         if (platform === "link" || platform === "viber" || platform === "facebook") {
@@ -83,7 +83,7 @@ export function getDataAsync(keys: string[]): Promise<any> {
                     throw rethrowPlatformError(e, "player.getDataAsync");
                 });
         } else {
-            throw notSupported("Player API not currently supported on platform: " + platform, "player.getDataAsync");
+            throw notSupported(`Player API not currently supported on platform: ${platform}`, "player.getDataAsync");
         }
     });
 }
@@ -122,7 +122,7 @@ export function setDataAsync(data: Record<string, unknown>): Promise<void> {
                     throw rethrowPlatformError(e, "player.setDataAsync");
                 });
         } else {
-            throw notSupported("Player API not currently supported on platform: " + platform, "player.setDataAsync");
+            throw notSupported(`Player API not currently supported on platform: ${platform}`, "player.setDataAsync");
         }
     });
 }
@@ -155,7 +155,7 @@ export function flushDataAsync(): Promise<void> {
                     throw rethrowPlatformError(e, "player.flushDataAsync");
                 });
         } else {
-            throw notSupported("Player API not currently supported on platform: " + platform, "player.flushDataAsync");
+            throw notSupported(`Player API not currently supported on platform: ${platform}`, "player.flushDataAsync");
         }
     });
 }
@@ -200,7 +200,7 @@ export function getConnectedPlayersAsync(payload?: ConnectedPlayerPayload): Prom
                     throw rethrowPlatformError(e, "player.getConnectedPlayersAsync");
                 });
         } else {
-            throw notSupported("Player API not currently supported on platform: " + platform, "player.getConnectedPlayersAsync");
+            throw notSupported(`Player API not currently supported on platform: ${platform}`, "player.getConnectedPlayersAsync");
         }
     });
 }
@@ -242,7 +242,7 @@ export function getSignedPlayerInfoAsync(): Promise<object> {
                     throw rethrowPlatformError(e, "player.getSignedPlayerInfoAsync");
                 });
         } else {
-            throw notSupported("Player API not currently supported on platform: " + platform, "player.getSignedPlayerInfoAsync");
+            throw notSupported(`Player API not currently supported on platform: ${platform}`, "player.getSignedPlayerInfoAsync");
         }
     });
 }
@@ -269,7 +269,7 @@ export function getASIDAsync(): Promise<string> {
                     throw rethrowPlatformError(e, "player.getASIDAsync");
                 });
         } else {
-            throw notSupported("Player API not currently supported on platform: " + platform, "player.getASIDAsync");
+            throw notSupported(`Player API not currently supported on platform: ${platform}`, "player.getASIDAsync");
         }
     });
 }
@@ -308,7 +308,7 @@ export function getSignedASIDAsync(): Promise<SignedASID> {
                     throw rethrowPlatformError(e, "player.getSignedASIDAsync");
                 });
         } else {
-            throw notSupported("Player API not currently supported on platform: " + platform, "player.getSignedASIDAsync");
+            throw notSupported(`Player API not currently supported on platform: ${platform}`, "player.getSignedASIDAsync");
         }
     });
 }
@@ -338,7 +338,7 @@ export function canSubscribeBotAsync(): Promise<boolean> {
                     throw rethrowPlatformError(e, "player.canSubscribeBotAsync");
                 });
         } else {
-            throw notSupported("Player API not currently supported on platform: " + platform, "player.canSubscribeBotAsync");
+            throw notSupported(`Player API not currently supported on platform: ${platform}`, "player.canSubscribeBotAsync");
         }
     });
 }
@@ -368,7 +368,7 @@ export function subscribeBotAsync(): Promise<void> {
                     throw rethrowPlatformError(e, "player.subscribeBotAsync");
                 });
         } else {
-            throw notSupported("Player API not currently supported on platform: " + platform, "player.subscribeBotAsync");
+            throw notSupported(`Player API not currently supported on platform: ${platform}`, "player.subscribeBotAsync");
         }
     });
 }

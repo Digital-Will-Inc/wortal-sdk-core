@@ -138,10 +138,10 @@ export function inviteAsync(payload: InvitePayload): Promise<number> {
             throw notSupported(`context.inviteAsync not currently supported on platform: ${platform}`, "context.inviteAsync");
         }
         if (!isValidPayloadText(payload.text)) {
-            throw invalidParams("Text cannot be null or empty.", "context.inviteAsync");
+            throw invalidParams("text cannot be null or empty. Please provide a valid string for the payload.text property.", "context.inviteAsync");
         }
         if (!isValidPayloadImage(payload.image)) {
-            throw invalidParams("Image needs to be a data URL for a base64 encoded image.", "context.inviteAsync");
+            throw invalidParams("image was invalid. Please provide a valid data URL for a base64 encoded image for the payload.image property.", "context.inviteAsync");
         }
 
         let convertedPayload: any = payload;
@@ -206,10 +206,10 @@ export function shareAsync(payload: SharePayload): Promise<number> {
             throw notSupported(`context.shareAsync not currently supported on platform: ${platform}`, "context.shareAsync");
         }
         if (!isValidPayloadText(payload.text)) {
-            throw invalidParams("Text cannot be null or empty.", "context.shareAsync");
+            throw invalidParams("text cannot be null or empty. Please provide a valid string for the payload.text property.", "context.shareAsync");
         }
         if (!isValidPayloadImage(payload.image)) {
-            throw invalidParams("Image needs to be a data URL for a base64 encoded image.", "context.shareAsync");
+            throw invalidParams("image was invalid. Please provide a valid data URL for a base64 encoded image for the payload.image property.", "context.shareAsync");
         }
 
         let convertedPayload: any = payload;
@@ -266,7 +266,7 @@ export function shareLinkAsync(payload: LinkSharePayload): Promise<void> {
             throw notSupported(`context.shareLinkAsync not currently supported on platform: ${platform}`, "context.shareLinkAsync");
         }
         if (typeof payload.data === "undefined") {
-            throw invalidParams("Data cannot be null or empty.", "context.shareLinkAsync");
+            throw invalidParams("data cannot be null or empty. Please provide a valid object for the payload.data property.", "context.shareLinkAsync");
         }
 
         return config.platformSDK.shareLinkAsync(payload)
@@ -304,10 +304,10 @@ export function updateAsync(payload: UpdatePayload): Promise<void> {
             throw notSupported(`context.updateAsync not currently supported on platform: ${platform}`, "context.updateAsync");
         }
         if (!isValidPayloadText(payload.text)) {
-            throw invalidParams("Text cannot be null or empty.", "context.updateAsync");
+            throw invalidParams("text cannot be null or empty. Please provide a valid string for the payload.text property.", "context.updateAsync");
         }
         if (!isValidPayloadImage(payload.image)) {
-            throw invalidParams("Image needs to be a data URL for a base64 encoded image.", "context.updateAsync");
+            throw invalidParams("image was invalid. Please provide a valid data URL for a base64 encoded image for the payload.image property.", "context.updateAsync");
         }
 
         let convertedPayload: any = payload;
@@ -392,7 +392,7 @@ export function switchAsync(contextId: string): Promise<void> {
             throw notSupported(`context.switchAsync not currently supported on platform: ${platform}`, "context.switchAsync");
         }
         if (!isValidString(contextId)) {
-            throw invalidParams("contextId cannot be null or empty.", "context.switchAsync")
+            throw invalidParams("contextId cannot be null or empty. Please provide a valid string for the contextID parameter.", "context.switchAsync")
         }
 
         return config.platformSDK.context.switchAsync(contextId)
@@ -443,7 +443,7 @@ export function createAsync(playerId?: string | string[]): Promise<void> {
             }
         }
         if (platform !== "facebook" && !isValidString(playerId)) {
-            throw invalidParams("playerId cannot be null or empty.", "context.createAsync");
+            throw invalidParams("playerId cannot be null or empty. Please provide a valid string for the playerId parameter.", "context.createAsync");
         }
 
         return config.platformSDK.context.createAsync(playerId)

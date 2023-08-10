@@ -34,7 +34,7 @@ export function getCatalogAsync(): Promise<Product[]> {
     let platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (!config.isIAPEnabled) {
-            throw notSupported("IAP is currently disabled.", "iap.getCatalogAsync");
+            throw notSupported("IAP is currently disabled. Please check iap.isEnabled before using the IAP API.", "iap.getCatalogAsync");
         }
 
         if (platform === "viber" || platform === "facebook") {
@@ -46,7 +46,7 @@ export function getCatalogAsync(): Promise<Product[]> {
                     throw rethrowPlatformError(e, "iap.getCatalogAsync");
                 });
         } else {
-            throw notSupported("IAP API not currently supported on platform: " + platform, "iap.getCatalogAsync");
+            throw notSupported(`IAP API not currently supported on platform: ${platform}`, "iap.getCatalogAsync");
         }
     });
 }
@@ -71,7 +71,7 @@ export function getPurchasesAsync(): Promise<Purchase[]> {
     let platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (!config.isIAPEnabled) {
-            throw notSupported("IAP is currently disabled.", "iap.getPurchasesAsync");
+            throw notSupported("IAP is currently disabled. Please check iap.isEnabled before using the IAP API.", "iap.getPurchasesAsync");
         }
 
         if (platform === "viber" || platform === "facebook") {
@@ -83,7 +83,7 @@ export function getPurchasesAsync(): Promise<Purchase[]> {
                     throw rethrowPlatformError(e, "iap.getPurchasesAsync");
                 });
         } else {
-            throw notSupported("IAP API not currently supported on platform: " + platform, "iap.getPurchasesAsync");
+            throw notSupported(`IAP API not currently supported on platform: ${platform}`, "iap.getPurchasesAsync");
         }
     });
 }
@@ -111,10 +111,10 @@ export function makePurchaseAsync(purchase: PurchaseConfig): Promise<Purchase> {
     let platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (!config.isIAPEnabled) {
-            throw notSupported("IAP is currently disabled.", "iap.makePurchaseAsync");
+            throw notSupported("IAP is currently disabled. Please check iap.isEnabled before using the IAP API.", "iap.makePurchaseAsync");
         }
         if (!isValidPurchaseConfig(purchase)) {
-            throw invalidParams("productID cannot be null or empty.", "iap.makePurchaseAsync");
+            throw invalidParams("productID cannot be null or empty. Please provide a valid string for the productID parameter.", "iap.makePurchaseAsync");
         }
 
         if (platform === "viber" || platform === "facebook") {
@@ -126,7 +126,7 @@ export function makePurchaseAsync(purchase: PurchaseConfig): Promise<Purchase> {
                     throw rethrowPlatformError(e, "iap.makePurchaseAsync");
                 });
         } else {
-            throw notSupported("IAP API not currently supported on platform: " + platform, "iap.makePurchaseAsync");
+            throw notSupported(`IAP API not currently supported on platform: ${platform}`, "iap.makePurchaseAsync");
         }
     });
 }
@@ -153,10 +153,10 @@ export function consumePurchaseAsync(token: string): Promise<void> {
     let platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (!config.isIAPEnabled) {
-            throw notSupported("IAP is currently disabled.", "iap.consumePurchaseAsync");
+            throw notSupported("IAP is currently disabled. Please check iap.isEnabled before using the IAP API.", "iap.consumePurchaseAsync");
         }
         if (!isValidString(token)) {
-            throw invalidParams("token cannot be null or empty.", "iap.consumePurchaseAsync");
+            throw invalidParams("token cannot be null or empty. Please provide a valid string for the token parameter.", "iap.consumePurchaseAsync");
         }
 
         if (platform === "viber" || platform === "facebook") {
@@ -165,7 +165,7 @@ export function consumePurchaseAsync(token: string): Promise<void> {
                     throw rethrowPlatformError(e, "iap.consumePurchaseAsync");
                 });
         } else {
-            throw notSupported("IAP API not currently supported on platform: " + platform, "iap.consumePurchaseAsync");
+            throw notSupported(`IAP API not currently supported on platform: ${platform}`, "iap.consumePurchaseAsync");
         }
     });
 }

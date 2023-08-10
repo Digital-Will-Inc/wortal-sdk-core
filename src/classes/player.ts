@@ -2,7 +2,7 @@ import { config } from "../api";
 import Wortal from "../index";
 import { PlayerData } from "../interfaces/player";
 import { LeaderboardPlayerData } from "../types/leaderboard";
-import { debug } from "../utils/logger";
+import { debug, exception } from "../utils/logger";
 
 /**
  * Represents a player in the game. To access info about the current player, use the Wortal.player API.
@@ -32,7 +32,7 @@ export class Player {
             Wortal.player.getASIDAsync().then((asid) => {
                 this._current.asid = asid;
             }).catch((error) => {
-                console.error("[Wortal] Error getting ASID: ", error);
+                exception("Error fetching ASID: ", error);
             });
         }
 

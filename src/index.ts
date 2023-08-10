@@ -1,5 +1,5 @@
 import * as _Wortal from './api';
-import { debug } from "./utils/logger";
+import { debug, exception } from "./utils/logger";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // This was directly ported over from the deprecated wortal.js. We should probably find a better way to do this,
@@ -22,7 +22,7 @@ Wortal._initializeInternal().then(() => {
     // the platform SDKs finish loading. Do not rely on this for anything mission-critical.
     debug("SDK initializeInternal returned");
 }).catch((error: any) => {
-    console.error("[Wortal] SDK failed to initialize.", error);
+    exception("SDK failed to initialize.", error);
 });
 
 export default Wortal;

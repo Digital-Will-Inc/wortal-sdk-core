@@ -12,7 +12,7 @@ import { AdCallEventData, AnalyticsEventData } from "../interfaces/analytics";
 import { PlacementType } from "../types/ads";
 import { APIEndpoints, GD_EVENTS } from "../types/wortal";
 import { operationFailed, rethrowPlatformError } from "../utils/error-handler";
-import { debug, warn } from "../utils/logger";
+import { debug, exception, warn } from "../utils/logger";
 import { isValidPlacementType } from "../utils/validators";
 import { addGDCallback, getParameterByName } from "../utils/wortal-utils";
 import { AnalyticsEvent } from "./analytics";
@@ -49,7 +49,7 @@ export class InterstitialAd extends AdInstance {
     constructor(data: AdInstanceData) {
         super(data);
         if (!isValidPlacementType(data.placementType)) {
-            console.error("[Wortal] Invalid placement type: " + data.placementType);
+            exception(`Invalid placement type: ${data.placementType}`);
             this.adData.isValid = false;
             return;
         }
@@ -95,7 +95,7 @@ export class InterstitialAd extends AdInstance {
                             config.adConfig.adShown();
                             this.logEvent(true);
                             this.callbacks.afterAd();
-                        } : () => debug("AdBreakDone")
+                        } : () => debug("adBreakDone")
                 }
             );
         };
@@ -176,7 +176,7 @@ export class RewardedAd extends AdInstance {
                     beforeReward: function (showAdFn: Function) {
                         showAdFn();
                     },
-                    adBreakDone: () => debug("AdBreakDone")
+                    adBreakDone: () => debug("adBreakDone")
                 });
         }
 
@@ -299,7 +299,7 @@ export class AdConfig {
         if (config.platformSDK) {
             config.platformSDK.getAdUnitsAsync().then((adUnits: any[]) => {
                 if (adUnits == null || undefined) {
-                    console.error("[Wortal] Failed to retrieve ad units.");
+                    exception("Failed to retrieve ad units. This may be due to a server error or platform malfunction.");
                     return;
                 }
 
@@ -334,7 +334,7 @@ export class AdConfig {
     private _setFacebookAdUnitIds(): void {
         debug("Fetching Facebook ad units from Wortal API..");
         if (typeof (window as any).wortalGameID === "undefined") {
-            console.error("[Wortal] Failed to retrieve wortalGameID. This may be due to an error when uploading the game bundle to Facebook.");
+            exception("Failed to retrieve wortalGameID. This may be due to an error when uploading the game bundle to Facebook.");
             return;
         }
 
@@ -344,7 +344,7 @@ export class AdConfig {
             response.json().then((adUnits: FacebookAdUnitsResponse) => {
                 debug("Fetching Facebook ad units from Wortal API response JSON: ", adUnits);
                 if ((adUnits == null || undefined) || (adUnits.ads == null || undefined)) {
-                    console.error("[Wortal] Failed to retrieve ad units. This may be due to a server issue or the API being currently unavailable.");
+                    exception("Failed to retrieve ad units. This may be due to a server issue or the API being currently unavailable.");
                     return;
                 }
 
@@ -380,6 +380,7 @@ export class AdConfig {
 function _showAd(placement: PlacementType, placementId: string, description: string, callbacks: AdCallbacks): void {
     switch (config.session.platform) {
         case "wortal":
+        case "debug":
             return _showAd_Wortal(placement, description, callbacks);
         case "link":
         case "viber":
@@ -388,7 +389,7 @@ function _showAd(placement: PlacementType, placementId: string, description: str
         case "gd":
             return _showAd_GD(placement, callbacks);
         default:
-            console.error("[Wortal] Unsupported platform for ads: ", config.session.platform);
+            exception(`Unsupported platform for ads: ${config.session.platform}`);
     }
 }
 
@@ -501,7 +502,7 @@ function _showAd_Wortal(placement: PlacementType, description: string, callbacks
  */
 function _showAd_Rakuten_Facebook(placementType: PlacementType, placementId: string, callbacks: AdCallbacks): void {
     if (typeof config.platformSDK === "undefined") {
-        console.error("[Wortal] Platform SDK not initialized.");
+        exception("Platform SDK not initialized. This is a fatal error that should have been caught during initialization.");
         return;
     }
 
@@ -518,7 +519,7 @@ function _showAd_Rakuten_Facebook(placementType: PlacementType, placementId: str
  */
 function _showAd_GD(placementType: PlacementType, callbacks: AdCallbacks): void {
     if (typeof config.platformSDK === "undefined") {
-        console.error("[Wortal] Platform SDK not initialized.");
+        exception("Platform SDK not initialized. This is a fatal error that should have been caught during initialization.");
         return;
     }
 
@@ -604,7 +605,7 @@ function _showRewarded_GD(callbacks: AdCallbacks): void {
     if (callbacks.adViewed) {
         addGDCallback(GD_EVENTS.AD_VIEWED, callbacks.adViewed);
     } else {
-        console.error("[Wortal] No adViewed callback provided. This is required for rewarded ads.");
+        exception("No adViewed callback provided. This is required for rewarded ads.");
         return;
     }
 
@@ -631,7 +632,7 @@ function _showRewarded_GD(callbacks: AdCallbacks): void {
  * @hidden
  */
 function _onAdErrorOrNoFill(error: any, options: any) {
-    console.error(error);
+    warn("Ad instance encountered an error or was not filled.", error);
     options.noFill && options.noFill();
 }
 
