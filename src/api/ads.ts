@@ -2,7 +2,8 @@ import { InterstitialAd, RewardedAd } from "../classes/ads";
 import { AdInstanceData } from "../interfaces/ads";
 import { PlacementType } from "../types/ads";
 import { invalidParams } from "../utils/error-handler";
-import { debug } from "../utils/logger";
+import { debug, warn } from "../utils/logger";
+import { isValidString } from "../utils/validators";
 import { config } from "./index";
 
 /**
@@ -30,30 +31,37 @@ import { config } from "./index";
  */
 export function showInterstitial(placement: PlacementType, description: string,
                                  beforeAd: Function, afterAd: Function, noFill?: Function): void {
-    let platform = config.session.platform;
+    const platform = config.session.platform;
 
     // Validate the callbacks. Invalid params will cause the adBreak API to throw an error.
     if (beforeAd === undefined || typeof beforeAd !== "function") {
-        beforeAd = () => console.warn("[Wortal] BeforeAd function missing or invalid.");
+        beforeAd = () => warn("beforeAd function missing or invalid. This is used to pause the game and mute audio when an ad begins.");
     }
     if (afterAd === undefined || typeof afterAd !== "function") {
-        afterAd = () => console.warn("[Wortal] AfterAd function missing or invalid.");
+        afterAd = () => warn("afterAd function missing or invalid. This is used to resume the game and unmute audio when an ad has finished.");
     }
     if (noFill === undefined || typeof noFill !== "function") {
         noFill = afterAd;
     }
 
     // Validate the placement type. Invalid types can cause policy violations.
-    if (placement === 'reward') {
-        throw invalidParams("showInterstitial called with placement type 'reward'. Call showRewarded instead.", "ads.showInterstitial");
+    if (placement === "reward") {
+        throw invalidParams("showInterstitial called with placement type 'reward'. Call showRewarded instead to display a rewarded ad.", "ads.showInterstitial");
     }
-    if (placement === 'preroll' && (platform === "link" || platform === "viber" || platform === "facebook")) {
-        throw invalidParams("Current platform does not support preroll ads.", "ads.showInterstitial");
+    if (placement === "preroll" && (platform === "link" || platform === "viber" || platform === "facebook")) {
+        throw invalidParams(`Current platform does not support preroll ads. Platform: ${platform}`, "ads.showInterstitial");
     }
-    if (placement === 'preroll' && (
+    if (placement === "preroll" && (
         config.adConfig.hasPrerollShown ||
         config.game.gameTimer > 10)) {
-        throw invalidParams("Preroll ads can only be shown during game load.", "ads.showInterstitial");
+        throw invalidParams("Preroll ads can only be shown once during game load.", "ads.showInterstitial");
+    }
+
+    // Validate the ad unit IDs. Non-existent IDs can cause the ad call to hang indefinitely.
+    if ((platform === "link" || platform === "viber" || platform === "facebook")
+        && !isValidString(config.adConfig.interstitialId)) {
+        warn("Ad Unit IDs not found. Please contact your Wortal representative to have the ad unit IDs configured.");
+        return;
     }
 
     // Don't bother calling if the ads are blocked, the Wortal backend will not respond which can lead to the
@@ -104,24 +112,32 @@ export function showInterstitial(placement: PlacementType, description: string,
  */
 export function showRewarded(description: string, beforeAd: Function, afterAd: Function,
                              adDismissed: Function, adViewed: Function, noFill?: Function): void {
+    const platform = config.session.platform;
 
     // Validate the callbacks. Invalid params will cause the adBreak API to throw an error.
     if (beforeAd === undefined || typeof beforeAd !== "function") {
-        beforeAd = () => console.warn("[Wortal] BeforeAd function missing or invalid.");
+        beforeAd = () => warn("beforeAd function missing or invalid. This is used to pause the game and mute audio when an ad begins.");
     }
     if (afterAd === undefined || typeof afterAd !== "function") {
-        afterAd = () => console.warn("[Wortal] AfterAd function missing or invalid.");
+        afterAd = () => warn("afterAd function missing or invalid. This is used to resume the game and unmute audio when an ad has finished.");
     }
     if (adDismissed === undefined || typeof adDismissed !== "function") {
-        adDismissed = () => console.warn("[Wortal] AdDismissed function missing or invalid.");
+        adDismissed = () => warn("adDismissed function missing or invalid. This is used to handle the case where the player did not successfully watch the ad.");
     }
     if (adViewed === undefined || typeof adViewed !== "function") {
         // We cannot call for a rewarded ad without actually rewarding the player if successful, which
         // would be the case here.
-        throw invalidParams("AdViewed function missing or invalid.", "ads.showRewarded");
+        throw invalidParams("adViewed function missing or invalid. This is required to reward the player when they have successfully watched the ad.", "ads.showRewarded");
     }
     if (noFill === undefined || typeof noFill !== "function") {
         noFill = afterAd;
+    }
+
+    // Validate the ad unit IDs. Non-existent IDs can cause the ad call to hang indefinitely.
+    if ((platform === "link" || platform === "viber" || platform === "facebook")
+        && !isValidString(config.adConfig.rewardedId)) {
+        warn("Ad Unit IDs not found. Please contact your Wortal representative to have the ad unit IDs configured.");
+        return;
     }
 
     // Don't bother calling if the ads are blocked, the Wortal backend will not respond which can lead to the
