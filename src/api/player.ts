@@ -48,15 +48,16 @@ export function isFirstPlay(): boolean {
 
 /**
  * Retrieve data from the designated cloud storage of the current player.
+ *
+ * PLATFORM NOTE: JSON objects stored as string values will be returned back as JSON objects on Facebook.
  * @example
  * Wortal.player.getDataAsync(['items', 'lives'])
  *  .then(data => {
- *      data = JSON.parse(data);
  *      console.log(data['items']);
  *      console.log(data['lives']);
  *  });
  * @param keys Array of keys for the data to get.
- * @returns {Promise<string>} Promise that resolves with a JSON string which contains the current key-value pairs for each
+ * @returns {Promise<any>} Promise that resolves with an object which contains the current key-value pairs for each
  * key specified in the input array, if they exist.
  * @throws {ErrorMessage} See error.message for details.
  * <ul>
@@ -66,7 +67,7 @@ export function isFirstPlay(): boolean {
  * <li>CLIENT_UNSUPPORTED_OPERATION</li>
  * </ul>
  */
-export function getDataAsync(keys: string[]): Promise<string> {
+export function getDataAsync(keys: string[]): Promise<any> {
     let platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (!Array.isArray(keys) || !keys.length) {
@@ -76,7 +77,7 @@ export function getDataAsync(keys: string[]): Promise<string> {
         if (platform === "link" || platform === "viber" || platform === "facebook") {
             return config.platformSDK.player.getDataAsync(keys)
                 .then((data: any) => {
-                    return JSON.stringify(data);
+                    return data;
                 })
                 .catch((e: any) => {
                     throw rethrowPlatformError(e, "player.getDataAsync");
@@ -130,6 +131,7 @@ export function setDataAsync(data: Record<string, unknown>): Promise<void> {
  * Flushes any unsaved data to the platform's storage. This function is expensive, and should primarily be used for
  * critical changes where persistence needs to be immediate and known by the game. Non-critical changes should rely on
  * the platform to persist them in the background.
+ *
  * NOTE: Calls to player.setDataAsync will be rejected while this function's result is pending.
  * @example
  * Wortal.player.flushDataAsync()
