@@ -9,7 +9,7 @@ import * as _player from './player';
 import * as _session from './session';
 import { InitializationOptions } from "../interfaces/session";
 import SDKConfig from "../utils/config";
-import { initializationError, notSupported, rethrowPlatformError } from "../utils/error-handler";
+import { initializationError, invalidParams, notSupported, rethrowPlatformError } from "../utils/error-handler";
 import { isValidString } from "../utils/validators";
 import {
     addGameEndEventListener,
@@ -56,7 +56,7 @@ const GOOGLE_SDK: string = "https://pagead2.googlesyndication.com/pagead/js/adsb
 /** @hidden */
 const LINK_SDK: string = "https://lg.rgames.jp/libs/link-game-sdk/1.3.0/bundle.js";
 /** @hidden */
-const VIBER_SDK: string = "https://vbrpl.io/libs/viber-play-sdk/1.13.0/bundle.js";
+const VIBER_SDK: string = "https://vbrpl.io/libs/viber-play-sdk/1.14.0/bundle.js";
 /** @hidden */
 const FB_SDK: string = "https://connect.facebook.net/en_US/fbinstant.7.1.js";
 /** @hidden */
@@ -117,6 +117,10 @@ export function setLoadingProgress(value: number): void {
  * @param callback Callback to invoke.
  */
 export function onPause(callback: Function): void {
+    if (typeof callback !== "function") {
+        throw invalidParams("Callback needs to be a function.", "onPause");
+    }
+
     const platform = config.session.platform;
     if (platform === "link" || platform === "viber" || platform === "facebook") {
         if (config.platformSDK) {
