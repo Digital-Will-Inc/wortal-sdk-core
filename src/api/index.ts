@@ -1,4 +1,3 @@
-import { debug, exception, info } from "../utils/logger";
 import * as _ads from './ads';
 import * as _analytics from './analytics';
 import * as _context from './context';
@@ -7,8 +6,10 @@ import * as _leaderboard from './leaderboard';
 import * as _notifications from './notifications';
 import * as _player from './player';
 import * as _session from './session';
+import * as _tournament from './tournament';
 import { InitializationOptions } from "../interfaces/session";
 import SDKConfig from "../utils/config";
+import { debug, exception, info } from "../utils/logger";
 import { initializationError, invalidParams, notSupported, rethrowPlatformError } from "../utils/error-handler";
 import { isValidNumber, isValidString } from "../utils/validators";
 import {
@@ -20,51 +21,31 @@ import {
     tryEnableIAP
 } from "../utils/wortal-utils";
 
-///
-/// Global declarations
-///
-
-/**
- * Current version of the Wortal SDK.
- * @hidden
- */
+// This is the version of the SDK. It is set by the build process.
 declare var __VERSION__: string;
 
-/**
- * Reference to the LinkGame SDK.
- * @hidden
- */
+// References to the platform SDKs. They are declared here so that we can map these to config.platformSDK
+// once they are initialized.
+
 declare const LinkGame: any;
-/**
- * Reference to the ViberPlay SDK.
- * @hidden
- */
 declare const ViberPlay: any;
-/**
- * Reference to the FBInstant SDK.
- * @hidden
- */
 declare const FBInstant: any;
-/**
- * Reference to the Game Distribution SDK.
- * @hidden
- */
 declare const gdsdk: any;
 
-/** @hidden */
+// URLs for the platform SDKs. They are declared here so that we can use them to load the SDKs when we
+// initialize the platforms.
+
 const GOOGLE_SDK_SRC: string = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js";
-/** @hidden */
 const LINK_SDK_SRC: string = "https://lg.rgames.jp/libs/link-game-sdk/1.3.0/bundle.js";
-/** @hidden */
 const VIBER_SDK_SRC: string = "https://vbrpl.io/libs/viber-play-sdk/1.14.0/bundle.js";
-/** @hidden */
 const FB_SDK_SRC: string = "https://connect.facebook.net/en_US/fbinstant.7.1.js";
-/** @hidden */
 const GD_SDK_SRC: string = "https://html5.api.gamedistribution.com/main.min.js";
 
-///
-/// PUBLIC API
-///
+/**
+ * Contains the configuration for the SDK. This includes the current session, game state, platform SDK, etc.
+ * @hidden
+ */
+export const config = new SDKConfig();
 
 /** Ads API */
 export const ads = _ads;
@@ -82,8 +63,8 @@ export const notifications = _notifications;
 export const player = _player;
 /** Session API */
 export const session = _session;
-/** @hidden */
-export const config = new SDKConfig();
+/** Tournament API */
+export const tournament = _tournament;
 
 /**
  * Returns true if the SDK Core has been initialized.
@@ -173,10 +154,6 @@ export function performHapticFeedbackAsync(): Promise<void> {
 export function getSupportedAPIs(): string[] {
     return config._supportedAPIs[config.session.platform];
 }
-
-///
-/// INTERNAL FUNCTIONS
-///
 
 /**
  * Initializes the SDK. This should be called as soon as the script has been loaded and any configuration options

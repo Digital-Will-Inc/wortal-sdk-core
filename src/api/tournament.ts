@@ -1,0 +1,218 @@
+import { Tournament } from "../classes/tournament";
+import { CreateTournamentConfig, ShareTournamentPayload } from "../interfaces/tournament";
+import { facebookTournamentToWortal } from "../utils/converters";
+import { invalidParams, notSupported, rethrowPlatformError } from "../utils/error-handler";
+import { isValidString } from "../utils/validators";
+import { config } from "./index";
+
+/**
+ * Fetch the tournament out of the current context the user is playing. This will reject if there is no
+ * tournament linked to the current context. The tournament returned can be either active or expired
+ * (A tournament is expired if its end time is in the past). For each tournament, there is only one unique context
+ * ID linked to it, and that ID doesn't change.
+ * @example
+ * Wortal.tournament.getCurrentAsync()
+ * .then(tournament => {
+ *     console.log(tournament.id);
+ *     console.log(tournament.endTime);
+ * });
+ * @returns {Promise<Tournament>} Promise that resolves with the current tournament.
+ * Rejects if there is no tournament linked to the current context.
+ * @throws {ErrorMessage} See error.message for details.
+ * <ul>
+ * <li>PENDING_REQUEST</li>
+ * <li>NETWORK_FAILURE</li>
+ * <li>INVALID_OPERATION</li>
+ * <li>TOURNAMENT_NOT_FOUND</li>
+ * <li>NOT_SUPPORTED</li>
+ */
+export function getCurrentAsync(): Promise<Tournament> {
+    const platform = config.session.platform;
+    return Promise.resolve().then(() => {
+        if (platform === "facebook") {
+            return config.platformSDK.getTournamentAsync()
+                .then((tournament: any) => {
+                    return facebookTournamentToWortal(tournament);
+                })
+                .catch((e: any) => {
+                    throw rethrowPlatformError(e, "tournament.getCurrentAsync");
+                });
+        } else {
+            throw notSupported(`Tournament API not currently supported on platform: ${platform}`, "tournament.getCurrentAsync");
+        }
+    });
+}
+
+/**
+ * Returns a list of eligible tournaments that can be surfaced in-game, including tournaments:
+ *
+ * - The player has created
+ * - The player is participating in
+ * - The player's friends (who granted permission) are participating in
+ *
+ * The tournaments returned are active. A tournament is expired if its end time is in the past.
+ * For each tournament, there is only one unique context ID linked to it, and that ID doesn't change.
+ * @example
+ * Wortal.tournament.getAllAsync()
+ *  .then(tournaments => console.log(tournaments.length));
+ * @returns {Promise<Tournament[]>} Promise that resolves with an array of active tournaments.
+ * @throws {ErrorMessage} See error.message for details.
+ * <ul>
+ * <li>NETWORK_FAILURE</li>
+ * <li>INVALID_OPERATION</li>
+ * <li>NOT_SUPPORTED</li>
+ */
+export function getAllAsync(): Promise<Tournament[]> {
+    const platform = config.session.platform;
+    return Promise.resolve().then(() => {
+        if (platform === "facebook") {
+            return config.platformSDK.tournament.getTournamentsAsync()
+                .then((tournaments: any) => {
+                    return tournaments.map((tournament: any) => {
+                        return facebookTournamentToWortal(tournament);
+                    });
+                })
+                .catch((e: any) => {
+                    throw rethrowPlatformError(e, "tournament.getAllAsync");
+                });
+        } else {
+            throw notSupported(`Tournament API not currently supported on platform: ${platform}`, "tournament.getAllAsync");
+        }
+    });
+}
+
+/**
+ * Posts a player's score. This API should only be called within a tournament context at the end of an
+ * activity (example: when the player doesn't have "lives" to continue the game). This API will be rate-limited when
+ * called too frequently. Scores posted using this API should be consistent and comparable across game sessions.
+ * For example, if Player A achieves 200 points in a session, and Player B achieves 320 points in a session, those
+ * two scores should be generated from activities where the scores are fair to be compared and ranked against each other.
+ * @example
+ * Wortal.tournament.postScoreAsync(200)
+ *  .then(() => console.log("Score posted!"));
+ * @param score An integer value representing the player's score at the end of an activity.
+ * @returns {Promise<void>} Promise that resolves when the score is posted.
+ * @throws {ErrorMessage} See error.message for details.
+ * <ul>
+ * <li>INVALID_PARAM</li>
+ * <li>TOURNAMENT_NOT_FOUND</li>
+ * <li>NETWORK_FAILURE</li>
+ * <li>NOT_SUPPORTED</li>
+ * </ul>
+ */
+export function postScoreAsync(score: number): Promise<void> {
+    const platform = config.session.platform;
+    return Promise.resolve().then(() => {
+        if (platform === "facebook") {
+            return config.platformSDK.tournament.postScoreAsync(score)
+                .catch((e: any) => {
+                    throw rethrowPlatformError(e, "tournament.postScoreAsync");
+                });
+        } else {
+            throw notSupported(`Tournament API not currently supported on platform: ${platform}`, "tournament.postScoreAsync");
+        }
+    });
+}
+
+/**
+ * Opens the tournament creation dialog if the player is not currently in a tournament session.
+ * @example
+ * // Create a tournament for a specific level.
+ * Wortal.tournament.createAsync( 100, { title: "Level 1 Tournament" }, { level: 1 })
+ *  .then(tournament => console.log(tournament.payload["level"]));
+ * @param initialScore An integer value representing the player's initial score.
+ * @param tournamentConfig Configuration for the tournament to be created.
+ * @param payload Payload to attach to the tournament. This will be accessible via tournament.getPayload().
+ * @returns {Promise<Tournament>} Promise that resolves with the created tournament.
+ * @throws {ErrorMessage} See error.message for details.
+ * <ul>
+ * <li>INVALID_PARAM</li>
+ * <li>INVALID_OPERATION</li>
+ * <li>NETWORK_FAILURE</li>
+ * <li>DUPLICATE_POST</li>
+ * <li>NOT_SUPPORTED</li>
+ * </ul>
+ */
+export function createAsync(initialScore: number, tournamentConfig: CreateTournamentConfig, payload: Record<string, unknown>): Promise<Tournament> {
+    const platform = config.session.platform;
+    return Promise.resolve().then(() => {
+        if (platform === "facebook") {
+            return config.platformSDK.tournament.createAsync(initialScore, tournamentConfig, payload)
+                .then((tournament: any) => {
+                    return facebookTournamentToWortal(tournament);
+                })
+                .catch((e: any) => {
+                    throw rethrowPlatformError(e, "tournament.createAsync");
+                });
+        } else {
+            throw notSupported(`Tournament API not currently supported on platform: ${platform}`, "tournament.createAsync");
+        }
+    });
+}
+
+/**
+ * Opens the share tournament dialog if the player is currently in a tournament session.
+ * @example
+ * Wortal.tournament.shareAsync({
+ *   score: 3,
+ *   data: { myReplayData: '...' }
+ * });
+ * @param payload Specifies share content.
+ * @returns {Promise<void>} Promise that resolves if the tournament is shared, or rejects otherwise.
+ * @throws {ErrorMessage} See error.message for details.
+ * <ul>
+ * <li>INVALID_OPERATION</li>
+ * <li>TOURNAMENT_NOT_FOUND</li>
+ * <li>NETWORK_FAILURE</li>
+ * <li>NOT_SUPPORTED</li>
+ */
+export function shareAsync(payload: ShareTournamentPayload): Promise<void> {
+    const platform = config.session.platform;
+    return Promise.resolve().then(() => {
+        if (platform === "facebook") {
+            return config.platformSDK.tournament.shareAsync(payload)
+                .catch((e: any) => {
+                    throw rethrowPlatformError(e, "tournament.shareAsync");
+                });
+        } else {
+            throw notSupported(`Tournament API not currently supported on platform: ${platform}`, "tournament.shareAsync");
+        }
+    });
+}
+
+/**
+ * Request a switch into a specific tournament context. If the player is not a participant of the tournament, or there
+ * are not any connected players participating in the tournament, this will reject. Otherwise, the promise will resolve
+ * when the game has switched into the specified context.
+ * @example
+ * Wortal.tournament.joinAsync("1234567890")
+ *  .then(() => console.log("Switched into tournament!"));
+ * @param tournamentID ID of the desired tournament context to switch into.
+ * @returns {Promise<void>} Promise that resolves when the game has switched into the specified tournament context, or rejects otherwise.
+ * @throws {ErrorMessage} See error.message for details.
+ * <ul>
+ * <li>INVALID_PARAM</li>
+ * <li>INVALID_OPERATION</li>
+ * <li>TOURNAMENT_NOT_FOUND</li>
+ * <li>SAME_CONTEXT</li>
+ * <li>NETWORK_FAILURE</li>
+ * <li>USER_INPUT</li>
+ * <li>NOT_SUPPORTED</li>
+ */
+export function joinAsync(tournamentID: string): Promise<void> {
+    const platform = config.session.platform;
+    return Promise.resolve().then(() => {
+        if (!isValidString(tournamentID)) {
+            throw invalidParams("tournamentID is invalid. Please provide a valid string for the tournamentID parameter.", "tournament.joinAsync");
+        }
+
+        if (platform === "facebook") {
+            return config.platformSDK.tournament.joinAsync(tournamentID)
+                .catch((e: any) => {
+                    throw rethrowPlatformError(e, "tournament.joinAsync");
+                });
+        } else {
+            throw notSupported(`Tournament API not currently supported on platform: ${platform}`, "tournament.joinAsync");
+        }
+    });
+}
