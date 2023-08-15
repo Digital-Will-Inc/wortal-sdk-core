@@ -8,6 +8,10 @@
         "strict": true,
         "outDir": "dist",
         "declaration": true,
-        "types": ["node"]
-    }
+        "types": ["node"],
+    },
+    "exclude": [
+        "node_modules",
+        "demo",
+    ]
 }

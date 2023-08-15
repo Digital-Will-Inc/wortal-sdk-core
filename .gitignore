@@ -10,6 +10,10 @@
 ### Generated docs
 /docs
 
+### Demo
+demo/*.zip
+demo/wortal-core*.js
+
 ### Node template
 # Logs
 logs

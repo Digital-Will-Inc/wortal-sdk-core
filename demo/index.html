@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wortal SDK Test Bundle</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="wortal-core.js"></script>
+</head>
+<body>
+    <div class="button-container" id="main-grid">
+        <button class="output-button" id="core">Core</button>
+        <button class="output-button" id="ads">Ads</button>
+        <button class="output-button" id="context">Context</button>
+        <button class="output-button" id="iap">IAP</button>
+        <button class="output-button" id="leaderboard">Leaderboard</button>
+        <button class="output-button" id="notifications">Notifications</button>
+        <button class="output-button" id="player">Player</button>
+        <button class="output-button" id="session">Session</button>
+        <button class="output-button" id="tournament">Tournament</button>
+    </div>
+
+    <div class="secondary-grid" id="grid-core">
+        <button class="output-button" id="core-setLoadingProgress">setLoadingProgress</button>
+        <button class="output-button" id="core-onPause">onPause</button>
+        <button class="output-button" id="core-performHapticFeedbackAsync">performHapticFeedbackAsync</button>
+        <button class="output-button" id="core-getSupportedAPIs">getSupportedAPIs</button>
+        <button class="output-button back-button">Back</button>
+    </div>
+
+    <div class="secondary-grid" id="grid-ads">
+        <button class="output-button" id="ads-showInterstitial">showInterstitial</button>
+        <button class="output-button" id="ads-showRewarded">showRewarded</button>
+        <button class="output-button back-button">Back</button>
+    </div>
+
+    <div class="secondary-grid" id="grid-context">
+        <button class="output-button" id="context-getId">getId</button>
+        <button class="output-button" id="context-getType">getType</button>
+        <button class="output-button" id="context-getPlayersAsync">getPlayersAsync</button>
+        <button class="output-button" id="context-inviteAsync">inviteAsync</button>
+        <button class="output-button" id="context-shareAsync">shareAsync</button>
+        <button class="output-button" id="context-shareLinkAsync">shareLinkAsync</button>
+        <button class="output-button" id="context-updateAsync">updateAsync</button>
+        <button class="output-button" id="context-chooseAsync">chooseAsync</button>
+        <button class="output-button" id="context-switchAsync">switchAsync</button>
+        <button class="output-button" id="context-createAsync">createAsync</button>
+        <button class="output-button" id="context-isSizeBetween">isSizeBetween</button>
+        <button class="output-button back-button">Back</button>
+    </div>
+
+    <div class="secondary-grid" id="grid-iap">
+        <button class="output-button" id="iap-isEnabled">isEnabled</button>
+        <button class="output-button" id="iap-getCatalogAsync">getCatalogAsync</button>
+        <button class="output-button" id="iap-getPurchasesAsync">getPurchasesAsync</button>
+        <button class="output-button" id="iap-makePurchaseAsync">makePurchaseAsync</button>
+        <button class="output-button" id="iap-consumePurchaseAsync">consumePurchaseAsync</button>
+        <button class="output-button back-button">Back</button>
+    </div>
+
+    <div class="secondary-grid" id="grid-leaderboard">
+        <button class="output-button" id="leaderboard-getLeaderboardAsync">getLeaderboardAsync</button>
+        <button class="output-button" id="leaderboard-sendEntryAsync">sendEntryAsync</button>
+        <button class="output-button" id="leaderboard-getEntriesAsync">getEntriesAsync</button>
+        <button class="output-button" id="leaderboard-getPlayerEntryAsync">getPlayerEntryAsync</button>
+        <button class="output-button" id="leaderboard-getEntryCountAsync">getEntryCountAsync</button>
+        <button class="output-button" id="leaderboard-getConnectedPlayersEntriesAsync">getConnectedPlayersEntriesAsync</button>
+        <button class="output-button back-button">Back</button>
+    </div>
+
+    <div class="secondary-grid" id="grid-notifications">
+        <button class="output-button" id="notifications-scheduleAsync">scheduleAsync</button>
+        <button class="output-button" id="notifications-getHistoryAsync">getHistoryAsync</button>
+        <button class="output-button" id="notifications-cancelAsync">cancelAsync</button>
+        <button class="output-button" id="notifications-cancelAllAsync">cancelAllAsync</button>
+        <button class="output-button back-button">Back</button>
+    </div>
+
+    <div class="secondary-grid" id="grid-player">
+        <button class="output-button" id="player-getID">getID</button>
+        <button class="output-button" id="player-getName">getName</button>
+        <button class="output-button" id="player-getPhoto">getPhoto</button>
+        <button class="output-button" id="player-isFirstPlay">isFirstPlay</button>
+        <button class="output-button" id="player-getDataAsync">getDataAsync</button>
+        <button class="output-button" id="player-setDataAsync">setDataAsync</button>
+        <button class="output-button" id="player-flushDataAsync">flushDataAsync</button>
+        <button class="output-button" id="player-getConnectedPlayersAsync">getConnectedPlayersAsync</button>
+        <button class="output-button" id="player-getSignedPlayerInfoAsync">getSignedPlayerInfoAsync</button>
+        <button class="output-button" id="player-getASIDAsync">getASIDAsync</button>
+        <button class="output-button" id="player-getSignedASIDAsync">getSignedASIDAsync</button>
+        <button class="output-button" id="player-canSubscribeBotAsync">canSubscribeBotAsync</button>
+        <button class="output-button" id="player-subscribeBotAsync">subscribeBotAsync</button>
+        <button class="output-button back-button">Back</button>
+    </div>
+
+    <div class="secondary-grid" id="grid-session">
+        <button class="output-button" id="session-getEntryPointData">getEntryPointData</button>
+        <button class="output-button" id="session-getEntryPointAsync">getEntryPointAsync</button>
+        <button class="output-button" id="session-setSessionData">setSessionData</button>
+        <button class="output-button" id="session-getLocale">getLocale</button>
+        <button class="output-button" id="session-getTrafficSource">getTrafficSource</button>
+        <button class="output-button" id="session-getPlatform">getPlatform</button>
+        <button class="output-button back-button">Back</button>
+    </div>
+
+    <div class="secondary-grid" id="grid-tournament">
+        <button class="output-button" id="tournament-getCurrentAsync">getCurrentAsync</button>
+        <button class="output-button" id="tournament-getAllAsync">getAllAsync</button>
+        <button class="output-button" id="tournament-postScoreAsync">postScoreAsync</button>
+        <button class="output-button" id="tournament-createAsync">createAsync</button>
+        <button class="output-button" id="tournament-shareAsync">shareAsync</button>
+        <button class="output-button" id="tournament-joinAsync">joinAsync</button>
+        <button class="output-button back-button">Back</button>
+    </div>
+
+    <label for="text-output"></label><textarea id="text-output" readonly></textarea>
+
+    <script src="index.js"></script>
+    <script src="api/ads.js"></script>
+    <script src="api/context.js"></script>
+    <script src="api/core.js"></script>
+    <script src="api/iap.js"></script>
+    <script src="api/leaderboard.js"></script>
+    <script src="api/notifications.js"></script>
+    <script src="api/player.js"></script>
+    <script src="api/session.js"></script>
+    <script src="api/tournament.js"></script>
+    <script src="buttonHandlers.js"></script>
+    <script src="utils.js"></script>
+</body>
+</html>
