@@ -85,6 +85,7 @@ export default class SDKConfig {
             "ads.showRewarded",
             "session.getLocale",
             "session.getPlatform",
+            "session.getDevice",
         ],
         link: [
             "ads.showInterstitial",
@@ -118,6 +119,7 @@ export default class SDKConfig {
             "session.getLocale",
             "session.getPlatform",
             "session.getTrafficSource",
+            "session.getDevice",
         ],
         viber: [
             "ads.showInterstitial",
@@ -156,12 +158,14 @@ export default class SDKConfig {
             "session.getPlatform",
             "session.getTrafficSource",
             "session.setSessionData",
+            "session.getDevice",
         ],
         gd: [
             "ads.showInterstitial",
             "ads.showRewarded",
             "session.getLocale",
             "session.getPlatform",
+            "session.getDevice",
         ],
         facebook: [
             "ads.showInterstitial",
@@ -203,6 +207,13 @@ export default class SDKConfig {
             "session.getLocale",
             "session.getPlatform",
             "session.setSessionData",
+            "session.getDevice",
+            "tournament.getCurrentAsync",
+            "tournament.getAllAsync",
+            "tournament.postScoreAsync",
+            "tournament.createAsync",
+            "tournament.shareAsync",
+            "tournament.joinAsync",
         ],
         debug: [],
     };

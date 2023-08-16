@@ -265,6 +265,10 @@ document.getElementById('session-getPlatform').addEventListener('click', () => {
     sessionGetPlatform();
 });
 
+document.getElementById('session-getDevice').addEventListener('click', () => {
+    sessionGetDevice();
+});
+
 ////////////////////////////////////
 // Tournament
 ////////////////////////////////////

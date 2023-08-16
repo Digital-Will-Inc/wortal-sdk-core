@@ -1,5 +1,6 @@
 import { config } from "../api";
 import Wortal from "../index";
+import { Device } from "../types/session";
 import { ShareTo } from "../types/wortal";
 import { invalidParams } from "./error-handler";
 import { debug, exception } from "./logger";
@@ -140,6 +141,23 @@ export function gdEventTrigger(value: string): void {
     }
 }
 
+/**
+ * Detects the device the player is using. This is based on navigator.userAgent and is not guaranteed to be accurate.
+ * @hidden
+ */
+export function detectDevice(): Device {
+    //TODO: replace this with Navigator.userAgentData when its widely supported
+    if (/android/i.test(navigator.userAgent)) {
+        return "ANDROID";
+    } else if (/iphone/i.test(navigator.userAgent)) {
+        return "IOS";
+    } else if (/ipad/i.test(navigator.userAgent)) {
+        return "IOS";
+    } else {
+        return "DESKTOP";
+    }
+}
+
 //
 // PLATFORM FUNCTIONS
 //
@@ -150,7 +168,7 @@ export function gdEventTrigger(value: string): void {
  * displaying the game.
  * @hidden
  */
-(window as any).shareGame = function(destination: ShareTo, message: string): void {
+(window as any).shareGame = function (destination: ShareTo, message: string): void {
     if (!isValidShareDestination(destination)) {
         throw invalidParams("[Wortal] Invalid share destination.", "shareGame()");
     }

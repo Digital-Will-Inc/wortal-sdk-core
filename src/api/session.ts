@@ -1,6 +1,7 @@
 import { TrafficSource } from "../interfaces/session";
-import { Platform } from "../types/session";
+import { Device, Platform } from "../types/session";
 import { notSupported, rethrowPlatformError } from "../utils/error-handler";
+import { detectDevice } from "../utils/wortal-utils";
 import { config } from "./index";
 
 /**
@@ -14,7 +15,7 @@ import { config } from "./index";
  * @returns {Record<string, unknown>} Data about the entry point or an empty object if none exists.
  */
 export function getEntryPointData(): Record<string, unknown> {
-    let platform = config.session.platform;
+    const platform = config.session.platform;
     if (platform === "link" || platform === "viber" || platform === "facebook") {
         return config.platformSDK.getEntryPointData();
     } else {
@@ -35,7 +36,7 @@ export function getEntryPointData(): Record<string, unknown> {
  * </ul>
  */
 export function getEntryPointAsync(): Promise<string> {
-    let platform = config.session.platform;
+    const platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (platform === "link" || platform === "viber" || platform === "facebook") {
             return config.platformSDK.getEntryPointAsync()
@@ -64,7 +65,7 @@ export function getEntryPointAsync(): Promise<string> {
  * @param data An arbitrary data object, which must be less than or equal to 1000 characters when stringified.
  */
 export function setSessionData(data: Record<string, unknown>): void {
-    let platform = config.session.platform;
+    const platform = config.session.platform;
     if (platform === "viber" || platform === "facebook") {
         config.platformSDK.setSessionData(data);
     }
@@ -90,7 +91,8 @@ export function getLocale(): string {
  * @returns {TrafficSource} URL parameters attached to the game.
  */
 export function getTrafficSource(): TrafficSource {
-    if (config.session.platform === "link" || config.session.platform === "viber") {
+    const platform = config.session.platform;
+    if (platform === "link" || platform === "viber") {
         return config.platformSDK.getTrafficSource();
     } else {
         return {};
@@ -107,4 +109,20 @@ export function getTrafficSource(): TrafficSource {
  */
 export function getPlatform(): Platform {
     return config.session.platform;
+}
+
+/**
+ * Gets the device the player is using. This is useful for device specific code.
+ * @example
+ * const device = Wortal.session.getDevice();
+ * console.log(device);
+ * @returns {Device} Device the player is using.
+ */
+export function getDevice(): Device {
+    const platform = config.session.platform;
+    if (platform === "link" || platform === "viber" || platform === "facebook") {
+        return config.platformSDK.getPlatform();
+    } else {
+        return detectDevice();
+    }
 }

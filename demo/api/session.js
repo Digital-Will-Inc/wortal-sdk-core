@@ -27,3 +27,8 @@ function sessionGetTrafficSource() {
     const trafficSource = Wortal.session.getTrafficSource();
     appendText(trafficSource);
 }
+
+function sessionGetDevice() {
+    const device = Wortal.session.getDevice();
+    appendText(device);
+}

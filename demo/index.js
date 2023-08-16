@@ -33,3 +33,7 @@ backButton.forEach(button => {
         hideAllSecondaryGrids();
     });
 });
+
+setTimeout(() => {
+    coreSetLoadingProgress();
+}, 1000);
