@@ -7,6 +7,20 @@ import { isValidString } from "../utils/validators";
 import { config } from "./index";
 
 /**
+ * Returns whether ads are blocked for the current session. This can be used to determine if an alternative flow should
+ * be used instead of showing ads, or prompt the player to disable the ad blocker.
+ * @example
+ * if (Wortal.ads.isAdBlocked()) {
+ *    // Show a message to the player to disable their ad blocker.
+ *    // Or use an alternative flow that doesn't require ads - social invites for rewards as an example.
+ * }
+ * @returns {boolean} True if ads are blocked for the current session. False if ads are not blocked.
+ */
+export function isAdBlocked(): boolean {
+    return config.adConfig.isAdBlocked;
+}
+
+/**
  * Shows an interstitial ad. These can be shown at various points in the game such as a level end, restart or a timed
  * interval in games with longer levels.
  * @example

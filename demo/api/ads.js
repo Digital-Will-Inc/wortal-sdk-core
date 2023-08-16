@@ -1,3 +1,8 @@
+function adsIsBlocked() {
+    const isBlocked = Wortal.ads.isAdBlocked();
+    appendText('isAdBlocked: ' + isBlocked);
+}
+
 function showInterstitial() {
     appendText('showInterstitial');
     Wortal.ads.showInterstitial("next", "test", beforeAd, afterAd, noFill);

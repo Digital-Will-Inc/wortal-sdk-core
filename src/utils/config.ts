@@ -81,6 +81,7 @@ export default class SDKConfig {
     // make the API call if they don't think it's supported.
     _supportedAPIs: Record<Platform, string[]> = {
         wortal: [
+            "ads.isAdBlocked",
             "ads.showInterstitial",
             "ads.showRewarded",
             "session.getLocale",
@@ -88,6 +89,7 @@ export default class SDKConfig {
             "session.getDevice",
         ],
         link: [
+            "ads.isAdBlocked",
             "ads.showInterstitial",
             "ads.showRewarded",
             "context.chooseAsync",
@@ -122,6 +124,7 @@ export default class SDKConfig {
             "session.getDevice",
         ],
         viber: [
+            "ads.isAdBlocked",
             "ads.showInterstitial",
             "ads.showRewarded",
             "context.chooseAsync",
@@ -161,6 +164,7 @@ export default class SDKConfig {
             "session.getDevice",
         ],
         gd: [
+            "ads.isAdBlocked",
             "ads.showInterstitial",
             "ads.showRewarded",
             "session.getLocale",
@@ -168,6 +172,7 @@ export default class SDKConfig {
             "session.getDevice",
         ],
         facebook: [
+            "ads.isAdBlocked",
             "ads.showInterstitial",
             "ads.showRewarded",
             "context.chooseAsync",

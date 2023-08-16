@@ -40,6 +40,10 @@ document.getElementById('tournament').addEventListener('click', () => {
 ////////////////////////////////////
 // Ads
 ////////////////////////////////////
+document.getElementById('ads-isBlocked').addEventListener('click', () => {
+    adsIsBlocked();
+});
+
 document.getElementById('ads-showInterstitial').addEventListener('click', () => {
     showInterstitial();
 });
