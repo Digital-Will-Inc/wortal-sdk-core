@@ -37,3 +37,7 @@ backButton.forEach(button => {
 setTimeout(() => {
     coreSetLoadingProgress();
 }, 2000);
+
+window.addEventListener('wortal-sdk-initialized', () => {
+    appendText('Wortal SDK initialized event received.');
+});

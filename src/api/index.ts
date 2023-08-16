@@ -188,12 +188,14 @@ export async function _initializeInternal(options?: InitializationOptions): Prom
             return _initializeSDK().then(() => {
                 analytics._logGameStart();
                 isInitialized = true;
+                window.dispatchEvent(new Event("wortal-sdk-initialized"));
                 info("SDK initialization complete.");
             });
         } else {
             return _initializeSDK_AdBlocked().then(() => {
                 analytics._logGameStart();
                 isInitialized = true;
+                window.dispatchEvent(new Event("wortal-sdk-initialized"));
                 info("SDK initialization complete.");
             });
         }
