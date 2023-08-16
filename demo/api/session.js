@@ -32,3 +32,14 @@ function sessionGetDevice() {
     const device = Wortal.session.getDevice();
     appendText(device);
 }
+
+function sessionGetOrientation() {
+    const orientation = Wortal.session.getOrientation();
+    appendText(orientation);
+}
+
+function sessionOnOrientationChange() {
+    Wortal.session.onOrientationChange((orientation) => {
+        appendText(orientation);
+    });
+}

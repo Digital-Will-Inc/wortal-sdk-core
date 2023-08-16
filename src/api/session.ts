@@ -1,6 +1,6 @@
 import { TrafficSource } from "../interfaces/session";
-import { Device, Platform } from "../types/session";
-import { notSupported, rethrowPlatformError } from "../utils/error-handler";
+import { Device, Orientation, Platform } from "../types/session";
+import { invalidParams, notSupported, rethrowPlatformError } from "../utils/error-handler";
 import { detectDevice } from "../utils/wortal-utils";
 import { config } from "./index";
 
@@ -125,4 +125,47 @@ export function getDevice(): Device {
     } else {
         return detectDevice();
     }
+}
+
+/**
+ * Gets the orientation of the device the player is using. This is useful for determining how to display the game.
+ * @example
+ * const orientation = Wortal.session.getOrientation();
+ * if (orientation === 'portrait') {
+ *    // Render portrait mode.
+ * }
+ * @returns {Orientation} Orientation of the device the player is using.
+ */
+export function getOrientation(): Orientation {
+    const portrait = window.matchMedia("(orientation: portrait)").matches;
+    if (portrait) {
+        return "portrait";
+    } else {
+        return "landscape";
+    }
+}
+
+/**
+ * Assigns a callback to be invoked when the orientation of the device changes.
+ * @example
+ * Wortal.session.onOrientationChange(orientation => {
+ *    if (orientation === 'portrait') {
+ *      // Render portrait mode
+ *    }
+ * });
+ * @param callback Callback to be invoked when the orientation of the device changes.
+ */
+export function onOrientationChange(callback: Function): void {
+    if (typeof callback !== "function") {
+        throw invalidParams("[Wortal] Callback is not a function.", "onOrientationChange()");
+    }
+
+    window.matchMedia("(orientation: portrait)").addEventListener("change", e => {
+        const portrait = e.matches;
+        if (portrait) {
+            callback("portrait");
+        } else {
+            callback("landscape");
+        }
+    });
 }

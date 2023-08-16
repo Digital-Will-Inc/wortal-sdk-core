@@ -273,6 +273,14 @@ document.getElementById('session-getDevice').addEventListener('click', () => {
     sessionGetDevice();
 });
 
+document.getElementById('session-getOrientation').addEventListener('click', () => {
+    sessionGetOrientation();
+});
+
+document.getElementById('session-onOrientationChange').addEventListener('click', () => {
+    sessionOnOrientationChange();
+});
+
 ////////////////////////////////////
 // Tournament
 ////////////////////////////////////

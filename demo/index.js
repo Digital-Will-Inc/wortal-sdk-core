@@ -36,4 +36,4 @@ backButton.forEach(button => {
 
 setTimeout(() => {
     coreSetLoadingProgress();
-}, 1000);
+}, 2000);

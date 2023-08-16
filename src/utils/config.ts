@@ -87,6 +87,8 @@ export default class SDKConfig {
             "session.getLocale",
             "session.getPlatform",
             "session.getDevice",
+            "session.getOrientation",
+            "session.onOrientationChange",
         ],
         link: [
             "ads.isAdBlocked",
@@ -122,6 +124,8 @@ export default class SDKConfig {
             "session.getPlatform",
             "session.getTrafficSource",
             "session.getDevice",
+            "session.getOrientation",
+            "session.onOrientationChange",
         ],
         viber: [
             "ads.isAdBlocked",
@@ -162,6 +166,8 @@ export default class SDKConfig {
             "session.getTrafficSource",
             "session.setSessionData",
             "session.getDevice",
+            "session.getOrientation",
+            "session.onOrientationChange",
         ],
         gd: [
             "ads.isAdBlocked",
@@ -170,6 +176,8 @@ export default class SDKConfig {
             "session.getLocale",
             "session.getPlatform",
             "session.getDevice",
+            "session.getOrientation",
+            "session.onOrientationChange",
         ],
         facebook: [
             "ads.isAdBlocked",
@@ -213,6 +221,8 @@ export default class SDKConfig {
             "session.getPlatform",
             "session.setSessionData",
             "session.getDevice",
+            "session.getOrientation",
+            "session.onOrientationChange",
             "tournament.getCurrentAsync",
             "tournament.getAllAsync",
             "tournament.postScoreAsync",
