@@ -6,6 +6,10 @@ export interface InitializationOptions {
      * Enable or disable debug mode. Default is disabled.
      */
     debugMode?: boolean,
+    /**
+     * Whether to automatically initialize the SDK or not. Default is true.
+     */
+    autoInitialize?: boolean,
 }
 
 /** @hidden */

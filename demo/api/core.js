@@ -1,9 +1,3 @@
-function coreSetLoadingProgress() {
-    Wortal.setLoadingProgress(5);
-    Wortal.setLoadingProgress(50);
-    Wortal.setLoadingProgress(100);
-}
-
 function coreOnPause() {
     Wortal.onPause(() => appendText('Paused'));
 }

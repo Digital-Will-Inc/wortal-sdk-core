@@ -1,7 +1,6 @@
 import { AdConfig } from "../classes/ads";
 import { Player } from "../classes/player";
 import { GameState, Session } from "../classes/session";
-import { InitializationOptions } from "../interfaces/session";
 import { Platform } from "../types/session";
 
 /** @hidden */
@@ -17,15 +16,11 @@ export default class SDKConfig {
     private _isIAPEnabled: boolean = false;
     private _isDebugMode: boolean = false;
     private _isInitialized: boolean = false;
+    private _isAutoInit: boolean = true;
 
     private _platformSDK: any;
 
-    constructor(options?: InitializationOptions) {
-        if (typeof options !== "undefined") {
-            if (typeof options.debugMode !== "undefined") {
-                this._isDebugMode = options.debugMode;
-            }
-        }
+    constructor() {
         this._session = new Session();
         this._game = new GameState();
     }
@@ -70,6 +65,14 @@ export default class SDKConfig {
 
     get isInitialized(): boolean {
         return this._isInitialized;
+    }
+
+    get isAutoInit(): boolean {
+        return this._isAutoInit;
+    }
+
+    set isAutoInit(value: boolean) {
+        this._isAutoInit = value;
     }
 
     get isDebugMode(): boolean {

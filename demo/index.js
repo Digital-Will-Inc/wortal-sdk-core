@@ -34,9 +34,25 @@ backButton.forEach(button => {
     });
 });
 
+// This is used when not testing manual initialization.
 setTimeout(() => {
-    coreSetLoadingProgress();
+    Wortal.setLoadingProgress(100);
 }, 2000);
+
+// This is used when testing manual initialization, set the data-manual-init attribute to true on the script tag.
+/*
+setTimeout(() => {
+    Wortal.initializeAsync()
+        .then(() => {
+            appendText('Initialized');
+            Wortal.setLoadingProgress(100);
+            Wortal.startGameAsync()
+                .then(() => appendText('Started'))
+                .catch(error => appendText(error));
+        })
+        .catch(error => appendText(error));
+}, 2000);
+*/
 
 window.addEventListener('wortal-sdk-initialized', () => {
     appendText('Wortal SDK initialized event received.');

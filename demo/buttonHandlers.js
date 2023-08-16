@@ -102,10 +102,6 @@ document.getElementById('context-isSizeBetween').addEventListener('click', () =>
 ////////////////////////////////////
 // Core
 ////////////////////////////////////
-document.getElementById('core-setLoadingProgress').addEventListener('click', () => {
-    coreSetLoadingProgress();
-});
-
 document.getElementById('core-onPause').addEventListener('click', () => {
     coreOnPause();
 });

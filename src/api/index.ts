@@ -72,6 +72,100 @@ export const tournament = _tournament;
 export let isInitialized: boolean = false;
 
 /**
+ * Initializes the SDK. This should be called before any other SDK functions. It is recommended to call this
+ * as soon as the script has been loaded to shorten the initialization time.
+ *
+ * NOTE: This is only available if the manual initialization option is set to true. Otherwise, the SDK will initialize automatically.
+ *
+ * PLATFORM NOTE: Only supported on Viber, Link and Facebook.
+ * @example
+ * Wortal.initializeAsync().then(() => {
+ *    // SDK is ready to use, wait for game to finish loading.
+ *    Wortal.setLoadingProgress(100);
+ *    Wortal.startGameAsync();
+ * });
+ * @returns {Promise<void>} Promise that resolves when the SDK initialized successfully.
+ * @throws {ErrorMessage} See error.message for details.
+ * <ul>
+ * <li>INITIALIZATION_ERROR</li>
+ * <li>NOT_SUPPORTED</li>
+ * </ul>
+ */
+export async function initializeAsync(): Promise<void> {
+    if (config.isAutoInit) {
+        return Promise.reject(initializationError("SDK is configured to auto initialize. Only call this when manual initialization is enabled.", "initializeAsync"));
+    }
+
+    if (config.isInitialized) {
+        return Promise.reject(initializationError("SDK already initialized.", "initializeAsync"));
+    }
+
+    const platform = config.session.platform;
+    return Promise.resolve().then(() => {
+        if (platform !== "viber" && platform !== "link" && platform !== "facebook") {
+            throw notSupported(`initializeAsync not supported on platform: ${platform}`, "initializeAsync");
+        }
+
+        debug(`Initializing SDK for ${config.session.platform} platform.`);
+        return config.platformSDK.initializeAsync().then(() => {
+            config.lateInitialize();
+        }).catch((error: any) => {
+            throw initializationError(`Failed to initialize SDK: ${error.message}`, "initializeAsync");
+        });
+    });
+}
+
+/**
+ * This indicates that the game has finished initial loading and is ready to start. Context information will be
+ * up-to-date when the returned promise resolves. The loading screen will be removed after this is called along with
+ * the following conditions:
+ * <ul>
+ * <li>initializeAsync has been called and resolved</li>
+ * <li>setLoadingProgress has been called with a value of 100</li>
+ * </ul>
+ *
+ * NOTE: This is only available if the manual initialization option is set to true. Otherwise, the game will start automatically.
+ *
+ * PLATFORM NOTE: Only supported on Viber, Link and Facebook.
+ * @example
+ * Wortal.startGameAsync().then(() => {
+ *    // Game is rendered to player.
+ * });
+ * @returns {Promise<void>} Promise that resolves when the game has started successfully.
+ * @throws {ErrorMessage} See error.message for details.
+ * <ul>
+ * <li>INITIALIZATION_ERROR</li>
+ * <li>NOT_SUPPORTED</li>
+ * </ul>
+ */
+export async function startGameAsync(): Promise<void> {
+    if (config.isAutoInit) {
+        return Promise.reject(initializationError("SDK is configured to auto initialize. Only call this when manual initialization is enabled.", "startGameAsync"));
+    }
+
+    const platform = config.session.platform;
+    return Promise.resolve().then(() => {
+        if (platform !== "viber" && platform !== "link" && platform !== "facebook") {
+            throw notSupported(`startGameAsync not supported on platform: ${platform}`, "startGameAsync");
+        }
+
+        return config.platformSDK.startGameAsync().then(() => {
+            tryEnableIAP();
+            analytics._logTrafficSource();
+            analytics._logGameStart();
+
+            isInitialized = true;
+            window.dispatchEvent(new Event("wortal-sdk-initialized"));
+
+            debug(`SDK initialized for ${config.session.platform} platform.`);
+            info("SDK initialization complete.");
+        }).catch((error: any) => {
+            throw initializationError(`Failed to initialize SDK: ${error.message}`, "startGameAsync");
+        });
+    });
+}
+
+/**
  * Sets the loading progress value for the game. This is required for the game to start. Failure to call this with 100
  * once the game is fully loaded will prevent the game from starting.
  * @example
@@ -169,10 +263,7 @@ export function getSupportedAPIs(): string[] {
  * @hidden
  * @private
  * */
-export async function _initializeInternal(options?: InitializationOptions): Promise<void> {
-    //TODO: add support for initialization options
-    //TODO: add support for manual initialization
-    //TODO: add an event for when the SDK is initialized
+export async function _initializeInternal(options: InitializationOptions): Promise<void> {
     if (config.isInitialized) {
         return Promise.reject(initializationError("SDK already initialized.", "_initializeInternal"));
     }
@@ -184,6 +275,12 @@ export async function _initializeInternal(options?: InitializationOptions): Prom
     const platform = config.session.platform;
     _initializePlatform().then(showAds => {
         debug("Platform: " + platform);
+        if (options.autoInitialize === false) {
+            config.isAutoInit = false;
+            debug("Manual initialization requested. Platform initialization finished, awaiting manual initialization..");
+            return Promise.resolve();
+        }
+
         if (showAds) {
             return _initializeSDK().then(() => {
                 analytics._logGameStart();
