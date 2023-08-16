@@ -26,9 +26,18 @@ function tournamentPostScoreAsync() {
 }
 
 function tournamentCreateAsync() {
-    Wortal.tournament.createAsync(100, {title: "test tournament"}, {level: 1})
+    const payload = {
+        initialScore: 100,
+        config: {
+            title: "Level 1 Tournament",
+        },
+        data: {
+            level: 1,
+        },
+    };
+
+    Wortal.tournament.createAsync(payload)
         .then(result => {
-            console.log(result);
             appendText(JSON.stringify(result));
             appendText(result.payload["level"]);
         })

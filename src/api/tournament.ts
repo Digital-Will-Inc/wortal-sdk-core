@@ -1,5 +1,5 @@
 import { Tournament } from "../classes/tournament";
-import { CreateTournamentConfig, ShareTournamentPayload } from "../interfaces/tournament";
+import { CreateTournamentPayload, ShareTournamentPayload } from "../interfaces/tournament";
 import { facebookTournamentToWortal } from "../utils/converters";
 import { invalidParams, notSupported, rethrowPlatformError } from "../utils/error-handler";
 import { isValidString } from "../utils/validators";
@@ -118,11 +118,19 @@ export function postScoreAsync(score: number): Promise<void> {
  * Opens the tournament creation dialog if the player is not currently in a tournament session.
  * @example
  * // Create a tournament for a specific level.
- * Wortal.tournament.createAsync( 100, { title: "Level 1 Tournament" }, { level: 1 })
+ * const payload = {
+ *     initialScore: 100,
+ *     config: {
+ *      title: "Level 1 Tournament",
+ *     },
+ *     data: {
+ *      level: 1,
+ *     },
+ * };
+ *
+ * Wortal.tournament.createAsync(payload)
  *  .then(tournament => console.log(tournament.payload["level"]));
- * @param initialScore An integer value representing the player's initial score.
- * @param tournamentConfig Configuration for the tournament to be created.
- * @param payload Payload to attach to the tournament. This will be accessible via tournament.getPayload().
+ * @param payload Payload that defines the tournament configuration.
  * @returns {Promise<Tournament>} Promise that resolves with the created tournament.
  * @throws {ErrorMessage} See error.message for details.
  * <ul>
@@ -133,11 +141,11 @@ export function postScoreAsync(score: number): Promise<void> {
  * <li>NOT_SUPPORTED</li>
  * </ul>
  */
-export function createAsync(initialScore: number, tournamentConfig: CreateTournamentConfig, payload: Record<string, unknown>): Promise<Tournament> {
+export function createAsync(payload: CreateTournamentPayload): Promise<Tournament> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (platform === "facebook") {
-            return config.platformSDK.tournament.createAsync(initialScore, tournamentConfig, payload)
+            return config.platformSDK.tournament.createAsync(payload)
                 .then((tournament: any) => {
                     return facebookTournamentToWortal(tournament);
                 })

@@ -1,6 +1,25 @@
 import { ScoreFormat, SortOrder } from "../types/tournament";
 
 /**
+ * Represents settings used for tournament.createAsync.
+ */
+export interface CreateTournamentPayload {
+    /**
+     * An integer value representing the player's score which will be the first score in the tournament.
+     */
+    initialScore: number;
+    /**
+     * An object holding optional configurations for the tournament.
+     */
+    config: CreateTournamentConfig;
+    /**
+     * A blob of data to attach to the update. All game sessions launched from the update will be able to access this
+     * blob from the payload on the tournament. Must be less than or equal to 1000 characters when stringified.
+     */
+    data?: object;
+}
+
+/**
  * Represents the configurations used in creating a tournament.
  */
 export interface CreateTournamentConfig {
@@ -8,17 +27,6 @@ export interface CreateTournamentConfig {
      * Optional text title for the tournament.
      */
     title?: string;
-    /**
-     * Optional boolean that specifies if the tournament requires game server validation before a score can be
-     * added to or updated on the leaderboard.
-     */
-    forceScoreValidation?: boolean;
-    /**
-     * Optional boolean that specifies if the tournament should use score range validation. If true, then minimum
-     * and/or maximum scores should be provided; scores falling outside the range will be automatically rejected.
-     * If either minimum or maximum is null, then that side of the range will be ignored.
-     */
-    forceScoreRangeValidation?: boolean;
     /**
      * Optional base64 encoded image that will be associated with the tournament and included in posts sharing the tournament.
      */
@@ -38,16 +46,6 @@ export interface CreateTournamentConfig {
      * unix timestamp. If not specified, the tournament will end one week after creation.
      */
     endTime?: number;
-    /**
-     * Optional input will only be used if forceScoreRangeValidation is true. If it is, scores below this will be
-     * automatically rejected. If null or forceScoreRangeValidation is false, no minimum will be used.
-     */
-    minimumScore?: number;
-    /**
-     * Optional input will only be used if forceScoreRangeValidation is true. If it is, scores above this will be
-     * automatically rejected. If null or forceScoreRangeValidation is false, no maximum will be used.
-     */
-    maximumScore?: number;
 }
 
 /**
