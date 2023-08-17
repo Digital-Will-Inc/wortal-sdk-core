@@ -277,6 +277,10 @@ document.getElementById('session-onOrientationChange').addEventListener('click',
     sessionOnOrientationChange();
 });
 
+document.getElementById('session-switchGameAsync').addEventListener('click', () => {
+    sessionSwitchGameAsync();
+});
+
 ////////////////////////////////////
 // Tournament
 ////////////////////////////////////

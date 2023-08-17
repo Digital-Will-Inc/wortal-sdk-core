@@ -1,3 +1,6 @@
+const gameID_Viber = "";
+const gameID_Facebook = "";
+
 function sessionGetEntryPointData() {
     const entryPointData = Wortal.session.getEntryPointData();
     appendText(entryPointData);
@@ -42,4 +45,19 @@ function sessionOnOrientationChange() {
     Wortal.session.onOrientationChange((orientation) => {
         appendText(orientation);
     });
+}
+
+function sessionSwitchGameAsync() {
+    const platform = Wortal.session.getPlatform();
+    let gameID = "";
+    if (platform === "viber") {
+        gameID = gameID_Viber;
+    } else if (platform === "facebook") {
+        gameID = gameID_Facebook;
+    }
+    const data = {
+        "referral_bonus": "100",
+    };
+    Wortal.session.switchGameAsync(gameID, data)
+        .catch(error => appendText(error));
 }

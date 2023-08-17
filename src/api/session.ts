@@ -1,6 +1,7 @@
 import { TrafficSource } from "../interfaces/session";
 import { Device, Orientation, Platform } from "../types/session";
 import { invalidParams, notSupported, rethrowPlatformError } from "../utils/error-handler";
+import { isValidString } from "../utils/validators";
 import { detectDevice } from "../utils/wortal-utils";
 import { config } from "./index";
 
@@ -166,6 +167,42 @@ export function onOrientationChange(callback: (orientation: Orientation) => void
             callback("portrait");
         } else {
             callback("landscape");
+        }
+    });
+}
+
+/**
+ * Request to switch to another game. The API will reject if the switch fails - else, the client will load the new game.
+ * @example
+ * Wortal.session.switchGameAsync(
+ *   '12345678',
+ *   { referrer: 'game_switch', reward_coins: 30 });
+ * @param gameID ID of the game to switch to. The application must be a Wortal game.
+ * @param data An optional data payload. This will be set as the entrypoint data for the game being switched to. Must be less than or equal to 1000 characters when stringified.
+ * @returns {Promise<void>} Promise that resolves when the game has switched. If the game fails to switch, the promise will reject.
+ * @throws {ErrorMessage} See error.message for details.
+ * <ul>
+ * <li>INVALID_PARAMS</li>
+ * <li>USER_INPUT</li>
+ * <li>PENDING_REQUEST</li>
+ * <li>CLIENT_REQUIRES_UPDATE</li>
+ * <li>NOT_SUPPORTED</li>
+ * </ul>
+ */
+export function switchGameAsync(gameID: string, data?: object): Promise<void> {
+    const platform = config.session.platform;
+    return Promise.resolve().then(() => {
+        if (!isValidString(gameID)) {
+            throw invalidParams("gameID is not a valid string.", "session.switchGameAsync");
+        }
+
+        if (platform === "viber" || platform === "facebook") {
+            return config.platformSDK.switchGameAsync(gameID, data)
+                .catch((e: any) => {
+                    throw rethrowPlatformError(e, "player.switchGameAsync");
+                });
+        } else {
+            throw notSupported(`Session API not currently supported on platform: ${platform}`, "session.switchGameAsync");
         }
     });
 }
