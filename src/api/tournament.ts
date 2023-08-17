@@ -1,9 +1,10 @@
 import { Tournament } from "../classes/tournament";
 import { CreateTournamentPayload, ShareTournamentPayload } from "../interfaces/tournament";
 import { facebookTournamentToWortal } from "../utils/converters";
-import { invalidParams, notSupported, rethrowPlatformError } from "../utils/error-handler";
+import { invalidParams, notSupported, operationFailed, rethrowPlatformError } from "../utils/error-handler";
 import { isValidString } from "../utils/validators";
 import { config } from "./index";
+import Wortal from "../index";
 
 /**
  * Fetch the tournament out of the current context the user is playing. This will reject if there is no
@@ -30,11 +31,32 @@ export function getCurrentAsync(): Promise<Tournament> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (platform === "facebook") {
-            return config.platformSDK.getTournamentAsync()
-                .then((tournament: any) => {
-                    return facebookTournamentToWortal(tournament);
-                })
-                .catch((e: any) => {
+            const id = Wortal.context.getId();
+            if (!isValidString(id)) {
+                throw invalidParams("No context ID found. Please ensure you are calling this API from within a context linked to a tournament.", "tournament.getCurrentAsync");
+            }
+
+            // This should be a simple implementation for FBInstant.getTournamentAsync, but the FB SDK is returning a
+            // TOURNAMENT_NOT_FOUND error even when we confirm we're in the context of an active tournament.
+            //
+            // During testing, I found that the FB SDK is returning numbers instead of strings as documented for
+            // tournament.getID and tournament.getContextID, so it's possible that type mismatch is causing the issue.
+            // For now we'll just fetch all tournaments and find the one that matches the current contextID. -Tim
+            //
+            // https://developers.facebook.com/docs/games/acquire/instant-tournaments/instant-games
+            //TODO: clean this up when we get FBInstant.getTournamentAsync to work as expected
+            return getAllAsync()
+                .then((tournaments: Tournament[]) => {
+                    const tournament = tournaments.find((tournament: Tournament) => {
+                        return tournament.contextID === id;
+                    });
+
+                    if (!tournament) {
+                        throw operationFailed("No tournament found for the current context. Please ensure you are calling this API from within a context linked to a tournament.", "tournament.getCurrentAsync");
+                    }
+
+                    return tournament;
+                }).catch((e: any) => {
                     throw rethrowPlatformError(e, "tournament.getCurrentAsync");
                 });
         } else {

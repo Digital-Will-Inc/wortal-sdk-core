@@ -68,5 +68,5 @@ export interface TournamentData {
     contextID: string;
     endTime: number;
     title?: string;
-    payload?: string;
+    payload?: object;
 }

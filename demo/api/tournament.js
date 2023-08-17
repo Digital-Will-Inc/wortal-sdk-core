@@ -2,7 +2,10 @@ let tournamentID = "";
 
 function tournamentGetCurrentAsync() {
     Wortal.tournament.getCurrentAsync()
-        .then(result => appendText(JSON.stringify(result)))
+        .then(result => {
+            appendText(JSON.stringify(result));
+            appendText(result.payload["level"]);
+        })
         .catch(error => appendText(error));
 }
 
@@ -46,12 +49,11 @@ function tournamentCreateAsync() {
 
 function tournamentShareAsync() {
     Wortal.tournament.shareAsync({score: 100, data: { myReplayData: 'data' } })
-        .then(result => appendText(JSON.stringify(result)))
+        .then(() => appendText("Shared!"))
         .catch(error => appendText(error));
 }
 
 function tournamentJoinAsync() {
-    appendText(Wortal.context.getId());
     Wortal.tournament.joinAsync(tournamentID)
         .then(() => {
             appendText(Wortal.context.getId());

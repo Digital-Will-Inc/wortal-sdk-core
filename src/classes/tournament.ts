@@ -14,11 +14,14 @@ export class Tournament {
     /** @hidden */
     constructor(id: string, contextID: string, endTime: number, title?: string, payload?: string) {
         debug(`Creating tournament: ${id} / ${contextID} / ${endTime} / ${title} / ${payload}`);
-        this._current.id = id;
-        this._current.contextID = contextID;
+        // FB API docs say these are strings, but we're getting numbers returned.
+        this._current.id = id.toString();
+        this._current.contextID = contextID.toString();
         this._current.endTime = endTime;
         this._current.title = title;
-        this._current.payload = payload;
+        if (typeof payload === "string") {
+            this._current.payload = JSON.parse(payload);
+        }
     }
 
     get id(): string {
@@ -37,7 +40,7 @@ export class Tournament {
         return this._current.title;
     }
 
-    get payload(): string | undefined {
+    get payload(): object | undefined {
         return this._current.payload;
     }
 }

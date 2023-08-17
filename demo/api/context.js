@@ -1,3 +1,5 @@
+let contextID = "";
+
 function contextGetId() {
     const id = Wortal.context.getId();
     appendText(`getId: ${id}`);
@@ -60,7 +62,7 @@ function contextChooseAsync() {
 }
 
 function contextSwitchAsync() {
-    Wortal.context.switchAsync('abc123')
+    Wortal.context.switchAsync(contextID)
         .then(() => appendText(Wortal.context.getId()))
         .catch(error => appendText(error));
 }
