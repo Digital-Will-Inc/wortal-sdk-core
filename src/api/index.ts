@@ -275,7 +275,8 @@ export async function _initializeInternal(options: InitializationOptions): Promi
     const platform = config.session.platform;
     _initializePlatform().then(showAds => {
         debug("Platform: " + platform);
-        if (options.autoInitialize === false) {
+        if (options.autoInitialize === false
+            && (platform === "viber" || platform === "link" || platform === "facebook")) {
             config.isAutoInit = false;
             debug("Manual initialization requested. Platform initialization finished, awaiting manual initialization..");
             return Promise.resolve();
