@@ -15,10 +15,12 @@ function showRewarded() {
 
 function beforeAd() {
     appendText('beforeAd');
+    pauseAudio();
 }
 
 function afterAd() {
     appendText('afterAd');
+    playAudio();
 }
 
 function adDismissed() {
@@ -31,4 +33,5 @@ function adViewed() {
 
 function noFill() {
     appendText('noFill');
+    playAudio();
 }

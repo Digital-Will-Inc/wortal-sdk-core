@@ -2,6 +2,7 @@ const mainGrid = document.getElementById('main-grid');
 const secondaryGrids = document.querySelectorAll('.secondary-grid');
 const textOutput = document.getElementById('text-output');
 const backButton = document.querySelectorAll('.back-button');
+const audioPlayer = document.getElementById("audioPlayer");
 
 function hideAllSecondaryGrids() {
     secondaryGrids.forEach(grid => {
@@ -25,6 +26,14 @@ function appendText(message) {
     }
     const currentText = textOutput.value;
     textOutput.value = currentText + message + '\n';
+}
+
+function playAudio() {
+    audioPlayer.play();
+}
+
+function pauseAudio() {
+    audioPlayer.pause();
 }
 
 backButton.forEach(button => {
