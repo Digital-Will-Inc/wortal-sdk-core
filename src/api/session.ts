@@ -196,7 +196,7 @@ export function switchGameAsync(gameID: string, data?: object): Promise<void> {
             throw invalidParams("gameID is not a valid string.", "session.switchGameAsync");
         }
 
-        if (platform === "viber" || platform === "facebook") {
+        if (platform === "facebook") {
             return config.platformSDK.switchGameAsync(gameID, data)
                 .catch((e: any) => {
                     throw rethrowPlatformError(e, "player.switchGameAsync");
