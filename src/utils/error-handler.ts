@@ -21,6 +21,16 @@ export function invalidParams(message: string, context: string, url?: string): E
 }
 
 /** @hidden */
+export function invalidOperation(message: string, context: string, url?: string): ErrorMessage {
+    return {
+        code: 'INVALID_OPERATION',
+        message: message,
+        context: context,
+        url: url,
+    }
+}
+
+/** @hidden */
 export function notSupported(message: string, context: string, url?: string): ErrorMessage {
     return {
         code: 'NOT_SUPPORTED',

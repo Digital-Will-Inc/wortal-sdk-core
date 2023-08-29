@@ -1,11 +1,12 @@
 import { Leaderboard, LeaderboardEntry } from "../classes/leaderboard";
+import Wortal from "../index";
 import {
     facebookLeaderboardEntryToWortal,
     facebookLeaderboardToWortal,
     rakutenLeaderboardEntryToWortal,
     rakutenLeaderboardToWortal
 } from "../utils/converters";
-import { invalidParams, notSupported, rethrowPlatformError } from "../utils/error-handler";
+import { invalidOperation, invalidParams, notSupported, rethrowPlatformError } from "../utils/error-handler";
 import { isValidString } from "../utils/validators";
 import { config } from "./index";
 
@@ -33,6 +34,12 @@ export function getLeaderboardAsync(name: string): Promise<Leaderboard> {
             throw invalidParams("name cannot be null or empty. Please provide a valid string for the name parameter.",
                 "leaderboard.getLeaderboardAsync",
                 "https://sdk.html5gameportal.com/api/leaderboard/#parameters_3");
+        }
+
+        if (platform === "facebook" && Wortal.context.getType() === "SOLO") {
+            throw invalidOperation("Leaderboard API cannot be used when the game is in SOLO mode. Switch to a context to get a leaderboard for that context.",
+                "leaderboard.getLeaderboardAsync",
+                "https://sdk.html5gameportal.com/api/leaderboard/");
         }
 
         if (platform === "link" || platform === "viber" || platform === "facebook") {
@@ -86,6 +93,12 @@ export function sendEntryAsync(name: string, score: number, details: string = ""
                 "https://sdk.html5gameportal.com/api/leaderboard/#parameters_5");
         }
 
+        if (platform === "facebook" && Wortal.context.getType() === "SOLO") {
+            throw invalidOperation("Leaderboard API cannot be used when the game is in SOLO mode. Switch to a context to get a leaderboard for that context.",
+                "leaderboard.sendEntryAsync",
+                "https://sdk.html5gameportal.com/api/leaderboard/");
+        }
+
         if (platform === "link" || platform === "viber" || platform === "facebook") {
             return config.platformSDK.getLeaderboardAsync(name)
                 .then((leaderboard: any) => leaderboard.setScoreAsync(score, details))
@@ -133,6 +146,12 @@ export function getEntriesAsync(name: string, count: number, offset: number = 0)
             throw invalidParams("name cannot be null or empty. Please provide a valid string for the name parameter.",
                 "leaderboard.getEntriesAsync",
                 "https://sdk.html5gameportal.com/api/leaderboard/#parameters_1");
+        }
+
+        if (platform === "facebook" && Wortal.context.getType() === "SOLO") {
+            throw invalidOperation("Leaderboard API cannot be used when the game is in SOLO mode. Switch to a context to get a leaderboard for that context.",
+                "leaderboard.getEntriesAsync",
+                "https://sdk.html5gameportal.com/api/leaderboard/");
         }
 
         if (platform === "link" || platform === "viber" || platform === "facebook") {
@@ -184,6 +203,12 @@ export function getPlayerEntryAsync(name: string): Promise<LeaderboardEntry> {
                 "https://sdk.html5gameportal.com/api/leaderboard/#parameters_4");
         }
 
+        if (platform === "facebook" && Wortal.context.getType() === "SOLO") {
+            throw invalidOperation("Leaderboard API cannot be used when the game is in SOLO mode. Switch to a context to get a leaderboard for that context.",
+                "leaderboard.getPlayerEntryAsync",
+                "https://sdk.html5gameportal.com/api/leaderboard/");
+        }
+
         if (platform === "link" || platform === "viber" || platform === "facebook") {
             return config.platformSDK.getLeaderboardAsync(name)
                 .then((leaderboard: any) => leaderboard.getPlayerEntryAsync())
@@ -230,6 +255,12 @@ export function getEntryCountAsync(name: string): Promise<number> {
                 "https://sdk.html5gameportal.com/api/leaderboard/#parameters_2");
         }
 
+        if (platform === "facebook" && Wortal.context.getType() === "SOLO") {
+            throw invalidOperation("Leaderboard API cannot be used when the game is in SOLO mode. Switch to a context to get a leaderboard for that context.",
+                "leaderboard.getEntryCountAsync",
+                "https://sdk.html5gameportal.com/api/leaderboard/");
+        }
+
         if (platform === "link" || platform === "viber" || platform === "facebook") {
             return config.platformSDK.getLeaderboardAsync(name)
                 .then((leaderboard: any) => leaderboard.getEntryCountAsync())
@@ -274,6 +305,12 @@ export function getConnectedPlayersEntriesAsync(name: string, count: number, off
             throw invalidParams("name cannot be null or empty. Please provide a valid string for the name parameter.",
                 "leaderboard.getConnectedPlayersEntriesAsync",
                 "https://sdk.html5gameportal.com/api/leaderboard/#parameters");
+        }
+
+        if (platform === "facebook" && Wortal.context.getType() === "SOLO") {
+            throw invalidOperation("Leaderboard API cannot be used when the game is in SOLO mode. Switch to a context to get a leaderboard for that context.",
+                "leaderboard.getConnectedPlayersEntriesAsync",
+                "https://sdk.html5gameportal.com/api/leaderboard/");
         }
 
         if (platform === "link" || platform === "viber" || platform === "facebook") {
