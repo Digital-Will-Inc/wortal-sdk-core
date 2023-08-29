@@ -366,7 +366,7 @@ export class AdConfig {
 
                 debug("AdConfig initialized: ", this._current);
             }).catch((e: any) => {
-                rethrowPlatformError(e, "setLinkViberAdUnitIds()");
+                throw rethrowPlatformError(e, "setLinkViberAdUnitIds()");
             });
         }
     }
@@ -417,10 +417,12 @@ export class AdConfig {
 
                 debug("AdConfig initialized: ", this._current);
             }).catch((error: any) => {
-                operationFailed(error, "setFacebookAdUnitIds()");
+                throw operationFailed(error,
+                    "setFacebookAdUnitIds()");
             });
         }).catch((error: any) => {
-            operationFailed(error, "setFacebookAdUnitIds()");
+            throw operationFailed(error,
+                "setFacebookAdUnitIds()");
         });
     }
 }
@@ -642,7 +644,7 @@ function _showRewarded_Facebook_Rakuten(placementId: string, callbacks: AdCallba
                     debug("Rewarded video failed to show.", error);
                     callbacks.adDismissed && callbacks.adDismissed();
                     callbacks.afterAd && callbacks.afterAd();
-                    rethrowPlatformError(error, "showRewarded");
+                    throw rethrowPlatformError(error, "showRewarded");
                 });
         })
         .catch((error: any) => {

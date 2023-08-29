@@ -45,10 +45,13 @@ export function getEntryPointAsync(): Promise<string> {
                     return entryPoint;
                 })
                 .catch((e: any) => {
-                    throw rethrowPlatformError(e, "player.getEntryPointAsync");
+                    throw rethrowPlatformError(e,
+                        "player.getEntryPointAsync",
+                        "https://sdk.html5gameportal.com/api/session/#getentrypointasync");
                 });
         } else {
-            throw notSupported(`Session API not currently supported on platform: ${platform}`, "session.getEntryPointAsync");
+            throw notSupported(`Session API not currently supported on platform: ${platform}`,
+                "session.getEntryPointAsync");
         }
     });
 }
@@ -158,7 +161,9 @@ export function getOrientation(): Orientation {
  */
 export function onOrientationChange(callback: (orientation: Orientation) => void): void {
     if (typeof callback !== "function") {
-        throw invalidParams("[Wortal] Callback is not a function.", "onOrientationChange()");
+        throw invalidParams("[Wortal] Callback is not a function.",
+            "onOrientationChange()",
+            "https://sdk.html5gameportal.com/api/session/#parameters");
     }
 
     window.matchMedia("(orientation: portrait)").addEventListener("change", e => {
@@ -193,16 +198,21 @@ export function switchGameAsync(gameID: string, data?: object): Promise<void> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (!isValidString(gameID)) {
-            throw invalidParams("gameID is not a valid string.", "session.switchGameAsync");
+            throw invalidParams("gameID is not a valid string.",
+                "session.switchGameAsync",
+                "https://sdk.html5gameportal.com/api/session/#parameters_2");
         }
 
         if (platform === "facebook") {
             return config.platformSDK.switchGameAsync(gameID, data)
                 .catch((e: any) => {
-                    throw rethrowPlatformError(e, "player.switchGameAsync");
+                    throw rethrowPlatformError(e,
+                        "player.switchGameAsync",
+                        "https://sdk.html5gameportal.com/api/session/#switchgameasync");
                 });
         } else {
-            throw notSupported(`Session API not currently supported on platform: ${platform}`, "session.switchGameAsync");
+            throw notSupported(`Session API not currently supported on platform: ${platform}`,
+                "session.switchGameAsync");
         }
     });
 }

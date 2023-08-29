@@ -77,7 +77,8 @@ export function getPlayersAsync(): Promise<ConnectedPlayer[]> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (platform === "wortal" || platform === "gd") {
-            throw notSupported(`context.getPlayersAsync not currently supported on platform: ${platform}`, "context.getPlayersAsync");
+            throw notSupported(`context.getPlayersAsync not currently supported on platform: ${platform}`,
+                "context.getPlayersAsync");
         }
 
         return config.platformSDK.context.getPlayersAsync()
@@ -96,7 +97,9 @@ export function getPlayersAsync(): Promise<ConnectedPlayer[]> {
                 });
             })
             .catch((e: any) => {
-                throw rethrowPlatformError(e, "context.getPlayersAsync");
+                throw rethrowPlatformError(e,
+                    "context.getPlayersAsync",
+                    "https://sdk.html5gameportal.com/api/context/#getplayersasync");
             });
     });
 }
@@ -136,13 +139,20 @@ export function inviteAsync(payload: InvitePayload): Promise<number> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (platform === "wortal" || platform === "gd") {
-            throw notSupported(`context.inviteAsync not currently supported on platform: ${platform}`, "context.inviteAsync");
+            throw notSupported(`context.inviteAsync not currently supported on platform: ${platform}`,
+                "context.inviteAsync");
         }
+
         if (!isValidPayloadText(payload.text)) {
-            throw invalidParams("text cannot be null or empty. Please provide a valid string for the payload.text property.", "context.inviteAsync");
+            throw invalidParams("text cannot be null or empty. Please provide a valid string for the payload.text property.",
+                "context.inviteAsync",
+                "https://sdk.html5gameportal.com/api/interfaces/invite-payload/");
         }
+
         if (!isValidPayloadImage(payload.image)) {
-            throw invalidParams("image was invalid. Please provide a valid data URL for a base64 encoded image for the payload.image property.", "context.inviteAsync");
+            throw invalidParams("image was invalid. Please provide a valid data URL for a base64 encoded image for the payload.image property.",
+                "context.inviteAsync",
+                "https://sdk.html5gameportal.com/api/interfaces/invite-payload/");
         }
 
         let convertedPayload: any = payload;
@@ -160,7 +170,9 @@ export function inviteAsync(payload: InvitePayload): Promise<number> {
                     return 0;
                 })
                 .catch((e: any) => {
-                    throw rethrowPlatformError(e, "context.inviteAsync");
+                    throw rethrowPlatformError(e,
+                        "context.inviteAsync",
+                        "https://sdk.html5gameportal.com/api/context/#inviteasync");
                 });
         } else {
             return config.platformSDK.shareAsync(convertedPayload)
@@ -168,7 +180,9 @@ export function inviteAsync(payload: InvitePayload): Promise<number> {
                     return result.sharedCount;
                 })
                 .catch((e: any) => {
-                    throw rethrowPlatformError(e, "context.inviteAsync");
+                    throw rethrowPlatformError(e,
+                        "context.inviteAsync",
+                        "https://sdk.html5gameportal.com/api/context/#inviteasync");
                 });
         }
     });
@@ -204,13 +218,20 @@ export function shareAsync(payload: SharePayload): Promise<number> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (platform === "wortal" || platform === "gd") {
-            throw notSupported(`context.shareAsync not currently supported on platform: ${platform}`, "context.shareAsync");
+            throw notSupported(`context.shareAsync not currently supported on platform: ${platform}`,
+                "context.shareAsync");
         }
+
         if (!isValidPayloadText(payload.text)) {
-            throw invalidParams("text cannot be null or empty. Please provide a valid string for the payload.text property.", "context.shareAsync");
+            throw invalidParams("text cannot be null or empty. Please provide a valid string for the payload.text property.",
+                "context.shareAsync",
+                "https://sdk.html5gameportal.com/api/interfaces/share-payload/");
         }
+
         if (!isValidPayloadImage(payload.image)) {
-            throw invalidParams("image was invalid. Please provide a valid data URL for a base64 encoded image for the payload.image property.", "context.shareAsync");
+            throw invalidParams("image was invalid. Please provide a valid data URL for a base64 encoded image for the payload.image property.",
+                "context.shareAsync",
+                "https://sdk.html5gameportal.com/api/interfaces/share-payload/");
         }
 
         let convertedPayload: any = payload;
@@ -229,7 +250,9 @@ export function shareAsync(payload: SharePayload): Promise<number> {
                 }
             })
             .catch((e: any) => {
-                throw rethrowPlatformError(e, "context.shareAsync");
+                throw rethrowPlatformError(e,
+                    "context.shareAsync",
+                    "https://sdk.html5gameportal.com/api/context/#shareasync");
             });
     });
 }
@@ -264,15 +287,21 @@ export function shareLinkAsync(payload: LinkSharePayload): Promise<void> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (platform !== "facebook") {
-            throw notSupported(`context.shareLinkAsync not currently supported on platform: ${platform}`, "context.shareLinkAsync");
+            throw notSupported(`context.shareLinkAsync not currently supported on platform: ${platform}`,
+                "context.shareLinkAsync");
         }
+
         if (typeof payload.data === "undefined") {
-            throw invalidParams("data cannot be null or empty. Please provide a valid object for the payload.data property.", "context.shareLinkAsync");
+            throw invalidParams("data cannot be null or empty. Please provide a valid object for the payload.data property.",
+                "context.shareLinkAsync",
+                "https://sdk.html5gameportal.com/api/interfaces/link-share-payload/");
         }
 
         return config.platformSDK.shareLinkAsync(payload)
             .catch((e: any) => {
-                throw rethrowPlatformError(e, "context.shareLinkAsync");
+                throw rethrowPlatformError(e,
+                    "context.shareLinkAsync",
+                    "https://sdk.html5gameportal.com/api/context/#sharelinkasync");
             });
     });
 }
@@ -302,13 +331,20 @@ export function updateAsync(payload: UpdatePayload): Promise<void> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (platform === "wortal" || platform === "gd") {
-            throw notSupported(`context.updateAsync not currently supported on platform: ${platform}`, "context.updateAsync");
+            throw notSupported(`context.updateAsync not currently supported on platform: ${platform}`,
+                "context.updateAsync");
         }
+
         if (!isValidPayloadText(payload.text)) {
-            throw invalidParams("text cannot be null or empty. Please provide a valid string for the payload.text property.", "context.updateAsync");
+            throw invalidParams("text cannot be null or empty. Please provide a valid string for the payload.text property.",
+                "context.updateAsync",
+                "https://sdk.html5gameportal.com/api/interfaces/update-payload/");
         }
+
         if (!isValidPayloadImage(payload.image)) {
-            throw invalidParams("image was invalid. Please provide a valid data URL for a base64 encoded image for the payload.image property.", "context.updateAsync");
+            throw invalidParams("image was invalid. Please provide a valid data URL for a base64 encoded image for the payload.image property.",
+                "context.updateAsync",
+                "https://sdk.html5gameportal.com/api/interfaces/update-payload/");
         }
 
         let convertedPayload: any = payload;
@@ -320,7 +356,9 @@ export function updateAsync(payload: UpdatePayload): Promise<void> {
 
         return config.platformSDK.updateAsync(convertedPayload)
             .catch((e: any) => {
-                throw rethrowPlatformError(e, "context.updateAsync");
+                throw rethrowPlatformError(e,
+                    "context.updateAsync",
+                    "https://sdk.html5gameportal.com/api/context/#updateasync");
             });
     });
 }
@@ -349,18 +387,24 @@ export function chooseAsync(payload?: ChoosePayload): Promise<void> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (platform === "wortal" || platform === "gd") {
-            throw notSupported(`context.chooseAsync not currently supported on platform: ${platform}`, "context.chooseAsync");
+            throw notSupported(`context.chooseAsync not currently supported on platform: ${platform}`,
+                "context.chooseAsync");
         }
 
+        //TODO: add support for link payload
         if (typeof payload === "undefined" || platform === "link") {
             return config.platformSDK.context.chooseAsync()
                 .catch((e: any) => {
-                    throw rethrowPlatformError(e, "context.chooseAsync");
+                    throw rethrowPlatformError(e,
+                        "context.chooseAsync",
+                        "https://sdk.html5gameportal.com/api/context/#chooseasync");
                 });
         } else {
             return config.platformSDK.context.chooseAsync(payload)
                 .catch((e: any) => {
-                    throw rethrowPlatformError(e, "context.chooseAsync");
+                    throw rethrowPlatformError(e,
+                        "context.chooseAsync",
+                        "https://sdk.html5gameportal.com/api/context/#chooseasync");
                 });
         }
     });
@@ -390,19 +434,26 @@ export function switchAsync(contextId: string): Promise<void> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (platform === "wortal" || platform === "gd") {
-            throw notSupported(`context.switchAsync not currently supported on platform: ${platform}`, "context.switchAsync");
+            throw notSupported(`context.switchAsync not currently supported on platform: ${platform}`,
+                "context.switchAsync");
         }
+
         if (!isValidString(contextId)) {
-            throw invalidParams("contextId cannot be null or empty. Please provide a valid string for the contextID parameter.", "context.switchAsync")
+            throw invalidParams("contextId cannot be null or empty. Please provide a valid string for the contextID parameter.",
+                "context.switchAsync",
+                "https://sdk.html5gameportal.com/api/context/#parameters_6")
         }
 
         return config.platformSDK.context.switchAsync(contextId)
             .catch((e: any) => {
-                throw rethrowPlatformError(e, "context.switchAsync");
+                throw rethrowPlatformError(e,
+                    "context.switchAsync",
+                    "https://sdk.html5gameportal.com/api/context/#switchasync");
             });
     });
 }
 
+//TODO: improve this doc
 /**
  * <p>Attempts to create a context between the current player and a specified player or a list of players. This API
  * supports 3 use cases: 1) When the input is a single playerID, it attempts to create or switch into a context between
@@ -434,8 +485,10 @@ export function createAsync(playerId?: string | string[]): Promise<void> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (platform === "wortal" || platform === "gd") {
-            throw notSupported(`context.createAsync not currently supported on platform: ${platform}`, "context.createAsync");
+            throw notSupported(`context.createAsync not currently supported on platform: ${platform}`,
+                "context.createAsync");
         }
+
         // Link & Viber only support creating a context with a single player, and we must pass in a player ID.
         // Facebook supports creating a context with a single player, list of players, or no player (to open a friend picker).
         if (platform === "link" || platform === "viber") {
@@ -443,13 +496,18 @@ export function createAsync(playerId?: string | string[]): Promise<void> {
                 playerId = playerId[0];
             }
         }
+
         if (platform !== "facebook" && !isValidString(playerId)) {
-            throw invalidParams("playerId cannot be null or empty. Please provide a valid string for the playerId parameter.", "context.createAsync");
+            throw invalidParams(`playerId cannot be null or empty on platform: ${platform}. Please provide a valid string for the playerId parameter.`,
+                "context.createAsync",
+                "https://sdk.html5gameportal.com/api/context/#parameters_1");
         }
 
         return config.platformSDK.context.createAsync(playerId)
             .catch((e: any) => {
-                throw rethrowPlatformError(e, "context.createAsync")
+                throw rethrowPlatformError(e,
+                    "context.createAsync",
+                    "https://sdk.html5gameportal.com/api/context/#createasync");
             });
     });
 }

@@ -20,10 +20,20 @@
  * - `INITIALIZATION_ERROR` The SDK failed to initialize, this can occur if the Wortal SDK encountered an error during initialization or if the platform SDK failed to initialize.
  */
 export interface ErrorMessage {
-    /** Code for the error. */
+    /**
+     * Code for the error.
+     */
     code: string;
-    /** Message details about the error. */
+    /**
+     * Message details about the error.
+     */
     message: string;
-    /** Context details about the error. */
+    /**
+     * Context details about the error.
+     */
     context: string;
+    /**
+     * URL to the relevant API docs.
+     */
+    url: string | undefined;
 }

@@ -2,7 +2,7 @@ import { Tournament } from "../classes/tournament";
 import { CreateTournamentPayload, ShareTournamentPayload } from "../interfaces/tournament";
 import { facebookTournamentToWortal } from "../utils/converters";
 import { invalidParams, notSupported, operationFailed, rethrowPlatformError } from "../utils/error-handler";
-import { isValidString } from "../utils/validators";
+import { isValidNumber, isValidString } from "../utils/validators";
 import { config } from "./index";
 import Wortal from "../index";
 
@@ -33,7 +33,9 @@ export function getCurrentAsync(): Promise<Tournament> {
         if (platform === "facebook") {
             const id = Wortal.context.getId();
             if (!isValidString(id)) {
-                throw invalidParams("No context ID found. Please ensure you are calling this API from within a context linked to a tournament.", "tournament.getCurrentAsync");
+                throw invalidParams("No context ID found. Please ensure you are calling this API from within a context linked to a tournament.",
+                    "tournament.getCurrentAsync",
+                    "https://sdk.html5gameportal.com/api/tournament/#getcurrentasync");
             }
 
             // This should be a simple implementation for FBInstant.getTournamentAsync, but the FB SDK is returning a
@@ -52,15 +54,20 @@ export function getCurrentAsync(): Promise<Tournament> {
                     });
 
                     if (!tournament) {
-                        throw operationFailed("No tournament found for the current context. Please ensure you are calling this API from within a context linked to a tournament.", "tournament.getCurrentAsync");
+                        throw operationFailed("No tournament found for the current context. Please ensure you are calling this API from within a context linked to a tournament.",
+                            "tournament.getCurrentAsync",
+                            "https://sdk.html5gameportal.com/api/tournament/#getcurrentasync");
                     }
 
                     return tournament;
                 }).catch((e: any) => {
-                    throw rethrowPlatformError(e, "tournament.getCurrentAsync");
+                    throw rethrowPlatformError(e,
+                        "tournament.getCurrentAsync",
+                        "https://sdk.html5gameportal.com/api/tournament/#getcurrentasync");
                 });
         } else {
-            throw notSupported(`Tournament API not currently supported on platform: ${platform}`, "tournament.getCurrentAsync");
+            throw notSupported(`Tournament API not currently supported on platform: ${platform}`,
+                "tournament.getCurrentAsync");
         }
     });
 }
@@ -95,10 +102,13 @@ export function getAllAsync(): Promise<Tournament[]> {
                     });
                 })
                 .catch((e: any) => {
-                    throw rethrowPlatformError(e, "tournament.getAllAsync");
+                    throw rethrowPlatformError(e,
+                        "tournament.getAllAsync",
+                        "https://sdk.html5gameportal.com/api/tournament/#getallasync");
                 });
         } else {
-            throw notSupported(`Tournament API not currently supported on platform: ${platform}`, "tournament.getAllAsync");
+            throw notSupported(`Tournament API not currently supported on platform: ${platform}`,
+                "tournament.getAllAsync");
         }
     });
 }
@@ -125,13 +135,22 @@ export function getAllAsync(): Promise<Tournament[]> {
 export function postScoreAsync(score: number): Promise<void> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
+        if (!isValidNumber(score)) {
+            throw invalidParams("score is invalid. Please provide a valid number for the score parameter.",
+                "tournament.postScoreAsync",
+                "https://sdk.html5gameportal.com/api/tournament/#parameters_2");
+        }
+
         if (platform === "facebook") {
             return config.platformSDK.tournament.postScoreAsync(score)
                 .catch((e: any) => {
-                    throw rethrowPlatformError(e, "tournament.postScoreAsync");
+                    throw rethrowPlatformError(e,
+                        "tournament.postScoreAsync",
+                        "https://sdk.html5gameportal.com/api/tournament/#postscoreasync");
                 });
         } else {
-            throw notSupported(`Tournament API not currently supported on platform: ${platform}`, "tournament.postScoreAsync");
+            throw notSupported(`Tournament API not currently supported on platform: ${platform}`,
+                "tournament.postScoreAsync");
         }
     });
 }
@@ -166,16 +185,25 @@ export function postScoreAsync(score: number): Promise<void> {
 export function createAsync(payload: CreateTournamentPayload): Promise<Tournament> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
+        if (!isValidNumber(payload.initialScore)) {
+            throw invalidParams("payload.initialScore is invalid. Please provide a valid number for the initialScore parameter.",
+                "tournament.createAsync",
+                "https://sdk.html5gameportal.com/api/interfaces/create-tournament-payload/");
+        }
+
         if (platform === "facebook") {
             return config.platformSDK.tournament.createAsync(payload)
                 .then((tournament: any) => {
                     return facebookTournamentToWortal(tournament);
                 })
                 .catch((e: any) => {
-                    throw rethrowPlatformError(e, "tournament.createAsync");
+                    throw rethrowPlatformError(e,
+                        "tournament.createAsync",
+                        "https://sdk.html5gameportal.com/api/tournament/#createasync");
                 });
         } else {
-            throw notSupported(`Tournament API not currently supported on platform: ${platform}`, "tournament.createAsync");
+            throw notSupported(`Tournament API not currently supported on platform: ${platform}`,
+                "tournament.createAsync");
         }
     });
 }
@@ -199,13 +227,22 @@ export function createAsync(payload: CreateTournamentPayload): Promise<Tournamen
 export function shareAsync(payload: ShareTournamentPayload): Promise<void> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
+        if (!isValidNumber(payload.score)) {
+            throw invalidParams("payload.score is invalid. Please provide a valid number for the score parameter.",
+                "tournament.shareAsync",
+                "https://sdk.html5gameportal.com/api/interfaces/share-tournament-payload/");
+        }
+
         if (platform === "facebook") {
             return config.platformSDK.tournament.shareAsync(payload)
                 .catch((e: any) => {
-                    throw rethrowPlatformError(e, "tournament.shareAsync");
+                    throw rethrowPlatformError(e,
+                        "tournament.shareAsync",
+                        "https://sdk.html5gameportal.com/api/tournament/#shareasync");
                 });
         } else {
-            throw notSupported(`Tournament API not currently supported on platform: ${platform}`, "tournament.shareAsync");
+            throw notSupported(`Tournament API not currently supported on platform: ${platform}`,
+                "tournament.shareAsync");
         }
     });
 }
@@ -233,16 +270,21 @@ export function joinAsync(tournamentID: string): Promise<void> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (!isValidString(tournamentID)) {
-            throw invalidParams("tournamentID is invalid. Please provide a valid string for the tournamentID parameter.", "tournament.joinAsync");
+            throw invalidParams("tournamentID is invalid. Please provide a valid string for the tournamentID parameter.",
+                "tournament.joinAsync",
+                "https://sdk.html5gameportal.com/api/tournament/#parameters_1");
         }
 
         if (platform === "facebook") {
             return config.platformSDK.tournament.joinAsync(tournamentID)
                 .catch((e: any) => {
-                    throw rethrowPlatformError(e, "tournament.joinAsync");
+                    throw rethrowPlatformError(e,
+                        "tournament.joinAsync",
+                        "https://sdk.html5gameportal.com/api/tournament/#joinasync");
                 });
         } else {
-            throw notSupported(`Tournament API not currently supported on platform: ${platform}`, "tournament.joinAsync");
+            throw notSupported(`Tournament API not currently supported on platform: ${platform}`,
+                "tournament.joinAsync");
         }
     });
 }

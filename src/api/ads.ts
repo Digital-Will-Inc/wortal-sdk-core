@@ -52,9 +52,11 @@ export function showInterstitial(placement: PlacementType, description: string,
     if (beforeAd === undefined || typeof beforeAd !== "function") {
         beforeAd = () => warn("beforeAd function missing or invalid. This is used to pause the game and mute audio when an ad begins.");
     }
+
     if (afterAd === undefined || typeof afterAd !== "function") {
         afterAd = () => warn("afterAd function missing or invalid. This is used to resume the game and unmute audio when an ad has finished.");
     }
+
     // If no ad is filled the afterAd callback isn't reached. If the developer doesn't provide a noFill callback
     // we use the afterAd callback instead to ensure the game doesn't hang indefinitely.
     if (noFill === undefined || typeof noFill !== "function") {
@@ -63,23 +65,37 @@ export function showInterstitial(placement: PlacementType, description: string,
 
     // Validate the placement type. Invalid types can cause policy violations.
     if (placement === "reward") {
-        throw invalidParams("showInterstitial called with placement type 'reward'. Call showRewarded instead to display a rewarded ad.", "ads.showInterstitial");
+        throw invalidParams("showInterstitial called with placement type 'reward'. Call showRewarded instead to display a rewarded ad.",
+            "ads.showInterstitial",
+            "https://sdk.html5gameportal.com/api/ads/#showinterstitial");
     }
+
     if (placement === "preroll" && (platform === "link" || platform === "viber" || platform === "facebook")) {
-        throw invalidParams(`Current platform does not support preroll ads. Platform: ${platform}`, "ads.showInterstitial");
+        throw invalidParams(`Current platform does not support preroll ads. Platform: ${platform}`,
+            "ads.showInterstitial",
+            "https://sdk.html5gameportal.com/api/ads/#showinterstitial");
     }
+
     // Don't allow preroll ads to be shown more than once or after the game has started.
     if (placement === "preroll" && (
         config.adConfig.hasPrerollShown ||
         config.game.gameTimer > 10)) {
-        throw invalidParams("Preroll ads can only be shown once during game load.", "ads.showInterstitial");
+        throw invalidParams("Preroll ads can only be shown once during game load.",
+            "ads.showInterstitial",
+            "https://sdk.html5gameportal.com/api/ads/#showinterstitial");
     }
 
     // Validate the ad unit IDs. Non-existent IDs can cause the ad call to hang indefinitely.
     if ((platform === "link" || platform === "viber" || platform === "facebook")
         && !isValidString(config.adConfig.interstitialId)) {
-        warn("Ad Unit IDs not found. Please contact your Wortal representative to have the ad unit IDs configured.");
-        return;
+        if (platform === "viber" && isValidString(config.adConfig.rewardedId)) {
+            // As of v1.6.4 Viber does not support interstitial ads, so we won't have an ID for it. But we still want to
+            // check if the game is in production or not, which should be the case if we have a rewarded ID.
+            // We can still attempt to show the ad here because we can backfill it.
+        } else {
+            warn("Ad Unit IDs not found. Please contact your Wortal representative to have the ad unit IDs configured.");
+            return;
+        }
     }
 
     // Don't bother calling for an ad if the ads are blocked. As of v1.6 this only applies to Wortal platform.
@@ -134,16 +150,22 @@ export function showRewarded(description: string, beforeAd: () => void, afterAd:
     if (beforeAd === undefined || typeof beforeAd !== "function") {
         beforeAd = () => warn("beforeAd function missing or invalid. This is used to pause the game and mute audio when an ad begins.");
     }
+
     if (afterAd === undefined || typeof afterAd !== "function") {
         afterAd = () => warn("afterAd function missing or invalid. This is used to resume the game and unmute audio when an ad has finished.");
     }
+
     if (adDismissed === undefined || typeof adDismissed !== "function") {
         adDismissed = () => warn("adDismissed function missing or invalid. This is used to handle the case where the player did not successfully watch the ad.");
     }
+
     // We cannot call for a rewarded ad without actually rewarding the player for successfully watching the ad.
     if (adViewed === undefined || typeof adViewed !== "function") {
-        throw invalidParams("adViewed function missing or invalid. This is required to reward the player when they have successfully watched the ad.", "ads.showRewarded");
+        throw invalidParams("adViewed function missing or invalid. This is required to reward the player when they have successfully watched the ad.",
+            "ads.showRewarded",
+            "https://sdk.html5gameportal.com/api/ads/#parameters_1");
     }
+
     // If no ad is filled the afterAd callback isn't reached. If the developer doesn't provide a noFill callback
     // we use the afterAd callback instead to ensure the game doesn't hang indefinitely.
     if (noFill === undefined || typeof noFill !== "function") {

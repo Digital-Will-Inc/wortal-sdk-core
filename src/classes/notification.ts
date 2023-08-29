@@ -29,7 +29,9 @@ export class Notification implements INotification {
         debug("Sending notification...");
         const url: string | undefined = this.getScheduleURL_Facebook();
         if (typeof url === "undefined") {
-            return Promise.reject(operationFailed("Failed to schedule notification. ASID is not defined.", "notifications.scheduleAsync"));
+            return Promise.reject(operationFailed("Failed to schedule notification. ASID is not defined.",
+                "notifications.scheduleAsync",
+                "https://sdk.html5gameportal.com/api/notifications/#scheduleasync"));
         }
 
         const body: string = this.buildSchedulePayload_Facebook();
@@ -47,7 +49,9 @@ export class Notification implements INotification {
                     return response.json();
                 } else {
                     return response.json().then((data) => {
-                        reject(operationFailed(`Failed to schedule notification. Request failed with status code: ${response.status}. \n Message: ${data.message || data.detail || "No message found, sorry."}`, "notifications.scheduleAsync"));
+                        reject(operationFailed(`Failed to schedule notification. Request failed with status code: ${response.status}. \n Message: ${data.message || data.detail || "No message found, sorry."}`,
+                            "notifications.scheduleAsync",
+                            "https://sdk.html5gameportal.com/api/notifications/#scheduleasync"));
                     });
                 }
             }).then(response => {
@@ -57,7 +61,9 @@ export class Notification implements INotification {
                     success: response.success,
                 });
             }).catch(error => {
-                reject(operationFailed(`Failed to schedule notification. Error: ${error}`, "notifications.scheduleAsync"));
+                reject(operationFailed(`Failed to schedule notification. Error: ${error}`,
+                    "notifications.scheduleAsync",
+                    "https://sdk.html5gameportal.com/api/notifications/#scheduleasync"));
             });
         });
     }

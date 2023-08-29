@@ -18,7 +18,9 @@ import Wortal from "../index";
  */
 export function logLevelStart(level: string | number): void {
     if (!isValidString(level) && !isValidNumber(level)) {
-        throw invalidParams("level cannot be null or empty. Please provide a valid string or number for the level parameter.", "analytics.logLevelStart");
+        throw invalidParams("level cannot be null or empty. Please provide a valid string or number for the level parameter.",
+            "analytics.logLevelStart",
+            "https://sdk.html5gameportal.com/api/analytics/#parameters_2");
     }
 
     if (typeof level === "number") {
@@ -61,7 +63,9 @@ export function logLevelStart(level: string | number): void {
  */
 export function logLevelEnd(level: string | number, score: string | number, wasCompleted: boolean): void {
     if (!isValidString(level) && !isValidNumber(level)) {
-        throw invalidParams("level cannot be null or empty. Please provide a valid string or number for the level parameter.", "analytics.logLevelEnd");
+        throw invalidParams("level cannot be null or empty. Please provide a valid string or number for the level parameter.",
+            "analytics.logLevelEnd",
+            "https://sdk.html5gameportal.com/api/analytics/#parameters_1");
     }
 
     if (typeof level === "number") {
@@ -166,7 +170,9 @@ export function logTutorialEnd(tutorial: string, wasCompleted: boolean): void {
  */
 export function logLevelUp(level: string | number): void {
     if (!isValidString(level) && !isValidNumber(level)) {
-        throw invalidParams("level cannot be null or empty. Please provide a valid string or number for the level parameter.", "analytics.logLevelUp");
+        throw invalidParams("level cannot be null or empty. Please provide a valid string or number for the level parameter.",
+            "analytics.logLevelUp",
+            "https://sdk.html5gameportal.com/api/analytics/#parameters_3");
     }
 
     const data: AnalyticsEventData = {
@@ -196,7 +202,9 @@ export function logLevelUp(level: string | number): void {
  */
 export function logScore(score: string | number): void {
     if (!isValidString(score) && !isValidNumber(score)) {
-        throw invalidParams("score cannot be null or empty. Please provide a valid string or number for the score parameter.", "analytics.logScore");
+        throw invalidParams("score cannot be null or empty. Please provide a valid string or number for the score parameter.",
+            "analytics.logScore",
+            "https://sdk.html5gameportal.com/api/analytics/#parameters_6");
     }
 
     const data: AnalyticsEventData = {
@@ -228,9 +236,13 @@ export function logScore(score: string | number): void {
  */
 export function logGameChoice(decision: string, choice: string): void {
     if (!isValidString(decision)) {
-        throw invalidParams("decision cannot be null or empty. Please provide a valid string for the decision parameter.", "analytics.logGameChoice");
+        throw invalidParams("decision cannot be null or empty. Please provide a valid string for the decision parameter.",
+            "analytics.logGameChoice",
+            "https://sdk.html5gameportal.com/api/analytics/#parameters");
     } else if (!isValidString(choice)) {
-        throw invalidParams("choice cannot be null or empty. Please provide a valid string for the choice parameter.", "analytics.logGameChoice");
+        throw invalidParams("choice cannot be null or empty. Please provide a valid string for the choice parameter.",
+            "analytics.logGameChoice",
+            "https://sdk.html5gameportal.com/api/analytics/#parameters");
     }
 
     const data: AnalyticsEventData = {
@@ -257,7 +269,9 @@ export function logGameChoice(decision: string, choice: string): void {
  */
 export function logSocialInvite(placement: string): void {
     if (!isValidString(placement)) {
-        throw invalidParams("placement cannot be null or empty. Please provide a valid string for the placement parameter.", "analytics.logSocialInvite");
+        throw invalidParams("placement cannot be null or empty. Please provide a valid string for the placement parameter.",
+            "analytics.logSocialInvite",
+            "https://sdk.html5gameportal.com/api/analytics/#parameters_7");
     }
 
     const data: AnalyticsEventData = {
@@ -283,7 +297,9 @@ export function logSocialInvite(placement: string): void {
  */
 export function logSocialShare(placement: string): void {
     if (!isValidString(placement)) {
-        throw invalidParams("placement cannot be null or empty.. Please provide a valid string for the placement parameter.", "analytics.logSocialShare");
+        throw invalidParams("placement cannot be null or empty.. Please provide a valid string for the placement parameter.",
+            "analytics.logSocialShare",
+            "https://sdk.html5gameportal.com/api/analytics/#parameters_8");
     }
 
     const data: AnalyticsEventData = {
@@ -314,7 +330,9 @@ export function logSocialShare(placement: string): void {
  */
 export function logPurchase(productID: string, details?: string): void {
     if (!isValidString(productID)) {
-        throw invalidParams("productID cannot be null or empty. . Please provide a valid string for the productID parameter.", "analytics.logPurchase");
+        throw invalidParams("productID cannot be null or empty. . Please provide a valid string for the productID parameter.",
+            "analytics.logPurchase",
+            "https://sdk.html5gameportal.com/api/analytics/#parameters_4");
     }
 
     const data: AnalyticsEventData = {
@@ -346,7 +364,9 @@ export function logPurchase(productID: string, details?: string): void {
  */
 export function logPurchaseSubscription(productID: string, details?: string): void {
     if (!isValidString(productID)) {
-        throw invalidParams("productID cannot be null or empty. Please provide a valid string for the productID parameter.", "analytics.logPurchaseSubscription");
+        throw invalidParams("productID cannot be null or empty. Please provide a valid string for the productID parameter.",
+            "analytics.logPurchaseSubscription",
+            "https://sdk.html5gameportal.com/api/analytics/#parameters_5");
     }
 
     const data: AnalyticsEventData = {
