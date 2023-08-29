@@ -121,6 +121,13 @@ export async function initializeAsync(): Promise<void> {
         debug(`Initializing SDK for ${config.session.platform} platform.`);
         return config.platformSDK.initializeAsync().then(() => {
             config.lateInitialize();
+            tryEnableIAP();
+
+            isInitialized = true;
+            window.dispatchEvent(new Event("wortal-sdk-initialized"));
+
+            debug(`SDK initialized for ${config.session.platform} platform.`);
+            info("SDK initialization complete.");
         }).catch((error: any) => {
             throw initializationError(`Failed to initialize SDK: ${error.message}`,
                 "initializeAsync",
@@ -167,15 +174,8 @@ export async function startGameAsync(): Promise<void> {
         }
 
         return config.platformSDK.startGameAsync().then(() => {
-            tryEnableIAP();
             analytics._logTrafficSource();
             analytics._logGameStart();
-
-            isInitialized = true;
-            window.dispatchEvent(new Event("wortal-sdk-initialized"));
-
-            debug(`SDK initialized for ${config.session.platform} platform.`);
-            info("SDK initialization complete.");
         }).catch((error: any) => {
             throw initializationError(`Failed to initialize SDK: ${error.message}`,
                 "startGameAsync",
@@ -634,10 +634,10 @@ function _initializeSDK_RakutenFacebook(): Promise<void> {
     debug(`Initializing SDK for ${config.session.platform} platform.`);
     return config.platformSDK.initializeAsync().then(() => {
         config.lateInitialize();
+        tryEnableIAP();
+        debug(`SDK initialized for ${config.session.platform} platform.`);
         return config.platformSDK.startGameAsync().then(() => {
-            tryEnableIAP();
             analytics._logTrafficSource();
-            debug(`SDK initialized for ${config.session.platform} platform.`);
         }).catch((error: any) => {
             throw initializationError(`Failed to initialize SDK: ${error.message}`,
                 "_initializeSDK_RakutenFacebook()");
@@ -659,6 +659,9 @@ function _initializeSDK_WortalGD(): Promise<void> {
     return Promise.resolve().then(() => {
         config.lateInitialize();
         config.adConfig.adCalled();
+
+        tryEnableIAP();
+
         debug("Showing pre-roll ad.");
         ads.showInterstitial("preroll", "Preroll",
             () => {
@@ -667,7 +670,6 @@ function _initializeSDK_WortalGD(): Promise<void> {
                 config.adConfig.setPrerollShown(true);
                 config.adConfig.adShown();
                 removeLoadingCover();
-                tryEnableIAP();
                 debug(`SDK initialized for ${config.session.platform} platform.`);
             });
     }).catch((error) => {
@@ -685,6 +687,7 @@ function _initializeSDK_Debug(): Promise<void> {
     debug("Initializing SDK for debugging.");
     return Promise.resolve().then(() => {
         config.lateInitialize();
+        tryEnableIAP();
         removeLoadingCover();
         debug("SDK initialized for debugging.");
     }).catch((error) => {
