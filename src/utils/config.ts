@@ -16,6 +16,7 @@ export default class SDKConfig {
     private _isIAPEnabled: boolean = false;
     private _isDebugMode: boolean = false;
     private _isInitialized: boolean = false;
+    private _isPlatformInitialized: boolean = false;
     private _isAutoInit: boolean = true;
 
     private _platformSDK: any;
@@ -69,6 +70,14 @@ export default class SDKConfig {
 
     get isInitialized(): boolean {
         return this._isInitialized;
+    }
+
+    get isPlatformInitialized(): boolean {
+        return this._isPlatformInitialized;
+    }
+
+    set isPlatformInitialized(value: boolean) {
+        this._isPlatformInitialized = value;
     }
 
     get isAutoInit(): boolean {

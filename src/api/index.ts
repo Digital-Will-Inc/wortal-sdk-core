@@ -99,6 +99,11 @@ export let isInitialized: boolean = false;
  * </ul>
  */
 export async function initializeAsync(): Promise<void> {
+    if (!config.isPlatformInitialized) {
+        debug("Platform not initialized yet, awaiting platform initialization..");
+        await _delayUntilPlatformInitialized();
+    }
+
     if (config.isAutoInit) {
         return Promise.reject(initializationError("SDK is configured to auto initialize. Only call this when manual initialization is enabled.",
             "initializeAsync",
@@ -304,6 +309,8 @@ export async function _initializeInternal(options: InitializationOptions): Promi
     const platform = config.session.platform;
     _initializePlatform().then(showAds => {
         debug("Platform: " + platform);
+        config.isPlatformInitialized = true;
+
         if (options.autoInitialize === false
             && (platform === "viber" || platform === "link" || platform === "facebook")) {
             config.isAutoInit = false;
@@ -780,5 +787,25 @@ function _initializeAdBackFill(): Promise<void> {
             throw operationFailed(`Failed to fetch ad config for backfill: ${error.message}`,
                 "_initializeAdBackFill()");
         });
+    });
+}
+
+/**
+ * @hidden
+ * @private
+ */
+function _delayUntilPlatformInitialized(): Promise<void> {
+    // It's possible for the game to call initializeAsync before the platform SDK has been initialized, so we need to
+    // wait for it to be initialized before we allow that call to continue. This is only used in manual initialization mode.
+    return new Promise(resolve => {
+        const checkPlatformInitialized = () => {
+            if (config.isPlatformInitialized) {
+                resolve();
+            } else {
+                debug("Waiting for platform SDK to initialize...");
+                setTimeout(checkPlatformInitialized, 100);
+            }
+        };
+        checkPlatformInitialized();
     });
 }
