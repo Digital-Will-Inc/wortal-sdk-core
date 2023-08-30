@@ -36,10 +36,14 @@ export function getLeaderboardAsync(name: string): Promise<Leaderboard> {
                 "https://sdk.html5gameportal.com/api/leaderboard/#parameters_3");
         }
 
-        if (platform === "facebook" && Wortal.context.getType() === "SOLO") {
-            throw invalidOperation("Leaderboard API cannot be used when the game is in SOLO mode. Switch to a context to get a leaderboard for that context.",
-                "leaderboard.getLeaderboardAsync",
-                "https://sdk.html5gameportal.com/api/leaderboard/");
+        if (platform === "facebook") {
+            const id = Wortal.context.getId();
+            if (!isValidString(id)) {
+                throw invalidOperation("Global leaderboards are not supported on Facebook. Switch to a context before calling this API.",
+                    "leaderboard.getLeaderboardAsync",
+                    "https://sdk.html5gameportal.com/api/leaderboard/");
+            }
+            name += `.${id}`;
         }
 
         if (platform === "link" || platform === "viber" || platform === "facebook") {
@@ -54,7 +58,7 @@ export function getLeaderboardAsync(name: string): Promise<Leaderboard> {
                 .catch((e: any) => {
                     throw rethrowPlatformError(e,
                         "leaderboard.getLeaderboardAsync",
-                        "https://sdk.html5gameportal.com/api/leaderboard/#parameters_3");
+                        "https://sdk.html5gameportal.com/api/leaderboard/#getleaderboardasync");
                 });
         } else {
             throw notSupported(`Leaderboard API not currently supported on platform: ${platform}`,
@@ -93,10 +97,14 @@ export function sendEntryAsync(name: string, score: number, details: string = ""
                 "https://sdk.html5gameportal.com/api/leaderboard/#parameters_5");
         }
 
-        if (platform === "facebook" && Wortal.context.getType() === "SOLO") {
-            throw invalidOperation("Leaderboard API cannot be used when the game is in SOLO mode. Switch to a context to get a leaderboard for that context.",
-                "leaderboard.sendEntryAsync",
-                "https://sdk.html5gameportal.com/api/leaderboard/");
+        if (platform === "facebook") {
+            const id = Wortal.context.getId();
+            if (!isValidString(id)) {
+                throw invalidOperation("Global leaderboards are not supported on Facebook. Switch to a context before calling this API.",
+                    "leaderboard.sendEntryAsync",
+                    "https://sdk.html5gameportal.com/api/leaderboard/");
+            }
+            name += `.${id}`;
         }
 
         if (platform === "link" || platform === "viber" || platform === "facebook") {
@@ -112,7 +120,7 @@ export function sendEntryAsync(name: string, score: number, details: string = ""
                 .catch((e: any) => {
                     throw rethrowPlatformError(e,
                         "leaderboard.sendEntryAsync",
-                        "https://sdk.html5gameportal.com/api/leaderboard/#parameters_5");
+                        "https://sdk.html5gameportal.com/api/leaderboard/#sendentryasync");
                 });
         } else {
             throw notSupported(`Leaderboard API not currently supported on platform: ${platform}`,
@@ -148,10 +156,14 @@ export function getEntriesAsync(name: string, count: number, offset: number = 0)
                 "https://sdk.html5gameportal.com/api/leaderboard/#parameters_1");
         }
 
-        if (platform === "facebook" && Wortal.context.getType() === "SOLO") {
-            throw invalidOperation("Leaderboard API cannot be used when the game is in SOLO mode. Switch to a context to get a leaderboard for that context.",
-                "leaderboard.getEntriesAsync",
-                "https://sdk.html5gameportal.com/api/leaderboard/");
+        if (platform === "facebook") {
+            const id = Wortal.context.getId();
+            if (!isValidString(id)) {
+                throw invalidOperation("Global leaderboards are not supported on Facebook. Switch to a context before calling this API.",
+                    "leaderboard.getEntriesAsync",
+                    "https://sdk.html5gameportal.com/api/leaderboard/");
+            }
+            name += `.${id}`;
         }
 
         if (platform === "link" || platform === "viber" || platform === "facebook") {
@@ -203,10 +215,14 @@ export function getPlayerEntryAsync(name: string): Promise<LeaderboardEntry> {
                 "https://sdk.html5gameportal.com/api/leaderboard/#parameters_4");
         }
 
-        if (platform === "facebook" && Wortal.context.getType() === "SOLO") {
-            throw invalidOperation("Leaderboard API cannot be used when the game is in SOLO mode. Switch to a context to get a leaderboard for that context.",
-                "leaderboard.getPlayerEntryAsync",
-                "https://sdk.html5gameportal.com/api/leaderboard/");
+        if (platform === "facebook") {
+            const id = Wortal.context.getId();
+            if (!isValidString(id)) {
+                throw invalidOperation("Global leaderboards are not supported on Facebook. Switch to a context before calling this API.",
+                    "leaderboard.getPlayerEntryAsync",
+                    "https://sdk.html5gameportal.com/api/leaderboard/");
+            }
+            name += `.${id}`;
         }
 
         if (platform === "link" || platform === "viber" || platform === "facebook") {
@@ -255,10 +271,14 @@ export function getEntryCountAsync(name: string): Promise<number> {
                 "https://sdk.html5gameportal.com/api/leaderboard/#parameters_2");
         }
 
-        if (platform === "facebook" && Wortal.context.getType() === "SOLO") {
-            throw invalidOperation("Leaderboard API cannot be used when the game is in SOLO mode. Switch to a context to get a leaderboard for that context.",
-                "leaderboard.getEntryCountAsync",
-                "https://sdk.html5gameportal.com/api/leaderboard/");
+        if (platform === "facebook") {
+            const id = Wortal.context.getId();
+            if (!isValidString(id)) {
+                throw invalidOperation("Global leaderboards are not supported on Facebook. Switch to a context before calling this API.",
+                    "leaderboard.getEntryCountAsync",
+                    "https://sdk.html5gameportal.com/api/leaderboard/");
+            }
+            name += `.${id}`;
         }
 
         if (platform === "link" || platform === "viber" || platform === "facebook") {
@@ -307,10 +327,14 @@ export function getConnectedPlayersEntriesAsync(name: string, count: number, off
                 "https://sdk.html5gameportal.com/api/leaderboard/#parameters");
         }
 
-        if (platform === "facebook" && Wortal.context.getType() === "SOLO") {
-            throw invalidOperation("Leaderboard API cannot be used when the game is in SOLO mode. Switch to a context to get a leaderboard for that context.",
-                "leaderboard.getConnectedPlayersEntriesAsync",
-                "https://sdk.html5gameportal.com/api/leaderboard/");
+        if (platform === "facebook") {
+            const id = Wortal.context.getId();
+            if (!isValidString(id)) {
+                throw invalidOperation("Global leaderboards are not supported on Facebook. Switch to a context before calling this API.",
+                    "leaderboard.getConnectedPlayersEntriesAsync",
+                    "https://sdk.html5gameportal.com/api/leaderboard/");
+            }
+            name += `.${id}`;
         }
 
         if (platform === "link" || platform === "viber" || platform === "facebook") {
