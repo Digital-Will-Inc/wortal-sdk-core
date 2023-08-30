@@ -70,11 +70,17 @@ export function scheduleAsync(payload: NotificationPayload): Promise<Notificatio
  */
 export function getHistoryAsync(): Promise<ScheduledNotification[]> {
     const platform = config.session.platform;
-    const url: string = _getHistoryURL_Facebook();
+    const url: string | undefined = _getHistoryURL_Facebook();
 
     if (platform !== "facebook") {
         return Promise.reject(notSupported(`Notifications not supported on platform: ${platform}`,
             "notifications.getHistoryAsync"));
+    }
+
+    if (url === undefined) {
+        return Promise.reject(operationFailed("Failed to get notifications. ASID is not available.",
+            "notifications.getHistoryAsync",
+            "https://sdk.html5gameportal.com/api/notifications/#gethistoryasync"));
     }
 
     return new Promise((resolve, reject) => {
@@ -135,6 +141,12 @@ export function cancelAsync(id: string): Promise<boolean> {
             "notifications.cancelAsync"));
     }
 
+    if (url === undefined) {
+        return Promise.reject(operationFailed("Failed to cancel notification. ASID is not available.",
+            "notifications.cancelAsync",
+            "https://sdk.html5gameportal.com/api/notifications/#cancelasync"));
+    }
+
     if (!isValidString(id)) {
         return Promise.reject(invalidParams("id cannot be null or empty. Please provide a valid string for the id parameter.",
             "notifications.cancelAsync",
@@ -192,6 +204,12 @@ export function cancelAllAsync(label?: string): Promise<boolean> {
             "notifications.cancelAllAsync"));
     }
 
+    if (url === undefined) {
+        return Promise.reject(operationFailed("Failed to cancel all notifications. ASID is not available.",
+            "notifications.cancelAllAsync",
+            "https://sdk.html5gameportal.com/api/notifications/#cancelallasync"));
+    }
+
     return new Promise((resolve, reject) => {
         fetch(url, {
             method: "POST",
@@ -221,14 +239,26 @@ export function cancelAllAsync(label?: string): Promise<boolean> {
     });
 }
 
-function _getHistoryURL_Facebook(): string {
-    return `${APIEndpoints.NOTIFICATIONS}${config.session.gameId}/fb/${config.player.asid}`;
+function _getHistoryURL_Facebook(): string | undefined {
+    if (typeof config.player.asid !== "string" || config.player.asid.length === 0) {
+        return undefined;
+    } else {
+        return `${APIEndpoints.NOTIFICATIONS}${config.session.gameId}/fb/${config.player.asid}`;
+    }
 }
 
-function _getCancelURL_Facebook(): string {
-    return `${APIEndpoints.NOTIFICATIONS}${config.session.gameId}/fb/${config.player.asid}/cancel_notification`;
+function _getCancelURL_Facebook(): string | undefined {
+    if (typeof config.player.asid !== "string" || config.player.asid.length === 0) {
+        return undefined;
+    } else {
+        return `${APIEndpoints.NOTIFICATIONS}${config.session.gameId}/fb/${config.player.asid}/cancel_notification`;
+    }
 }
 
-function _getCancelAllURL_Facebook(): string {
-    return `${APIEndpoints.NOTIFICATIONS}${config.session.gameId}/fb/${config.player.asid}/cancel_all_notifications`;
+function _getCancelAllURL_Facebook(): string | undefined {
+    if (typeof config.player.asid !== "string" || config.player.asid.length === 0) {
+        return undefined;
+    } else {
+        return `${APIEndpoints.NOTIFICATIONS}${config.session.gameId}/fb/${config.player.asid}/cancel_all_notifications`;
+    }
 }

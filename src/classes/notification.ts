@@ -28,13 +28,13 @@ export class Notification implements INotification {
     send(): Promise<NotificationScheduleResult> {
         debug("Sending notification...");
         const url: string | undefined = this.getScheduleURL_Facebook();
+        const body: string = this.buildSchedulePayload_Facebook();
+
         if (typeof url === "undefined") {
             return Promise.reject(operationFailed("Failed to schedule notification. ASID is not defined.",
                 "notifications.scheduleAsync",
                 "https://sdk.html5gameportal.com/api/notifications/#scheduleasync"));
         }
-
-        const body: string = this.buildSchedulePayload_Facebook();
 
         return new Promise((resolve, reject) => {
             fetch(url, {
@@ -83,10 +83,11 @@ export class Notification implements INotification {
     }
 
     getScheduleURL_Facebook(): string | undefined {
-        if (typeof config.player.asid !== "string") {
+        if (typeof config.player.asid !== "string" || config.player.asid.length === 0) {
             return undefined;
+        } else {
+            return `${APIEndpoints.NOTIFICATIONS}${config.session.gameId}/fb/${config.player.asid}`;
         }
-        return `${APIEndpoints.NOTIFICATIONS}${config.session.gameId}/fb/${config.player.asid}`;
     }
 }
 
