@@ -1,6 +1,7 @@
 import { ConnectedPlayer } from "../classes/player";
 import { ConnectedPlayerPayload, PlayerData, SignedASID } from "../interfaces/player";
 import { invalidParams, notSupported, rethrowPlatformError } from "../utils/error-handler";
+import { debug } from "../utils/logger";
 import { config } from "./index";
 
 /**
@@ -361,6 +362,9 @@ export function canSubscribeBotAsync(): Promise<boolean> {
     return Promise.resolve().then(() => {
         if (platform === "facebook") {
             return config.platformSDK.player.canSubscribeBotAsync()
+                .then((canSubscribe: boolean) => {
+                    return canSubscribe;
+                })
                 .catch((e: any) => {
                     throw rethrowPlatformError(e,
                         "player.canSubscribeBotAsync",
