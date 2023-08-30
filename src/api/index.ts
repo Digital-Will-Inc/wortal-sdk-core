@@ -125,14 +125,18 @@ export async function initializeAsync(): Promise<void> {
 
         debug(`Initializing SDK for ${config.session.platform} platform.`);
         return config.platformSDK.initializeAsync().then(() => {
-            config.lateInitialize();
             tryEnableIAP();
+            return config.lateInitialize().then(() => {
+                isInitialized = true;
+                window.dispatchEvent(new Event("wortal-sdk-initialized"));
 
-            isInitialized = true;
-            window.dispatchEvent(new Event("wortal-sdk-initialized"));
-
-            debug(`SDK initialized for ${config.session.platform} platform.`);
-            info("SDK initialization complete.");
+                debug(`SDK initialized for ${config.session.platform} platform.`);
+                info("SDK initialization complete.");
+            }).catch((error) => {
+                throw initializationError(`Failed to initialize SDK: ${error.message}`,
+                    "initializeAsync",
+                    "https://sdk.html5gameportal.com/api/wortal/#initializeasync");
+            })
         }).catch((error: any) => {
             throw initializationError(`Failed to initialize SDK: ${error.message}`,
                 "initializeAsync",
@@ -309,11 +313,19 @@ export async function _initializeInternal(options: InitializationOptions): Promi
     const platform = config.session.platform;
     _initializePlatform().then(showAds => {
         debug("Platform: " + platform);
-        config.isPlatformInitialized = true;
 
         if (options.autoInitialize === false
             && (platform === "viber" || platform === "link" || platform === "facebook")) {
             config.isAutoInit = false;
+        }
+
+        // If the developer calls initializeAsync earlier than this, we need to wait for the platform to be initialized.
+        // This flag will make initializeAsync await the platform initialization before continuing.
+        config.isPlatformInitialized = true;
+
+        // We've finished the internal initialization that's still necessary in manual initialization mode, so we can
+        // resolve here and wait for the developer to finish the initialization process.
+        if (!config.isAutoInit) {
             debug("Manual initialization requested. Platform initialization finished, awaiting manual initialization..");
             return Promise.resolve();
         }

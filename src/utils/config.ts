@@ -30,9 +30,10 @@ export default class SDKConfig {
         this._adConfig = new AdConfig();
     }
 
-    lateInitialize(): void {
-        this._player = new Player().initialize();
-        this._adConfig.lateInitialize();
+    async lateInitialize(): Promise<void> {
+        this._player = new Player();
+        await this._player.initialize();
+        await this._adConfig.lateInitialize();
         this._isInitialized = true;
     }
 

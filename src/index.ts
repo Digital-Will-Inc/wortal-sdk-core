@@ -32,7 +32,6 @@ Wortal._initializeInternal({ autoInitialize: isAutoInit }).then(() => {
     // This returns before the SDK is fully initialized due to some async calls and late initialization after
     // the platform SDKs finish loading. Do not rely on this for anything mission-critical as it does not represent
     // the SDK being fully initialized.
-    debug("SDK initializeInternal returned");
 }).catch((error: any) => {
     exception("SDK failed to initialize.", error);
 });

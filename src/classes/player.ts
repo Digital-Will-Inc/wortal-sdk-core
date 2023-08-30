@@ -18,7 +18,7 @@ export class Player {
     };
 
     /** @hidden */
-    initialize(): Player {
+    async initialize(): Promise<Player> {
         debug("Initializing player...");
         const platform = config.session.platform;
 
@@ -29,8 +29,9 @@ export class Player {
 
         if (platform === "facebook") {
             debug("Fetching ASID...");
-            Wortal.player.getASIDAsync().then((asid) => {
+            await Wortal.player.getASIDAsync().then((asid) => {
                 this._current.asid = asid;
+                debug("ASID fetched: ", asid);
             }).catch((error) => {
                 exception("Error fetching ASID: ", error);
             });

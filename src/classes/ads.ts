@@ -12,7 +12,7 @@ import {
 import { AdCallEventData, AnalyticsEventData } from "../interfaces/analytics";
 import { PlacementType } from "../types/ads";
 import { APIEndpoints, GD_EVENTS } from "../types/wortal";
-import { operationFailed, rethrowPlatformError } from "../utils/error-handler";
+import { initializationError, operationFailed, rethrowPlatformError } from "../utils/error-handler";
 import { debug, exception, warn } from "../utils/logger";
 import { isValidPlacementType } from "../utils/validators";
 import { addGDCallback } from "../utils/wortal-utils";
@@ -254,19 +254,22 @@ export class AdConfig {
         }
     }
 
-    lateInitialize(): void {
+    async lateInitialize(): Promise<void> {
         debug("Late initializing AdConfig..");
         const platform = config.session.platform;
-        if (platform === "link" || platform === "viber") {
-            this._setLinkViberAdUnitIds();
-        } else if (platform === "facebook") {
-            this._setFacebookAdUnitIds();
-        }
 
-        // Delay this so there's time to fetch the ad unit IDs.
-        setTimeout(() => {
+        if (platform === "link" || platform === "viber") {
+            await this._setLinkViberAdUnitIds();
             debug("AdConfig initialized: ", this._current);
-        }, 1000);
+            return Promise.resolve();
+        } else if (platform === "facebook") {
+            await this._setFacebookAdUnitIds();
+            debug("AdConfig initialized: ", this._current);
+            return Promise.resolve();
+        } else {
+            debug("AdConfig initialized: ", this._current);
+            return Promise.resolve();
+        }
     }
 
     get isAdBlocked(): boolean {
@@ -347,10 +350,10 @@ export class AdConfig {
      *  }
      *]
      */
-    private _setLinkViberAdUnitIds(): void {
+    private async _setLinkViberAdUnitIds(): Promise<void> {
         debug("Fetching ad unit IDs from Rakuten API..");
         if (config.platformSDK) {
-            config.platformSDK.getAdUnitsAsync().then((adUnits: any[]) => {
+            return config.platformSDK.getAdUnitsAsync().then((adUnits: any[]) => {
                 if (adUnits == null || undefined) {
                     exception("Failed to retrieve ad units. This may be due to a server error or platform malfunction.");
                     return;
@@ -363,11 +366,12 @@ export class AdConfig {
                         this._current.rewardedId = adUnits[i].id;
                     }
                 }
-
-                debug("AdConfig initialized: ", this._current);
             }).catch((e: any) => {
                 throw rethrowPlatformError(e, "setLinkViberAdUnitIds()");
             });
+        } else {
+            return Promise.reject(initializationError("Platform SDK not yet initialized.",
+                "_setLinkViberAdUnitIds"));
         }
     }
 
@@ -384,17 +388,17 @@ export class AdConfig {
      *   ]
      *}
      */
-    private _setFacebookAdUnitIds(): void {
+    private async _setFacebookAdUnitIds(): Promise<void> {
         debug("Fetching Facebook ad units from Wortal API..");
         if (typeof (window as any).wortalGameID === "undefined") {
-            exception("Failed to retrieve wortalGameID. This may be due to an error when uploading the game bundle to Facebook.");
-            return;
+            return Promise.reject(initializationError("Failed to retrieve wortalGameID. This may be due to an error when uploading the game bundle to Facebook.",
+                "_setFacebookAdUnitIds"));
         }
 
         const url = APIEndpoints.ADS + (window as any).wortalGameID;
-        fetch(url).then((response: Response) => {
+        await fetch(url).then((response: Response) => {
             debug("Fetching Facebook ad units from Wortal API response: ", response);
-            response.json().then((adUnits: FacebookAdUnitsResponse) => {
+            return response.json().then((adUnits: FacebookAdUnitsResponse) => {
                 debug("Fetching Facebook ad units from Wortal API response JSON: ", adUnits);
                 if ((adUnits == null || undefined) || (adUnits.ads == null || undefined)) {
                     exception("Failed to retrieve ad units. This may be due to a server issue or the API being currently unavailable.");
@@ -403,7 +407,6 @@ export class AdConfig {
 
                 if (adUnits.ads.length === 0) {
                     warn("No ad units returned. Please contact your Wortal representative to set up your ad units before attempting to show ads.");
-                    debug("AdConfig initialized: ", this._current);
                     return;
                 }
 
@@ -414,8 +417,6 @@ export class AdConfig {
                         this._current.rewardedId = adUnits.ads[i].placement_id;
                     }
                 }
-
-                debug("AdConfig initialized: ", this._current);
             }).catch((error: any) => {
                 throw operationFailed(error,
                     "setFacebookAdUnitIds()");
