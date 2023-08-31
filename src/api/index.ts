@@ -1,4 +1,4 @@
-import { APIEndpoints } from "../types/wortal";
+import { APIEndpoints, GD_EVENTS } from "../types/wortal";
 import * as _ads from './ads';
 import * as _analytics from './analytics';
 import * as _context from './context';
@@ -25,7 +25,8 @@ import {
     getParameterByName,
     gdEventTrigger,
     removeLoadingCover,
-    tryEnableIAP
+    tryEnableIAP,
+    addGDCallback
 } from "../utils/wortal-utils";
 
 // This is the version of the SDK. It is set by the build process.
@@ -609,9 +610,11 @@ function _initializePlatform_GD(options?: any): Promise<boolean> {
                         "_initializePlatform_GD()"));
                 }
 
-                debug("Game Distribution platform SDK initialized.");
                 config.platformSDK = gdsdk;
-                resolve(true);
+                addGDCallback(GD_EVENTS.SDK_READY, () => {
+                    debug("Game Distribution platform SDK initialized.");
+                    resolve(true);
+                });
             }
 
             gdSDK.onerror = () => {

@@ -9,6 +9,7 @@ export const PLATFORM_DOMAINS = {
 
 /** @hidden */
 export const GD_EVENTS = {
+    SDK_READY: "SDK_READY",
     BEFORE_AD: "CONTENT_PAUSE_REQUESTED",
     AFTER_AD: "CONTENT_RESUME_REQUESTED",
     AD_DISMISSED: "SKIPPED",
