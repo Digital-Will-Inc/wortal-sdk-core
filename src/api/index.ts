@@ -689,8 +689,9 @@ function _initializeSDK(): Promise<void> {
 
     switch (platform) {
         case "wortal":
+            return _initializeSDK_Wortal();
         case "gd":
-            return _initializeSDK_WortalGD();
+            return _initializeSDK_GD();
         case "link":
         case "viber":
         case "facebook":
@@ -732,12 +733,11 @@ function _initializeSDK_RakutenFacebook(): Promise<void> {
 }
 
 /**
- * Initializes the SDK for the Wortal and GD platforms. These platforms support pre-roll ads, so we show one and then
- * remove the loading cover once it is complete.
+ * Initializes the SDK for the Wortal platform. The SDK calls for a preroll once the SDK is initialized.
  * @hidden
  * @private
  */
-function _initializeSDK_WortalGD(): Promise<void> {
+function _initializeSDK_Wortal(): Promise<void> {
     return Promise.resolve().then(() => {
         // We don't need to await this because as of v1.6.8 Wortal and GD do not have any async operations that
         // occur in lateInitialize.
@@ -759,7 +759,33 @@ function _initializeSDK_WortalGD(): Promise<void> {
             });
     }).catch((error) => {
         throw initializationError(`Failed to initialize SDK: ${error.message}`,
-            "_initializeSDK_WortalGD()");
+            "_initializeSDK_Wortal()");
+    });
+}
+
+/**
+ * Initializes the SDK for the GD platform. GD shows a pre-roll ad when the player presses the play button then
+ * loads the iframe with the game.
+ * @hidden
+ * @private
+ */
+function _initializeSDK_GD(): Promise<void> {
+    return Promise.resolve().then(() => {
+        // We don't need to await this because as of v1.6.8 Wortal and GD do not have any async operations that
+        // occur in lateInitialize.
+        config.lateInitialize();
+
+        // In production GD calls for the pre-roll when the player presses the play button, so we don't need to call
+        // for one here.
+        config.adConfig.setPrerollShown(true);
+
+        tryEnableIAP();
+        removeLoadingCover();
+
+        debug(`SDK initialized for ${config.session.platform} platform.`);
+    }).catch((error) => {
+        throw initializationError(`Failed to initialize SDK: ${error.message}`,
+            "_initializeSDK_GD()");
     });
 }
 

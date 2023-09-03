@@ -124,6 +124,8 @@ export function addGDCallback(eventName: string, callback: () => void): void {
 
     if (typeof config.adConfig.gdCallbacks !== "undefined") {
         config.adConfig.gdCallbacks[eventName] = callback;
+    } else {
+        exception("GD callbacks is undefined. This is a fatal error that should have been caught during initialization.");
     }
 }
 
@@ -136,6 +138,7 @@ export function gdEventTrigger(value: string): void {
     if (typeof config.adConfig.gdCallbacks !== "undefined") {
         const callback = config.adConfig.gdCallbacks[value];
         if (typeof callback !== "undefined") {
+            debug(`GD event triggered. Event: ${value}}`);
             callback();
         } else {
             debug(`GD event triggered, but no callback is defined for this event. Event: ${value}}`);
