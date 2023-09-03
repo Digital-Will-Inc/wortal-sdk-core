@@ -39,6 +39,12 @@ export function convertToFBInstantUpdatePayload(payload: UpdatePayload): UpdateP
     if (payload.strategy === "IMMEDIATE_CLEAR") {
         payload.strategy = "IMMEDIATE";
     }
+    if (typeof payload.action === "undefined") {
+        payload.action = "CUSTOM";
+    }
+    if (typeof payload.template === "undefined") {
+        payload.template = "";
+    }
     return payload;
 }
 

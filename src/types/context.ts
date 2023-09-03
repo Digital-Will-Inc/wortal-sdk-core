@@ -90,6 +90,6 @@ export type Strategy = 'IMMEDIATE' | 'LAST' | 'IMMEDIATE_CLEAR';
 /**
  * Message format to be used.
  */
-export type Action = 'CUSTOM';
+export type Action = 'CUSTOM' | 'LEADERBOARD';
 
 
