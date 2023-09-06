@@ -24,4 +24,5 @@ export interface GameData {
     levelName: string;
     levelTimer: number;
     levelTimerHandle: number;
+    gameLoadTimer: number;
 }

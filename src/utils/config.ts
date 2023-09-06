@@ -22,8 +22,8 @@ export default class SDKConfig {
     private _platformSDK: any;
 
     constructor() {
-        this._session = new Session();
         this._game = new GameState();
+        this._session = new Session();
     }
 
     initialize() {

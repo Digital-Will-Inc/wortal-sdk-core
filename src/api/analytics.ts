@@ -382,6 +382,7 @@ export function _logGameStart(): void {
             isFirstPlay: config.player.isFirstPlay,
             daysSinceFirstPlay: config.player.daysSinceFirstPlay,
             isAdBlocked: config.adConfig.isAdBlocked,
+            loadTime: config.game.gameLoadTimer,
         }
     };
 

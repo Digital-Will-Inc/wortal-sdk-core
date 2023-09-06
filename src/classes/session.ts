@@ -130,11 +130,16 @@ export class GameState {
         gameTimer: 0,
         levelName: "",
         levelTimer: 0,
-        levelTimerHandle: 0
+        levelTimerHandle: 0,
+        gameLoadTimer: 0,
     };
 
     get gameTimer(): number {
         return this._current.gameTimer;
+    }
+
+    get gameLoadTimer(): number {
+        return this._current.gameLoadTimer;
     }
 
     startGameTimer(): void {
@@ -143,6 +148,14 @@ export class GameState {
                 this._current.gameTimer += 1
             }
         }, 1000);
+    }
+
+    startGameLoadTimer(): void {
+        this._current.gameLoadTimer = performance.now();
+    }
+
+    stopGameLoadTimer(): void {
+        this._current.gameLoadTimer = performance.now() - this._current.gameLoadTimer;
     }
 
     get levelName(): string {

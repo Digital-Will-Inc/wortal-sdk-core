@@ -193,6 +193,7 @@ export async function startGameAsync(): Promise<void> {
     return Promise.resolve().then(() => {
         if (platform === "viber" || platform === "link" || platform === "facebook") {
             return config.platformSDK.startGameAsync().then(() => {
+                session._gameLoadingStop();
                 analytics._logTrafficSource();
                 analytics._logGameStart();
             }).catch((error: Error_Facebook_Rakuten) => {
@@ -319,6 +320,7 @@ export async function _initializeInternal(options: InitializationOptions): Promi
     }
 
     config.initialize();
+    session._gameLoadingStart();
 
     info("Initializing SDK " + __VERSION__);
     addLoadingListener();
@@ -343,6 +345,7 @@ export async function _initializeInternal(options: InitializationOptions): Promi
         }
 
         return _initializeSDK().then(() => {
+            session._gameLoadingStop();
             analytics._logGameStart();
             isInitialized = true;
             window.dispatchEvent(new Event("wortal-sdk-initialized"));

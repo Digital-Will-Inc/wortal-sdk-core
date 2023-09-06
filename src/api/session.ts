@@ -235,7 +235,7 @@ export function switchGameAsync(gameID: string, data?: object): Promise<void> {
 export function happyTime(): void {
     const platform = config.session.platform;
     if (platform === "crazygames") {
-        return config.platformSDK.game.happytime();
+        config.platformSDK.game.happytime();
     }
 }
 
@@ -250,7 +250,7 @@ export function happyTime(): void {
 export function gameplayStart(): void {
     const platform = config.session.platform;
     if (platform === "crazygames") {
-        return config.platformSDK.game.gameplayStart();
+        config.platformSDK.game.gameplayStart();
     }
 }
 
@@ -264,32 +264,34 @@ export function gameplayStart(): void {
 export function gameplayStop(): void {
     const platform = config.session.platform;
     if (platform === "crazygames") {
-        return config.platformSDK.game.gameplayStop();
+        config.platformSDK.game.gameplayStop();
     }
 }
 
 /**
  * Tracks the start of the game loading in the session. This is used to determine how long the game takes to load.
- * @example
- * // Game starts loading
- * Wortal.session.gameLoadingStart();
+ * @hidden
+ * @private
  */
-export function gameLoadingStart(): void {
+export function _gameLoadingStart(): void {
     const platform = config.session.platform;
     if (platform === "crazygames") {
-        return config.platformSDK.game.sdkGameLoadingStart();
+        config.platformSDK.game.sdkGameLoadingStart();
+    } else {
+        config.game.startGameLoadTimer();
     }
 }
 
 /**
  * Tracks the end of the game loading in the session. This is used to determine how long the game takes to load.
- * @example
- * // Game finishes loading
- * Wortal.session.gameLoadingStop();
+ * @hidden
+ * @private
  */
-export function gameLoadingStop(): void {
+export function _gameLoadingStop(): void {
     const platform = config.session.platform;
     if (platform === "crazygames") {
-        return config.platformSDK.game.sdkGameLoadingStop();
+        config.platformSDK.game.sdkGameLoadingStop();
+    } else {
+        config.game.stopGameLoadTimer();
     }
 }
