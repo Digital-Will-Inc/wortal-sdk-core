@@ -2,6 +2,8 @@ import { config } from "../api";
 import Wortal from "../index";
 import { PlayerData } from "../interfaces/player";
 import { LeaderboardPlayerData } from "../types/leaderboard";
+import { Error_CrazyGames } from "../types/wortal";
+import { rethrowError_CrazyGames } from "../utils/error-handler";
 import { debug, exception } from "../utils/logger";
 import { delayUntilConditionMet } from "../utils/wortal-utils";
 
@@ -259,10 +261,10 @@ export class Player {
     }
 
     protected isUserAPIAvailable(): Promise<boolean> {
-        return new Promise((resolve, reject) => {
-            const callback = (error: any, isAvailable: boolean) => {
+        return new Promise((resolve) => {
+            const callback = (error: Error_CrazyGames, isAvailable: boolean) => {
                 if (error) {
-                    reject(error);
+                    rethrowError_CrazyGames(error, "isUserAccountAvailable");
                 } else {
                     debug("User API available: ", isAvailable);
                     resolve(isAvailable);
@@ -274,10 +276,10 @@ export class Player {
     }
 
     protected fetchCrazyGamesPlayer(): Promise<any> {
-        return new Promise((resolve, reject) => {
-            const callback = (error: any, player: any) => {
+        return new Promise((resolve) => {
+            const callback = (error: Error_CrazyGames, player: any) => {
                 if (error) {
-                    reject(error);
+                    rethrowError_CrazyGames(error, "getUser");
                 } else {
                     debug("CrazyGames player fetched:", player);
                     resolve(player);

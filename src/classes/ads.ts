@@ -10,9 +10,11 @@ import {
     IAdInstance
 } from "../interfaces/ads";
 import { AdCallEventData, AnalyticsEventData } from "../interfaces/analytics";
+import { Error_Facebook_Rakuten } from "../interfaces/wortal";
 import { PlacementType } from "../types/ads";
 import { APIEndpoints, GD_EVENTS } from "../types/wortal";
-import { initializationError, operationFailed, rethrowPlatformError } from "../utils/error-handler";
+import { API_URL, WORTAL_API } from "../utils/config";
+import { initializationError, operationFailed, rethrowError_Facebook_Rakuten } from "../utils/error-handler";
 import { debug, exception, warn } from "../utils/logger";
 import { isValidPlacementType } from "../utils/validators";
 import { addGDCallback } from "../utils/wortal-utils";
@@ -351,6 +353,7 @@ export class AdConfig {
      *]
      */
     private async _setLinkViberAdUnitIds(): Promise<void> {
+        const functionName = "_setLinkViberAdUnitIds()";
         debug("Fetching ad unit IDs from Rakuten API..");
         if (config.platformSDK) {
             return config.platformSDK.getAdUnitsAsync().then((adUnits: any[]) => {
@@ -366,12 +369,11 @@ export class AdConfig {
                         this._current.rewardedId = adUnits[i].id;
                     }
                 }
-            }).catch((e: any) => {
-                throw rethrowPlatformError(e, "setLinkViberAdUnitIds()");
+            }).catch((error: Error_Facebook_Rakuten) => {
+                throw rethrowError_Facebook_Rakuten(error, functionName);
             });
         } else {
-            return Promise.reject(initializationError("Platform SDK not yet initialized.",
-                "_setLinkViberAdUnitIds"));
+            return Promise.reject(initializationError("Platform SDK not yet initialized.", functionName));
         }
     }
 
@@ -389,10 +391,10 @@ export class AdConfig {
      *}
      */
     private async _setFacebookAdUnitIds(): Promise<void> {
+        const functionName = "_setFacebookAdUnitIds()";
         debug("Fetching Facebook ad units from Wortal API..");
         if (typeof (window as any).wortalGameID === "undefined") {
-            return Promise.reject(initializationError("Failed to retrieve wortalGameID. This may be due to an error when uploading the game bundle to Facebook.",
-                "_setFacebookAdUnitIds"));
+            return Promise.reject(initializationError("Failed to retrieve wortalGameID. This may be due to an error when uploading the game bundle to Facebook.", functionName));
         }
 
         const url = APIEndpoints.ADS + (window as any).wortalGameID;
@@ -418,12 +420,10 @@ export class AdConfig {
                     }
                 }
             }).catch((error: any) => {
-                throw operationFailed(error,
-                    "setFacebookAdUnitIds()");
+                throw operationFailed(error, functionName);
             });
         }).catch((error: any) => {
-            throw operationFailed(error,
-                "setFacebookAdUnitIds()");
+            throw operationFailed(error, functionName);
         });
     }
 }
@@ -618,12 +618,12 @@ function _showInterstitial_Facebook_Rakuten(placementId: string, callbacks: AdCa
                     debug("Interstitial ad finished successfully.");
                     callbacks.afterAd && callbacks.afterAd();
                 })
-                .catch((error: any) => {
+                .catch((error: Error_Facebook_Rakuten) => {
                     debug("Interstitial ad failed to show.", error);
                     _onAdErrorOrNoFill(error, callbacks);
                 });
         })
-        .catch((error: any) => {
+        .catch((error: Error_Facebook_Rakuten) => {
             debug("Interstitial ad failed to load.", error);
             _onAdErrorOrNoFill(error, callbacks);
         });
@@ -670,14 +670,14 @@ function _showRewarded_Facebook_Rakuten(placementId: string, callbacks: AdCallba
                     callbacks.adViewed && callbacks.adViewed();
                     callbacks.afterAd && callbacks.afterAd();
                 })
-                .catch((error: any) => {
+                .catch((error: Error_Facebook_Rakuten) => {
                     debug("Rewarded video failed to show.", error);
                     callbacks.adDismissed && callbacks.adDismissed();
                     callbacks.afterAd && callbacks.afterAd();
-                    throw rethrowPlatformError(error, "showRewarded");
+                    throw rethrowError_Facebook_Rakuten(error, WORTAL_API.ADS_SHOW_REWARDED, API_URL.ADS_SHOW_REWARDED);
                 });
         })
-        .catch((error: any) => {
+        .catch((error: Error_Facebook_Rakuten) => {
             debug("Rewarded video failed to load.", error);
             _onAdErrorOrNoFill(error, callbacks);
         });

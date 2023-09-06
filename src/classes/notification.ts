@@ -7,6 +7,7 @@ import {
 } from "../interfaces/notifications";
 import { NotificationStatus } from "../types/notifications";
 import { APIEndpoints } from "../types/wortal";
+import { API_URL, WORTAL_API } from "../utils/config";
 import { operationFailed } from "../utils/error-handler";
 import { debug } from "../utils/logger";
 
@@ -31,9 +32,9 @@ export class Notification implements INotification {
         const body: string = this.buildSchedulePayload_Facebook();
 
         if (typeof url === "undefined") {
-            return Promise.reject(operationFailed("Failed to schedule notification. ASID is not defined.",
-                "notifications.scheduleAsync",
-                "https://sdk.html5gameportal.com/api/notifications/#scheduleasync"));
+            return Promise.reject(operationFailed("Failed to schedule notification. ASID is not defined. This can occur if this API is called before the SDK has finished initializing.",
+                WORTAL_API.NOTIFICATIONS_SCHEDULE_ASYNC,
+                API_URL.NOTIFICATIONS_SCHEDULE_ASYNC));
         }
 
         return new Promise((resolve, reject) => {
@@ -50,8 +51,8 @@ export class Notification implements INotification {
                 } else {
                     return response.json().then((data) => {
                         reject(operationFailed(`Failed to schedule notification. Request failed with status code: ${response.status}. \n Message: ${data.message || data.detail || "No message found, sorry."}`,
-                            "notifications.scheduleAsync",
-                            "https://sdk.html5gameportal.com/api/notifications/#scheduleasync"));
+                            WORTAL_API.NOTIFICATIONS_SCHEDULE_ASYNC,
+                            API_URL.NOTIFICATIONS_SCHEDULE_ASYNC));
                     });
                 }
             }).then(response => {
@@ -62,8 +63,8 @@ export class Notification implements INotification {
                 });
             }).catch(error => {
                 reject(operationFailed(`Failed to schedule notification. Error: ${error}`,
-                    "notifications.scheduleAsync",
-                    "https://sdk.html5gameportal.com/api/notifications/#scheduleasync"));
+                    WORTAL_API.NOTIFICATIONS_SCHEDULE_ASYNC,
+                    API_URL.NOTIFICATIONS_SCHEDULE_ASYNC));
             });
         });
     }

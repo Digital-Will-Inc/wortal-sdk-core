@@ -1,6 +1,7 @@
 import { Notification, ScheduledNotification } from "../classes/notification";
 import { NotificationPayload, NotificationScheduleResult } from "../interfaces/notifications";
 import { APIEndpoints } from "../types/wortal";
+import { API_URL, WORTAL_API } from "../utils/config";
 import { invalidParams, notSupported, operationFailed } from "../utils/error-handler";
 import { debug } from "../utils/logger";
 import { isValidString } from "../utils/validators";
@@ -31,15 +32,11 @@ export function scheduleAsync(payload: NotificationPayload): Promise<Notificatio
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (!isValidString(payload.title)) {
-            throw invalidParams("title cannot be null or empty. Please provide a valid string for the payload.title property.",
-                "notifications.scheduleAsync",
-                "https://sdk.html5gameportal.com/api/interfaces/notification-payload/");
+            throw invalidParams(undefined, WORTAL_API.NOTIFICATIONS_SCHEDULE_ASYNC, API_URL.NOTIFICATIONS_SCHEDULE_ASYNC);
         }
 
         if (!isValidString(payload.body)) {
-            throw invalidParams("body cannot be null or empty. Please provide a valid string for the payload.body property.",
-                "notifications.scheduleAsync",
-                "https://sdk.html5gameportal.com/api/interfaces/notification-payload/");
+            throw invalidParams(undefined, WORTAL_API.NOTIFICATIONS_SCHEDULE_ASYNC, API_URL.NOTIFICATIONS_SCHEDULE_ASYNC);
         }
 
         if (platform === "facebook") {
@@ -51,8 +48,7 @@ export function scheduleAsync(payload: NotificationPayload): Promise<Notificatio
                 success: true,
             };
         } else {
-            throw notSupported(`Notifications not supported on platform: ${platform}`,
-                "notifications.scheduleAsync");
+            throw notSupported(undefined, WORTAL_API.NOTIFICATIONS_SCHEDULE_ASYNC);
         }
     });
 }
@@ -79,14 +75,13 @@ export function getHistoryAsync(): Promise<ScheduledNotification[]> {
     if (platform === "debug") {
         return Promise.resolve([ScheduledNotification.mock("daily_reward"), ScheduledNotification.mock("resources_full"), ScheduledNotification.mock()]);
     } else if (platform !== "facebook") {
-        return Promise.reject(notSupported(`Notifications not supported on platform: ${platform}`,
-            "notifications.getHistoryAsync"));
+        return Promise.reject(notSupported(undefined, WORTAL_API.NOTIFICATIONS_GET_HISTORY_ASYNC));
     }
 
     if (url === undefined) {
-        return Promise.reject(operationFailed("Failed to get notifications. ASID is not available.",
-            "notifications.getHistoryAsync",
-            "https://sdk.html5gameportal.com/api/notifications/#gethistoryasync"));
+        return Promise.reject(operationFailed("Failed to get notifications. ASID is not available. This can occur if this API is called before the SDK has finished initializing.",
+            WORTAL_API.NOTIFICATIONS_GET_HISTORY_ASYNC,
+            API_URL.NOTIFICATIONS_GET_HISTORY_ASYNC));
     }
 
     return new Promise((resolve, reject) => {
@@ -95,18 +90,18 @@ export function getHistoryAsync(): Promise<ScheduledNotification[]> {
             headers: {
                 "Content-Type": "application/json",
             },
-        }).then(response => {
+        }).then((response: Response) => {
             debug(`getHistoryAsync response: ${response.status}`);
             if (response.ok) {
                 return response.json();
             } else {
-                return response.json().then((data) => {
+                return response.json().then((data: any) => {
                     reject(operationFailed(`Failed to get notifications. Request failed with status code: ${data.message || data.detail || "No message found, sorry."}`,
-                        "notifications.getHistoryAsync",
-                        "https://sdk.html5gameportal.com/api/notifications/#gethistoryasync"));
+                        WORTAL_API.NOTIFICATIONS_GET_HISTORY_ASYNC,
+                        API_URL.NOTIFICATIONS_GET_HISTORY_ASYNC));
                 });
             }
-        }).then(data => {
+        }).then((data: any) => {
             debug(`getHistoryAsync data: ${JSON.stringify(data)}`);
             const notifications = data["data"].map((notification: any) => {
                 return new ScheduledNotification({
@@ -117,10 +112,10 @@ export function getHistoryAsync(): Promise<ScheduledNotification[]> {
                 });
             });
             resolve(notifications);
-        }).catch(error => {
+        }).catch((error: any) => {
             reject(operationFailed(`Failed to get notifications. Error: ${error}`,
-                "notifications.getHistoryAsync",
-                "https://sdk.html5gameportal.com/api/notifications/#gethistoryasync"));
+                WORTAL_API.NOTIFICATIONS_GET_HISTORY_ASYNC,
+                API_URL.NOTIFICATIONS_GET_HISTORY_ASYNC));
         });
     });
 }
@@ -143,22 +138,19 @@ export function cancelAsync(id: string): Promise<boolean> {
     const url = _getCancelURL_Facebook();
 
     if (!isValidString(id)) {
-        return Promise.reject(invalidParams("id cannot be null or empty. Please provide a valid string for the id parameter.",
-            "notifications.cancelAsync",
-            "https://sdk.html5gameportal.com/api/notifications/#parameters_1"));
+        return Promise.reject(invalidParams(undefined, WORTAL_API.NOTIFICATIONS_CANCEL_ASYNC, API_URL.NOTIFICATIONS_CANCEL_ASYNC));
     }
 
     if (platform === "debug") {
         return Promise.resolve(true);
     } else if (platform !== "facebook") {
-        return Promise.reject(notSupported(`Notifications not supported on platform: ${platform}`,
-            "notifications.cancelAsync"));
+        return Promise.reject(notSupported(undefined, WORTAL_API.NOTIFICATIONS_CANCEL_ASYNC));
     }
 
     if (url === undefined) {
-        return Promise.reject(operationFailed("Failed to cancel notification. ASID is not available.",
-            "notifications.cancelAsync",
-            "https://sdk.html5gameportal.com/api/notifications/#cancelasync"));
+        return Promise.reject(operationFailed("Failed to cancel notification. ASID is not available. This can occur if this API is called before the SDK has finished initializing.",
+            WORTAL_API.NOTIFICATIONS_CANCEL_ASYNC,
+            API_URL.NOTIFICATIONS_CANCEL_ASYNC));
     }
 
     return new Promise((resolve, reject) => {
@@ -168,24 +160,24 @@ export function cancelAsync(id: string): Promise<boolean> {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({notification_id: id}),
-        }).then(response => {
+        }).then((response: Response) => {
             debug(`cancelAsync response: ${response.status}`);
             if (response.ok) {
                 return response.json();
             } else {
-                return response.json().then((data) => {
+                return response.json().then((data: any) => {
                     reject(operationFailed(`Failed to cancel notification. Request failed with status code: ${response.status}. \n Message: ${data.message || data.detail || "No message found, sorry."}`,
-                        "notifications.cancelAsync",
-                        "https://sdk.html5gameportal.com/api/notifications/#cancelasync"));
+                        WORTAL_API.NOTIFICATIONS_CANCEL_ASYNC,
+                        API_URL.NOTIFICATIONS_CANCEL_ASYNC));
                 });
             }
-        }).then(data => {
+        }).then((data: any) => {
             debug(`cancelAsync data: ${JSON.stringify(data)}`);
             resolve(data.success)
-        }).catch(error => {
+        }).catch((error: any) => {
             reject(operationFailed(`Failed to cancel notifications. Error: ${error}`,
-                "notifications.cancelAsync",
-                "https://sdk.html5gameportal.com/api/notifications/#cancelasync"));
+                WORTAL_API.NOTIFICATIONS_CANCEL_ASYNC,
+                API_URL.NOTIFICATIONS_CANCEL_ASYNC));
         });
     });
 }
@@ -210,14 +202,13 @@ export function cancelAllAsync(label?: string): Promise<boolean> {
     if (platform === "debug") {
         return Promise.resolve(true);
     } else if (platform !== "facebook") {
-        return Promise.reject(notSupported(`Notifications not supported on platform: ${platform}`,
-            "notifications.cancelAllAsync"));
+        return Promise.reject(notSupported(undefined, WORTAL_API.NOTIFICATIONS_CANCEL_ALL_ASYNC));
     }
 
     if (url === undefined) {
-        return Promise.reject(operationFailed("Failed to cancel all notifications. ASID is not available.",
-            "notifications.cancelAllAsync",
-            "https://sdk.html5gameportal.com/api/notifications/#cancelallasync"));
+        return Promise.reject(operationFailed("Failed to cancel all notifications. ASID is not available. This can occur if this API is called before the SDK has finished initializing.",
+            WORTAL_API.NOTIFICATIONS_CANCEL_ALL_ASYNC,
+            API_URL.NOTIFICATIONS_CANCEL_ALL_ASYNC));
     }
 
     return new Promise((resolve, reject) => {
@@ -227,24 +218,24 @@ export function cancelAllAsync(label?: string): Promise<boolean> {
                 "Content-Type": "application/json",
             },
             body: typeof label !== "undefined" ? JSON.stringify({label: label}) : undefined,
-        }).then(response => {
+        }).then((response: Response) => {
             debug(`cancelAllAsync response: ${response.status}`);
             if (response.ok) {
                 return response.json();
             } else {
-                return response.json().then((data) => {
+                return response.json().then((data: any) => {
                     reject(operationFailed(`Failed to cancel all notifications. Request failed with status code: ${response.status}. \n Message: ${data.message || data.detail || "No message found, sorry."}`,
-                        "notifications.cancelAllAsync",
-                        "https://sdk.html5gameportal.com/api/notifications/#cancelallasync"));
+                        WORTAL_API.NOTIFICATIONS_CANCEL_ALL_ASYNC,
+                        API_URL.NOTIFICATIONS_CANCEL_ALL_ASYNC));
                 });
             }
-        }).then(data => {
+        }).then((data: any) => {
             debug(`cancelAllAsync data: ${JSON.stringify(data)}`);
             resolve(data.success);
-        }).catch(error => {
+        }).catch((error: any) => {
             reject(operationFailed(`Failed to cancel all notifications. Error: ${error}`,
-                "notifications.cancelAllAsync",
-                "https://sdk.html5gameportal.com/api/notifications/#cancelallasync"));
+                WORTAL_API.NOTIFICATIONS_CANCEL_ALL_ASYNC,
+                API_URL.NOTIFICATIONS_CANCEL_ALL_ASYNC));
         });
     });
 }

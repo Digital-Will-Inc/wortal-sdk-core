@@ -1,6 +1,8 @@
 import { TrafficSource } from "../interfaces/session";
+import { Error_Facebook_Rakuten } from "../interfaces/wortal";
 import { Device, Orientation, Platform } from "../types/session";
-import { invalidParams, notSupported, rethrowPlatformError } from "../utils/error-handler";
+import { API_URL, WORTAL_API } from "../utils/config";
+import { invalidParams, notSupported, rethrowError_Facebook_Rakuten } from "../utils/error-handler";
 import { isValidString } from "../utils/validators";
 import { detectDevice } from "../utils/wortal-utils";
 import { config } from "./index";
@@ -50,16 +52,13 @@ export function getEntryPointAsync(): Promise<string> {
                 .then((entryPoint: string) => {
                     return entryPoint;
                 })
-                .catch((e: any) => {
-                    throw rethrowPlatformError(e,
-                        "player.getEntryPointAsync",
-                        "https://sdk.html5gameportal.com/api/session/#getentrypointasync");
+                .catch((error: Error_Facebook_Rakuten) => {
+                    throw rethrowError_Facebook_Rakuten(error, WORTAL_API.SESSION_GET_ENTRY_POINT_ASYNC, API_URL.SESSION_GET_ENTRY_POINT_ASYNC);
                 });
         } else if (platform === "debug") {
             return "debug";
         } else {
-            throw notSupported(`Session API not currently supported on platform: ${platform}`,
-                "session.getEntryPointAsync");
+            throw notSupported(undefined, WORTAL_API.SESSION_GET_ENTRY_POINT_ASYNC);
         }
     });
 }
@@ -174,13 +173,11 @@ export function getOrientation(): Orientation {
  */
 export function onOrientationChange(callback: (orientation: Orientation) => void): void {
     if (typeof callback !== "function") {
-        throw invalidParams("[Wortal] Callback is not a function.",
-            "onOrientationChange()",
-            "https://sdk.html5gameportal.com/api/session/#parameters");
+        throw invalidParams(undefined, WORTAL_API.SESSION_ON_ORIENTATION_CHANGE, API_URL.SESSION_ON_ORIENTATION_CHANGE);
     }
 
-    window.matchMedia("(orientation: portrait)").addEventListener("change", e => {
-        const portrait = e.matches;
+    window.matchMedia("(orientation: portrait)").addEventListener("change", event => {
+        const portrait = event.matches;
         if (portrait) {
             callback("portrait");
         } else {
@@ -211,23 +208,18 @@ export function switchGameAsync(gameID: string, data?: object): Promise<void> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (!isValidString(gameID)) {
-            throw invalidParams("gameID is not a valid string.",
-                "session.switchGameAsync",
-                "https://sdk.html5gameportal.com/api/session/#parameters_2");
+            throw invalidParams(undefined, WORTAL_API.SESSION_SWITCH_GAME_ASYNC, API_URL.SESSION_SWITCH_GAME_ASYNC);
         }
 
         if (platform === "facebook") {
             return config.platformSDK.switchGameAsync(gameID, data)
-                .catch((e: any) => {
-                    throw rethrowPlatformError(e,
-                        "player.switchGameAsync",
-                        "https://sdk.html5gameportal.com/api/session/#switchgameasync");
+                .catch((error: Error_Facebook_Rakuten) => {
+                    throw rethrowError_Facebook_Rakuten(error, WORTAL_API.SESSION_SWITCH_GAME_ASYNC, API_URL.SESSION_SWITCH_GAME_ASYNC);
                 });
         } else if (platform === "debug") {
             return;
         } else {
-            throw notSupported(`Session API not currently supported on platform: ${platform}`,
-                "session.switchGameAsync");
+            throw notSupported(undefined, WORTAL_API.SESSION_SWITCH_GAME_ASYNC);
         }
     });
 }
@@ -239,18 +231,11 @@ export function switchGameAsync(gameID: string, data?: object): Promise<void> {
  * @example
  * // Player defeats a boss
  * Wortal.session.happyTime();
- * @throws {ErrorMessage} See error.message for details.
- * <ul>
- * <li>NOT_SUPPORTED</li>
- * </ul>
  */
 export function happyTime(): void {
     const platform = config.session.platform;
     if (platform === "crazygames") {
         return config.platformSDK.game.happytime();
-    } else {
-        throw notSupported(`Session API not currently supported on platform: ${platform}`,
-            "session.happyTime");
     }
 }
 
@@ -261,18 +246,11 @@ export function happyTime(): void {
  * @example
  * // Player closes in-game menu and resumes playing
  * Wortal.session.gameplayStart();
- * @throws {ErrorMessage} See error.message for details.
- * <ul>
- * <li>NOT_SUPPORTED</li>
- * </ul>
  */
 export function gameplayStart(): void {
     const platform = config.session.platform;
     if (platform === "crazygames") {
         return config.platformSDK.game.gameplayStart();
-    } else {
-        throw notSupported(`Session API not currently supported on platform: ${platform}`,
-            "session.gameplayStart");
     }
 }
 
@@ -282,18 +260,11 @@ export function gameplayStart(): void {
  * @example
  * // Player opens in-game menu
  * Wortal.session.gameplayStop();
- * @throws {ErrorMessage} See error.message for details.
- * <ul>
- * <li>NOT_SUPPORTED</li>
- * </ul>
  */
 export function gameplayStop(): void {
     const platform = config.session.platform;
     if (platform === "crazygames") {
         return config.platformSDK.game.gameplayStop();
-    } else {
-        throw notSupported(`Session API not currently supported on platform: ${platform}`,
-            "session.gameplayStop");
     }
 }
 
@@ -302,18 +273,11 @@ export function gameplayStop(): void {
  * @example
  * // Game starts loading
  * Wortal.session.gameLoadingStart();
- * @throws {ErrorMessage} See error.message for details.
- * <ul>
- * <li>NOT_SUPPORTED</li>
- * </ul>
  */
 export function gameLoadingStart(): void {
     const platform = config.session.platform;
     if (platform === "crazygames") {
         return config.platformSDK.game.sdkGameLoadingStart();
-    } else {
-        throw notSupported(`Session API not currently supported on platform: ${platform}`,
-            "session.gameLoadingStart");
     }
 }
 
@@ -322,17 +286,10 @@ export function gameLoadingStart(): void {
  * @example
  * // Game finishes loading
  * Wortal.session.gameLoadingStop();
- * @throws {ErrorMessage} See error.message for details.
- * <ul>
- * <li>NOT_SUPPORTED</li>
- * </ul>
  */
 export function gameLoadingStop(): void {
     const platform = config.session.platform;
     if (platform === "crazygames") {
         return config.platformSDK.game.sdkGameLoadingStop();
-    } else {
-        throw notSupported(`Session API not currently supported on platform: ${platform}`,
-            "session.gameLoadingStop");
     }
 }

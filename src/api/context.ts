@@ -8,14 +8,22 @@ import {
     UpdatePayload
 } from "../interfaces/context";
 import { PlayerData } from "../interfaces/player";
+import { Error_Facebook_Rakuten } from "../interfaces/wortal";
 import { ContextType } from "../types/context";
+import { Error_CrazyGames } from "../types/wortal";
+import { API_URL, WORTAL_API } from "../utils/config";
 import {
     convertToFBInstantSharePayload,
     convertToFBInstantUpdatePayload,
     convertToLinkMessagePayload,
     convertToViberSharePayload,
 } from "../utils/converters";
-import { invalidParams, notSupported, rethrowPlatformError } from "../utils/error-handler";
+import {
+    invalidParams,
+    notSupported,
+    rethrowError_CrazyGames,
+    rethrowError_Facebook_Rakuten
+} from "../utils/error-handler";
 import { isValidPayloadImage, isValidPayloadText, isValidString } from "../utils/validators";
 import { config } from "./index";
 
@@ -96,16 +104,13 @@ export function getPlayersAsync(): Promise<ConnectedPlayer[]> {
                         return new ConnectedPlayer(playerData);
                     });
                 })
-                .catch((e: any) => {
-                    throw rethrowPlatformError(e,
-                        "context.getPlayersAsync",
-                        "https://sdk.html5gameportal.com/api/context/#getplayersasync");
+                .catch((error: Error_Facebook_Rakuten) => {
+                    throw rethrowError_Facebook_Rakuten(error, WORTAL_API.CONTEXT_GET_PLAYERS_ASYNC, API_URL.CONTEXT_GET_PLAYERS_ASYNC);
                 });
         } else if (platform === "debug") {
             return [ConnectedPlayer.mock(), ConnectedPlayer.mock(), ConnectedPlayer.mock()];
         } else {
-            throw notSupported(`context.getPlayersAsync not currently supported on platform: ${platform}`,
-                "context.getPlayersAsync");
+            throw notSupported(undefined, WORTAL_API.CONTEXT_GET_PLAYERS_ASYNC);
         }
     });
 }
@@ -145,20 +150,15 @@ export function inviteAsync(payload: InvitePayload): Promise<number> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (!isValidPayloadText(payload.text)) {
-            throw invalidParams("text cannot be null or empty. Please provide a valid string for the payload.text property.",
-                "context.inviteAsync",
-                "https://sdk.html5gameportal.com/api/interfaces/invite-payload/");
+            throw invalidParams(undefined, WORTAL_API.CONTEXT_INVITE_ASYNC, API_URL.CONTEXT_INVITE_ASYNC);
         }
 
         if (!isValidPayloadImage(payload.image)) {
-            throw invalidParams("image was invalid. Please provide a valid data URL for a base64 encoded image for the payload.image property.",
-                "context.inviteAsync",
-                "https://sdk.html5gameportal.com/api/interfaces/invite-payload/");
+            throw invalidParams(undefined, WORTAL_API.CONTEXT_INVITE_ASYNC, API_URL.CONTEXT_INVITE_ASYNC);
         }
 
         if (platform === "wortal" || platform === "gd") {
-            throw notSupported(`context.inviteAsync not currently supported on platform: ${platform}`,
-                "context.inviteAsync");
+            throw notSupported(undefined, WORTAL_API.CONTEXT_INVITE_ASYNC);
         } else if (platform === "debug") {
             return 0;
         }
@@ -177,20 +177,16 @@ export function inviteAsync(payload: InvitePayload): Promise<number> {
                 .then(() => {
                     return 0;
                 })
-                .catch((e: any) => {
-                    throw rethrowPlatformError(e,
-                        "context.inviteAsync",
-                        "https://sdk.html5gameportal.com/api/context/#inviteasync");
+                .catch((error: Error_Facebook_Rakuten) => {
+                    throw rethrowError_Facebook_Rakuten(error, WORTAL_API.CONTEXT_INVITE_ASYNC, API_URL.CONTEXT_INVITE_ASYNC);
                 });
         } else {
             return config.platformSDK.shareAsync(convertedPayload)
                 .then((result: any) => {
                     return result.sharedCount;
                 })
-                .catch((e: any) => {
-                    throw rethrowPlatformError(e,
-                        "context.inviteAsync",
-                        "https://sdk.html5gameportal.com/api/context/#inviteasync");
+                .catch((error: Error_Facebook_Rakuten) => {
+                    throw rethrowError_Facebook_Rakuten(error, WORTAL_API.CONTEXT_INVITE_ASYNC, API_URL.CONTEXT_INVITE_ASYNC);
                 });
         }
     });
@@ -226,20 +222,15 @@ export function shareAsync(payload: SharePayload): Promise<number> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (!isValidPayloadText(payload.text)) {
-            throw invalidParams("text cannot be null or empty. Please provide a valid string for the payload.text property.",
-                "context.shareAsync",
-                "https://sdk.html5gameportal.com/api/interfaces/share-payload/");
+            throw invalidParams(undefined, WORTAL_API.CONTEXT_SHARE_ASYNC, API_URL.CONTEXT_SHARE_ASYNC);
         }
 
         if (!isValidPayloadImage(payload.image)) {
-            throw invalidParams("image was invalid. Please provide a valid data URL for a base64 encoded image for the payload.image property.",
-                "context.shareAsync",
-                "https://sdk.html5gameportal.com/api/interfaces/share-payload/");
+            throw invalidParams(undefined, WORTAL_API.CONTEXT_SHARE_ASYNC, API_URL.CONTEXT_SHARE_ASYNC);
         }
 
         if (platform === "wortal" || platform === "gd") {
-            throw notSupported(`context.shareAsync not currently supported on platform: ${platform}`,
-                "context.shareAsync");
+            throw notSupported(undefined, WORTAL_API.CONTEXT_SHARE_ASYNC);
         } else if (platform === "debug") {
             return 0;
         }
@@ -259,10 +250,8 @@ export function shareAsync(payload: SharePayload): Promise<number> {
                     return result.sharedCount;
                 }
             })
-            .catch((e: any) => {
-                throw rethrowPlatformError(e,
-                    "context.shareAsync",
-                    "https://sdk.html5gameportal.com/api/context/#shareasync");
+            .catch((error: Error_Facebook_Rakuten) => {
+                throw rethrowError_Facebook_Rakuten(error, WORTAL_API.CONTEXT_SHARE_ASYNC, API_URL.CONTEXT_SHARE_ASYNC);
             });
     });
 }
@@ -297,30 +286,25 @@ export function shareLinkAsync(payload: LinkSharePayload): Promise<string | void
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (typeof payload.data === "undefined") {
-            throw invalidParams("data cannot be null or empty. Please provide a valid object for the payload.data property.",
-                "context.shareLinkAsync",
-                "https://sdk.html5gameportal.com/api/interfaces/link-share-payload/");
+            throw invalidParams(undefined, WORTAL_API.CONTEXT_SHARE_LINK_ASYNC, API_URL.CONTEXT_SHARE_LINK_ASYNC);
         }
 
         if (platform === "debug") {
             return;
         } else if (platform !== "facebook" && platform !== "crazygames") {
-            throw notSupported(`context.shareLinkAsync not currently supported on platform: ${platform}`,
-                "context.shareLinkAsync");
+            throw notSupported(undefined, WORTAL_API.CONTEXT_SHARE_LINK_ASYNC);
         }
 
         if (platform === "facebook") {
             return config.platformSDK.shareLinkAsync(payload)
-                .catch((e: any) => {
-                    throw rethrowPlatformError(e,
-                        "context.shareLinkAsync",
-                        "https://sdk.html5gameportal.com/api/context/#sharelinkasync");
+                .catch((error: Error_Facebook_Rakuten) => {
+                    throw rethrowError_Facebook_Rakuten(error, WORTAL_API.CONTEXT_SHARE_LINK_ASYNC, API_URL.CONTEXT_SHARE_LINK_ASYNC);
                 });
         } else if (platform === "crazygames") {
-            return new Promise((resolve, reject) => {
-                const callback = (error: any, link: any) => {
+            return new Promise((resolve) => {
+                const callback = (error: Error_CrazyGames, link: string) => {
                     if (error) {
-                        reject(error);
+                        throw rethrowError_CrazyGames(error, WORTAL_API.CONTEXT_SHARE_LINK_ASYNC, API_URL.CONTEXT_SHARE_LINK_ASYNC);
                     } else {
                         resolve(link);
                     }
@@ -357,20 +341,15 @@ export function updateAsync(payload: UpdatePayload): Promise<void> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (!isValidPayloadText(payload.text)) {
-            throw invalidParams("text cannot be null or empty. Please provide a valid string for the payload.text property.",
-                "context.updateAsync",
-                "https://sdk.html5gameportal.com/api/interfaces/update-payload/");
+            throw invalidParams(undefined, WORTAL_API.CONTEXT_UPDATE_ASYNC, API_URL.CONTEXT_UPDATE_ASYNC);
         }
 
         if (!isValidPayloadImage(payload.image)) {
-            throw invalidParams("image was invalid. Please provide a valid data URL for a base64 encoded image for the payload.image property.",
-                "context.updateAsync",
-                "https://sdk.html5gameportal.com/api/interfaces/update-payload/");
+            throw invalidParams(undefined, WORTAL_API.CONTEXT_UPDATE_ASYNC, API_URL.CONTEXT_UPDATE_ASYNC);
         }
 
         if (platform === "wortal" || platform === "gd") {
-            throw notSupported(`context.updateAsync not currently supported on platform: ${platform}`,
-                "context.updateAsync");
+            throw notSupported(undefined, WORTAL_API.CONTEXT_UPDATE_ASYNC);
         } else if (platform === "debug") {
             return;
         }
@@ -383,10 +362,8 @@ export function updateAsync(payload: UpdatePayload): Promise<void> {
         }
 
         return config.platformSDK.updateAsync(convertedPayload)
-            .catch((e: any) => {
-                throw rethrowPlatformError(e,
-                    "context.updateAsync",
-                    "https://sdk.html5gameportal.com/api/context/#updateasync");
+            .catch((error: Error_Facebook_Rakuten) => {
+                throw rethrowError_Facebook_Rakuten(error, WORTAL_API.CONTEXT_UPDATE_ASYNC, API_URL.CONTEXT_UPDATE_ASYNC);
             });
     });
 }
@@ -415,8 +392,7 @@ export function chooseAsync(payload?: ChoosePayload): Promise<void> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (platform === "wortal" || platform === "gd") {
-            throw notSupported(`context.chooseAsync not currently supported on platform: ${platform}`,
-                "context.chooseAsync");
+            throw notSupported(undefined, WORTAL_API.CONTEXT_CHOOSE_ASYNC);
         } else if (platform === "debug") {
             return;
         }
@@ -424,17 +400,13 @@ export function chooseAsync(payload?: ChoosePayload): Promise<void> {
         //TODO: add support for link payload
         if (typeof payload === "undefined" || platform === "link") {
             return config.platformSDK.context.chooseAsync()
-                .catch((e: any) => {
-                    throw rethrowPlatformError(e,
-                        "context.chooseAsync",
-                        "https://sdk.html5gameportal.com/api/context/#chooseasync");
+                .catch((error: Error_Facebook_Rakuten) => {
+                    throw rethrowError_Facebook_Rakuten(error, WORTAL_API.CONTEXT_CHOOSE_ASYNC, API_URL.CONTEXT_CHOOSE_ASYNC);
                 });
         } else {
             return config.platformSDK.context.chooseAsync(payload)
-                .catch((e: any) => {
-                    throw rethrowPlatformError(e,
-                        "context.chooseAsync",
-                        "https://sdk.html5gameportal.com/api/context/#chooseasync");
+                .catch((error: Error_Facebook_Rakuten) => {
+                    throw rethrowError_Facebook_Rakuten(error, WORTAL_API.CONTEXT_CHOOSE_ASYNC, API_URL.CONTEXT_CHOOSE_ASYNC);
                 });
         }
     });
@@ -464,23 +436,18 @@ export function switchAsync(contextId: string): Promise<void> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (!isValidString(contextId)) {
-            throw invalidParams("contextId cannot be null or empty. Please provide a valid string for the contextID parameter.",
-                "context.switchAsync",
-                "https://sdk.html5gameportal.com/api/context/#parameters_6")
+            throw invalidParams(undefined, WORTAL_API.CONTEXT_SWITCH_ASYNC, API_URL.CONTEXT_SWITCH_ASYNC);
         }
 
         if (platform === "wortal" || platform === "gd") {
-            throw notSupported(`context.switchAsync not currently supported on platform: ${platform}`,
-                "context.switchAsync");
+            throw notSupported(undefined, WORTAL_API.CONTEXT_SWITCH_ASYNC);
         } else if (platform === "debug") {
             return;
         }
 
         return config.platformSDK.context.switchAsync(contextId)
-            .catch((e: any) => {
-                throw rethrowPlatformError(e,
-                    "context.switchAsync",
-                    "https://sdk.html5gameportal.com/api/context/#switchasync");
+            .catch((error: Error_Facebook_Rakuten) => {
+                throw rethrowError_Facebook_Rakuten(error, WORTAL_API.CONTEXT_SWITCH_ASYNC, API_URL.CONTEXT_SWITCH_ASYNC);
             });
     });
 }
@@ -531,23 +498,18 @@ export function createAsync(playerId?: string | string[]): Promise<void> {
         }
 
         if (platform !== "facebook" && !isValidString(playerId)) {
-            throw invalidParams(`playerId cannot be null or empty on platform: ${platform}. Please provide a valid string for the playerId parameter.`,
-                "context.createAsync",
-                "https://sdk.html5gameportal.com/api/context/#parameters_1");
+            throw invalidParams(undefined, WORTAL_API.CONTEXT_CREATE_ASYNC, API_URL.CONTEXT_CREATE_ASYNC);
         }
 
         if (platform === "wortal" || platform === "gd") {
-            throw notSupported(`context.createAsync not currently supported on platform: ${platform}`,
-                "context.createAsync");
+            throw notSupported(undefined, WORTAL_API.CONTEXT_CREATE_ASYNC);
         } else if (platform === "debug") {
             return;
         }
 
         return config.platformSDK.context.createAsync(playerId)
-            .catch((e: any) => {
-                throw rethrowPlatformError(e,
-                    "context.createAsync",
-                    "https://sdk.html5gameportal.com/api/context/#createasync");
+            .catch((error: Error_Facebook_Rakuten) => {
+                throw rethrowError_Facebook_Rakuten(error, WORTAL_API.CONTEXT_CREATE_ASYNC, API_URL.CONTEXT_CREATE_ASYNC);
             });
     });
 }

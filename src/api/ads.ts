@@ -1,9 +1,10 @@
 import { InterstitialAd, RewardedAd } from "../classes/ads";
 import { AdInstanceData } from "../interfaces/ads";
 import { PlacementType } from "../types/ads";
+import { API_URL, WORTAL_API } from "../utils/config";
 import { invalidParams } from "../utils/error-handler";
 import { debug, warn } from "../utils/logger";
-import { isValidString } from "../utils/validators";
+import { isValidPlacementType, isValidString } from "../utils/validators";
 import { config } from "./index";
 
 /**
@@ -47,6 +48,31 @@ export function showInterstitial(placement: PlacementType, description: string,
                                  beforeAd: () => void, afterAd: () => void, noFill?: () => void): void {
     const platform = config.session.platform;
 
+    if (!isValidPlacementType(placement)) {
+        throw invalidParams(`showInterstitial called with invalid placement type: ${placement}`,
+            WORTAL_API.ADS_SHOW_INTERSTITIAL,
+            API_URL.ADS_SHOW_INTERSTITIAL);
+    }
+
+    if (placement === "reward") {
+        throw invalidParams("showInterstitial called with placement type 'reward'. Call showRewarded instead to display a rewarded ad.",
+            WORTAL_API.ADS_SHOW_INTERSTITIAL,
+            API_URL.ADS_SHOW_INTERSTITIAL);
+    }
+
+    if (placement === "preroll" && (platform === "link" || platform === "viber" || platform === "facebook")) {
+        throw invalidParams("Current platform does not support preroll ads.",
+            WORTAL_API.ADS_SHOW_INTERSTITIAL,
+            API_URL.ADS_SHOW_INTERSTITIAL);
+    }
+
+    // Don't allow preroll ads to be shown more than once or after the game has started.
+    if (placement === "preroll" && (config.adConfig.hasPrerollShown || config.game.gameTimer > 10)) {
+        throw invalidParams("Preroll ads can only be shown once during game load.",
+            WORTAL_API.ADS_SHOW_INTERSTITIAL,
+            API_URL.ADS_SHOW_INTERSTITIAL);
+    }
+
     // Validate the callbacks. While these aren't strictly required as in some cases ads are shown on a menu or
     // otherwise non-gameplay screen, we still log a warning to make sure the developer is aware.
     if (beforeAd === undefined || typeof beforeAd !== "function") {
@@ -61,28 +87,6 @@ export function showInterstitial(placement: PlacementType, description: string,
     // we use the afterAd callback instead to ensure the game doesn't hang indefinitely.
     if (noFill === undefined || typeof noFill !== "function") {
         noFill = afterAd;
-    }
-
-    // Validate the placement type. Invalid types can cause policy violations.
-    if (placement === "reward") {
-        throw invalidParams("showInterstitial called with placement type 'reward'. Call showRewarded instead to display a rewarded ad.",
-            "ads.showInterstitial",
-            "https://sdk.html5gameportal.com/api/ads/#showinterstitial");
-    }
-
-    if (placement === "preroll" && (platform === "link" || platform === "viber" || platform === "facebook")) {
-        throw invalidParams(`Current platform does not support preroll ads. Platform: ${platform}`,
-            "ads.showInterstitial",
-            "https://sdk.html5gameportal.com/api/ads/#showinterstitial");
-    }
-
-    // Don't allow preroll ads to be shown more than once or after the game has started.
-    if (placement === "preroll" && (
-        config.adConfig.hasPrerollShown ||
-        config.game.gameTimer > 10)) {
-        throw invalidParams("Preroll ads can only be shown once during game load.",
-            "ads.showInterstitial",
-            "https://sdk.html5gameportal.com/api/ads/#showinterstitial");
     }
 
     // Validate the ad unit IDs. Non-existent IDs can cause the ad call to hang indefinitely.
@@ -145,6 +149,13 @@ export function showRewarded(description: string, beforeAd: () => void, afterAd:
                              adDismissed: () => void, adViewed: () => void, noFill?: () => void): void {
     const platform = config.session.platform;
 
+    // We cannot call for a rewarded ad without actually rewarding the player for successfully watching the ad.
+    if (adViewed === undefined || typeof adViewed !== "function") {
+        throw invalidParams("adViewed function missing or invalid. This is required to reward the player when they have successfully watched the ad.",
+            WORTAL_API.ADS_SHOW_REWARDED,
+            API_URL.ADS_SHOW_REWARDED);
+    }
+
     // Validate the callbacks. Only adViewed is required as the player must be rewarded for watching the ad. We
     // still log a warning to make sure the developer is aware if they did not provide the other callbacks.
     if (beforeAd === undefined || typeof beforeAd !== "function") {
@@ -157,13 +168,6 @@ export function showRewarded(description: string, beforeAd: () => void, afterAd:
 
     if (adDismissed === undefined || typeof adDismissed !== "function") {
         adDismissed = () => warn("adDismissed function missing or invalid. This is used to handle the case where the player did not successfully watch the ad.");
-    }
-
-    // We cannot call for a rewarded ad without actually rewarding the player for successfully watching the ad.
-    if (adViewed === undefined || typeof adViewed !== "function") {
-        throw invalidParams("adViewed function missing or invalid. This is required to reward the player when they have successfully watched the ad.",
-            "ads.showRewarded",
-            "https://sdk.html5gameportal.com/api/ads/#parameters_1");
     }
 
     // If no ad is filled the afterAd callback isn't reached. If the developer doesn't provide a noFill callback

@@ -30,3 +30,6 @@ export const APIEndpoints = {
 
 /** @hidden */
 export type ShareTo = "facebook" | "twitter"
+
+/** @hidden */
+export type Error_CrazyGames = string;

@@ -1,5 +1,5 @@
 import * as _Wortal from './api';
-import { debug, exception } from "./utils/logger";
+import { exception } from "./utils/logger";
 
 // This was directly ported over from the deprecated wortal.js. We can probably find a better way to do this.
 // See: https://developers.google.com/ad-placement/docs/example#indexhtml_web

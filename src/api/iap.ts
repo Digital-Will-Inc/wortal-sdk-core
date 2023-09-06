@@ -1,5 +1,7 @@
 import { Product, Purchase, PurchaseConfig } from "../interfaces/iap";
-import { invalidParams, notSupported, rethrowPlatformError } from "../utils/error-handler";
+import { Error_Facebook_Rakuten } from "../interfaces/wortal";
+import { API_URL, WORTAL_API } from "../utils/config";
+import { invalidParams, notSupported, rethrowError_Facebook_Rakuten } from "../utils/error-handler";
 import { isValidPurchaseConfig, isValidString } from "../utils/validators";
 import { config } from "./index";
 
@@ -34,8 +36,7 @@ export function getCatalogAsync(): Promise<Product[]> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (!config.isIAPEnabled) {
-            throw notSupported("IAP is currently disabled. Please check iap.isEnabled before using the IAP API.",
-                "iap.getCatalogAsync");
+            throw notSupported(undefined, WORTAL_API.IAP_GET_CATALOG_ASYNC);
         }
 
         if (platform === "viber" || platform === "facebook") {
@@ -43,16 +44,13 @@ export function getCatalogAsync(): Promise<Product[]> {
                 .then((products: Product[]) => {
                     return products;
                 })
-                .catch((e: any) => {
-                    throw rethrowPlatformError(e,
-                        "iap.getCatalogAsync",
-                        "https://sdk.html5gameportal.com/api/iap/#getcatalogasync");
+                .catch((error: Error_Facebook_Rakuten) => {
+                    throw rethrowError_Facebook_Rakuten(error, WORTAL_API.IAP_GET_CATALOG_ASYNC, API_URL.IAP_GET_CATALOG_ASYNC);
                 });
         } else if (platform === "debug") {
             return [_getMockProduct(), _getMockProduct(), _getMockProduct()];
         } else {
-            throw notSupported(`IAP API not currently supported on platform: ${platform}`,
-                "iap.getCatalogAsync");
+            throw notSupported(undefined, WORTAL_API.IAP_GET_CATALOG_ASYNC);
         }
     });
 }
@@ -77,8 +75,7 @@ export function getPurchasesAsync(): Promise<Purchase[]> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (!config.isIAPEnabled) {
-            throw notSupported("IAP is currently disabled. Please check iap.isEnabled before using the IAP API.",
-                "iap.getPurchasesAsync");
+            throw notSupported(undefined, WORTAL_API.IAP_GET_PURCHASES_ASYNC);
         }
 
         if (platform === "viber" || platform === "facebook") {
@@ -86,16 +83,13 @@ export function getPurchasesAsync(): Promise<Purchase[]> {
                 .then((purchases: Purchase[]) => {
                     return purchases;
                 })
-                .catch((e: any) => {
-                    throw rethrowPlatformError(e,
-                        "iap.getPurchasesAsync",
-                        "https://sdk.html5gameportal.com/api/iap/#getpurchasesasync");
+                .catch((error: Error_Facebook_Rakuten) => {
+                    throw rethrowError_Facebook_Rakuten(error, WORTAL_API.IAP_GET_PURCHASES_ASYNC, API_URL.IAP_GET_PURCHASES_ASYNC);
                 });
         } else if (platform === "debug") {
             return [_getMockPurchase(), _getMockPurchase(), _getMockPurchase()];
         } else {
-            throw notSupported(`IAP API not currently supported on platform: ${platform}`,
-                "iap.getPurchasesAsync");
+            throw notSupported(undefined, WORTAL_API.IAP_GET_PURCHASES_ASYNC);
         }
     });
 }
@@ -123,14 +117,11 @@ export function makePurchaseAsync(purchase: PurchaseConfig): Promise<Purchase> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (!isValidPurchaseConfig(purchase)) {
-            throw invalidParams("productID cannot be null or empty. Please provide a valid string for the productID parameter.",
-                "iap.makePurchaseAsync",
-                "https://sdk.html5gameportal.com/api/interfaces/purchase-config/");
+            throw invalidParams(undefined, WORTAL_API.IAP_MAKE_PURCHASE_ASYNC, API_URL.IAP_MAKE_PURCHASE_ASYNC);
         }
 
         if (!config.isIAPEnabled) {
-            throw notSupported("IAP is currently disabled. Please check iap.isEnabled before using the IAP API.",
-                "iap.makePurchaseAsync");
+            throw notSupported(undefined, WORTAL_API.IAP_MAKE_PURCHASE_ASYNC);
         }
 
         if (platform === "viber" || platform === "facebook") {
@@ -138,16 +129,13 @@ export function makePurchaseAsync(purchase: PurchaseConfig): Promise<Purchase> {
                 .then((purchase: Purchase) => {
                     return purchase;
                 })
-                .catch((e: any) => {
-                    throw rethrowPlatformError(e,
-                        "iap.makePurchaseAsync",
-                        "https://sdk.html5gameportal.com/api/iap/#makepurchaseasync");
+                .catch((error: Error_Facebook_Rakuten) => {
+                    throw rethrowError_Facebook_Rakuten(error, WORTAL_API.IAP_MAKE_PURCHASE_ASYNC, API_URL.IAP_MAKE_PURCHASE_ASYNC);
                 });
         } else if (platform === "debug") {
             return _getMockPurchase();
         } else {
-            throw notSupported(`IAP API not currently supported on platform: ${platform}`,
-                "iap.makePurchaseAsync");
+            throw notSupported(undefined, WORTAL_API.IAP_MAKE_PURCHASE_ASYNC);
         }
     });
 }
@@ -174,28 +162,22 @@ export function consumePurchaseAsync(token: string): Promise<void> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (!isValidString(token)) {
-            throw invalidParams("token cannot be null or empty. Please provide a valid string for the token parameter.",
-                "iap.consumePurchaseAsync",
-                "https://sdk.html5gameportal.com/api/iap/#parameters");
+            throw invalidParams(undefined, WORTAL_API.IAP_CONSUME_PURCHASE_ASYNC, API_URL.IAP_CONSUME_PURCHASE_ASYNC);
         }
 
         if (!config.isIAPEnabled) {
-            throw notSupported("IAP is currently disabled. Please check iap.isEnabled before using the IAP API.",
-                "iap.consumePurchaseAsync");
+            throw notSupported(undefined, WORTAL_API.IAP_CONSUME_PURCHASE_ASYNC);
         }
 
         if (platform === "viber" || platform === "facebook") {
             return config.platformSDK.payments.consumePurchaseAsync(token)
-                .catch((e: any) => {
-                    throw rethrowPlatformError(e,
-                        "iap.consumePurchaseAsync",
-                        "https://sdk.html5gameportal.com/api/iap/#consumepurchaseasync");
+                .catch((error: Error_Facebook_Rakuten) => {
+                    throw rethrowError_Facebook_Rakuten(error, WORTAL_API.IAP_CONSUME_PURCHASE_ASYNC, API_URL.IAP_CONSUME_PURCHASE_ASYNC);
                 });
         } else if (platform === "debug") {
             return;
         } else {
-            throw notSupported(`IAP API not currently supported on platform: ${platform}`,
-                "iap.consumePurchaseAsync");
+            throw notSupported(undefined, WORTAL_API.IAP_CONSUME_PURCHASE_ASYNC);
         }
     });
 }

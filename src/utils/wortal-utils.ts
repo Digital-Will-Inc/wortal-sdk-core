@@ -141,7 +141,7 @@ export function addGameEndEventListener(): void {
  */
 export function addGDCallback(eventName: string, callback: () => void): void {
     if (typeof callback !== "function") {
-        throw invalidParams("[Wortal] Callback is not a function.", "addGDEvents()");
+        throw invalidParams(undefined, "addGDCallback()");
     }
 
     if (typeof config.adConfig.gdCallbacks !== "undefined") {
@@ -195,7 +195,7 @@ export function detectDevice(): Device {
  */
 (window as any).shareGame = function (destination: ShareTo, message: string): void {
     if (!isValidShareDestination(destination)) {
-        throw invalidParams("[Wortal] Invalid share destination.", "shareGame()");
+        throw invalidParams(undefined, "shareGame()");
     }
 
     switch (destination) {

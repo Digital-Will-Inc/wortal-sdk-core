@@ -1,5 +1,7 @@
 import { AnalyticsEvent } from "../classes/analytics";
 import { AnalyticsEventData } from "../interfaces/analytics";
+import { Error_Facebook_Rakuten } from "../interfaces/wortal";
+import { API_URL, WORTAL_API } from "../utils/config";
 import { invalidParams } from "../utils/error-handler";
 import { exception } from "../utils/logger";
 import { isValidNumber, isValidString } from "../utils/validators";
@@ -18,9 +20,7 @@ import Wortal from "../index";
  */
 export function logLevelStart(level: string | number): void {
     if (!isValidString(level) && !isValidNumber(level)) {
-        throw invalidParams("level cannot be null or empty. Please provide a valid string or number for the level parameter.",
-            "analytics.logLevelStart",
-            "https://sdk.html5gameportal.com/api/analytics/#parameters_2");
+        throw invalidParams(undefined, WORTAL_API.ANALYTICS_LOG_LEVEL_START, API_URL.ANALYTICS_LOG_LEVEL_START);
     }
 
     if (typeof level === "number") {
@@ -63,9 +63,7 @@ export function logLevelStart(level: string | number): void {
  */
 export function logLevelEnd(level: string | number, score: string | number, wasCompleted: boolean): void {
     if (!isValidString(level) && !isValidNumber(level)) {
-        throw invalidParams("level cannot be null or empty. Please provide a valid string or number for the level parameter.",
-            "analytics.logLevelEnd",
-            "https://sdk.html5gameportal.com/api/analytics/#parameters_1");
+        throw invalidParams(undefined, WORTAL_API.ANALYTICS_LOG_LEVEL_END, API_URL.ANALYTICS_LOG_LEVEL_END);
     }
 
     if (typeof level === "number") {
@@ -103,7 +101,7 @@ export function logLevelEnd(level: string | number, score: string | number, wasC
  * Wortal.analytics.logTutorialStart('First Play');
  * @param tutorial Name of the tutorial.
  */
-export function logTutorialStart(tutorial: string): void {
+export function logTutorialStart(tutorial: string = "Tutorial"): void {
     config.game.setLevelName(tutorial);
     config.game.clearLevelTimerHandle();
     config.game.resetLevelTimer();
@@ -133,7 +131,7 @@ export function logTutorialStart(tutorial: string): void {
  * @param tutorial Name of the tutorial.
  * @param wasCompleted Was the tutorial completed.
  */
-export function logTutorialEnd(tutorial: string, wasCompleted: boolean): void {
+export function logTutorialEnd(tutorial: string = "Tutorial", wasCompleted: boolean = true): void {
     config.game.clearLevelTimerHandle();
 
     // We need a matching tutorial name to track the time taken to pass the tutorial.
@@ -170,9 +168,7 @@ export function logTutorialEnd(tutorial: string, wasCompleted: boolean): void {
  */
 export function logLevelUp(level: string | number): void {
     if (!isValidString(level) && !isValidNumber(level)) {
-        throw invalidParams("level cannot be null or empty. Please provide a valid string or number for the level parameter.",
-            "analytics.logLevelUp",
-            "https://sdk.html5gameportal.com/api/analytics/#parameters_3");
+        throw invalidParams(undefined, WORTAL_API.ANALYTICS_LOG_LEVEL_UP, API_URL.ANALYTICS_LOG_LEVEL_UP);
     }
 
     const data: AnalyticsEventData = {
@@ -202,9 +198,7 @@ export function logLevelUp(level: string | number): void {
  */
 export function logScore(score: string | number): void {
     if (!isValidString(score) && !isValidNumber(score)) {
-        throw invalidParams("score cannot be null or empty. Please provide a valid string or number for the score parameter.",
-            "analytics.logScore",
-            "https://sdk.html5gameportal.com/api/analytics/#parameters_6");
+        throw invalidParams(undefined, WORTAL_API.ANALYTICS_LOG_SCORE, API_URL.ANALYTICS_LOG_SCORE);
     }
 
     const data: AnalyticsEventData = {
@@ -236,13 +230,9 @@ export function logScore(score: string | number): void {
  */
 export function logGameChoice(decision: string, choice: string): void {
     if (!isValidString(decision)) {
-        throw invalidParams("decision cannot be null or empty. Please provide a valid string for the decision parameter.",
-            "analytics.logGameChoice",
-            "https://sdk.html5gameportal.com/api/analytics/#parameters");
+        throw invalidParams(undefined, WORTAL_API.ANALYTICS_LOG_GAME_CHOICE, API_URL.ANALYTICS_LOG_GAME_CHOICE);
     } else if (!isValidString(choice)) {
-        throw invalidParams("choice cannot be null or empty. Please provide a valid string for the choice parameter.",
-            "analytics.logGameChoice",
-            "https://sdk.html5gameportal.com/api/analytics/#parameters");
+        throw invalidParams(undefined, WORTAL_API.ANALYTICS_LOG_GAME_CHOICE, API_URL.ANALYTICS_LOG_GAME_CHOICE);
     }
 
     const data: AnalyticsEventData = {
@@ -269,9 +259,7 @@ export function logGameChoice(decision: string, choice: string): void {
  */
 export function logSocialInvite(placement: string): void {
     if (!isValidString(placement)) {
-        throw invalidParams("placement cannot be null or empty. Please provide a valid string for the placement parameter.",
-            "analytics.logSocialInvite",
-            "https://sdk.html5gameportal.com/api/analytics/#parameters_7");
+        throw invalidParams(undefined, WORTAL_API.ANALYTICS_LOG_SOCIAL_INVITE, API_URL.ANALYTICS_LOG_SOCIAL_INVITE);
     }
 
     const data: AnalyticsEventData = {
@@ -297,9 +285,7 @@ export function logSocialInvite(placement: string): void {
  */
 export function logSocialShare(placement: string): void {
     if (!isValidString(placement)) {
-        throw invalidParams("placement cannot be null or empty.. Please provide a valid string for the placement parameter.",
-            "analytics.logSocialShare",
-            "https://sdk.html5gameportal.com/api/analytics/#parameters_8");
+        throw invalidParams(undefined, WORTAL_API.ANALYTICS_LOG_SOCIAL_SHARE, API_URL.ANALYTICS_LOG_SOCIAL_SHARE);
     }
 
     const data: AnalyticsEventData = {
@@ -330,9 +316,7 @@ export function logSocialShare(placement: string): void {
  */
 export function logPurchase(productID: string, details?: string): void {
     if (!isValidString(productID)) {
-        throw invalidParams("productID cannot be null or empty. . Please provide a valid string for the productID parameter.",
-            "analytics.logPurchase",
-            "https://sdk.html5gameportal.com/api/analytics/#parameters_4");
+        throw invalidParams(undefined, WORTAL_API.ANALYTICS_LOG_PURCHASE, API_URL.ANALYTICS_LOG_PURCHASE);
     }
 
     const data: AnalyticsEventData = {
@@ -364,9 +348,7 @@ export function logPurchase(productID: string, details?: string): void {
  */
 export function logPurchaseSubscription(productID: string, details?: string): void {
     if (!isValidString(productID)) {
-        throw invalidParams("productID cannot be null or empty. Please provide a valid string for the productID parameter.",
-            "analytics.logPurchaseSubscription",
-            "https://sdk.html5gameportal.com/api/analytics/#parameters_5");
+        throw invalidParams(undefined, WORTAL_API.ANALYTICS_LOG_PURCHASE_SUBSCRIPTION, API_URL.ANALYTICS_LOG_PURCHASE_SUBSCRIPTION);
     }
 
     const data: AnalyticsEventData = {
@@ -429,7 +411,7 @@ export function _logGameEnd(): void {
 export function _logTrafficSource(): void {
     if (config.session.platform == "viber" || config.session.platform == "link") {
         Wortal.session.getEntryPointAsync()
-            .then((entryPoint) => {
+            .then((entryPoint: string) => {
                 const data: AnalyticsEventData = {
                     name: "TrafficSource",
                     features: {
@@ -445,9 +427,9 @@ export function _logTrafficSource(): void {
                 const event = new AnalyticsEvent(data);
                 event.send();
             })
-            .catch((error) => {
+            .catch((error: Error_Facebook_Rakuten) => {
                 // Even if we get an error we should still try and send the traffic source.
-                exception(error);
+                exception(error.code);
                 const data: AnalyticsEventData = {
                     name: "TrafficSource",
                     features: {
