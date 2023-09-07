@@ -4,7 +4,7 @@ import {
     ContextSizeResponse,
     InvitePayload,
     LinkSharePayload,
-    SharePayload,
+    SharePayload, SwitchPayload,
     UpdatePayload
 } from "../interfaces/context";
 import { PlayerData } from "../interfaces/player";
@@ -439,6 +439,7 @@ export function chooseAsync(payload?: ChoosePayload): Promise<void> {
  * @example
  * Wortal.context.switchAsync('abc123');
  * @param contextID ID of the desired context or the string SOLO to switch into a solo context.
+ * @param payload Optional object defining the options for the context switch.
  * @returns {Promise<void>} Promise that resolves when the game has switched into the specified context, or rejects otherwise.
  * @throws {ErrorMessage} See error.message for details.
  * <ul>
@@ -451,8 +452,7 @@ export function chooseAsync(payload?: ChoosePayload): Promise<void> {
  * <li>CLIENT_UNSUPPORTED_OPERATION</li>
  * </ul>
  */
-export function switchAsync(contextID: string): Promise<void> {
-    //TODO: add switchSilentlyIfSolo parameter
+export function switchAsync(contextID: string, payload?: SwitchPayload): Promise<void> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
         if (!isValidString(contextID)) {
@@ -467,7 +467,21 @@ export function switchAsync(contextID: string): Promise<void> {
             return;
         }
 
-        if (platform === "link" || platform === "viber" || platform === "facebook") {
+        if (platform === "link") {
+            return config.platformSDK.context.switchAsync(contextID, payload)
+                .catch((error: Error_Facebook_Rakuten) => {
+                    throw rethrowError_Facebook_Rakuten(error, WORTAL_API.CONTEXT_SWITCH_ASYNC, API_URL.CONTEXT_SWITCH_ASYNC);
+                });
+        }
+
+        if (platform === "facebook") {
+            return config.platformSDK.context.switchAsync(contextID, payload?.switchSilentlyIfSolo)
+                .catch((error: Error_Facebook_Rakuten) => {
+                    throw rethrowError_Facebook_Rakuten(error, WORTAL_API.CONTEXT_SWITCH_ASYNC, API_URL.CONTEXT_SWITCH_ASYNC);
+                });
+        }
+
+        if (platform === "viber") {
             return config.platformSDK.context.switchAsync(contextID)
                 .catch((error: Error_Facebook_Rakuten) => {
                     throw rethrowError_Facebook_Rakuten(error, WORTAL_API.CONTEXT_SWITCH_ASYNC, API_URL.CONTEXT_SWITCH_ASYNC);
