@@ -53,6 +53,22 @@ export function getParameterByName(name: string): string | null {
 }
 
 /**
+ * Gets all parameters from the URL.
+ * @returns {Record<string, string>} Object containing all parameters from the URL.
+ * @hidden
+ */
+export function getAllQueryParameters(): Record<string, string> {
+    const params: any = {};
+    const queryString = window.location.search.slice(1);
+    const pairs = queryString.split("&");
+    for (const pair of pairs) {
+        const [key, value] = pair.split("=");
+        params[key] = value;
+    }
+    return params;
+}
+
+/**
  * Tries to enable IAP for the current platform. This is only supported on some platforms and takes some time to
  * initialize. Once the platform SDK signals that the IAP is ready, the SDK will enable the IAP API. If this fails
  * for any reason, the IAP API will not be enabled.

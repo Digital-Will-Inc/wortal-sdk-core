@@ -4,7 +4,12 @@ import { Device, Orientation, Platform } from "../types/session";
 import { API_URL, WORTAL_API } from "../utils/config";
 import { invalidParams, notSupported, rethrowError_Facebook_Rakuten } from "../utils/error-handler";
 import { isValidString } from "../utils/validators";
-import { detectDevice, isSupportedOnCurrentPlatform } from "../utils/wortal-utils";
+import {
+    delayUntilConditionMet,
+    detectDevice,
+    getAllQueryParameters,
+    isSupportedOnCurrentPlatform
+} from "../utils/wortal-utils";
 import { config } from "./index";
 
 /**
@@ -18,10 +23,11 @@ import { config } from "./index";
  * @returns {Record<string, unknown>} Data about the entry point or an empty object if none exists.
  */
 export function getEntryPointData(): Record<string, unknown> {
-    //TODO: parse crazygames entrypoint data
     const platform = config.session.platform;
     if (platform === "link" || platform === "viber" || platform === "facebook") {
         return config.platformSDK.getEntryPointData();
+    } else if (platform === "crazygames") {
+        return getAllQueryParameters();
     } else if (platform === "debug") {
         return {
             "referral_id": "debug",
@@ -284,7 +290,13 @@ export function gameplayStop(): void {
 export function _gameLoadingStart(): void {
     const platform = config.session.platform;
     if (platform === "crazygames") {
-        config.platformSDK.game.sdkGameLoadingStart();
+        if (!config.isPlatformInitialized) {
+            delayUntilConditionMet(() => config.isPlatformInitialized).then(() => {
+                config.platformSDK.game.sdkGameLoadingStart();
+            });
+        } else {
+            config.platformSDK.game.sdkGameLoadingStart();
+        }
     } else {
         config.game.startGameLoadTimer();
     }
