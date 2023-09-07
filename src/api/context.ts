@@ -416,18 +416,10 @@ export function chooseAsync(payload?: ChoosePayload): Promise<void> {
         }
 
         if (platform === "link" || platform === "viber" || platform === "facebook") {
-            //TODO: add support for link payload
-            if (typeof payload === "undefined" || platform === "link") {
-                return config.platformSDK.context.chooseAsync()
-                    .catch((error: Error_Facebook_Rakuten) => {
-                        throw rethrowError_Facebook_Rakuten(error, WORTAL_API.CONTEXT_CHOOSE_ASYNC, API_URL.CONTEXT_CHOOSE_ASYNC);
-                    });
-            } else {
-                return config.platformSDK.context.chooseAsync(payload)
-                    .catch((error: Error_Facebook_Rakuten) => {
-                        throw rethrowError_Facebook_Rakuten(error, WORTAL_API.CONTEXT_CHOOSE_ASYNC, API_URL.CONTEXT_CHOOSE_ASYNC);
-                    });
-            }
+            return config.platformSDK.context.chooseAsync(payload)
+                .catch((error: Error_Facebook_Rakuten) => {
+                    throw rethrowError_Facebook_Rakuten(error, WORTAL_API.CONTEXT_CHOOSE_ASYNC, API_URL.CONTEXT_CHOOSE_ASYNC);
+                });
         }
     });
 }
