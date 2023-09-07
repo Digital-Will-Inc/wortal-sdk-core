@@ -3,6 +3,7 @@ import { Error_Facebook_Rakuten } from "../interfaces/wortal";
 import { API_URL, WORTAL_API } from "../utils/config";
 import { invalidParams, notSupported, rethrowError_Facebook_Rakuten } from "../utils/error-handler";
 import { isValidPurchaseConfig, isValidString } from "../utils/validators";
+import { isSupportedOnCurrentPlatform } from "../utils/wortal-utils";
 import { config } from "./index";
 
 /**
@@ -39,6 +40,14 @@ export function getCatalogAsync(): Promise<Product[]> {
             throw notSupported(undefined, WORTAL_API.IAP_GET_CATALOG_ASYNC);
         }
 
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.IAP_GET_CATALOG_ASYNC)) {
+            throw notSupported(undefined, WORTAL_API.IAP_GET_CATALOG_ASYNC);
+        }
+
+        if (platform === "debug") {
+            return [_getMockProduct(), _getMockProduct(), _getMockProduct()];
+        }
+
         if (platform === "viber" || platform === "facebook") {
             return config.platformSDK.payments.getCatalogAsync()
                 .then((products: Product[]) => {
@@ -47,10 +56,6 @@ export function getCatalogAsync(): Promise<Product[]> {
                 .catch((error: Error_Facebook_Rakuten) => {
                     throw rethrowError_Facebook_Rakuten(error, WORTAL_API.IAP_GET_CATALOG_ASYNC, API_URL.IAP_GET_CATALOG_ASYNC);
                 });
-        } else if (platform === "debug") {
-            return [_getMockProduct(), _getMockProduct(), _getMockProduct()];
-        } else {
-            throw notSupported(undefined, WORTAL_API.IAP_GET_CATALOG_ASYNC);
         }
     });
 }
@@ -78,6 +83,14 @@ export function getPurchasesAsync(): Promise<Purchase[]> {
             throw notSupported(undefined, WORTAL_API.IAP_GET_PURCHASES_ASYNC);
         }
 
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.IAP_GET_PURCHASES_ASYNC)) {
+            throw notSupported(undefined, WORTAL_API.IAP_GET_PURCHASES_ASYNC);
+        }
+
+        if (platform === "debug") {
+            return [_getMockPurchase(), _getMockPurchase(), _getMockPurchase()];
+        }
+
         if (platform === "viber" || platform === "facebook") {
             return config.platformSDK.payments.getPurchasesAsync()
                 .then((purchases: Purchase[]) => {
@@ -86,10 +99,6 @@ export function getPurchasesAsync(): Promise<Purchase[]> {
                 .catch((error: Error_Facebook_Rakuten) => {
                     throw rethrowError_Facebook_Rakuten(error, WORTAL_API.IAP_GET_PURCHASES_ASYNC, API_URL.IAP_GET_PURCHASES_ASYNC);
                 });
-        } else if (platform === "debug") {
-            return [_getMockPurchase(), _getMockPurchase(), _getMockPurchase()];
-        } else {
-            throw notSupported(undefined, WORTAL_API.IAP_GET_PURCHASES_ASYNC);
         }
     });
 }
@@ -124,6 +133,14 @@ export function makePurchaseAsync(purchase: PurchaseConfig): Promise<Purchase> {
             throw notSupported(undefined, WORTAL_API.IAP_MAKE_PURCHASE_ASYNC);
         }
 
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.IAP_MAKE_PURCHASE_ASYNC)) {
+            throw notSupported(undefined, WORTAL_API.IAP_MAKE_PURCHASE_ASYNC);
+        }
+
+        if (platform === "debug") {
+            return _getMockPurchase();
+        }
+
         if (platform === "viber" || platform === "facebook") {
             return config.platformSDK.payments.purchaseAsync(purchase)
                 .then((purchase: Purchase) => {
@@ -132,10 +149,6 @@ export function makePurchaseAsync(purchase: PurchaseConfig): Promise<Purchase> {
                 .catch((error: Error_Facebook_Rakuten) => {
                     throw rethrowError_Facebook_Rakuten(error, WORTAL_API.IAP_MAKE_PURCHASE_ASYNC, API_URL.IAP_MAKE_PURCHASE_ASYNC);
                 });
-        } else if (platform === "debug") {
-            return _getMockPurchase();
-        } else {
-            throw notSupported(undefined, WORTAL_API.IAP_MAKE_PURCHASE_ASYNC);
         }
     });
 }
@@ -169,15 +182,19 @@ export function consumePurchaseAsync(token: string): Promise<void> {
             throw notSupported(undefined, WORTAL_API.IAP_CONSUME_PURCHASE_ASYNC);
         }
 
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.IAP_CONSUME_PURCHASE_ASYNC)) {
+            throw notSupported(undefined, WORTAL_API.IAP_CONSUME_PURCHASE_ASYNC);
+        }
+
+        if (platform === "debug") {
+            return;
+        }
+
         if (platform === "viber" || platform === "facebook") {
             return config.platformSDK.payments.consumePurchaseAsync(token)
                 .catch((error: Error_Facebook_Rakuten) => {
                     throw rethrowError_Facebook_Rakuten(error, WORTAL_API.IAP_CONSUME_PURCHASE_ASYNC, API_URL.IAP_CONSUME_PURCHASE_ASYNC);
                 });
-        } else if (platform === "debug") {
-            return;
-        } else {
-            throw notSupported(undefined, WORTAL_API.IAP_CONSUME_PURCHASE_ASYNC);
         }
     });
 }

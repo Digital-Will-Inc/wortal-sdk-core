@@ -10,6 +10,7 @@ import {
 } from "../utils/converters";
 import { invalidOperation, invalidParams, notSupported, rethrowError_Facebook_Rakuten } from "../utils/error-handler";
 import { isValidString } from "../utils/validators";
+import { isSupportedOnCurrentPlatform } from "../utils/wortal-utils";
 import { config } from "./index";
 
 /**
@@ -36,6 +37,14 @@ export function getLeaderboardAsync(name: string): Promise<Leaderboard> {
             throw invalidParams(undefined, WORTAL_API.LEADERBOARD_GET_LEADERBOARD_ASYNC, API_URL.LEADERBOARD_GET_LEADERBOARD_ASYNC);
         }
 
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.LEADERBOARD_GET_LEADERBOARD_ASYNC)) {
+            throw notSupported(undefined, WORTAL_API.LEADERBOARD_GET_LEADERBOARD_ASYNC);
+        }
+
+        if (platform === "debug") {
+            return Leaderboard.mock();
+        }
+
         if (platform === "facebook") {
             const id = Wortal.context.getId();
             if (!isValidString(id)) {
@@ -58,10 +67,6 @@ export function getLeaderboardAsync(name: string): Promise<Leaderboard> {
                 .catch((error: Error_Facebook_Rakuten) => {
                     throw rethrowError_Facebook_Rakuten(error, WORTAL_API.LEADERBOARD_GET_LEADERBOARD_ASYNC, API_URL.LEADERBOARD_GET_LEADERBOARD_ASYNC);
                 });
-        } else if (platform === "debug") {
-            return Leaderboard.mock();
-        } else {
-            throw notSupported(undefined, WORTAL_API.LEADERBOARD_GET_LEADERBOARD_ASYNC);
         }
     });
 }
@@ -94,6 +99,14 @@ export function sendEntryAsync(name: string, score: number, details: string = ""
             throw invalidParams(undefined, WORTAL_API.LEADERBOARD_SEND_ENTRY_ASYNC, API_URL.LEADERBOARD_SEND_ENTRY_ASYNC);
         }
 
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.LEADERBOARD_SEND_ENTRY_ASYNC)) {
+            throw notSupported(undefined, WORTAL_API.LEADERBOARD_SEND_ENTRY_ASYNC);
+        }
+
+        if (platform === "debug") {
+            return LeaderboardEntry.mock(1, score);
+        }
+
         if (platform === "facebook") {
             const id = Wortal.context.getId();
             if (!isValidString(id)) {
@@ -117,10 +130,6 @@ export function sendEntryAsync(name: string, score: number, details: string = ""
                 .catch((error: Error_Facebook_Rakuten) => {
                     throw rethrowError_Facebook_Rakuten(error, WORTAL_API.LEADERBOARD_SEND_ENTRY_ASYNC, API_URL.LEADERBOARD_SEND_ENTRY_ASYNC);
                 });
-        } else if (platform === "debug") {
-            return LeaderboardEntry.mock(1, score);
-        } else {
-            throw notSupported(undefined, WORTAL_API.LEADERBOARD_SEND_ENTRY_ASYNC);
         }
     });
 }
@@ -150,6 +159,18 @@ export function getEntriesAsync(name: string, count: number, offset: number = 0)
             throw invalidParams(undefined, WORTAL_API.LEADERBOARD_GET_ENTRIES_ASYNC, API_URL.LEADERBOARD_GET_ENTRIES_ASYNC);
         }
 
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.LEADERBOARD_GET_ENTRIES_ASYNC)) {
+            throw notSupported(undefined, WORTAL_API.LEADERBOARD_GET_ENTRIES_ASYNC);
+        }
+
+        if (platform === "debug") {
+            const entries: LeaderboardEntry[] = [];
+            for (let i = 0; i < count; i++) {
+                entries[i] = LeaderboardEntry.mock(offset + i + 1, 10000 - i);
+            }
+            return entries;
+        }
+
         if (platform === "facebook") {
             const id = Wortal.context.getId();
             if (!isValidString(id)) {
@@ -175,14 +196,6 @@ export function getEntriesAsync(name: string, count: number, offset: number = 0)
                 .catch((error: Error_Facebook_Rakuten) => {
                     throw rethrowError_Facebook_Rakuten(error, WORTAL_API.LEADERBOARD_GET_ENTRIES_ASYNC, API_URL.LEADERBOARD_GET_ENTRIES_ASYNC);
                 });
-        } else if (platform === "debug") {
-            const entries: LeaderboardEntry[] = [];
-            for (let i = 0; i < count; i++) {
-                entries[i] = LeaderboardEntry.mock(offset + i + 1, 10000 - i);
-            }
-            return entries;
-        } else {
-            throw notSupported(undefined, WORTAL_API.LEADERBOARD_GET_ENTRIES_ASYNC);
         }
     });
 }
@@ -210,6 +223,14 @@ export function getPlayerEntryAsync(name: string): Promise<LeaderboardEntry> {
             throw invalidParams(undefined, WORTAL_API.LEADERBOARD_GET_PLAYER_ENTRY_ASYNC, API_URL.LEADERBOARD_GET_PLAYER_ENTRY_ASYNC);
         }
 
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.LEADERBOARD_GET_PLAYER_ENTRY_ASYNC)) {
+            throw notSupported(undefined, WORTAL_API.LEADERBOARD_GET_PLAYER_ENTRY_ASYNC);
+        }
+
+        if (platform === "debug") {
+            return LeaderboardEntry.mock(1, 10000);
+        }
+
         if (platform === "facebook") {
             const id = Wortal.context.getId();
             if (!isValidString(id)) {
@@ -233,10 +254,6 @@ export function getPlayerEntryAsync(name: string): Promise<LeaderboardEntry> {
                 .catch((error: Error_Facebook_Rakuten) => {
                     throw rethrowError_Facebook_Rakuten(error, WORTAL_API.LEADERBOARD_GET_PLAYER_ENTRY_ASYNC, API_URL.LEADERBOARD_GET_PLAYER_ENTRY_ASYNC);
                 });
-        } else if (platform === "debug") {
-            return LeaderboardEntry.mock(1, 10000);
-        } else {
-            throw notSupported(undefined, WORTAL_API.LEADERBOARD_GET_PLAYER_ENTRY_ASYNC);
         }
     });
 }
@@ -263,6 +280,14 @@ export function getEntryCountAsync(name: string): Promise<number> {
             throw invalidParams(undefined, WORTAL_API.LEADERBOARD_GET_ENTRY_COUNT_ASYNC, API_URL.LEADERBOARD_GET_ENTRY_COUNT_ASYNC);
         }
 
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.LEADERBOARD_GET_ENTRY_COUNT_ASYNC)) {
+            throw notSupported(undefined, WORTAL_API.LEADERBOARD_GET_ENTRY_COUNT_ASYNC);
+        }
+
+        if (platform === "debug") {
+            return 100;
+        }
+
         if (platform === "facebook") {
             const id = Wortal.context.getId();
             if (!isValidString(id)) {
@@ -282,10 +307,6 @@ export function getEntryCountAsync(name: string): Promise<number> {
                 .catch((error: Error_Facebook_Rakuten) => {
                     throw rethrowError_Facebook_Rakuten(error, WORTAL_API.LEADERBOARD_GET_ENTRY_COUNT_ASYNC, API_URL.LEADERBOARD_GET_ENTRY_COUNT_ASYNC);
                 });
-        } else if (platform === "debug") {
-            return 100;
-        } else {
-            throw notSupported(undefined, WORTAL_API.LEADERBOARD_GET_ENTRY_COUNT_ASYNC);
         }
     });
 }
@@ -316,6 +337,18 @@ export function getConnectedPlayersEntriesAsync(name: string, count: number, off
             throw invalidParams(undefined, WORTAL_API.LEADERBOARD_GET_CONNECTED_PLAYER_ENTRIES_ASYNC, API_URL.LEADERBOARD_GET_CONNECTED_PLAYER_ENTRIES_ASYNC);
         }
 
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.LEADERBOARD_GET_CONNECTED_PLAYER_ENTRIES_ASYNC)) {
+            throw notSupported(undefined, WORTAL_API.LEADERBOARD_GET_CONNECTED_PLAYER_ENTRIES_ASYNC);
+        }
+
+        if (platform === "debug") {
+            const entries: LeaderboardEntry[] = [];
+            for (let i = 0; i < count; i++) {
+                entries[i] = LeaderboardEntry.mock(offset + i + 1, 10000 - i);
+            }
+            return entries;
+        }
+
         if (platform === "facebook") {
             const id = Wortal.context.getId();
             if (!isValidString(id)) {
@@ -341,14 +374,6 @@ export function getConnectedPlayersEntriesAsync(name: string, count: number, off
                 .catch((error: Error_Facebook_Rakuten) => {
                     throw rethrowError_Facebook_Rakuten(error, WORTAL_API.LEADERBOARD_GET_CONNECTED_PLAYER_ENTRIES_ASYNC, API_URL.LEADERBOARD_GET_CONNECTED_PLAYER_ENTRIES_ASYNC);
                 });
-        } else if (platform === "debug") {
-            const entries: LeaderboardEntry[] = [];
-            for (let i = 0; i < count; i++) {
-                entries[i] = LeaderboardEntry.mock(offset + i + 1, 10000 - i);
-            }
-            return entries;
-        } else {
-            throw notSupported(undefined, WORTAL_API.LEADERBOARD_GET_CONNECTED_PLAYER_ENTRIES_ASYNC);
         }
     });
 }

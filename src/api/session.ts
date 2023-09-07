@@ -4,7 +4,7 @@ import { Device, Orientation, Platform } from "../types/session";
 import { API_URL, WORTAL_API } from "../utils/config";
 import { invalidParams, notSupported, rethrowError_Facebook_Rakuten } from "../utils/error-handler";
 import { isValidString } from "../utils/validators";
-import { detectDevice } from "../utils/wortal-utils";
+import { detectDevice, isSupportedOnCurrentPlatform } from "../utils/wortal-utils";
 import { config } from "./index";
 
 /**
@@ -47,6 +47,14 @@ export function getEntryPointData(): Record<string, unknown> {
 export function getEntryPointAsync(): Promise<string> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.SESSION_GET_ENTRY_POINT_ASYNC)) {
+            throw notSupported(undefined, WORTAL_API.SESSION_GET_ENTRY_POINT_ASYNC);
+        }
+
+        if (platform === "debug") {
+            return "debug";
+        }
+
         if (platform === "link" || platform === "viber" || platform === "facebook") {
             return config.platformSDK.getEntryPointAsync()
                 .then((entryPoint: string) => {
@@ -55,10 +63,6 @@ export function getEntryPointAsync(): Promise<string> {
                 .catch((error: Error_Facebook_Rakuten) => {
                     throw rethrowError_Facebook_Rakuten(error, WORTAL_API.SESSION_GET_ENTRY_POINT_ASYNC, API_URL.SESSION_GET_ENTRY_POINT_ASYNC);
                 });
-        } else if (platform === "debug") {
-            return "debug";
-        } else {
-            throw notSupported(undefined, WORTAL_API.SESSION_GET_ENTRY_POINT_ASYNC);
         }
     });
 }
@@ -211,15 +215,19 @@ export function switchGameAsync(gameID: string, data?: object): Promise<void> {
             throw invalidParams(undefined, WORTAL_API.SESSION_SWITCH_GAME_ASYNC, API_URL.SESSION_SWITCH_GAME_ASYNC);
         }
 
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.SESSION_SWITCH_GAME_ASYNC)) {
+            throw notSupported(undefined, WORTAL_API.SESSION_SWITCH_GAME_ASYNC);
+        }
+
+        if (platform === "debug") {
+            return;
+        }
+
         if (platform === "facebook") {
             return config.platformSDK.switchGameAsync(gameID, data)
                 .catch((error: Error_Facebook_Rakuten) => {
                     throw rethrowError_Facebook_Rakuten(error, WORTAL_API.SESSION_SWITCH_GAME_ASYNC, API_URL.SESSION_SWITCH_GAME_ASYNC);
                 });
-        } else if (platform === "debug") {
-            return;
-        } else {
-            throw notSupported(undefined, WORTAL_API.SESSION_SWITCH_GAME_ASYNC);
         }
     });
 }

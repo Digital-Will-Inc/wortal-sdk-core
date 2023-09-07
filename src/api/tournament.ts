@@ -11,6 +11,7 @@ import {
     rethrowError_Facebook_Rakuten
 } from "../utils/error-handler";
 import { isValidNumber, isValidString } from "../utils/validators";
+import { isSupportedOnCurrentPlatform } from "../utils/wortal-utils";
 import { config } from "./index";
 import Wortal from "../index";
 
@@ -35,9 +36,17 @@ import Wortal from "../index";
  * <li>TOURNAMENT_NOT_FOUND</li>
  * <li>NOT_SUPPORTED</li>
  */
-export function getCurrentAsync(): Promise<Tournament> {
+export function getCurrentAsync(): Promise<Tournament | undefined> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.TOURNAMENT_GET_CURRENT_ASYNC)) {
+            throw notSupported(undefined, WORTAL_API.TOURNAMENT_GET_CURRENT_ASYNC);
+        }
+
+        if (platform === "debug") {
+            return Tournament.mock();
+        }
+
         if (platform === "facebook") {
             const id = Wortal.context.getId();
             if (!isValidString(id)) {
@@ -71,10 +80,6 @@ export function getCurrentAsync(): Promise<Tournament> {
                 }).catch((error: Error_Facebook_Rakuten) => {
                     throw rethrowError_Facebook_Rakuten(error, WORTAL_API.TOURNAMENT_GET_CURRENT_ASYNC, API_URL.TOURNAMENT_GET_CURRENT_ASYNC);
                 });
-        } else if (platform === "debug") {
-            return Tournament.mock();
-        } else {
-            throw notSupported(undefined, WORTAL_API.TOURNAMENT_GET_CURRENT_ASYNC);
         }
     });
 }
@@ -101,6 +106,14 @@ export function getCurrentAsync(): Promise<Tournament> {
 export function getAllAsync(): Promise<Tournament[]> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.TOURNAMENT_GET_ALL_ASYNC)) {
+            throw notSupported(undefined, WORTAL_API.TOURNAMENT_GET_ALL_ASYNC);
+        }
+
+        if (platform === "debug") {
+            return [Tournament.mock(), Tournament.mock(), Tournament.mock()];
+        }
+
         if (platform === "facebook") {
             return config.platformSDK.tournament.getTournamentsAsync()
                 .then((tournaments: any) => {
@@ -111,11 +124,6 @@ export function getAllAsync(): Promise<Tournament[]> {
                 .catch((error: Error_Facebook_Rakuten) => {
                     throw rethrowError_Facebook_Rakuten(error, WORTAL_API.TOURNAMENT_GET_ALL_ASYNC, API_URL.TOURNAMENT_GET_ALL_ASYNC);
                 });
-        } else if (platform === "debug") {
-            return [Tournament.mock(), Tournament.mock(), Tournament.mock()];
-        }
-        else {
-            throw notSupported(undefined, WORTAL_API.TOURNAMENT_GET_ALL_ASYNC);
         }
     });
 }
@@ -146,15 +154,19 @@ export function postScoreAsync(score: number): Promise<void> {
             throw invalidParams(undefined, WORTAL_API.TOURNAMENT_POST_SCORE_ASYNC, API_URL.TOURNAMENT_POST_SCORE_ASYNC);
         }
 
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.TOURNAMENT_POST_SCORE_ASYNC)) {
+            throw notSupported(undefined, WORTAL_API.TOURNAMENT_POST_SCORE_ASYNC);
+        }
+
+        if (platform === "debug") {
+            return;
+        }
+
         if (platform === "facebook") {
             return config.platformSDK.tournament.postScoreAsync(score)
                 .catch((error: Error_Facebook_Rakuten) => {
                     throw rethrowError_Facebook_Rakuten(error, WORTAL_API.TOURNAMENT_POST_SCORE_ASYNC, API_URL.TOURNAMENT_POST_SCORE_ASYNC);
                 });
-        } else if (platform === "debug") {
-            return;
-        } else {
-            throw notSupported(undefined, WORTAL_API.TOURNAMENT_POST_SCORE_ASYNC);
         }
     });
 }
@@ -193,6 +205,14 @@ export function createAsync(payload: CreateTournamentPayload): Promise<Tournamen
             throw invalidParams(undefined, WORTAL_API.TOURNAMENT_CREATE_ASYNC, API_URL.TOURNAMENT_CREATE_ASYNC);
         }
 
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.TOURNAMENT_CREATE_ASYNC)) {
+            throw notSupported(undefined, WORTAL_API.TOURNAMENT_CREATE_ASYNC);
+        }
+
+        if (platform === "debug") {
+            return Tournament.mock();
+        }
+
         if (platform === "facebook") {
             return config.platformSDK.tournament.createAsync(payload)
                 .then((tournament: any) => {
@@ -201,10 +221,6 @@ export function createAsync(payload: CreateTournamentPayload): Promise<Tournamen
                 .catch((error: Error_Facebook_Rakuten) => {
                     throw rethrowError_Facebook_Rakuten(error, WORTAL_API.TOURNAMENT_CREATE_ASYNC, API_URL.TOURNAMENT_CREATE_ASYNC);
                 });
-        } else if (platform === "debug") {
-            return Tournament.mock();
-        } else {
-            throw notSupported(undefined, WORTAL_API.TOURNAMENT_CREATE_ASYNC);
         }
     });
 }
@@ -232,15 +248,19 @@ export function shareAsync(payload: ShareTournamentPayload): Promise<void> {
             throw invalidParams(undefined, WORTAL_API.TOURNAMENT_SHARE_ASYNC, API_URL.TOURNAMENT_SHARE_ASYNC);
         }
 
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.TOURNAMENT_SHARE_ASYNC)) {
+            throw notSupported(undefined, WORTAL_API.TOURNAMENT_SHARE_ASYNC);
+        }
+
+        if (platform === "debug") {
+            return;
+        }
+
         if (platform === "facebook") {
             return config.platformSDK.tournament.shareAsync(payload)
                 .catch((error: Error_Facebook_Rakuten) => {
                     throw rethrowError_Facebook_Rakuten(error, WORTAL_API.TOURNAMENT_SHARE_ASYNC, API_URL.TOURNAMENT_SHARE_ASYNC);
                 });
-        } else if (platform === "debug") {
-            return;
-        } else {
-            throw notSupported(undefined, WORTAL_API.TOURNAMENT_SHARE_ASYNC);
         }
     });
 }
@@ -271,15 +291,19 @@ export function joinAsync(tournamentID: string): Promise<void> {
             throw invalidParams(undefined, WORTAL_API.TOURNAMENT_JOIN_ASYNC, API_URL.TOURNAMENT_JOIN_ASYNC);
         }
 
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.TOURNAMENT_JOIN_ASYNC)) {
+            throw notSupported(undefined, WORTAL_API.TOURNAMENT_JOIN_ASYNC);
+        }
+
+        if (platform === "debug") {
+            return;
+        }
+
         if (platform === "facebook") {
             return config.platformSDK.tournament.joinAsync(tournamentID)
                 .catch((error: Error_Facebook_Rakuten) => {
                     throw rethrowError_Facebook_Rakuten(error, WORTAL_API.TOURNAMENT_JOIN_ASYNC, API_URL.TOURNAMENT_JOIN_ASYNC);
                 });
-        } else if (platform === "debug") {
-            return;
-        } else {
-            throw notSupported(undefined, WORTAL_API.TOURNAMENT_JOIN_ASYNC);
         }
     });
 }

@@ -25,6 +25,7 @@ import {
     rethrowError_Facebook_Rakuten
 } from "../utils/error-handler";
 import { isValidPayloadImage, isValidPayloadText, isValidString } from "../utils/validators";
+import { isSupportedOnCurrentPlatform } from "../utils/wortal-utils";
 import { config } from "./index";
 
 /**
@@ -88,6 +89,14 @@ export function getType(): ContextType {
 export function getPlayersAsync(): Promise<ConnectedPlayer[]> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.CONTEXT_GET_PLAYERS_ASYNC)) {
+            throw notSupported(undefined, WORTAL_API.CONTEXT_GET_PLAYERS_ASYNC);
+        }
+
+        if (platform === "debug") {
+            return [ConnectedPlayer.mock(), ConnectedPlayer.mock(), ConnectedPlayer.mock()];
+        }
+
         if (platform === "link" || platform === "viber" || platform === "facebook") {
             return config.platformSDK.context.getPlayersAsync()
                 .then((players: any) => {
@@ -100,17 +109,12 @@ export function getPlayersAsync(): Promise<ConnectedPlayer[]> {
                             isFirstPlay: platform === "facebook" ? false : !player.hasPlayed,
                             daysSinceFirstPlay: 0,
                         };
-
                         return new ConnectedPlayer(playerData);
                     });
                 })
                 .catch((error: Error_Facebook_Rakuten) => {
                     throw rethrowError_Facebook_Rakuten(error, WORTAL_API.CONTEXT_GET_PLAYERS_ASYNC, API_URL.CONTEXT_GET_PLAYERS_ASYNC);
                 });
-        } else if (platform === "debug") {
-            return [ConnectedPlayer.mock(), ConnectedPlayer.mock(), ConnectedPlayer.mock()];
-        } else {
-            throw notSupported(undefined, WORTAL_API.CONTEXT_GET_PLAYERS_ASYNC);
         }
     });
 }
@@ -157,9 +161,11 @@ export function inviteAsync(payload: InvitePayload): Promise<number> {
             throw invalidParams(undefined, WORTAL_API.CONTEXT_INVITE_ASYNC, API_URL.CONTEXT_INVITE_ASYNC);
         }
 
-        if (platform === "wortal" || platform === "gd") {
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.CONTEXT_INVITE_ASYNC)) {
             throw notSupported(undefined, WORTAL_API.CONTEXT_INVITE_ASYNC);
-        } else if (platform === "debug") {
+        }
+
+        if (platform === "debug") {
             return 0;
         }
 
@@ -180,7 +186,7 @@ export function inviteAsync(payload: InvitePayload): Promise<number> {
                 .catch((error: Error_Facebook_Rakuten) => {
                     throw rethrowError_Facebook_Rakuten(error, WORTAL_API.CONTEXT_INVITE_ASYNC, API_URL.CONTEXT_INVITE_ASYNC);
                 });
-        } else {
+        } else if (platform === "link" || platform === "viber") {
             return config.platformSDK.shareAsync(convertedPayload)
                 .then((result: any) => {
                     return result.sharedCount;
@@ -229,9 +235,11 @@ export function shareAsync(payload: SharePayload): Promise<number> {
             throw invalidParams(undefined, WORTAL_API.CONTEXT_SHARE_ASYNC, API_URL.CONTEXT_SHARE_ASYNC);
         }
 
-        if (platform === "wortal" || platform === "gd") {
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.CONTEXT_SHARE_ASYNC)) {
             throw notSupported(undefined, WORTAL_API.CONTEXT_SHARE_ASYNC);
-        } else if (platform === "debug") {
+        }
+
+        if (platform === "debug") {
             return 0;
         }
 
@@ -242,17 +250,20 @@ export function shareAsync(payload: SharePayload): Promise<number> {
             convertedPayload = convertToFBInstantSharePayload(payload);
         }
 
-        return config.platformSDK.shareAsync(convertedPayload)
-            .then((result: any) => {
-                if (typeof result === "undefined") {
-                    return 0;
-                } else {
-                    return result.sharedCount;
-                }
-            })
-            .catch((error: Error_Facebook_Rakuten) => {
-                throw rethrowError_Facebook_Rakuten(error, WORTAL_API.CONTEXT_SHARE_ASYNC, API_URL.CONTEXT_SHARE_ASYNC);
-            });
+        if (platform === "link" || platform === "viber" || platform === "facebook") {
+            return config.platformSDK.shareAsync(convertedPayload)
+                .then((result: any) => {
+                    // Facebook does not return a shareResult.
+                    if (typeof result === "undefined") {
+                        return 0;
+                    } else {
+                        return result.sharedCount;
+                    }
+                })
+                .catch((error: Error_Facebook_Rakuten) => {
+                    throw rethrowError_Facebook_Rakuten(error, WORTAL_API.CONTEXT_SHARE_ASYNC, API_URL.CONTEXT_SHARE_ASYNC);
+                });
+        }
     });
 }
 
@@ -289,10 +300,12 @@ export function shareLinkAsync(payload: LinkSharePayload): Promise<string | void
             throw invalidParams(undefined, WORTAL_API.CONTEXT_SHARE_LINK_ASYNC, API_URL.CONTEXT_SHARE_LINK_ASYNC);
         }
 
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.CONTEXT_SHARE_LINK_ASYNC)) {
+            throw notSupported(undefined, WORTAL_API.CONTEXT_SHARE_LINK_ASYNC);
+        }
+
         if (platform === "debug") {
             return;
-        } else if (platform !== "facebook" && platform !== "crazygames") {
-            throw notSupported(undefined, WORTAL_API.CONTEXT_SHARE_LINK_ASYNC);
         }
 
         if (platform === "facebook") {
@@ -309,7 +322,6 @@ export function shareLinkAsync(payload: LinkSharePayload): Promise<string | void
                         resolve(link);
                     }
                 };
-
                 config.platformSDK.game.inviteLink(payload.data, callback);
             });
         }
@@ -348,9 +360,11 @@ export function updateAsync(payload: UpdatePayload): Promise<void> {
             throw invalidParams(undefined, WORTAL_API.CONTEXT_UPDATE_ASYNC, API_URL.CONTEXT_UPDATE_ASYNC);
         }
 
-        if (platform === "wortal" || platform === "gd") {
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.CONTEXT_UPDATE_ASYNC)) {
             throw notSupported(undefined, WORTAL_API.CONTEXT_UPDATE_ASYNC);
-        } else if (platform === "debug") {
+        }
+
+        if (platform === "debug") {
             return;
         }
 
@@ -361,10 +375,12 @@ export function updateAsync(payload: UpdatePayload): Promise<void> {
             convertedPayload = convertToFBInstantUpdatePayload(payload);
         }
 
-        return config.platformSDK.updateAsync(convertedPayload)
-            .catch((error: Error_Facebook_Rakuten) => {
-                throw rethrowError_Facebook_Rakuten(error, WORTAL_API.CONTEXT_UPDATE_ASYNC, API_URL.CONTEXT_UPDATE_ASYNC);
-            });
+        if (platform === "link" || platform === "viber" || platform === "facebook") {
+            return config.platformSDK.updateAsync(convertedPayload)
+                .catch((error: Error_Facebook_Rakuten) => {
+                    throw rethrowError_Facebook_Rakuten(error, WORTAL_API.CONTEXT_UPDATE_ASYNC, API_URL.CONTEXT_UPDATE_ASYNC);
+                });
+        }
     });
 }
 
@@ -391,23 +407,27 @@ export function updateAsync(payload: UpdatePayload): Promise<void> {
 export function chooseAsync(payload?: ChoosePayload): Promise<void> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
-        if (platform === "wortal" || platform === "gd") {
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.CONTEXT_CHOOSE_ASYNC)) {
             throw notSupported(undefined, WORTAL_API.CONTEXT_CHOOSE_ASYNC);
-        } else if (platform === "debug") {
+        }
+
+        if (platform === "debug") {
             return;
         }
 
-        //TODO: add support for link payload
-        if (typeof payload === "undefined" || platform === "link") {
-            return config.platformSDK.context.chooseAsync()
-                .catch((error: Error_Facebook_Rakuten) => {
-                    throw rethrowError_Facebook_Rakuten(error, WORTAL_API.CONTEXT_CHOOSE_ASYNC, API_URL.CONTEXT_CHOOSE_ASYNC);
-                });
-        } else {
-            return config.platformSDK.context.chooseAsync(payload)
-                .catch((error: Error_Facebook_Rakuten) => {
-                    throw rethrowError_Facebook_Rakuten(error, WORTAL_API.CONTEXT_CHOOSE_ASYNC, API_URL.CONTEXT_CHOOSE_ASYNC);
-                });
+        if (platform === "link" || platform === "viber" || platform === "facebook") {
+            //TODO: add support for link payload
+            if (typeof payload === "undefined" || platform === "link") {
+                return config.platformSDK.context.chooseAsync()
+                    .catch((error: Error_Facebook_Rakuten) => {
+                        throw rethrowError_Facebook_Rakuten(error, WORTAL_API.CONTEXT_CHOOSE_ASYNC, API_URL.CONTEXT_CHOOSE_ASYNC);
+                    });
+            } else {
+                return config.platformSDK.context.chooseAsync(payload)
+                    .catch((error: Error_Facebook_Rakuten) => {
+                        throw rethrowError_Facebook_Rakuten(error, WORTAL_API.CONTEXT_CHOOSE_ASYNC, API_URL.CONTEXT_CHOOSE_ASYNC);
+                    });
+            }
         }
     });
 }
@@ -418,7 +438,7 @@ export function chooseAsync(payload?: ChoosePayload): Promise<void> {
  * resolve when the game has switched into the specified context.
  * @example
  * Wortal.context.switchAsync('abc123');
- * @param contextId ID of the desired context or the string SOLO to switch into a solo context.
+ * @param contextID ID of the desired context or the string SOLO to switch into a solo context.
  * @returns {Promise<void>} Promise that resolves when the game has switched into the specified context, or rejects otherwise.
  * @throws {ErrorMessage} See error.message for details.
  * <ul>
@@ -431,28 +451,31 @@ export function chooseAsync(payload?: ChoosePayload): Promise<void> {
  * <li>CLIENT_UNSUPPORTED_OPERATION</li>
  * </ul>
  */
-export function switchAsync(contextId: string): Promise<void> {
+export function switchAsync(contextID: string): Promise<void> {
     //TODO: add switchSilentlyIfSolo parameter
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
-        if (!isValidString(contextId)) {
+        if (!isValidString(contextID)) {
             throw invalidParams(undefined, WORTAL_API.CONTEXT_SWITCH_ASYNC, API_URL.CONTEXT_SWITCH_ASYNC);
         }
 
-        if (platform === "wortal" || platform === "gd") {
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.CONTEXT_SWITCH_ASYNC)) {
             throw notSupported(undefined, WORTAL_API.CONTEXT_SWITCH_ASYNC);
-        } else if (platform === "debug") {
+        }
+
+        if (platform === "debug") {
             return;
         }
 
-        return config.platformSDK.context.switchAsync(contextId)
-            .catch((error: Error_Facebook_Rakuten) => {
-                throw rethrowError_Facebook_Rakuten(error, WORTAL_API.CONTEXT_SWITCH_ASYNC, API_URL.CONTEXT_SWITCH_ASYNC);
-            });
+        if (platform === "link" || platform === "viber" || platform === "facebook") {
+            return config.platformSDK.context.switchAsync(contextID)
+                .catch((error: Error_Facebook_Rakuten) => {
+                    throw rethrowError_Facebook_Rakuten(error, WORTAL_API.CONTEXT_SWITCH_ASYNC, API_URL.CONTEXT_SWITCH_ASYNC);
+                });
+        }
     });
 }
 
-//TODO: improve this doc
 /**
  * <p>Attempts to create a context between the current player and a specified player or a list of players. This API
  * supports 3 use cases:
@@ -470,7 +493,7 @@ export function switchAsync(contextId: string): Promise<void> {
  * on these platforms, the call will be made with the first ID in the array.
  * @example
  * Wortal.context.createAsync('player123');
- * @param playerId ID of player to create a context with, or a list of player IDs to create a context with. If not
+ * @param playerID ID of player to create a context with, or a list of player IDs to create a context with. If not
  * specified, a friend picker will be loaded to ask the player to create a context with friends to play with. Link
  * and Viber will only accept a single, required player ID. If no ID is passed on these platforms the call will fail.
  * If an array of IDs is passed on these platforms, the call will be made with the first ID in the array.
@@ -486,31 +509,36 @@ export function switchAsync(contextId: string): Promise<void> {
  * <li>CLIENT_UNSUPPORTED_OPERATION</li>
  * </ul>
  */
-export function createAsync(playerId?: string | string[]): Promise<void> {
+export function createAsync(playerID?: string | string[]): Promise<void> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
-        // Link & Viber only support creating a context with a single player, and we must pass in a player ID.
-        // Facebook supports creating a context with a single player, list of players, or no player (to open a friend picker).
-        if (platform === "link" || platform === "viber") {
-            if (Array.isArray(playerId)) {
-                playerId = playerId[0];
-            }
-        }
-
-        if (platform !== "facebook" && !isValidString(playerId)) {
-            throw invalidParams(undefined, WORTAL_API.CONTEXT_CREATE_ASYNC, API_URL.CONTEXT_CREATE_ASYNC);
-        }
-
-        if (platform === "wortal" || platform === "gd") {
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.CONTEXT_CREATE_ASYNC)) {
             throw notSupported(undefined, WORTAL_API.CONTEXT_CREATE_ASYNC);
-        } else if (platform === "debug") {
+        }
+
+        if (platform === "debug") {
             return;
         }
 
-        return config.platformSDK.context.createAsync(playerId)
-            .catch((error: Error_Facebook_Rakuten) => {
-                throw rethrowError_Facebook_Rakuten(error, WORTAL_API.CONTEXT_CREATE_ASYNC, API_URL.CONTEXT_CREATE_ASYNC);
-            });
+        // We only need to validate the input on Link & Viber.
+        // Link & Viber only support creating a context with a single player, and we must pass in a player ID.
+        // Facebook supports creating a context with a single player, list of players, or no player (to open a friend picker).
+        if (platform === "link" || platform === "viber") {
+            if (Array.isArray(playerID)) {
+                playerID = playerID[0];
+            }
+
+            if (!isValidString(playerID)) {
+                throw invalidParams(undefined, WORTAL_API.CONTEXT_CREATE_ASYNC, API_URL.CONTEXT_CREATE_ASYNC);
+            }
+        }
+
+        if (platform === "link" || platform === "viber" || platform === "facebook") {
+            return config.platformSDK.context.createAsync(playerID)
+                .catch((error: Error_Facebook_Rakuten) => {
+                    throw rethrowError_Facebook_Rakuten(error, WORTAL_API.CONTEXT_CREATE_ASYNC, API_URL.CONTEXT_CREATE_ASYNC);
+                });
+        }
     });
 }
 

@@ -11,6 +11,7 @@ import {
     rethrowError_Facebook_Rakuten
 } from "../utils/error-handler";
 import { warn } from "../utils/logger";
+import { isSupportedOnCurrentPlatform } from "../utils/wortal-utils";
 import { config } from "./index";
 
 /**
@@ -84,15 +85,11 @@ export function getDataAsync(keys: string[]): Promise<any> {
             throw invalidParams(undefined, WORTAL_API.PLAYER_GET_DATA_ASYNC, API_URL.PLAYER_GET_DATA_ASYNC);
         }
 
-        if (platform === "link" || platform === "viber" || platform === "facebook") {
-            return config.platformSDK.player.getDataAsync(keys)
-                .then((data: any) => {
-                    return data;
-                })
-                .catch((error: Error_Facebook_Rakuten) => {
-                    throw rethrowError_Facebook_Rakuten(error, WORTAL_API.PLAYER_GET_DATA_ASYNC, API_URL.PLAYER_GET_DATA_ASYNC);
-                });
-        } else if (platform === "debug") {
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.PLAYER_GET_DATA_ASYNC)) {
+            throw notSupported(undefined, WORTAL_API.PLAYER_GET_DATA_ASYNC);
+        }
+
+        if (platform === "debug") {
             const data = localStorage.getItem("wortal-data");
             if (data) {
                 const dataObj = JSON.parse(data);
@@ -105,8 +102,16 @@ export function getDataAsync(keys: string[]): Promise<any> {
                 warn("No wortal-data found in localStorage. Returning empty object.");
                 return {};
             }
-        } else {
-            throw notSupported(undefined, WORTAL_API.PLAYER_GET_DATA_ASYNC);
+        }
+
+        if (platform === "link" || platform === "viber" || platform === "facebook") {
+            return config.platformSDK.player.getDataAsync(keys)
+                .then((data: any) => {
+                    return data;
+                })
+                .catch((error: Error_Facebook_Rakuten) => {
+                    throw rethrowError_Facebook_Rakuten(error, WORTAL_API.PLAYER_GET_DATA_ASYNC, API_URL.PLAYER_GET_DATA_ASYNC);
+                });
         }
     });
 }
@@ -139,19 +144,23 @@ export function getDataAsync(keys: string[]): Promise<any> {
 export function setDataAsync(data: Record<string, unknown>): Promise<void> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
-        if (platform === "link" || platform === "viber" || platform === "facebook") {
-            return config.platformSDK.player.setDataAsync(data)
-                .catch((error: Error_Facebook_Rakuten) => {
-                    throw rethrowError_Facebook_Rakuten(error, WORTAL_API.PLAYER_SET_DATA_ASYNC, API_URL.PLAYER_SET_DATA_ASYNC);
-                });
-        } else if (platform === "debug") {
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.PLAYER_SET_DATA_ASYNC)) {
+            throw notSupported(undefined, WORTAL_API.PLAYER_SET_DATA_ASYNC);
+        }
+
+        if (platform === "debug") {
             try {
                 localStorage.setItem("wortal-data", JSON.stringify(data));
             } catch (error: any) {
                 throw operationFailed(`Error saving object to localStorage: ${error.message}`, WORTAL_API.PLAYER_SET_DATA_ASYNC);
             }
-        } else {
-            throw notSupported(undefined, WORTAL_API.PLAYER_SET_DATA_ASYNC);
+        }
+
+        if (platform === "link" || platform === "viber" || platform === "facebook") {
+            return config.platformSDK.player.setDataAsync(data)
+                .catch((error: Error_Facebook_Rakuten) => {
+                    throw rethrowError_Facebook_Rakuten(error, WORTAL_API.PLAYER_SET_DATA_ASYNC, API_URL.PLAYER_SET_DATA_ASYNC);
+                });
         }
     });
 }
@@ -178,15 +187,19 @@ export function setDataAsync(data: Record<string, unknown>): Promise<void> {
 export function flushDataAsync(): Promise<void> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.PLAYER_FLUSH_DATA_ASYNC)) {
+            throw notSupported(undefined, WORTAL_API.PLAYER_FLUSH_DATA_ASYNC);
+        }
+
+        if (platform === "debug") {
+            return;
+        }
+
         if (platform === "link" || platform === "viber" || platform === "facebook") {
             return config.platformSDK.player.flushDataAsync()
                 .catch((error: Error_Facebook_Rakuten) => {
                     throw rethrowError_Facebook_Rakuten(error, WORTAL_API.PLAYER_FLUSH_DATA_ASYNC, API_URL.PLAYER_FLUSH_DATA_ASYNC);
                 });
-        } else if (platform === "debug") {
-            return;
-        } else {
-            throw notSupported(undefined, WORTAL_API.PLAYER_FLUSH_DATA_ASYNC);
         }
     });
 }
@@ -215,6 +228,14 @@ export function flushDataAsync(): Promise<void> {
 export function getConnectedPlayersAsync(payload?: ConnectedPlayerPayload): Promise<ConnectedPlayer[]> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.PLAYER_GET_CONNECTED_PLAYERS_ASYNC)) {
+            throw notSupported(undefined, WORTAL_API.PLAYER_GET_CONNECTED_PLAYERS_ASYNC);
+        }
+
+        if (platform === "debug") {
+            return [ConnectedPlayer.mock(), ConnectedPlayer.mock(), ConnectedPlayer.mock()];
+        }
+
         if (platform === "link" || platform === "viber" || platform === "facebook") {
             return config.platformSDK.player.getConnectedPlayersAsync(payload)
                 .then((players: any) => {
@@ -227,17 +248,12 @@ export function getConnectedPlayersAsync(payload?: ConnectedPlayerPayload): Prom
                             isFirstPlay: platform === "facebook" ? false : !player.hasPlayed,
                             daysSinceFirstPlay: 0,
                         };
-
                         return new ConnectedPlayer(playerData);
                     });
                 })
                 .catch((error: Error_Facebook_Rakuten) => {
                     throw rethrowError_Facebook_Rakuten(error, WORTAL_API.PLAYER_GET_CONNECTED_PLAYERS_ASYNC, API_URL.PLAYER_GET_CONNECTED_PLAYERS_ASYNC);
                 });
-        } else if (platform === "debug") {
-            return [ConnectedPlayer.mock(), ConnectedPlayer.mock(), ConnectedPlayer.mock()];
-        } else {
-            throw notSupported(undefined, WORTAL_API.PLAYER_GET_CONNECTED_PLAYERS_ASYNC);
         }
     });
 }
@@ -267,6 +283,17 @@ export function getConnectedPlayersAsync(payload?: ConnectedPlayerPayload): Prom
 export function getSignedPlayerInfoAsync(): Promise<object> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.PLAYER_GET_SIGNED_PLAYER_INFO_ASYNC)) {
+            throw notSupported(undefined, WORTAL_API.PLAYER_GET_SIGNED_PLAYER_INFO_ASYNC);
+        }
+
+        if (platform === "debug") {
+            return {
+                id: config.player.id,
+                signature: "debug.signature",
+            };
+        }
+
         if (platform === "link" || platform === "viber" || platform === "facebook") {
             return config.platformSDK.player.getSignedPlayerInfoAsync()
                 .then((info: any) => {
@@ -278,13 +305,6 @@ export function getSignedPlayerInfoAsync(): Promise<object> {
                 .catch((error: Error_Facebook_Rakuten) => {
                     throw rethrowError_Facebook_Rakuten(error, WORTAL_API.PLAYER_GET_SIGNED_PLAYER_INFO_ASYNC, API_URL.PLAYER_GET_SIGNED_PLAYER_INFO_ASYNC);
                 });
-        } else if (platform === "debug") {
-            return {
-                id: config.player.id,
-                signature: "debug.signature",
-            };
-        } else {
-            throw notSupported(undefined, WORTAL_API.PLAYER_GET_SIGNED_PLAYER_INFO_ASYNC);
         }
     });
 }
@@ -305,15 +325,22 @@ export function getSignedPlayerInfoAsync(): Promise<object> {
 export function getASIDAsync(): Promise<string> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.PLAYER_GET_ASID_ASYNC)) {
+            throw notSupported(undefined, WORTAL_API.PLAYER_GET_ASID_ASYNC);
+        }
+
+        if (platform === "debug") {
+            return config.player.id;
+        }
+
         if (platform === "facebook") {
             return config.platformSDK.player.getASIDAsync()
+                .then((asid: string) => {
+                    return asid;
+                })
                 .catch((error: Error_Facebook_Rakuten) => {
                     throw rethrowError_Facebook_Rakuten(error, WORTAL_API.PLAYER_GET_ASID_ASYNC, API_URL.PLAYER_GET_ASID_ASYNC);
                 });
-        } else if (platform === "debug") {
-            return config.player.id;
-        } else {
-            throw notSupported(undefined, WORTAL_API.PLAYER_GET_ASID_ASYNC);
         }
     });
 }
@@ -340,6 +367,17 @@ export function getASIDAsync(): Promise<string> {
 export function getSignedASIDAsync(): Promise<SignedASID> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.PLAYER_GET_SIGNED_ASID_ASYNC)) {
+            throw notSupported(undefined, WORTAL_API.PLAYER_GET_SIGNED_ASID_ASYNC);
+        }
+
+        if (platform === "debug") {
+            return {
+                asid: config.player.id,
+                signature: "debug.signature",
+            };
+        }
+
         if (platform === "facebook") {
             return config.platformSDK.player.getSignedASIDAsync()
                 .then((info: any) => {
@@ -351,13 +389,6 @@ export function getSignedASIDAsync(): Promise<SignedASID> {
                 .catch((error: Error_Facebook_Rakuten) => {
                     throw rethrowError_Facebook_Rakuten(error, WORTAL_API.PLAYER_GET_SIGNED_ASID_ASYNC, API_URL.PLAYER_GET_SIGNED_ASID_ASYNC);
                 });
-        } else if (platform === "debug") {
-            return {
-                asid: config.player.id,
-                signature: "debug.signature",
-            };
-        } else {
-            throw notSupported(undefined, WORTAL_API.PLAYER_GET_SIGNED_ASID_ASYNC);
         }
     });
 }
@@ -381,6 +412,14 @@ export function getSignedASIDAsync(): Promise<SignedASID> {
 export function canSubscribeBotAsync(): Promise<boolean> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.PLAYER_CAN_SUBSCRIBE_BOT_ASYNC)) {
+            throw notSupported(undefined, WORTAL_API.PLAYER_CAN_SUBSCRIBE_BOT_ASYNC);
+        }
+
+        if (platform === "debug") {
+            return true;
+        }
+
         if (platform === "facebook") {
             return config.platformSDK.player.canSubscribeBotAsync()
                 .then((canSubscribe: boolean) => {
@@ -389,10 +428,6 @@ export function canSubscribeBotAsync(): Promise<boolean> {
                 .catch((error: Error_Facebook_Rakuten) => {
                     throw rethrowError_Facebook_Rakuten(error, WORTAL_API.PLAYER_CAN_SUBSCRIBE_BOT_ASYNC, API_URL.PLAYER_CAN_SUBSCRIBE_BOT_ASYNC);
                 });
-        } else if (platform === "debug") {
-            return true;
-        } else {
-            throw notSupported(undefined, WORTAL_API.PLAYER_CAN_SUBSCRIBE_BOT_ASYNC);
         }
     });
 }
@@ -416,15 +451,19 @@ export function canSubscribeBotAsync(): Promise<boolean> {
 export function subscribeBotAsync(): Promise<void> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.PLAYER_SUBSCRIBE_BOT_ASYNC)) {
+            throw notSupported(undefined, WORTAL_API.PLAYER_SUBSCRIBE_BOT_ASYNC);
+        }
+
+        if (platform === "debug") {
+            return;
+        }
+
         if (platform === "facebook") {
             return config.platformSDK.player.subscribeBotAsync()
                 .catch((error: Error_Facebook_Rakuten) => {
                     throw rethrowError_Facebook_Rakuten(error, WORTAL_API.PLAYER_CAN_SUBSCRIBE_BOT_ASYNC, API_URL.PLAYER_CAN_SUBSCRIBE_BOT_ASYNC);
                 });
-        } else if (platform === "debug") {
-            return;
-        } else {
-            throw notSupported(undefined, WORTAL_API.PLAYER_CAN_SUBSCRIBE_BOT_ASYNC);
         }
     });
 }
@@ -443,9 +482,17 @@ export function subscribeBotAsync(): Promise<void> {
  * <li>NOT_SUPPORTED</li>
  * </ul>
  */
-export function getTokenAsync(): Promise<string> {
+export function getTokenAsync(): Promise<string | undefined> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.PLAYER_GET_TOKEN_ASYNC)) {
+            throw notSupported(undefined, WORTAL_API.PLAYER_GET_TOKEN_ASYNC);
+        }
+
+        if (platform === "debug") {
+            return "debug.token";
+        }
+
         if (platform === "crazygames") {
             return new Promise((resolve) => {
                 const callback = (error: Error_CrazyGames, token: string) => {
@@ -455,11 +502,8 @@ export function getTokenAsync(): Promise<string> {
                         resolve(token);
                     }
                 };
-
                 config.platformSDK.user.getUserToken(callback);
             });
-        } else {
-            throw notSupported(undefined, WORTAL_API.PLAYER_GET_TOKEN_ASYNC);
         }
     });
 }
@@ -482,6 +526,14 @@ export function getTokenAsync(): Promise<string> {
 export function showAuthPromptAsync(): Promise<void> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.PLAYER_SHOW_AUTH_PROMPT_ASYNC)) {
+            throw notSupported(undefined, WORTAL_API.PLAYER_SHOW_AUTH_PROMPT_ASYNC);
+        }
+
+        if (platform === "debug") {
+            return;
+        }
+
         if (platform === "crazygames") {
             return new Promise((resolve) => {
                 const callback = (error: Error_CrazyGames, user: any) => {
@@ -492,11 +544,8 @@ export function showAuthPromptAsync(): Promise<void> {
                         resolve();
                     }
                 };
-
                 config.platformSDK.user.showAuthPrompt(callback);
             });
-        } else {
-            throw notSupported(undefined, WORTAL_API.PLAYER_SHOW_AUTH_PROMPT_ASYNC);
         }
     });
 }
@@ -514,9 +563,17 @@ export function showAuthPromptAsync(): Promise<void> {
  * <li>NOT_SUPPORTED</li>
  * </ul>
  */
-export function showLinkAccountPromptAsync(): Promise<boolean> {
+export function showLinkAccountPromptAsync(): Promise<boolean | undefined> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.PLAYER_SHOW_LINK_ACCOUNT_PROMPT_ASYNC)) {
+            throw notSupported(undefined, WORTAL_API.PLAYER_SHOW_LINK_ACCOUNT_PROMPT_ASYNC);
+        }
+
+        if (platform === "debug") {
+            return true;
+        }
+
         if (platform === "crazygames") {
             return new Promise((resolve) => {
                 const callback = (error: Error_CrazyGames, response: any) => {
@@ -530,11 +587,8 @@ export function showLinkAccountPromptAsync(): Promise<boolean> {
                         }
                     }
                 };
-
                 config.platformSDK.user.showAccountLinkPrompt(callback);
             });
-        } else {
-            throw notSupported(undefined, WORTAL_API.PLAYER_SHOW_LINK_ACCOUNT_PROMPT_ASYNC);
         }
     });
 }
@@ -555,9 +609,15 @@ export function onLogin(callback: () => void): void {
         throw invalidParams(undefined, WORTAL_API.PLAYER_ON_LOGIN, API_URL.PLAYER_ON_LOGIN);
     }
 
+    if (!isSupportedOnCurrentPlatform(WORTAL_API.PLAYER_ON_LOGIN)) {
+        throw notSupported(undefined, WORTAL_API.PLAYER_ON_LOGIN);
+    }
+
+    if (platform === "debug") {
+        callback();
+    }
+
     if (platform === "crazygames") {
         config.platformSDK.user.addAuthListener(callback);
-    } else {
-        throw notSupported(undefined, WORTAL_API.PLAYER_ON_LOGIN);
     }
 }

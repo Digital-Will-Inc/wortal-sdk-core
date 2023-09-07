@@ -28,7 +28,7 @@ import {
     removeLoadingCover,
     tryEnableIAP,
     addGDCallback,
-    delayUntilConditionMet
+    delayUntilConditionMet, isSupportedOnCurrentPlatform
 } from "../utils/wortal-utils";
 
 // This is the version of the SDK. It is set by the build process.
@@ -272,16 +272,20 @@ export function onPause(callback: () => void): void {
 export function performHapticFeedbackAsync(): Promise<void> {
     const platform = config.session.platform;
     return Promise.resolve().then(() => {
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.PERFORM_HAPTIC_FEEDBACK_ASYNC)) {
+            throw notSupported(undefined, WORTAL_API.PERFORM_HAPTIC_FEEDBACK_ASYNC);
+        }
+
         if (platform === "debug") {
             debug("Haptic feedback requested successfully.");
             return;
-        } else if (platform === "facebook") {
+        }
+
+        if (platform === "facebook") {
             return config.platformSDK.performHapticFeedbackAsync()
                 .catch((error: Error_Facebook_Rakuten) => {
                     rethrowError_Facebook_Rakuten(error, WORTAL_API.PERFORM_HAPTIC_FEEDBACK_ASYNC, API_URL.PERFORM_HAPTIC_FEEDBACK_ASYNC);
                 });
-        } else {
-            throw notSupported(undefined, WORTAL_API.PERFORM_HAPTIC_FEEDBACK_ASYNC);
         }
     });
 }

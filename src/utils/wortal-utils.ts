@@ -1,6 +1,6 @@
 import { config } from "../api";
 import Wortal from "../index";
-import { Device } from "../types/session";
+import { Device, Platform } from "../types/session";
 import { ShareTo } from "../types/wortal";
 import { invalidParams } from "./error-handler";
 import { debug, exception } from "./logger";
@@ -185,6 +185,20 @@ export function detectDevice(): Device {
     } else {
         return "DESKTOP";
     }
+}
+
+/**
+ * Returns whether the specified API is supported on the current platform. This is just a wrapper for
+ * Wortal.getSupportedAPIs().includes(api) so it's easier to read.
+ * @param api API to check for support.
+ * @returns {boolean} Whether the API is supported on the current platform. Always true on debug platform.
+ * @hidden
+ */
+export function isSupportedOnCurrentPlatform(api: string): boolean {
+    if (config.session.platform === "debug") {
+        return true;
+    }
+    return Wortal.getSupportedAPIs().includes(api);
 }
 
 /**
