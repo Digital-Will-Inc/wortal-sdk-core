@@ -102,6 +102,14 @@ document.getElementById('context-isSizeBetween').addEventListener('click', () =>
 ////////////////////////////////////
 // Core
 ////////////////////////////////////
+document.getElementById('core-authenticateAsync').addEventListener('click', () => {
+    coreAuthenticateAsync();
+});
+
+document.getElementById('core-linkGameAsync').addEventListener('click', () => {
+    coreLinkAccountAsync();
+});
+
 document.getElementById('core-onPause').addEventListener('click', () => {
     coreOnPause();
 });
@@ -240,14 +248,6 @@ document.getElementById('player-subscribeBotAsync').addEventListener('click', ()
 
 document.getElementById('player-getTokenAsync').addEventListener('click', () => {
     playerGetTokenAsync();
-});
-
-document.getElementById('player-showAuthPromptAsync').addEventListener('click', () => {
-    playerShowAuthPromptAsync();
-});
-
-document.getElementById('player-showLinkAccountPromptAsync').addEventListener('click', () => {
-    playerShowLinkAccountPromptAsync();
 });
 
 document.getElementById('player-onLogin').addEventListener('click', () => {

@@ -28,6 +28,11 @@ export const APIEndpoints = {
     NOTIFICATIONS: "https://html5gameportal.com/api/v1/notification/",
 }
 
+/**
+ * Status of the authentication process.
+ */
+export type AuthStatus = "success" | "error" | "cancel";
+
 /** @hidden */
 export type ShareTo = "facebook" | "twitter"
 

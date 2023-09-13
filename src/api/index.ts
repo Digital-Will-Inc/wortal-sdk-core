@@ -1,5 +1,5 @@
-import { Error_Facebook_Rakuten } from "../interfaces/wortal";
-import { APIEndpoints, GD_EVENTS } from "../types/wortal";
+import { AuthPayload, AuthResponse, AuthResponse_CrazyGames, Error_Facebook_Rakuten } from "../interfaces/wortal";
+import { APIEndpoints, Error_CrazyGames, GD_EVENTS } from "../types/wortal";
 import * as _ads from './ads';
 import * as _analytics from './analytics';
 import * as _context from './context';
@@ -17,6 +17,7 @@ import {
     invalidParams,
     notSupported,
     operationFailed,
+    rethrowError_CrazyGames,
     rethrowError_Facebook_Rakuten
 } from "../utils/error-handler";
 import { isValidNumber, isValidString } from "../utils/validators";
@@ -28,7 +29,8 @@ import {
     removeLoadingCover,
     tryEnableIAP,
     addGDCallback,
-    delayUntilConditionMet, isSupportedOnCurrentPlatform
+    delayUntilConditionMet,
+    isSupportedOnCurrentPlatform
 } from "../utils/wortal-utils";
 
 // This is the version of the SDK. It is set by the build process.
@@ -205,6 +207,100 @@ export async function startGameAsync(): Promise<void> {
             // Platform does not have a startGameAsync method, so we just resolve here.
             return Promise.resolve().then(() => {
                 analytics._logGameStart();
+            });
+        }
+    });
+}
+
+/**
+ * Starts the authentication process for the player. If the current platform has its own authentication prompt then
+ * this will be displayed.
+ * @example
+ * Wortal.authenticateAsync()
+ * .then(response => console.log(response));
+ * @param {AuthPayload} payload Optional payload for the authentication process.
+ * @returns {Promise<AuthResponse>} Promise that resolves with the response from the authentication process.
+ * @throws {ErrorMessage} See error.message for details.
+ * <ul>
+ * <li>AUTH_IN_PROGRESS</li>
+ * <li>USER_ALREADY_AUTHENTICATED</li>
+ * <li>USER_INPUT</li>
+ * <li>NOT_SUPPORTED</li>
+ * </ul>
+ */
+export function authenticateAsync(payload?: AuthPayload): Promise<AuthResponse | undefined> {
+    const platform = config.session.platform;
+    return Promise.resolve().then(() => {
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.AUTHENTICATE_ASYNC)) {
+            throw notSupported(undefined, WORTAL_API.AUTHENTICATE_ASYNC);
+        }
+
+        if (platform === "debug") {
+            const response: AuthResponse = {
+                status: "success",
+            };
+            return response;
+        }
+
+        if (platform === "crazygames") {
+            return new Promise((resolve) => {
+                const callback = (error: Error_CrazyGames, user: any) => {
+                    if (error) {
+                        throw rethrowError_CrazyGames(error, WORTAL_API.AUTHENTICATE_ASYNC, API_URL.AUTHENTICATE_ASYNC);
+                    } else {
+                        config.player.crazyGamesPlayer = user;
+                        const response: AuthResponse = {
+                            status: "success",
+                        };
+                        resolve(response);
+                    }
+                };
+                config.platformSDK.user.showAuthPrompt(callback);
+            });
+        }
+    });
+}
+
+/**
+ * Starts the account linking process for the player. If the current platform has its own account linking prompt then
+ * this will be displayed.
+ * @example
+ * Wortal.linkAccountAsync()
+ * .then(isLinked => console.log("Player linked account: " + isLinked));
+ * @returns {Promise<boolean>} Promise that resolves when the player has finished the account linking process. The
+ * promise will resolve with true if the player linked their account and false if they did not.
+ * @throws {ErrorMessage} See error.message for details.
+ * <ul>
+ * <li>LINK_IN_PROGRESS</li>
+ * <li>USER_NOT_AUTHENTICATED</li>
+ * <li>NOT_SUPPORTED</li>
+ * </ul>
+ */
+export function linkAccountAsync(): Promise<boolean | undefined> {
+    const platform = config.session.platform;
+    return Promise.resolve().then(() => {
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.LINK_ACCOUNT_ASYNC)) {
+            throw notSupported(undefined, WORTAL_API.LINK_ACCOUNT_ASYNC);
+        }
+
+        if (platform === "debug") {
+            return true;
+        }
+
+        if (platform === "crazygames") {
+            return new Promise((resolve) => {
+                const callback = (error: Error_CrazyGames, response: AuthResponse_CrazyGames) => {
+                    if (error) {
+                        throw rethrowError_CrazyGames(error, WORTAL_API.LINK_ACCOUNT_ASYNC, API_URL.LINK_ACCOUNT_ASYNC);
+                    } else {
+                        if (response.response === "yes") {
+                            resolve(true);
+                        } else {
+                            resolve(false);
+                        }
+                    }
+                };
+                config.platformSDK.user.showAccountLinkPrompt(callback);
             });
         }
     });
