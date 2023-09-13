@@ -14,6 +14,11 @@ export class AnalyticsEvent implements IAnalyticsEvent {
     }
 
     send(): void {
+        if (config.session.platform === "gd") {
+            // Analytics are not allowed on GD as of v1.6.10.
+            return;
+        }
+
         if (config.session.platform === "debug") {
             debug("Mock analytics event", this.data);
             return;
