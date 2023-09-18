@@ -2,6 +2,7 @@ import { AnalyticsEvent } from "../classes/analytics";
 import { AnalyticsEventData } from "../interfaces/analytics";
 import { Error_Facebook_Rakuten } from "../interfaces/wortal";
 import { API_URL, WORTAL_API } from "../utils/config";
+import { convertStringToNumber } from "../utils/converters";
 import { invalidParams } from "../utils/error-handler";
 import { exception } from "../utils/logger";
 import { isValidNumber, isValidString } from "../utils/validators";
@@ -171,6 +172,17 @@ export function logLevelUp(level: string | number): void {
         throw invalidParams(undefined, WORTAL_API.ANALYTICS_LOG_LEVEL_UP, API_URL.ANALYTICS_LOG_LEVEL_UP);
     }
 
+    if (config.session.platform === "gamepix") {
+        if (!isValidNumber(level)) {
+            const levelNumber = convertStringToNumber(level);
+            if (levelNumber) {
+                config.platformSDK.updateLevel(levelNumber);
+            } else {
+                throw invalidParams(`GamePix requires a number for the level param, but one could not be extracted from the arg: ${level}`, WORTAL_API.ANALYTICS_LOG_SCORE, API_URL.ANALYTICS_LOG_SCORE);
+            }
+        }
+    }
+
     const data: AnalyticsEventData = {
         name: 'LevelUp',
         features: {
@@ -199,6 +211,17 @@ export function logLevelUp(level: string | number): void {
 export function logScore(score: string | number): void {
     if (!isValidString(score) && !isValidNumber(score)) {
         throw invalidParams(undefined, WORTAL_API.ANALYTICS_LOG_SCORE, API_URL.ANALYTICS_LOG_SCORE);
+    }
+
+    if (config.session.platform === "gamepix") {
+        if (!isValidNumber(score)) {
+            const scoreNumber = convertStringToNumber(score);
+            if (scoreNumber) {
+                config.platformSDK.updateScore(scoreNumber);
+            } else {
+                throw invalidParams(`GamePix requires a number for the score param, but one could not be extracted from the arg: ${score}`, WORTAL_API.ANALYTICS_LOG_SCORE, API_URL.ANALYTICS_LOG_SCORE);
+            }
+        }
     }
 
     const data: AnalyticsEventData = {

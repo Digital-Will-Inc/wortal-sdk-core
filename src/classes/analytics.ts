@@ -14,8 +14,10 @@ export class AnalyticsEvent implements IAnalyticsEvent {
     }
 
     send(): void {
-        if (config.session.platform === "gd") {
+        const platform = config.session.platform;
+        if (platform === "gd" || platform === "gamepix") {
             // Analytics are not allowed on GD as of v1.6.10.
+            // Analytics are not allowed on GamePix as of v1.6.11.
             return;
         }
 

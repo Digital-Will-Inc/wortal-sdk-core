@@ -3,6 +3,7 @@ import { Tournament } from "../classes/tournament";
 import { InvitePayload, LinkMessagePayload, SharePayload, UpdatePayload } from "../interfaces/context";
 import { ContextFilter, InviteFilter } from "../types/context";
 import Wortal from "../index";
+import { warn } from "./logger";
 
 /** @hidden */
 export function convertToLinkMessagePayload(payload: SharePayload | UpdatePayload): LinkMessagePayload {
@@ -117,6 +118,34 @@ export function facebookTournamentToWortal(tournament: any): Tournament {
     return new Tournament(
         tournament.getID(), tournament.getContextID(), tournament.getEndTime(), tournament.getTitle(), tournament.getPayload()
     );
+}
+
+/**
+ * Attempts to convert a string to a number. This will extract the first number from the string.
+ * @example
+ * convertStringToNumber("Level 1") // 1
+ * convertStringToNumber("100 points") // 100
+ * @param value String to convert. Passing a non-string will result in a warning and null being returned.
+ * @returns {number|null} The first number extracted from the string, or null if no number was found.
+ * @hidden
+ */
+export function convertStringToNumber(value: any): number | null {
+    if (typeof value !== "string") {
+        warn(`convertStringToNumber: value is not a string. (value: ${value})`, typeof value);
+        return null;
+    }
+
+    const match = value.match(/\d+/);
+    if (match) {
+        const result = parseInt(match[0], 10);
+        if (isNaN(result)) {
+            return null;
+        } else {
+            return result;
+        }
+    } else {
+        return null;
+    }
 }
 
 function _convertInviteFilterToContextFilter(filter: InviteFilter | InviteFilter[]): [ContextFilter] | undefined {
