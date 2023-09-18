@@ -26,6 +26,7 @@ if (manualInitFlag === "true") {
 
 /** Wortal API */
 const Wortal = _Wortal;
+(window as any).Wortal = Wortal;
 
 Wortal._initializeInternal({ autoInitialize: isAutoInit }).then(() => {
     // Check Wortal.isInitialized or listen for the wortal-sdk-initialized event instead of relying on this.
