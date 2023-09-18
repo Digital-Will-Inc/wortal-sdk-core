@@ -43,6 +43,7 @@ declare const LinkGame: any;
 declare const ViberPlay: any;
 declare const FBInstant: any;
 declare const gdsdk: any;
+declare const GamePix: any;
 
 // URLs for the platform SDKs. They are declared here so that we can use them to load the SDKs when we
 // initialize the platforms.
@@ -53,6 +54,7 @@ const VIBER_SDK_SRC: string = "https://vbrpl.io/libs/viber-play-sdk/1.14.0/bundl
 const FB_SDK_SRC: string = "https://connect.facebook.net/en_US/fbinstant.7.1.js";
 const GD_SDK_SRC: string = "https://html5.api.gamedistribution.com/main.min.js";
 const CRAZY_GAMES_SRC: string = "https://sdk.crazygames.com/crazygames-sdk-v2.js";
+const GAME_PIX_SRC: string = "https://integration.gamepix.com/sdk/v3/gamepix.sdk.js";
 
 /**
  * Contains the configuration for the SDK. This includes the current session, game state, platform SDK, etc.
@@ -483,6 +485,8 @@ function _initializePlatform(): Promise<void> {
             return _initializePlatform_GD();
         case "crazygames":
             return _initializePlatform_CrazyGames();
+        case "gamepix":
+            return _initializePlatform_GamePix();
         case "debug":
             return _initializePlatform_Debug();
         default:
@@ -719,6 +723,7 @@ function _initializePlatform_GD(options?: any): Promise<void> {
 
 /**
  * Initializes the CrazyGames platform. This relies on Crazy Games' SDK.
+ * @returns {Promise<void>} Promise that resolve when the CrazyGames SDK has been initialized.
  * @hidden
  * @private
  */
@@ -760,6 +765,35 @@ function _initializePlatform_CrazyGames(): Promise<void> {
         }
 
         document.head.appendChild(crazyGamesSDK);
+    });
+}
+
+/**
+ * Initializes the GamePix platform. This relies on GamePix's SDK.
+ * @returns {Promise<void>} Promise that resolve when the GamePix SDK has been initialized.
+ * @hidden
+ * @private
+ */
+function _initializePlatform_GamePix(): Promise<void> {
+    const functionName = "_initializePlatform_GamePix()";
+    return Promise.resolve().then(() => {
+        const gamePixSDK = document.createElement("script");
+        gamePixSDK.src = GAME_PIX_SRC;
+
+        gamePixSDK.onload = () => {
+            if (typeof GamePix === "undefined") {
+                throw initializationError("Failed to load GamePix SDK.", functionName);
+            }
+
+            debug("GamePix platform SDK loaded.");
+            config.platformSDK = GamePix;
+        }
+
+        gamePixSDK.onerror = () => {
+            throw initializationError("Failed to load GamePix SDK.", functionName);
+        }
+
+        document.head.appendChild(gamePixSDK);
     });
 }
 
@@ -825,6 +859,9 @@ function _initializeSDK(): Promise<void> {
             return _initializeSDK_RakutenFacebook();
         case "crazygames":
             return _initializeSDK_CrazyGames();
+        case "gamepix":
+            return _initializeSDK_GamePix();
+        case "debug":
         default:
             return _initializeSDK_Debug();
     }
@@ -931,6 +968,25 @@ function _initializeSDK_GD(): Promise<void> {
  */
 function _initializeSDK_CrazyGames(): Promise<void> {
     const functionName = "_initializeSDK_CrazyGames()";
+    return Promise.resolve().then(() => {
+        return config.lateInitialize().then(() => {
+            tryEnableIAP();
+            debug(`SDK initialized for ${config.session.platform} platform.`);
+        }).catch((error: any) => {
+            throw initializationError(`Failed to initialize SDK during config.lateInitialize: ${error.message}`, functionName);
+        });
+    }).catch((error: any) => {
+        throw initializationError(`Failed to initialize SDK: ${error.message}`, functionName);
+    });
+}
+
+/**
+ * Initializes the SDK for the GamePix platform.
+ * @hidden
+ * @private
+ */
+function _initializeSDK_GamePix(): Promise<void> {
+    const functionName = "_initializeSDK_GamePix()";
     return Promise.resolve().then(() => {
         return config.lateInitialize().then(() => {
             tryEnableIAP();

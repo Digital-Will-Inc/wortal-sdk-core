@@ -56,6 +56,8 @@ export class Session {
             return "wortal";
         } else if (PLATFORM_DOMAINS["crazygames"].some(domain => host.includes(domain))) {
             return "crazygames";
+        } else if (PLATFORM_DOMAINS["gamepix"].some(domain => host.includes(domain))) {
+            return "gamepix";
         } else {
             return "debug";
         }
@@ -109,6 +111,12 @@ export class Session {
                 break;
             case "crazygames":
                 // Example URL: https://www.crazygames.com/game/sushi-supply-co
+                // ID: sushi-supply-co
+                url = document.URL.split("/");
+                id = url[4];
+                break;
+            case "gamepix":
+                // Example URL: https://gamepix.com/play/sushi-supply-co
                 // ID: sushi-supply-co
                 url = document.URL.split("/");
                 id = url[4];
