@@ -122,6 +122,7 @@ export class Player {
             case "crazygames":
                 return this._crazyGamesPlayer?.id || this.generateRandomID();
             case "gd":
+            case "gamepix":
             case "debug":
             default:
                 return this.generateRandomID();
@@ -138,6 +139,7 @@ export class Player {
                 return this._crazyGamesPlayer?.username || "CrazyGames Player";
             case "wortal":
             case "gd":
+            case "gamepix":
             case "debug":
             default:
                 return "WortalPlayer";
@@ -154,6 +156,7 @@ export class Player {
                 return this._crazyGamesPlayer?.profilePictureUrl || "https://images.crazygames.com/userportal/avatars/4.png";
             case "wortal":
             case "gd":
+            case "gamepix":
             case "debug":
             default:
                 return "https://storage.googleapis.com/html5gameportal.com/images/08ac22fd-6e4b-4a33-9ea5-89bb412f6099-Trash_Factory_Facebook_Small_App_Icon_1024x1024.png";
@@ -170,6 +173,7 @@ export class Player {
             case "facebook":
             case "gd":
             case "crazygames":
+            case "gamepix":
             case "debug":
             default:
                 return false;
