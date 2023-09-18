@@ -40,8 +40,11 @@ function playerGetConnectedPlayersAsync() {
     Wortal.player.getConnectedPlayersAsync()
         .then(result => {
             appendText("Connected players: " + result.length);
-            appendText("Connect player 1: ", result[0].name);
-            appendText(JSON.stringify(result))
+            if (result.length > 0) {
+                for (let i = 0; i < result.length; i++) {
+                    appendText(`Player ${i}: ${result[i].name}`);
+                }
+            }
         })
         .catch(error => appendText(error));
 }

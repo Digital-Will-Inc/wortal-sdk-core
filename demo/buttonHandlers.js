@@ -9,6 +9,10 @@ document.getElementById('ads').addEventListener('click', () => {
     showGrid('grid-ads');
 });
 
+document.getElementById('analytics').addEventListener('click', () => {
+    showGrid('grid-analytics');
+});
+
 document.getElementById('context').addEventListener('click', () => {
     showGrid('grid-context');
 });
@@ -50,6 +54,17 @@ document.getElementById('ads-showInterstitial').addEventListener('click', () => 
 
 document.getElementById('ads-showRewarded').addEventListener('click', () => {
     showRewarded();
+});
+
+////////////////////////////////////
+// Analytics
+////////////////////////////////////
+document.getElementById('analytics-logLevelUp').addEventListener('click', () => {
+    analyticsLogLevelUp();
+});
+
+document.getElementById('analytics-logScore').addEventListener('click', () => {
+    analyticsLogScore();
 });
 
 ////////////////////////////////////
