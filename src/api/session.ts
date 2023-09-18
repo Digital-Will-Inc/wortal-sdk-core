@@ -99,7 +99,11 @@ export function setSessionData(data: Record<string, unknown>): void {
  * @returns {string} Locale in [BCP47](http://www.ietf.org/rfc/bcp/bcp47.txt) format.
  */
 export function getLocale(): string {
-    return navigator.language;
+    if (config.session.platform === "gamepix") {
+        return config.platformSDK.lang();
+    } else {
+        return navigator.language;
+    }
 }
 
 /**
@@ -250,6 +254,8 @@ export function happyTime(): void {
     const platform = config.session.platform;
     if (platform === "crazygames") {
         config.platformSDK.game.happytime();
+    } else if (platform === "gamepix") {
+        config.platformSDK.happyMoment();
     }
 }
 
