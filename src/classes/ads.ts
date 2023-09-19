@@ -87,6 +87,10 @@ export class InterstitialAd extends AdInstance {
                             debug("Ad not filled, showing backfill..");
                             _showBackFill(this.adData.placementType!, this.adData.description, this.callbacks);
                             return;
+                        } else if (platform === "facebook") {
+                            this.logEvent(false);
+                            this.callbacks.noFill();
+                            return;
                         }
 
                         if (attempt < this.retryAttempts && this.adData.placementType !== "preroll") {
@@ -175,6 +179,10 @@ export class RewardedAd extends AdInstance {
                         if (platform === "viber") {
                             debug("Ad not filled, showing backfill..");
                             _showBackFill(this.adData.placementType!, this.adData.description, this.callbacks);
+                            return;
+                        } else if (platform === "facebook") {
+                            this.logEvent(false);
+                            this.callbacks.noFill();
                             return;
                         }
 
