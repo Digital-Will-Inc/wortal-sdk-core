@@ -57,6 +57,12 @@ const CRAZY_GAMES_SRC: string = "https://sdk.crazygames.com/crazygames-sdk-v2.js
 const GAME_PIX_SRC: string = "https://integration.gamepix.com/sdk/v3/gamepix.sdk.js";
 
 /**
+ * Functions stored here will be called when the game is paused.
+ * @hidden
+ */
+const _onPauseFunctions: (() => void)[] = [];
+
+/**
  * Contains the configuration for the SDK. This includes the current session, game state, platform SDK, etc.
  * @hidden
  */
@@ -354,6 +360,8 @@ export function onPause(callback: () => void): void {
                 callback();
             });
         }
+    } else {
+        _onPauseFunctions.push(callback);
     }
 }
 
@@ -427,6 +435,7 @@ export async function _initializeInternal(options: InitializationOptions): Promi
     info("Initializing SDK " + __VERSION__);
     addLoadingListener();
     addGameEndEventListener();
+    _addPauseListener();
 
     const platform = config.session.platform;
     _initializePlatform().then(() => {
@@ -1075,5 +1084,21 @@ function _initializeAdBackFill(): Promise<void> {
         }).catch((error: any) => {
             throw operationFailed(`Failed to fetch ad config for backfill: ${error.message}`, functionName);
         });
+    });
+}
+
+/**
+ * Adds a listener for the game losing focus, which will trigger any stored onPause functions. There is no onResume
+ * function so games should display a popup to allow the player to resume the game when they have returned to the game.
+ * @hidden
+ * @private
+ */
+function _addPauseListener(): void {
+    document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "hidden") {
+            _onPauseFunctions.forEach((callback) => {
+                callback();
+            });
+        }
     });
 }
