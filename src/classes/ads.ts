@@ -40,10 +40,12 @@ class AdInstance implements IAdInstance {
         this.retryAttempts = retryAttempts;
     }
 
-    show(): void {}
+    show(): void {
+    }
 
     /* eslint-disable-next-line */
-    logEvent(success: boolean, viewedReward?: boolean): void {}
+    logEvent(success: boolean, viewedReward?: boolean): void {
+    }
 }
 
 /** @hidden */
@@ -88,6 +90,8 @@ export class InterstitialAd extends AdInstance {
                             _showBackFill(this.adData.placementType!, this.adData.description, this.callbacks);
                             return;
                         } else if (platform === "facebook") {
+                            // FB: We had issues with retry calls resulting in a hanging Promise on iOS, so we
+                            // disabled retries.
                             this.logEvent(false);
                             this.callbacks.noFill();
                             return;
@@ -181,6 +185,8 @@ export class RewardedAd extends AdInstance {
                             _showBackFill(this.adData.placementType!, this.adData.description, this.callbacks);
                             return;
                         } else if (platform === "facebook") {
+                            // FB: We had issues with retry calls resulting in a hanging Promise on iOS, so we
+                            // disabled retries.
                             this.logEvent(false);
                             this.callbacks.noFill();
                             return;
@@ -454,6 +460,8 @@ function _showAd(placementType: PlacementType, placementId: string, description:
             return _showAd_GD(placementType, callbacks);
         case "crazygames":
             return _showAd_CrazyGames(placementType, callbacks);
+        case "gamepix":
+            return _showAd_GamePix(placementType, callbacks);
         default:
             exception(`Unsupported platform for ads: ${config.session.platform}`);
     }
@@ -608,6 +616,23 @@ function _showAd_CrazyGames(placementType: PlacementType, callbacks: AdCallbacks
     }
 }
 
+/**
+ * See: https://my.gamepix.com/sdk/doc
+ * @hidden
+ */
+function _showAd_GamePix(placementType: PlacementType, callbacks: AdCallbacks): void {
+    if (typeof config.platformSDK === "undefined") {
+        exception("Platform SDK not initialized. This is a fatal error that should have been caught during initialization.");
+        return;
+    }
+
+    if (placementType === "reward") {
+        return _showRewarded_GamePix(callbacks);
+    } else {
+        return _showInterstitial_GamePix(callbacks);
+    }
+}
+
 /** @hidden */
 function _showInterstitial_Facebook_Rakuten(placementId: string, callbacks: AdCallbacks) {
     debug("Attempting to show interstitial ad..");
@@ -654,9 +679,30 @@ function _showInterstitial_CrazyGames(callbacks: AdCallbacks): void {
     const callbacksObj = {
         adStarted: callbacks.beforeAd,
         adFinished: callbacks.afterAd,
-        adError: (error: any) => { _onAdErrorOrNoFill(error, callbacks); },
+        adError: (error: any) => {
+            _onAdErrorOrNoFill(error, callbacks);
+        },
     };
     config.platformSDK.ad.requestAd("midgame", callbacksObj);
+}
+
+/** @hidden */
+function _showInterstitial_GamePix(callbacks: AdCallbacks): void {
+    callbacks.beforeAd && callbacks.beforeAd();
+    config.platformSDK.interstitialAd().then((result: any) => {
+        debug("Interstitial ad result", result);
+        // The docs say to check result.success but this was consistently undefined during testing despite
+        // the ad showing successfully.
+        if (result) {
+            callbacks.afterAd && callbacks.afterAd();
+        } else {
+            debug("Interstitial ad failed to show.");
+            _onAdErrorOrNoFill(null, callbacks);
+        }
+    }).catch((error: any) => {
+        debug("Interstitial ad failed to show.", error);
+        _onAdErrorOrNoFill(error, callbacks);
+    });
 }
 
 /** @hidden */
@@ -745,6 +791,25 @@ function _showRewarded_CrazyGames(callbacks: AdCallbacks): void {
         },
     };
     config.platformSDK.ad.requestAd("rewarded", callbacksObj);
+}
+
+/** @hidden */
+function _showRewarded_GamePix(callbacks: AdCallbacks): void {
+    callbacks.beforeAd && callbacks.beforeAd();
+    config.platformSDK.rewardAd().then((result: any) => {
+        debug("Rewarded ad result", result);
+        if (result.success) {
+            callbacks.afterAd && callbacks.afterAd();
+            callbacks.adViewed && callbacks.adViewed();
+        } else {
+            callbacks.afterAd && callbacks.afterAd();
+            callbacks.adDismissed && callbacks.adDismissed();
+        }
+    }).catch((error: any) => {
+        debug("Rewarded ad failed to show.", error);
+        callbacks.adDismissed && callbacks.adDismissed();
+        _onAdErrorOrNoFill(error, callbacks);
+    });
 }
 
 /**
