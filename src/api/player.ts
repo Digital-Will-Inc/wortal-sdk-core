@@ -10,7 +10,7 @@ import {
     rethrowError_CrazyGames,
     rethrowError_Facebook_Rakuten
 } from "../utils/error-handler";
-import { warn } from "../utils/logger";
+import { debug } from "../utils/logger";
 import { isSupportedOnCurrentPlatform } from "../utils/wortal-utils";
 import { config } from "./index";
 
@@ -99,7 +99,22 @@ export function getDataAsync(keys: string[]): Promise<any> {
                 });
                 return result;
             } else {
-                warn("No wortal-data found in localStorage. Returning empty object.");
+                debug("No save data found in localStorage. Returning empty object.");
+                return {};
+            }
+        }
+
+        if (platform === "wortal" || platform === "gd" || platform === "crazygames") {
+            const data = localStorage.getItem(`${config.session.gameId}-save-data`);
+            if (data) {
+                const dataObj = JSON.parse(data);
+                const result: any = {};
+                keys.forEach((key: string) => {
+                    result[key] = dataObj[key];
+                });
+                return result;
+            } else {
+                debug("No save data found in localStorage. Returning empty object.");
                 return {};
             }
         }
@@ -153,6 +168,15 @@ export function setDataAsync(data: Record<string, unknown>): Promise<void> {
         if (platform === "debug") {
             try {
                 localStorage.setItem("wortal-data", JSON.stringify(data));
+            } catch (error: any) {
+                throw operationFailed(`Error saving object to localStorage: ${error.message}`, WORTAL_API.PLAYER_SET_DATA_ASYNC);
+            }
+        }
+
+        if (platform === "wortal" || platform === "gd" || platform === "crazygames") {
+            try {
+                localStorage.setItem(`${config.session.gameId}-save-data`, JSON.stringify(data));
+                debug("Saved data to localStorage.");
             } catch (error: any) {
                 throw operationFailed(`Error saving object to localStorage: ${error.message}`, WORTAL_API.PLAYER_SET_DATA_ASYNC);
             }

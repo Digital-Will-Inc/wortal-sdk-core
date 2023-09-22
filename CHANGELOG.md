@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.6.12] - 2023-09-19
+### Changed
+- Ads
+  - Disabled ad call retries on Facebook
+
+## [1.6.11] - 2023-09-19
+### Added
+- Player
+  - setDataAsync and getDataAsync are now supported on all platforms
+
 ## [1.6.10] - 2023-09-13
 ### Added
 - Core
