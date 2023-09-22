@@ -119,6 +119,21 @@ export function getDataAsync(keys: string[]): Promise<any> {
             }
         }
 
+        if (platform === "gamepix") {
+            const data = config.platformSDK.localStorage.getItem(`${config.session.gameId}-save-data`);
+            if (data) {
+                const dataObj = JSON.parse(data);
+                const result: any = {};
+                keys.forEach((key: string) => {
+                    result[key] = dataObj[key];
+                });
+                return result;
+            } else {
+                debug("No save data found in localStorage. Returning empty object.");
+                return {};
+            }
+        }
+
         if (platform === "link" || platform === "viber" || platform === "facebook") {
             return config.platformSDK.player.getDataAsync(keys)
                 .then((data: any) => {
@@ -176,6 +191,15 @@ export function setDataAsync(data: Record<string, unknown>): Promise<void> {
         if (platform === "wortal" || platform === "gd" || platform === "crazygames") {
             try {
                 localStorage.setItem(`${config.session.gameId}-save-data`, JSON.stringify(data));
+                debug("Saved data to localStorage.");
+            } catch (error: any) {
+                throw operationFailed(`Error saving object to localStorage: ${error.message}`, WORTAL_API.PLAYER_SET_DATA_ASYNC);
+            }
+        }
+
+        if (platform === "gamepix") {
+            try {
+                config.platformSDK.localStorage.setItem(`${config.session.gameId}-save-data`, JSON.stringify(data));
                 debug("Saved data to localStorage.");
             } catch (error: any) {
                 throw operationFailed(`Error saving object to localStorage: ${error.message}`, WORTAL_API.PLAYER_SET_DATA_ASYNC);
