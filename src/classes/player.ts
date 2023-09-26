@@ -118,7 +118,7 @@ export class Player {
             case "facebook":
                 return config.platformSDK.player.getID();
             case "wortal":
-                return (window as any).wortalSessionId;
+                return window.wortalSessionId;
             case "crazygames":
                 return this._crazyGamesPlayer?.id || this.generateRandomID();
             case "gd":

@@ -19,7 +19,7 @@ export class Session {
         debug("Initializing session...");
         this._current.country = this._setCountry();
         this._current.platform = this._setPlatform();
-        this._current.gameId = (window as any).wortalGameID;
+        this._current.gameId = window.wortalGameID;
         this._current.browser = navigator.userAgent;
         debug("Session initialized: ", this._current);
     }

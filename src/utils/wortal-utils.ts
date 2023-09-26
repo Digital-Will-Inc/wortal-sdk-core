@@ -6,6 +6,14 @@ import { invalidParams } from "./error-handler";
 import { debug, exception } from "./logger";
 import { isValidShareDestination, isValidString } from "./validators";
 
+//#region SDK Utility functions
+
+/**
+ * Functions stored here will be called when the game is paused.
+ * @hidden
+ */
+export const onPauseFunctions: (() => void)[] = [];
+
 /**
  * Does what the name suggests -- delays execution until a condition is met.
  * @param {Function} condition Function that returns a boolean. If the boolean is true, the promise will resolve.
@@ -150,6 +158,21 @@ export function addGameEndEventListener(): void {
 }
 
 /**
+ * Adds a listener for the game losing focus, which will trigger any stored onPause functions. There is no onResume
+ * function so games should display a popup to allow the player to resume the game when they have returned to the game.
+ * @hidden
+ */
+export function addPauseListener(): void {
+    document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "hidden") {
+            onPauseFunctions.forEach((callback) => {
+                callback();
+            });
+        }
+    });
+}
+
+/**
  * Adds an event handler to the GD events object. This is used to trigger callbacks from the GD SDK.
  * @param {string} eventName Name of the event.
  * @param {Function} callback Callback function to be called when the event is triggered.
@@ -217,13 +240,11 @@ export function isSupportedOnCurrentPlatform(api: string): boolean {
     return Wortal.getSupportedAPIs().includes(api);
 }
 
-/**
- * Shares the game on the specified platform. This is only supported on Wortal and was ported over from the now
- * deprecated wortal.js. It is not recommended to use this function, as it is called from the page
- * displaying the game.
- * @hidden
- */
-(window as any).shareGame = function (destination: ShareTo, message: string): void {
+//#endregion
+//#region Wortal page functions
+
+//@ts-ignore
+window.shareGame = function (destination: ShareTo, message: string): void {
     if (!isValidShareDestination(destination)) {
         throw invalidParams(undefined, "shareGame()");
     }
@@ -263,3 +284,5 @@ function _shareOnTwitter(message: string): void {
     const url = "https://twitter.com/intent/tweet"
     window.open(`${url}?url=${shareUrl}&text=${message}`, "_blank");
 }
+
+//#endregion

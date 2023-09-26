@@ -265,7 +265,13 @@ export class AdConfig {
     constructor() {
         debug("Initializing AdConfig..");
         const platform = config.session.platform;
-        if (platform === "gd") {
+        // We use AdSense on Wortal, and for backfill on Viber.
+        if (platform === "wortal" || platform === "viber") {
+            window.adsbygoogle = window.adsbygoogle || [];
+            window.adBreak = window.adConfig = function (o: any) {
+                window.adsbygoogle.push(o);
+            };
+        } else if (platform === "gd") {
             this._gdCallbacks = {};
         }
     }
@@ -407,11 +413,11 @@ export class AdConfig {
     private async _setFacebookAdUnitIds(): Promise<void> {
         const functionName = "_setFacebookAdUnitIds()";
         debug("Fetching Facebook ad units from Wortal API..");
-        if (typeof (window as any).wortalGameID === "undefined") {
+        if (typeof window.wortalGameID === "undefined") {
             return Promise.reject(initializationError("Failed to retrieve wortalGameID. This may be due to an error when uploading the game bundle to Facebook.", functionName));
         }
 
-        const url = APIEndpoints.ADS + (window as any).wortalGameID;
+        const url = APIEndpoints.ADS + window.wortalGameID;
         await fetch(url).then((response: Response) => {
             debug("Fetching Facebook ad units from Wortal API response: ", response);
             return response.json().then((adUnits: FacebookAdUnitsResponse) => {
@@ -441,6 +447,8 @@ export class AdConfig {
         });
     }
 }
+
+//#region Platform ad implementations
 
 /**
  * Shows an ad. This replaces the triggerWortalAd() call from the deprecated wortal.js. It was simpler to just
@@ -488,7 +496,7 @@ function _showAd_Wortal(placement: PlacementType, description: string, callbacks
                 client_id: config.adConfig.clientID,
                 host_channel_id: config.adConfig.channelID,
                 host_id: config.adConfig.hostID,
-                session_id: (window as any).wortalSessionId,
+                session_id: window.wortalSessionId,
                 placement,
                 breakFormat: placementInfo.breakFormat,
                 breakStatus: placementInfo.breakStatus,
@@ -523,7 +531,7 @@ function _showAd_Wortal(placement: PlacementType, description: string, callbacks
             }
         }, 500);
 
-        (window as any).adBreak(params);
+        window.adBreak(params);
     } else {
         debug("Attempting to show", placement);
         // Set a timeout to handle ads not showing.
@@ -535,7 +543,7 @@ function _showAd_Wortal(placement: PlacementType, description: string, callbacks
                         client_id: config.adConfig.clientID,
                         host_channel_id: config.adConfig.channelID,
                         host_id: config.adConfig.hostID,
-                        session_id: (window as any).wortalSessionId,
+                        session_id: window.wortalSessionId,
                         placement
                     }
                 });
@@ -557,7 +565,7 @@ function _showAd_Wortal(placement: PlacementType, description: string, callbacks
         };
 
         params.afterAd = callbacks.afterAd;
-        (window as any).adBreak(params);
+        window.adBreak(params);
     }
 }
 
@@ -633,6 +641,9 @@ function _showAd_GamePix(placementType: PlacementType, callbacks: AdCallbacks): 
     }
 }
 
+//#endregion
+//#region Interstitial implementations
+
 /** @hidden */
 function _showInterstitial_Facebook_Rakuten(placementId: string, callbacks: AdCallbacks) {
     debug("Attempting to show interstitial ad..");
@@ -703,6 +714,9 @@ function _showInterstitial_GamePix(callbacks: AdCallbacks): void {
         _onAdErrorOrNoFill(error, callbacks);
     });
 }
+
+//#endregion
+//#region Rewarded implementations
 
 /** @hidden */
 function _showRewarded_Facebook_Rakuten(placementId: string, callbacks: AdCallbacks) {
@@ -818,6 +832,8 @@ function _showRewarded_GamePix(callbacks: AdCallbacks): void {
     });
 }
 
+//#endregion
+
 /**
  * Backfills an ad when a platform does not fill an ad request. Uses AFG to show the ad.
  * @hidden
@@ -897,7 +913,7 @@ function _showBackFill(placementType: PlacementType, description: string, callba
     };
 
     params.afterAd = callbacks.afterAd;
-    (window as any).adBreak(params);
+    window.adBreak(params);
 }
 
 /**

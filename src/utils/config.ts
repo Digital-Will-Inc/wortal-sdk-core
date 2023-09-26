@@ -533,3 +533,17 @@ export const API_URL = {
     TOURNAMENT_SHARE_ASYNC: "https://sdk.html5gameportal.com/api/wortal/#tournamentshareasync",
     TOURNAMENT_JOIN_ASYNC: "https://sdk.html5gameportal.com/api/wortal/#tournamentjoinasync",
 }
+
+/**
+ * Source URLs for platform SDKs.
+ * @hidden
+ */
+export const SDK_SRC = {
+    GOOGLE: "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js",
+    LINK: "https://lg.rgames.jp/libs/link-game-sdk/1.3.0/bundle.js",
+    VIBER: "https://vbrpl.io/libs/viber-play-sdk/1.14.0/bundle.js",
+    FACEBOOK: "https://connect.facebook.net/en_US/fbinstant.7.1.js",
+    GD: "https://html5.api.gamedistribution.com/main.min.js",
+    CRAZY_GAMES: "https://sdk.crazygames.com/crazygames-sdk-v2.js",
+    GAME_PIX: "https://integration.gamepix.com/sdk/v3/gamepix.sdk.js",
+}
