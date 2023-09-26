@@ -1,4 +1,4 @@
-import { Product, Purchase, PurchaseConfig } from "../interfaces/iap";
+import { Product, Purchase, PurchaseConfig, SubscribableProduct, Subscription } from "../interfaces/iap";
 import { Error_Facebook_Rakuten } from "../interfaces/wortal";
 import { API_URL, WORTAL_API } from "../utils/config";
 import { invalidParams, notSupported, rethrowError_Facebook_Rakuten } from "../utils/error-handler";
@@ -194,6 +194,183 @@ export function consumePurchaseAsync(token: string): Promise<void> {
             return config.platformSDK.payments.consumePurchaseAsync(token)
                 .catch((error: Error_Facebook_Rakuten) => {
                     throw rethrowError_Facebook_Rakuten(error, WORTAL_API.IAP_CONSUME_PURCHASE_ASYNC, API_URL.IAP_CONSUME_PURCHASE_ASYNC);
+                });
+        }
+    });
+}
+
+/**
+ * Fetches the game's catalog for subscribable products.
+ * @example
+ * Wortal.iap.getSubscribableCatalogAsync()
+ * .then(products => console.log(products));
+ * @returns {Promise<SubscribableProduct[]>} Promise that resolves with an array of subscribable products available to the player.
+ * @throws {ErrorMessage} See error.message for details.
+ * <ul>
+ * <li>NOT_SUPPORTED</li>
+ * <li>CLIENT_UNSUPPORTED_OPERATION</li>
+ * <li>NETWORK_FAILURE</li>
+ * </ul>
+ */
+export function getSubscribableCatalogAsync(): Promise<SubscribableProduct[]> {
+    const platform = config.session.platform;
+    return Promise.resolve().then(() => {
+        if (!config.isIAPEnabled) {
+            throw notSupported(undefined, WORTAL_API.IAP_GET_SUBSCRIBABLE_CATALOG_ASYNC);
+        }
+
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.IAP_GET_SUBSCRIBABLE_CATALOG_ASYNC)) {
+            throw notSupported(undefined, WORTAL_API.IAP_GET_SUBSCRIBABLE_CATALOG_ASYNC);
+        }
+
+        if (platform === "debug") {
+            //TODO: getMockSubscribableProduct
+        }
+
+        if (platform === "facebook") {
+            return config.platformSDK.payments.getSubscribableCatalogAsync()
+                .then((products: SubscribableProduct[]) => {
+                    return products;
+                })
+                .catch((error: Error_Facebook_Rakuten) => {
+                    throw rethrowError_Facebook_Rakuten(error, WORTAL_API.IAP_GET_SUBSCRIBABLE_CATALOG_ASYNC, API_URL.IAP_GET_SUBSCRIBABLE_CATALOG_ASYNC);
+                });
+        }
+    });
+}
+
+/**
+ * Begins the purchase subscription flow for a specific product. Will immediately reject if called before
+ * startGameAsync() has resolved and fail if the productID passed is not that of a subscribable product.
+ * @example
+ * Wortal.iap.purchaseSubscriptionAsync('my_product_123')
+ * .then(subscription => console.log(subscription));
+ * @param productID The subscribable product id that will be purchased.
+ * @returns {Promise<Subscription>} Promise that resolves when the product is successfully purchased by the player. Otherwise, it rejects.
+ * @throws {ErrorMessage} See error.message for details.
+ * <ul>
+ * <li>NOT_SUPPORTED</li>
+ * <li>CLIENT_UNSUPPORTED_OPERATION</li>
+ * <li>PAYMENTS_NOT_INITIALIZED</li>
+ * <li>INVALID_PARAM</li>
+ * <li>NETWORK_FAILURE</li>
+ * <li>INVALID_OPERATION</li>
+ * <li>USER_INPUT</li>
+ * </ul>
+ */
+export function purchaseSubscriptionAsync(productID: string): Promise<Subscription> {
+    const platform = config.session.platform;
+    return Promise.resolve().then(() => {
+        if (!isValidString(productID)) {
+            throw invalidParams(undefined, WORTAL_API.IAP_PURCHASE_SUBSCRIPTION_ASYNC, API_URL.IAP_PURCHASE_SUBSCRIPTION_ASYNC);
+        }
+
+        if (!config.isIAPEnabled) {
+            throw notSupported(undefined, WORTAL_API.IAP_PURCHASE_SUBSCRIPTION_ASYNC);
+        }
+
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.IAP_PURCHASE_SUBSCRIPTION_ASYNC)) {
+            throw notSupported(undefined, WORTAL_API.IAP_PURCHASE_SUBSCRIPTION_ASYNC);
+        }
+
+        if (platform === "debug") {
+            //TODO: getMockSubscription
+        }
+
+        if (platform === "facebook") {
+            return config.platformSDK.payments.purchaseSubscriptionAsync(productID)
+                .then((subscription: Subscription) => {
+                    return subscription;
+                })
+                .catch((error: Error_Facebook_Rakuten) => {
+                    throw rethrowError_Facebook_Rakuten(error, WORTAL_API.IAP_PURCHASE_SUBSCRIPTION_ASYNC, API_URL.IAP_PURCHASE_SUBSCRIPTION_ASYNC);
+                });
+        }
+    });
+}
+
+/**
+ * Fetches all the player's subscriptions.
+ * @example
+ * Wortal.iap.getSubscriptionsAsync()
+ * .then(subscriptions => console.log(subscriptions));
+ * @returns {Promise<Subscription[]>} Promise that resolves with an array of subscriptions that the player has made for the game.
+ * @throws {ErrorMessage} See error.message for details.
+ * <ul>
+ * <li>NOT_SUPPORTED</li>
+ * <li>CLIENT_UNSUPPORTED_OPERATION</li>
+ * <li>NETWORK_FAILURE</li>
+ * </ul>
+ */
+export function getSubscriptionsAsync(): Promise<Subscription[]> {
+    const platform = config.session.platform;
+    return Promise.resolve().then(() => {
+        if (!config.isIAPEnabled) {
+            throw notSupported(undefined, WORTAL_API.IAP_GET_SUBSCRIPTIONS_ASYNC);
+        }
+
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.IAP_GET_SUBSCRIPTIONS_ASYNC)) {
+            throw notSupported(undefined, WORTAL_API.IAP_GET_SUBSCRIPTIONS_ASYNC);
+        }
+
+        if (platform === "debug") {
+            //TODO: getMockSubscription
+        }
+
+        if (platform === "facebook") {
+            return config.platformSDK.payments.getSubscriptionsAsync()
+                .then((subscriptions: Subscription[]) => {
+                    return subscriptions;
+                })
+                .catch((error: Error_Facebook_Rakuten) => {
+                    throw rethrowError_Facebook_Rakuten(error, WORTAL_API.IAP_GET_SUBSCRIPTIONS_ASYNC, API_URL.IAP_GET_SUBSCRIPTIONS_ASYNC);
+                });
+        }
+    });
+}
+
+/**
+ * Starts the asynchronous process of cancelling an existing subscription. This operation will only work if the
+ * subscription entitlement is active. If the promise is resolved, this is only an indication that the cancellation has
+ * begun and NOT that it has necessarily succeeded.
+ *
+ * The subscription's deactivationTime and isEntitlementActive properties should be queried for the latest status.
+ * @example
+ * Wortal.iap.cancelSubscriptionAsync('abc123')
+ * .then(() => console.log('Subscription cancellation process has begun.'));
+ * @param purchaseToken The purchase token of the subscription that should be cancelled.
+ * @returns {Promise<void>} Promise that resolves when the subscription cancellation process has begun.
+ * @throws {ErrorMessage} See error.message for details.
+ * <ul>
+ * <li>NOT_SUPPORTED</li>
+ * <li>CLIENT_UNSUPPORTED_OPERATION</li>
+ * <li>PAYMENTS_OPERATION_FAILURE</li>
+ * <li>INVALID_PARAM</li>
+ * </ul>
+ */
+export function cancelSubscriptionAsync(purchaseToken: string): Promise<void> {
+    const platform = config.session.platform;
+    return Promise.resolve().then(() => {
+        if (!isValidString(purchaseToken)) {
+            throw invalidParams(undefined, WORTAL_API.IAP_CANCEL_SUBSCRIPTION_ASYNC, API_URL.IAP_CANCEL_SUBSCRIPTION_ASYNC);
+        }
+
+        if (!config.isIAPEnabled) {
+            throw notSupported(undefined, WORTAL_API.IAP_CANCEL_SUBSCRIPTION_ASYNC);
+        }
+
+        if (!isSupportedOnCurrentPlatform(WORTAL_API.IAP_CANCEL_SUBSCRIPTION_ASYNC)) {
+            throw notSupported(undefined, WORTAL_API.IAP_CANCEL_SUBSCRIPTION_ASYNC);
+        }
+
+        if (platform === "debug") {
+            return;
+        }
+
+        if (platform === "facebook") {
+            return config.platformSDK.payments.cancelSubscriptionAsync(purchaseToken)
+                .catch((error: Error_Facebook_Rakuten) => {
+                    throw rethrowError_Facebook_Rakuten(error, WORTAL_API.IAP_CANCEL_SUBSCRIPTION_ASYNC, API_URL.IAP_CANCEL_SUBSCRIPTION_ASYNC);
                 });
         }
     });

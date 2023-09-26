@@ -160,6 +160,22 @@ document.getElementById('iap-consumePurchaseAsync').addEventListener('click', ()
     iapConsumePurchaseAsync();
 });
 
+document.getElementById('iap-getSubscribableCatalogAsync').addEventListener('click', () => {
+    iapGetSubscribableCatalogAsync();
+});
+
+document.getElementById('iap-purchaseSubscriptionAsync').addEventListener('click', () => {
+    iapPurchaseSubscriptionAsync();
+});
+
+document.getElementById('iap-getSubscriptionsAsync').addEventListener('click', () => {
+    iapGetSubscriptionsAsync();
+});
+
+document.getElementById('iap-cancelSubscriptionAsync').addEventListener('click', () => {
+    iapCancelSubscriptionAsync();
+});
+
 ////////////////////////////////////
 // Leaderboard
 ////////////////////////////////////

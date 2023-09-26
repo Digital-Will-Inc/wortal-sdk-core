@@ -85,6 +85,7 @@ const ErrorMessages: Record<string, string> = {
     NOT_SUPPORTED: "Function or feature is not currently supported on the platform currently being played on.",
     OPERATION_FAILED: "The operation failed, this is typically thrown during a failed web request and the message may include additional details about the failure.",
     PAYMENTS_NOT_INITIALIZED: "The client has not completed setting up payments or is not accepting payments API calls.",
+    PAYMENTS_OPERATION_FAILURE: "The client encountered an error while performing a payments operation.",
     PENDING_REQUEST: "Represents a rejection due an existing request that conflicts with this one. For example, we will reject any calls that would surface a Facebook UI when another request that depends on a Facebook UI is pending.",
     RATE_LIMITED: "Some APIs or operations are being called too often. This is likely due to the game calling a particular API an excessive amount of times in a very short period. Reducing the rate of requests should cause this error to go away.",
     SAME_CONTEXT: "The game attempted to perform a context switch into the current context.",
