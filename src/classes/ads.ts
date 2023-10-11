@@ -470,8 +470,13 @@ function _showAd(placementType: PlacementType, placementId: string, description:
             return _showAd_CrazyGames(placementType, callbacks);
         case "gamepix":
             return _showAd_GamePix(placementType, callbacks);
+        case "telegram":
+            //TODO: implement Telegram ads when available.
         default:
+            // Ensure we don't cause the game to get stuck waiting for callbacks if we reached this point.
             exception(`Unsupported platform for ads: ${config.session.platform}`);
+            callbacks && callbacks.adDismissed && callbacks.adDismissed();
+            callbacks && callbacks.noFill && callbacks.noFill();
     }
 }
 

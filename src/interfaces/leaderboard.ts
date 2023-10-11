@@ -12,7 +12,14 @@ export interface LeaderboardEntryData {
     player?: LeaderboardPlayerData,
     rank: number,
     score: number,
-    formattedScore: string,
-    timestamp: number,
+    formattedScore?: string,
+    timestamp?: number,
     details?: string,
+}
+
+/** @hidden */
+export interface TelegramLeaderboardEntry {
+    position: number;
+    score: number;
+    username?: string;
 }

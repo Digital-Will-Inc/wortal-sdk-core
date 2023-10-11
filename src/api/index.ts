@@ -7,7 +7,7 @@ import * as _notifications from './notifications';
 import * as _player from './player';
 import * as _session from './session';
 import * as _tournament from './tournament';
-import { APIEndpoints, Error_CrazyGames, GD_EVENTS } from "../types/wortal";
+import { APIEndpoints, Error_CrazyGames, GD_EVENTS, TELEGRAM_API } from "../types/wortal";
 import { AuthPayload, AuthResponse, AuthResponse_CrazyGames, Error_Facebook_Rakuten } from "../interfaces/wortal";
 import { InitializationOptions } from "../interfaces/session";
 import SDKConfig, { API_URL, SDK_SRC, WORTAL_API } from "../utils/config";
@@ -32,7 +32,7 @@ import {
     addGDCallback,
     delayUntilConditionMet,
     isSupportedOnCurrentPlatform,
-    addPauseListener
+    addPauseListener, waitForTelegramCallback
 } from "../utils/wortal-utils";
 
 /**
@@ -317,6 +317,10 @@ export function setLoadingProgress(value: number): void {
             config.platformSDK.setLoadingProgress(value);
         }
     }
+
+    if (platform === "telegram") {
+        window.parent.postMessage({ playdeck: { method: "loading", value: value } }, "*");
+    }
 }
 
 /**
@@ -476,6 +480,8 @@ function _initializePlatform(): Promise<void> {
             return _initializePlatform_CrazyGames();
         case "gamepix":
             return _initializePlatform_GamePix();
+        case "telegram":
+            return _initalizePlatform_Telegram();
         case "debug":
             return _initializePlatform_Debug();
         default:
@@ -786,6 +792,31 @@ function _initializePlatform_GamePix(): Promise<void> {
 }
 
 /**
+ * Initializes the Telegram platform. The PlayDeck SDK exists within the wrapper the game is launched in, so we
+ * don't need to manage it ourselves.
+ * @returns {Promise<void>} Promise that resolve when the PlayDeck (Telegram) SDK has been initialized.
+ * @hidden
+ * @private
+ */
+function _initalizePlatform_Telegram(): Promise<void> {
+    return Promise.resolve().then(() => {
+        // This is just to check if we can successfully communicate with the Telegram SDK as it exists in the wrapper
+        // the game is rendered in.
+        // Also, getLocale requires a callback on Telegram and session.getLocale is synchronous,
+        // so we can grab it here and cache it for later use as it likely won't change during the session.
+        window.parent.postMessage({ playdeck: { method: TELEGRAM_API.GET_LOCALE } }, "*");
+        return waitForTelegramCallback(TELEGRAM_API.GET_LOCALE).then((locale: string) => {
+            //TODO: remove this when Telegram ads are implemented
+            config.adConfig.setAdBlocked(true);
+            config.session.locale = locale;
+            debug("Telegram platform SDK loaded.");
+        }).catch((error) => {
+            exception("Failed to fetch user locale.", error);
+        });
+    });
+}
+
+/**
  * Initializes the debugging platform. This is used when the game is running in a local or dev environment.
  * This will mock the platform SDK and allow the game to run without any platform dependencies, returning mock data
  * for all platform APIs. All APIs will be available, but some may not function exactly as they would on the platform.
@@ -849,6 +880,7 @@ function _initializeSDK(): Promise<void> {
         case "gd":
         case "crazygames":
         case "gamepix":
+        case "telegram":
         case "debug":
         default:
             return _initializeSDK_Default();

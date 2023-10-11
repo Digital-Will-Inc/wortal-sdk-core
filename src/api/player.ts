@@ -1,7 +1,7 @@
 import { ConnectedPlayer } from "../classes/player";
 import { ConnectedPlayerPayload, PlayerData, SignedASID } from "../interfaces/player";
 import { Error_Facebook_Rakuten } from "../interfaces/wortal";
-import { Error_CrazyGames } from "../types/wortal";
+import { Error_CrazyGames, TELEGRAM_API } from "../types/wortal";
 import { API_URL, WORTAL_API } from "../utils/config";
 import {
     invalidParams,
@@ -11,7 +11,7 @@ import {
     rethrowError_Facebook_Rakuten
 } from "../utils/error-handler";
 import { debug } from "../utils/logger";
-import { isSupportedOnCurrentPlatform } from "../utils/wortal-utils";
+import { isSupportedOnCurrentPlatform, waitForTelegramCallback } from "../utils/wortal-utils";
 import { config } from "./index";
 
 /**
@@ -143,12 +143,42 @@ export function getDataAsync(keys: string[]): Promise<any> {
                     throw rethrowError_Facebook_Rakuten(error, WORTAL_API.PLAYER_GET_DATA_ASYNC, API_URL.PLAYER_GET_DATA_ASYNC);
                 });
         }
+
+        if (platform === "telegram") {
+            window.parent.postMessage({
+                playdeck: {
+                    method: TELEGRAM_API.GET_DATA,
+                    key: `${config.session.gameId}-save-data`
+                }
+            }, "*");
+
+            return waitForTelegramCallback(TELEGRAM_API.GET_DATA).then((data: any) => {
+                const result: any = {};
+                let dataObj: any;
+
+                if (typeof data === "string") {
+                    dataObj = JSON.parse(data);
+                } else {
+                    dataObj = data;
+                }
+
+                keys.forEach((key: string) => {
+                    result[key] = dataObj[key];
+                });
+                return result;
+            }).catch((error: any) => {
+                throw operationFailed(`Error getting object from storage: ${error.message}`, WORTAL_API.PLAYER_GET_DATA_ASYNC);
+            });
+        }
     });
 }
 
 /**
- * Set data to be saved to the designated cloud storage of the current player. The game can store up to 1MB of data
- * for each unique player.
+ * Set data to be saved to the designated cloud storage of the current player.
+ *
+ * PLATFORM NOTE: Facebook/Link allow storage up to 1MB of data for each unique player.
+ *
+ * PLATFORM NOTE: Viber allows storage up to 1000 characters when stringified.
  * @example
  * Wortal.player.setDataAsync({
  *     items: {
@@ -183,6 +213,8 @@ export function setDataAsync(data: Record<string, unknown>): Promise<void> {
         if (platform === "debug") {
             try {
                 localStorage.setItem("wortal-data", JSON.stringify(data));
+                debug("Saved data to localStorage.");
+                return;
             } catch (error: any) {
                 throw operationFailed(`Error saving object to localStorage: ${error.message}`, WORTAL_API.PLAYER_SET_DATA_ASYNC);
             }
@@ -192,6 +224,7 @@ export function setDataAsync(data: Record<string, unknown>): Promise<void> {
             try {
                 localStorage.setItem(`${config.session.gameId}-save-data`, JSON.stringify(data));
                 debug("Saved data to localStorage.");
+                return;
             } catch (error: any) {
                 throw operationFailed(`Error saving object to localStorage: ${error.message}`, WORTAL_API.PLAYER_SET_DATA_ASYNC);
             }
@@ -201,6 +234,7 @@ export function setDataAsync(data: Record<string, unknown>): Promise<void> {
             try {
                 config.platformSDK.localStorage.setItem(`${config.session.gameId}-save-data`, JSON.stringify(data));
                 debug("Saved data to localStorage.");
+                return;
             } catch (error: any) {
                 throw operationFailed(`Error saving object to localStorage: ${error.message}`, WORTAL_API.PLAYER_SET_DATA_ASYNC);
             }
@@ -211,6 +245,18 @@ export function setDataAsync(data: Record<string, unknown>): Promise<void> {
                 .catch((error: Error_Facebook_Rakuten) => {
                     throw rethrowError_Facebook_Rakuten(error, WORTAL_API.PLAYER_SET_DATA_ASYNC, API_URL.PLAYER_SET_DATA_ASYNC);
                 });
+        }
+
+        if (platform === "telegram") {
+            //TODO: implement chunking for over-sized (10kb+) data
+            debug("Saved data to Telegram storage.");
+            return window.parent.postMessage({
+                playdeck: {
+                    method: "setData",
+                    key: `${config.session.gameId}-save-data`,
+                    value: JSON.stringify(data),
+                }
+            }, "*");
         }
     });
 }

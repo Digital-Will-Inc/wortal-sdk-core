@@ -1,16 +1,19 @@
 import { Leaderboard, LeaderboardEntry } from "../classes/leaderboard";
 import Wortal from "../index";
+import { TelegramLeaderboardEntry } from "../interfaces/leaderboard";
 import { Error_Facebook_Rakuten } from "../interfaces/wortal";
+import { TELEGRAM_API } from "../types/wortal";
 import { API_URL, WORTAL_API } from "../utils/config";
 import {
-    facebookLeaderboardEntryToWortal,
-    facebookLeaderboardToWortal,
-    rakutenLeaderboardEntryToWortal,
-    rakutenLeaderboardToWortal
+    convertFacebookLeaderboardEntryToWortal,
+    convertFacebookLeaderboardToWortal,
+    convertRakutenLeaderboardEntryToWortal,
+    convertRakutenLeaderboardToWortal, convertTelegramLeaderboardEntryToWortal
 } from "../utils/converters";
 import { invalidOperation, invalidParams, notSupported, rethrowError_Facebook_Rakuten } from "../utils/error-handler";
+import { exception, info } from "../utils/logger";
 import { isValidString } from "../utils/validators";
-import { isSupportedOnCurrentPlatform } from "../utils/wortal-utils";
+import { isSupportedOnCurrentPlatform, waitForTelegramCallback } from "../utils/wortal-utils";
 import { config } from "./index";
 
 /**
@@ -59,9 +62,9 @@ export function getLeaderboardAsync(name: string): Promise<Leaderboard> {
             return config.platformSDK.getLeaderboardAsync(name)
                 .then((result: any) => {
                     if (platform === "link" || platform === "viber") {
-                        return rakutenLeaderboardToWortal(result);
+                        return convertRakutenLeaderboardToWortal(result);
                     } else if (platform === "facebook") {
-                        return facebookLeaderboardToWortal(result);
+                        return convertFacebookLeaderboardToWortal(result);
                     }
                 })
                 .catch((error: Error_Facebook_Rakuten) => {
@@ -122,14 +125,26 @@ export function sendEntryAsync(name: string, score: number, details: string = ""
                 .then((leaderboard: any) => leaderboard.setScoreAsync(score, details))
                 .then((entry: any) => {
                     if (platform === "link" || platform === "viber") {
-                        return rakutenLeaderboardEntryToWortal(entry);
+                        return convertRakutenLeaderboardEntryToWortal(entry);
                     } else if (platform === "facebook") {
-                        return facebookLeaderboardEntryToWortal(entry);
+                        return convertFacebookLeaderboardEntryToWortal(entry);
                     }
                 })
                 .catch((error: Error_Facebook_Rakuten) => {
                     throw rethrowError_Facebook_Rakuten(error, WORTAL_API.LEADERBOARD_SEND_ENTRY_ASYNC, API_URL.LEADERBOARD_SEND_ENTRY_ASYNC);
                 });
+        }
+
+        if (platform === "telegram") {
+            window.parent.postMessage(
+                {
+                    playdeck:
+                        {
+                            method: TELEGRAM_API.SET_SCORE,
+                            value: score,
+                            isForce: false,
+                        }
+                }, "*");
         }
     });
 }
@@ -187,15 +202,26 @@ export function getEntriesAsync(name: string, count: number, offset: number = 0)
                 .then((entries: any) => {
                     return entries.map((entry: any) => {
                         if (platform === "link" || platform === "viber") {
-                            return rakutenLeaderboardEntryToWortal(entry);
+                            return convertRakutenLeaderboardEntryToWortal(entry);
                         } else if (platform === "facebook") {
-                            return facebookLeaderboardEntryToWortal(entry);
+                            return convertFacebookLeaderboardEntryToWortal(entry);
                         }
                     })
                 })
                 .catch((error: Error_Facebook_Rakuten) => {
                     throw rethrowError_Facebook_Rakuten(error, WORTAL_API.LEADERBOARD_GET_ENTRIES_ASYNC, API_URL.LEADERBOARD_GET_ENTRIES_ASYNC);
                 });
+        }
+
+        if (platform === "telegram") {
+            window.parent.postMessage({ playdeck: { method: TELEGRAM_API.GET_GLOBAL_SCORE } }, "*");
+            return waitForTelegramCallback(TELEGRAM_API.GET_GLOBAL_SCORE).then((entries: TelegramLeaderboardEntry[]) => {
+                return entries.map((entry: TelegramLeaderboardEntry) => {
+                    return convertTelegramLeaderboardEntryToWortal(entry);
+                });
+            }).catch((error: any) => {
+                exception("Telegram score error: ", error);
+            });
         }
     });
 }
@@ -246,14 +272,23 @@ export function getPlayerEntryAsync(name: string): Promise<LeaderboardEntry> {
                 .then((leaderboard: any) => leaderboard.getPlayerEntryAsync())
                 .then((entry: any) => {
                     if (platform === "link" || platform === "viber") {
-                        return rakutenLeaderboardEntryToWortal(entry);
+                        return convertRakutenLeaderboardEntryToWortal(entry);
                     } else if (platform === "facebook") {
-                        return facebookLeaderboardEntryToWortal(entry);
+                        return convertFacebookLeaderboardEntryToWortal(entry);
                     }
                 })
                 .catch((error: Error_Facebook_Rakuten) => {
                     throw rethrowError_Facebook_Rakuten(error, WORTAL_API.LEADERBOARD_GET_PLAYER_ENTRY_ASYNC, API_URL.LEADERBOARD_GET_PLAYER_ENTRY_ASYNC);
                 });
+        }
+
+        if (platform === "telegram") {
+            window.parent.postMessage({ playdeck: { method: TELEGRAM_API.GET_SCORE } }, "*");
+            return waitForTelegramCallback(TELEGRAM_API.GET_SCORE).then((entry: TelegramLeaderboardEntry) => {
+                return convertTelegramLeaderboardEntryToWortal(entry);
+            }).catch((error: any) => {
+                exception("Telegram score error: ", error);
+            });
         }
     });
 }
@@ -365,9 +400,9 @@ export function getConnectedPlayersEntriesAsync(name: string, count: number, off
                 .then((entries: any) => {
                     return entries.map((entry: any) => {
                         if (platform === "link" || platform === "viber") {
-                            return rakutenLeaderboardEntryToWortal(entry);
+                            return convertRakutenLeaderboardEntryToWortal(entry);
                         } else if (platform === "facebook") {
-                            return facebookLeaderboardEntryToWortal(entry);
+                            return convertFacebookLeaderboardEntryToWortal(entry);
                         }
                     })
                 })

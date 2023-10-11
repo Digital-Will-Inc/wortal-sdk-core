@@ -1,7 +1,7 @@
 import { config } from "../api";
 import Wortal from "../index";
 import { Device } from "../types/session";
-import { ShareTo } from "../types/wortal";
+import { ShareTo, TELEGRAM_API } from "../types/wortal";
 import { invalidParams } from "./error-handler";
 import { debug, exception } from "./logger";
 import { isValidShareDestination, isValidString } from "./validators";
@@ -74,6 +74,29 @@ export function getAllQueryParameters(): Record<string, string> {
         params[key] = value;
     }
     return params;
+}
+
+/**
+ * Generates a random ID. This can be used for a player or session ID.
+ * @returns {string} Randomly generated ID.
+ * @hidden
+ */
+export function generateRandomID(): string {
+    const generateSegment = () => {
+        return Math.floor((1 + Math.random()) * 0x10000)
+            .toString(16)
+            .substring(1);
+    };
+
+    const segments = [
+        generateSegment(),
+        generateSegment(),
+        generateSegment(),
+        generateSegment(),
+        generateSegment() + generateSegment() + generateSegment()
+    ];
+
+    return segments.join('-');
 }
 
 /**
@@ -207,6 +230,40 @@ export function gdEventTrigger(value: string): void {
     } else {
         exception("GD event triggered, but GDCallbacks is undefined. This is a fatal error that should have been caught during initialization.");
     }
+}
+
+/**
+ * Awaits a callback from the Telegram SDK.
+ * @param eventName Name of the event to wait for.
+ * @returns {Promise<any>} Promise that resolves when the event is triggered. Contains the data from the event, if any exists.
+ * @hidden
+ */
+export function waitForTelegramCallback(eventName: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+        let timeoutID: any = null;
+
+        const eventHandler = ({ data }: any) => {
+            const playdeck = data?.playdeck;
+            if (playdeck?.method === eventName) {
+                debug(`Telegram event callback. Event: ${eventName}`, playdeck?.value)
+                window.removeEventListener("message", eventHandler);
+                clearTimeout(timeoutID);
+                // The data is returned in the "data" property of value, which is not documented.
+                if (eventName === TELEGRAM_API.GET_DATA) {
+                    resolve(playdeck?.value?.data);
+                } else {
+                    resolve(playdeck?.value);
+                }
+            }
+        }
+
+        window.addEventListener("message", eventHandler);
+
+        timeoutID = setTimeout(() => {
+            window.removeEventListener("message", eventHandler);
+            reject(new Error(`Timeout: '${eventName}' event not triggered within the timeout range.`));
+        }, 5000);
+    });
 }
 
 /**

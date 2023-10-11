@@ -102,7 +102,7 @@ export function showInterstitial(placement: PlacementType, description: string,
         }
     }
 
-    // Don't bother calling for an ad if the ads are blocked. As of v1.6 this only applies to Wortal platform.
+    // Don't bother calling for an ad if the ads are blocked.
     if (config.adConfig.isAdBlocked) {
         debug("Ads are blocked, skipping..");
         noFill();

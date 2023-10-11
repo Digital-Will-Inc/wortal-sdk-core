@@ -101,6 +101,8 @@ export function setSessionData(data: Record<string, unknown>): void {
 export function getLocale(): string {
     if (config.session.platform === "gamepix") {
         return config.platformSDK.lang();
+    } else if (config.session.platform === "telegram") {
+        return config.session.locale;
     } else {
         return navigator.language;
     }

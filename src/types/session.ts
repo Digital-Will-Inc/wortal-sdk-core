@@ -1,7 +1,7 @@
 /**
  * Platform the game is currently being played on.
  */
-export type Platform = 'wortal' | 'link' | 'viber' | 'gd' | 'facebook' | 'crazygames' | 'gamepix' | 'debug'
+export type Platform = 'wortal' | 'link' | 'viber' | 'gd' | 'facebook' | 'crazygames' | 'gamepix' | 'telegram' | 'debug'
 
 /**
  * Device the player is currently using.

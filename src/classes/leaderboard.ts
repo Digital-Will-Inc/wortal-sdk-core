@@ -90,14 +90,14 @@ export class LeaderboardEntry {
     /**
      * Score of this entry with optional formatting. Ex: '100 points'
      */
-    get formattedScore(): string {
+    get formattedScore(): string | undefined {
         return this._current.formattedScore;
     }
 
     /**
      * Timestamp of when this entry was made.
      */
-    get timestamp(): number {
+    get timestamp(): number | undefined {
         return this._current.timestamp;
     }
 

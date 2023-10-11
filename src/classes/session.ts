@@ -5,6 +5,7 @@ import { debug } from "../utils/logger";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import country from "../utils/intl-data.json";
+import { getParameterByName } from "../utils/wortal-utils";
 
 /** @hidden */
 export class Session {
@@ -14,6 +15,8 @@ export class Session {
         gameId: "",
         browser: "",
     };
+
+    private _locale: string = "";
 
     constructor() {
         debug("Initializing session...");
@@ -40,6 +43,14 @@ export class Session {
         return this._current.country;
     }
 
+    get locale(): string {
+        return this._locale;
+    }
+
+    set locale(locale: string) {
+        this._locale = locale;
+    }
+
     private _setPlatform(): Platform {
         const location = window.location;
         const host = location.host;
@@ -53,7 +64,13 @@ export class Session {
         } else if (PLATFORM_DOMAINS["facebook"].some(domain => host.includes(domain))) {
             return "facebook";
         } else if (PLATFORM_DOMAINS["wortal"].some(domain => host.includes(domain))) {
-            return "wortal";
+            // We may be embedding the game in a different app/page, so we need to check the URL for a query param
+            // that flags the platform.
+            if (getParameterByName("telegram")) {
+                return "telegram";
+            } else {
+                return "wortal";
+            }
         } else if (PLATFORM_DOMAINS["crazygames"].some(domain => host.includes(domain))) {
             return "crazygames";
         } else if (PLATFORM_DOMAINS["gamepix"].some(domain => host.includes(domain))) {
@@ -115,6 +132,12 @@ export class Session {
                     // ID: sushi-supply-co
                     url = document.URL.split("/");
                     id = url[4];
+                    break;
+                case "telegram":
+                    // Example URL: https://wrapper.playdeck.io/?url=https://cdn.html5gameportal.com/telegram/trash-factory/index.html
+                    // ID: trash-factory
+                    url = document.URL.split("/");
+                    id = url[7];
                     break;
                 case "debug":
                 default:

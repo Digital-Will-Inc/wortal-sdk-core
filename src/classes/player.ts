@@ -1,11 +1,11 @@
 import { config } from "../api";
 import Wortal from "../index";
-import { PlayerData } from "../interfaces/player";
+import { PlayerData, TelegramPlayer } from "../interfaces/player";
 import { LeaderboardPlayerData } from "../types/leaderboard";
-import { Error_CrazyGames } from "../types/wortal";
+import { Error_CrazyGames, TELEGRAM_API } from "../types/wortal";
 import { rethrowError_CrazyGames } from "../utils/error-handler";
 import { debug, exception } from "../utils/logger";
-import { delayUntilConditionMet } from "../utils/wortal-utils";
+import { delayUntilConditionMet, generateRandomID, waitForTelegramCallback } from "../utils/wortal-utils";
 
 /**
  * Represents a player in the game. To access info about the current player, use the Wortal.player API.
@@ -27,13 +27,8 @@ export class Player {
      * @private
      */
     private _isUserAPIAvailable: boolean = false;
-    /**
-     * Used to store the CrazyGames player object if the user API is available. CrazyGames SDK doesn't offer
-     * individual APIs for getting player info, so we just store the player object.
-     * @hidden
-     * @private
-     */
     private _crazyGamesPlayer: any = null;
+    private _telegramPlayer: TelegramPlayer | null = null;
 
     /** @hidden */
     async initialize(): Promise<Player> {
@@ -42,12 +37,14 @@ export class Player {
 
         if (platform === "crazygames") {
             await this._initializeCrazyGamesPlayer();
+        } else if (platform === "telegram") {
+            await this._initializeTelegramPlayer();
         }
 
-        this._current.id = this.setId();
-        this._current.name = this.setName();
-        this._current.photo = this.setPhoto();
-        this._current.isFirstPlay = this.setIsFirstPlay();
+        this._current.id = this._setId();
+        this._current.name = this._setName();
+        this._current.photo = this._setPhoto();
+        this._current.isFirstPlay = this._setIsFirstPlay();
 
         if (platform === "facebook") {
             debug("Fetching ASID...");
@@ -106,12 +103,12 @@ export class Player {
     /** @hidden */
     set crazyGamesPlayer(player: any) {
         this._crazyGamesPlayer = player;
-        this._current.id = this.setId();
-        this._current.name = this.setName();
-        this._current.photo = this.setPhoto();
+        this._current.id = this._setId();
+        this._current.name = this._setName();
+        this._current.photo = this._setPhoto();
     }
 
-    protected setId(): string {
+    private _setId(): string {
         switch (config.session.platform) {
             case "viber":
             case "link":
@@ -120,33 +117,37 @@ export class Player {
             case "wortal":
                 return window.wortalSessionId;
             case "crazygames":
-                return this._crazyGamesPlayer?.id || this.generateRandomID();
+                return this._crazyGamesPlayer?.id || generateRandomID();
+            case "telegram":
+                return this._telegramPlayer?.id || generateRandomID();
             case "gd":
             case "gamepix":
             case "debug":
             default:
-                return this.generateRandomID();
+                return generateRandomID();
         }
     }
 
-    protected setName(): string {
+    private _setName(): string {
         switch (config.session.platform) {
             case "viber":
             case "link":
             case "facebook":
                 return config.platformSDK.player.getName();
             case "crazygames":
-                return this._crazyGamesPlayer?.username || "CrazyGames Player";
+                return this._crazyGamesPlayer?.username || "Player";
+            case "telegram":
+                return this._telegramPlayer?.username || "Player";
             case "wortal":
             case "gd":
             case "gamepix":
             case "debug":
             default:
-                return "WortalPlayer";
+                return "Player";
         }
     }
 
-    protected setPhoto(): string {
+    private _setPhoto(): string {
         switch (config.session.platform) {
             case "viber":
             case "link":
@@ -157,47 +158,49 @@ export class Player {
             case "wortal":
             case "gd":
             case "gamepix":
+            case "telegram":
             case "debug":
             default:
-                return "https://storage.googleapis.com/html5gameportal.com/images/08ac22fd-6e4b-4a33-9ea5-89bb412f6099-Trash_Factory_Facebook_Small_App_Icon_1024x1024.png";
+                return "https://storage.googleapis.com/html5gameportal.com/images/avatar.jpg";
         }
     }
 
-    protected setIsFirstPlay(): boolean {
+    private _setIsFirstPlay(): boolean {
         switch (config.session.platform) {
             case "viber":
             case "link":
                 return config.platformSDK.player.hasPlayed();
             case "wortal":
-                return this.isWortalFirstPlay();
+                return this._isWortalFirstPlay();
             case "facebook":
             case "gd":
             case "crazygames":
             case "gamepix":
+            case "telegram":
             case "debug":
             default:
                 return false;
         }
     }
 
-    protected isWortalFirstPlay(): boolean {
-        const cookieDate = this.getCookie(config.session.gameId);
+    private _isWortalFirstPlay(): boolean {
+        const cookieDate = this._getCookie(config.session.gameId);
         if (cookieDate !== "") {
-            this._current.daysSinceFirstPlay = this.getTimeFromCookieCreation(cookieDate);
+            this._current.daysSinceFirstPlay = this._getTimeFromCookieCreation(cookieDate);
             return false;
         } else {
-            this.setCookie(config.session.gameId);
+            this._setCookie(config.session.gameId);
             return true;
         }
     }
 
-    protected getCookie(gameId: string): string {
+    private _getCookie(gameId: string): string {
         const value = "; " + document.cookie;
         const parts = value.split("; wortal-" + gameId + "=");
         return ((parts.length === 2 && parts.pop()?.split(";").shift()) || "");
     }
 
-    protected setCookie(gameId: string): void {
+    private _setCookie(gameId: string): void {
         const key = "wortal-" + gameId;
         const value = new Date().toISOString().slice(0, 10);
         const date = new Date();
@@ -208,7 +211,7 @@ export class Player {
     // We store the creation date in the wortal-gameID cookie in this format: yyyy/mm/dd.
     // We'll parse that here and then calculate approximately how many days have elapsed
     // since then. We use that to track retention.
-    protected getTimeFromCookieCreation(date: string): number {
+    private _getTimeFromCookieCreation(date: string): number {
         const year: number = +date.substring(0, 4);
         const month: number = +date.substring(5, 7) - 1; // Month range is 0 - 11.
         const day: number = +date.substring(8, 10);
@@ -217,31 +220,7 @@ export class Player {
         return Math.round(timeDelta / 1000 / 60 / 60 / 24);
     }
 
-    protected generateRandomID(): string {
-        const generateSegment = () => {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
-        };
-
-        const segments = [
-            generateSegment(),
-            generateSegment(),
-            generateSegment(),
-            generateSegment(),
-            generateSegment() + generateSegment() + generateSegment()
-        ];
-
-        return segments.join('-');
-    }
-
-    /**
-     * Initializes the CrazyGames player object if the user API is available. This is used to get the player's
-     * info, if it is available.
-     * @hidden
-     * @private
-     */
-    async _initializeCrazyGamesPlayer(): Promise<void> {
+    private async _initializeCrazyGamesPlayer(): Promise<void> {
         // The CrazyGames SDK takes a little longer to initialize than the others, so we have to wait for it here.
         if (typeof config.platformSDK === "undefined") {
             await delayUntilConditionMet(() => {
@@ -249,14 +228,14 @@ export class Player {
             }, "Waiting for CrazyGames SDK to load...");
         }
 
-        await this.isUserAPIAvailable().then((isAvailable) => {
+        await this._checkIsUserAPIAvailable().then((isAvailable: boolean) => {
             this._isUserAPIAvailable = isAvailable;
         }).catch((error: any) => {
             exception("Error checking if user API is available: ", error);
         });
 
         if (this._isUserAPIAvailable) {
-            await this.fetchCrazyGamesPlayer().then((player) => {
+            await this._fetchCrazyGamesPlayer().then((player: any) => {
                 this._crazyGamesPlayer = player;
             }).catch((error: any) => {
                 exception("Error fetching CrazyGames player: ", error);
@@ -264,7 +243,16 @@ export class Player {
         }
     }
 
-    protected isUserAPIAvailable(): Promise<boolean> {
+    private async _initializeTelegramPlayer(): Promise<void> {
+        window.parent.postMessage({ playdeck: { method: TELEGRAM_API.GET_USER } }, "*");
+        return waitForTelegramCallback(TELEGRAM_API.GET_USER).then((player: TelegramPlayer) => {
+            this._telegramPlayer = player;
+        }).catch((error: any) => {
+            exception("Error fetching Telegram player: ", error);
+        });
+    }
+
+    private _checkIsUserAPIAvailable(): Promise<boolean> {
         return new Promise((resolve) => {
             const callback = (error: Error_CrazyGames, isAvailable: boolean) => {
                 if (error) {
@@ -279,7 +267,7 @@ export class Player {
         });
     }
 
-    protected fetchCrazyGamesPlayer(): Promise<any> {
+    private _fetchCrazyGamesPlayer(): Promise<any> {
         return new Promise((resolve) => {
             const callback = (error: Error_CrazyGames, player: any) => {
                 if (error) {

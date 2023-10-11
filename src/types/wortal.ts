@@ -19,6 +19,17 @@ export const GD_EVENTS = {
     NO_FILL: "AD_ERROR",
 }
 
+/** @hidden */
+export const TELEGRAM_API = {
+    GET_USER: "getUser",
+    GET_DATA: "getData",
+    GET_SCORE: "getScore",
+    GET_GLOBAL_SCORE: "getGlobalScore",
+    SET_SCORE: "setScore",
+    GET_LOCALE: "getUserLocale",
+    GET_STATE: "getPlaydeckState",
+}
+
 /**
  * Different endpoints for Wortal API. Always ends with a slash.
  * @hidden

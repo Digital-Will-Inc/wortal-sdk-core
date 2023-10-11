@@ -61,3 +61,9 @@ export interface PlayerData {
     daysSinceFirstPlay: number;
     asid?: string;
 }
+
+/** @hidden */
+export interface TelegramPlayer {
+    id: string;
+    username: string;
+}
