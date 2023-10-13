@@ -92,14 +92,9 @@ export function showInterstitial(placement: PlacementType, description: string,
     // Validate the ad unit IDs. Non-existent IDs can cause the ad call to hang indefinitely.
     if ((platform === "link" || platform === "viber" || platform === "facebook")
         && !isValidString(config.adConfig.interstitialId)) {
-        if (platform === "viber" && isValidString(config.adConfig.rewardedId)) {
-            // As of v1.6.4 Viber does not support interstitial ads, so we won't have an ID for it. But we still want to
-            // check if the game is in production or not, which should be the case if we have a rewarded ID.
-            // We can still attempt to show the ad here because we can backfill it.
-        } else {
-            warn("Ad Unit IDs not found. Please contact your Wortal representative to have the ad unit IDs configured.");
-            return;
-        }
+        warn("Ad Unit IDs not found. Please contact your Wortal representative to have the ad unit IDs configured.");
+        noFill();
+        return;
     }
 
     // Don't bother calling for an ad if the ads are blocked.
@@ -180,6 +175,8 @@ export function showRewarded(description: string, beforeAd: () => void, afterAd:
     if ((platform === "link" || platform === "viber" || platform === "facebook")
         && !isValidString(config.adConfig.rewardedId)) {
         warn("Ad Unit IDs not found. Please contact your Wortal representative to have the ad unit IDs configured.");
+        adDismissed();
+        noFill();
         return;
     }
 
