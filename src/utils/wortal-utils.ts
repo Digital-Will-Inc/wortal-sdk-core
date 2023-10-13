@@ -1,7 +1,7 @@
 import { config } from "../api";
 import Wortal from "../index";
 import { Device } from "../types/session";
-import { ShareTo, TELEGRAM_API } from "../types/wortal";
+import { ShareTo } from "../types/wortal";
 import { invalidParams } from "./error-handler";
 import { debug, exception } from "./logger";
 import { isValidShareDestination, isValidString } from "./validators";
@@ -97,6 +97,53 @@ export function generateRandomID(): string {
     ];
 
     return segments.join('-');
+}
+
+/**
+ * Gets the size of a string in bytes. This is used to split JSON strings into chunks if they are too large to send
+ * in one request.
+ * @param str String to get the size of.
+ * @returns {number} Size of the string in bytes.
+ * @hidden
+ */
+export function getStringSizeInBytes(str: string): number {
+    const encoder = new TextEncoder();
+    const encodedString = encoder.encode(str);
+    return encodedString.length;
+}
+
+/**
+ * Splits a JSON string into chunks of a specified size. This is used to split large JSON strings into chunks that
+ * can be sent in multiple requests.
+ * @param jsonString JSON string to split into chunks.
+ * @param chunkSizeInBytes Size of each chunk in bytes. Defaults to 8KB.
+ * @returns {string[]} Array of JSON strings that are each smaller than the specified chunk size.
+ * @hidden
+ */
+export function splitJSONStringIntoChunks(jsonString: string, chunkSizeInBytes: number = 8000): string[] {
+    const chunks: string[] = [];
+    let currentChunk = "";
+    let currentChunkSize = 0;
+
+    for (let i = 0; i < jsonString.length; i++) {
+        const char: string = jsonString[i];
+        const charSize: number = getStringSizeInBytes(char);
+
+        if (currentChunkSize + charSize > chunkSizeInBytes) {
+            chunks.push(currentChunk);
+            currentChunk = "";
+            currentChunkSize = 0;
+        }
+
+        currentChunk += char;
+        currentChunkSize += charSize;
+    }
+
+    if (currentChunk !== "") {
+        chunks.push(currentChunk);
+    }
+
+    return chunks;
 }
 
 /**
@@ -233,7 +280,7 @@ export function gdEventTrigger(value: string): void {
 }
 
 /**
- * Awaits a callback from the Telegram SDK.
+ * Awaits a callback from the Telegram SDK. Removes the listener after the callback is triggered or after a timeout.
  * @param eventName Name of the event to wait for.
  * @returns {Promise<any>} Promise that resolves when the event is triggered. Contains the data from the event, if any exists.
  * @hidden
@@ -245,15 +292,10 @@ export function waitForTelegramCallback(eventName: string): Promise<any> {
         const eventHandler = ({ data }: any) => {
             const playdeck = data?.playdeck;
             if (playdeck?.method === eventName) {
-                debug(`Telegram event callback. Event: ${eventName}`, playdeck?.value)
+                debug(`Telegram event callback. Event: ${eventName}`, playdeck?.value);
                 window.removeEventListener("message", eventHandler);
                 clearTimeout(timeoutID);
-                // The data is returned in the "data" property of value, which is not documented.
-                if (eventName === TELEGRAM_API.GET_DATA) {
-                    resolve(playdeck?.value?.data);
-                } else {
-                    resolve(playdeck?.value);
-                }
+                resolve(playdeck?.value);
             }
         }
 

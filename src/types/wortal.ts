@@ -23,6 +23,7 @@ export const GD_EVENTS = {
 export const TELEGRAM_API = {
     GET_USER: "getUser",
     GET_DATA: "getData",
+    SET_DATA: "setData",
     GET_SCORE: "getScore",
     GET_GLOBAL_SCORE: "getGlobalScore",
     SET_SCORE: "setScore",
