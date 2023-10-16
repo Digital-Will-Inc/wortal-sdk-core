@@ -7,7 +7,7 @@ import * as _notifications from './notifications';
 import * as _player from './player';
 import * as _session from './session';
 import * as _tournament from './tournament';
-import { APIEndpoints, Error_CrazyGames, GD_EVENTS, TELEGRAM_API } from "../types/wortal";
+import { APIEndpoints, Error_CrazyGames, EXTERNAL_EVENTS_GD_GameMonetize, TELEGRAM_API } from "../types/wortal";
 import { AuthPayload, AuthResponse, AuthResponse_CrazyGames, Error_Facebook_Rakuten } from "../interfaces/wortal";
 import { InitializationOptions } from "../interfaces/session";
 import SDKConfig, { API_URL, SDK_SRC, WORTAL_API } from "../utils/config";
@@ -26,10 +26,10 @@ import {
     addGameEndEventListener,
     addLoadingListener,
     getParameterByName,
-    gdEventTrigger,
+    externalSDKEventTrigger,
     removeLoadingCover,
     tryEnableIAP,
-    addGDCallback,
+    addExternalCallback,
     delayUntilConditionMet,
     isSupportedOnCurrentPlatform,
     addPauseListener, waitForTelegramCallback
@@ -482,6 +482,8 @@ function _initializePlatform(): Promise<void> {
             return _initializePlatform_GamePix();
         case "telegram":
             return _initalizePlatform_Telegram();
+        case "gamemonetize":
+            return _initializePlatform_GameMonetize();
         case "debug":
             return _initializePlatform_Debug();
         default:
@@ -674,7 +676,7 @@ function _initializePlatform_GD(options?: any): Promise<void> {
         window.GD_OPTIONS = {
             gameId: config.session.gameId,
             onEvent: (event: any) => {
-                gdEventTrigger(event.name);
+                externalSDKEventTrigger(event.name);
             },
             ...options,
         };
@@ -702,7 +704,7 @@ function _initializePlatform_GD(options?: any): Promise<void> {
                 }
 
                 config.platformSDK = gdsdk;
-                addGDCallback(GD_EVENTS.SDK_READY, () => {
+                addExternalCallback(EXTERNAL_EVENTS_GD_GameMonetize.SDK_READY, () => {
                     debug("Game Distribution platform SDK initialized.");
                     resolve();
                 });
@@ -817,6 +819,65 @@ function _initalizePlatform_Telegram(): Promise<void> {
 }
 
 /**
+ * Initializes the GameMonetize platform. This relies on GameMonetize SDK. The SDK works a little
+ * differently from the others in that it relies heavily on window-based events to communicate with the game.
+ * @param options {any} Options to pass to the GameMonetize SDK.
+ * @returns {Promise<void>} Promise that resolve when the GameMonetize SDK has been initialized.
+ * @hidden
+ * @private
+ */
+function _initializePlatform_GameMonetize(options?: any): Promise<void> {
+    const functionName = "_initializePlatform_GameMonetize()";
+    // GameMonetize SDK docs assign this ID to their SDK script, so we'll do the same as it might be important.
+    // See: https://github.com/MonetizeGame/GameMonetize.com-SDK
+    const id = "gamemonetize-sdk";
+
+    return new Promise((resolve, reject) => {
+        window.SDK_OPTIONS = {
+            gameId: config.session.gameId,
+            onEvent: (event: any) => {
+                externalSDKEventTrigger(event.name);
+            },
+            ...options,
+        };
+
+        // Check for an existing GameMonetize SDK script tag. If it exists, we can just use that. Otherwise, we need to create it.
+        let gameMonetizeSDK = document.getElementsByTagName("script")[0];
+        const firstScript = document.getElementsByTagName("script")[0];
+        if (document.getElementById(id)) {
+            if (typeof sdk === "undefined") {
+                reject(initializationError("Failed to load GameMonetize SDK.", functionName));
+            }
+
+            debug("GameMonetize platform SDK initialized.");
+            config.platformSDK = sdk;
+            resolve();
+        } else {
+            gameMonetizeSDK = document.createElement("script");
+            gameMonetizeSDK.src = SDK_SRC.GAME_MONETIZE;
+            gameMonetizeSDK.id = id;
+            firstScript.parentNode?.insertBefore(gameMonetizeSDK, firstScript);
+
+            gameMonetizeSDK.onload = function () {
+                if (typeof sdk === "undefined") {
+                    reject(initializationError("Failed to load GameMonetize SDK.", functionName));
+                }
+
+                config.platformSDK = sdk;
+                addExternalCallback(EXTERNAL_EVENTS_GD_GameMonetize.SDK_READY, () => {
+                    debug("GameMonetize platform SDK initialized.");
+                    resolve();
+                });
+            }
+
+            gameMonetizeSDK.onerror = () => {
+                reject(initializationError("Failed to load GameMonetize SDK.", functionName));
+            }
+        }
+    });
+}
+
+/**
  * Initializes the debugging platform. This is used when the game is running in a local or dev environment.
  * This will mock the platform SDK and allow the game to run without any platform dependencies, returning mock data
  * for all platform APIs. All APIs will be available, but some may not function exactly as they would on the platform.
@@ -881,6 +942,7 @@ function _initializeSDK(): Promise<void> {
         case "crazygames":
         case "gamepix":
         case "telegram":
+        case "gamemonetize":
         case "debug":
         default:
             return _initializeSDK_Default();

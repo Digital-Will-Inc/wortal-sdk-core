@@ -392,7 +392,30 @@ export default class SDKConfig {
             WORTAL_API.SESSION_GAME_LOADING_START,
             WORTAL_API.SESSION_GAME_LOADING_STOP,
             ],
-        debug: [],
+        gamemonetize: [
+            WORTAL_API.INITIALIZE_ASYNC,
+            WORTAL_API.START_GAME_ASYNC,
+            WORTAL_API.SET_LOADING_PROGRESS,
+            WORTAL_API.ON_PAUSE,
+            WORTAL_API.ADS_IS_AD_BLOCKED,
+            WORTAL_API.ADS_SHOW_INTERSTITIAL,
+            WORTAL_API.ADS_SHOW_REWARDED,
+            WORTAL_API.IAP_IS_ENABLED,
+            WORTAL_API.PLAYER_GET_ID,
+            WORTAL_API.PLAYER_GET_NAME,
+            WORTAL_API.PLAYER_GET_PHOTO,
+            WORTAL_API.PLAYER_IS_FIRST_PLAY,
+            WORTAL_API.PLAYER_GET_DATA_ASYNC,
+            WORTAL_API.PLAYER_SET_DATA_ASYNC,
+            WORTAL_API.SESSION_GET_LOCALE,
+            WORTAL_API.SESSION_GET_PLATFORM,
+            WORTAL_API.SESSION_GET_DEVICE,
+            WORTAL_API.SESSION_GET_ORIENTATION,
+            WORTAL_API.SESSION_ON_ORIENTATION_CHANGE,
+            WORTAL_API.SESSION_GAME_LOADING_START,
+            WORTAL_API.SESSION_GAME_LOADING_STOP,
+        ],
+        debug: []
     };
 }
 
@@ -572,4 +595,5 @@ export const SDK_SRC = {
     GD: "https://html5.api.gamedistribution.com/main.min.js",
     CRAZY_GAMES: "https://sdk.crazygames.com/crazygames-sdk-v2.js",
     GAME_PIX: "https://integration.gamepix.com/sdk/v3/gamepix.sdk.js",
+    GAME_MONETIZE: "https://api.gamemonetize.com/sdk.js",
 }

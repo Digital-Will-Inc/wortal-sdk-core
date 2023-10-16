@@ -26,3 +26,8 @@ export interface GameData {
     levelTimerHandle: number;
     gameLoadTimer: number;
 }
+
+/** @hidden */
+export interface ExternalCallbacks {
+    [key: string]: () => void;
+}

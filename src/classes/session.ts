@@ -1,4 +1,4 @@
-import { GameData } from "../interfaces/session";
+import { ExternalCallbacks, GameData } from "../interfaces/session";
 import { Platform, SessionData } from "../types/session";
 import { PLATFORM_DOMAINS } from "../types/wortal";
 import { debug } from "../utils/logger";
@@ -18,12 +18,19 @@ export class Session {
 
     private _locale: string = "";
 
+    // Some SDKs such as GD and GameMonetize use a window object with a global event handler. We store the callbacks
+    // here so that we can call them from the event handler for these SDKs.
+    private readonly _externalCallbacks: ExternalCallbacks | undefined;
+
     constructor() {
         debug("Initializing session...");
         this._current.country = this._setCountry();
         this._current.platform = this._setPlatform();
         this._current.gameId = this._setGameID();
         this._current.browser = navigator.userAgent;
+        if (this._current.platform === "gd" || this._current.platform === "gamemonetize") {
+            this._externalCallbacks = {};
+        }
         debug("Session initialized: ", this._current);
     }
 
@@ -51,6 +58,10 @@ export class Session {
         this._locale = locale;
     }
 
+    get externalCallbacks(): ExternalCallbacks | undefined {
+        return this._externalCallbacks;
+    }
+
     private _setPlatform(): Platform {
         const location = window.location;
         const host = location.host;
@@ -75,14 +86,18 @@ export class Session {
             return "crazygames";
         } else if (PLATFORM_DOMAINS["gamepix"].some(domain => host.includes(domain))) {
             return "gamepix";
+        } else if (PLATFORM_DOMAINS["gamemonetize"].some(domain => host.includes(domain))) {
+            return "gamemonetize";
         } else {
             return "debug";
         }
     }
 
     private _setGameID(): string {
+        const platform = this.platform;
         let id: string = window.wortalGameID;
-        if (id === undefined) {
+        // Always use the URL parsing method for GD and Gamemonetize as we need their IDs to initialize the SDK.
+        if (id === undefined || (platform === "gd" || platform === "gamemonetize")) {
             debug("Game ID not found in window.wortalGameID, trying to get it from the URL...");
             // We keep this in for backwards compatibility. As of v1.6.13 Wortal will automatically add the game ID to
             // wortal-data.js when uploaded a revision, but some games have not (and may never) be updated so we
@@ -138,6 +153,17 @@ export class Session {
                     // ID: trash-factory
                     url = document.URL.split("/");
                     id = url[7];
+                    break;
+                case "gamemonetize":
+                    // Example URL: https://gamemonetize.com/trash-factory
+                    // ID: trash-factory
+                    // If this is embedded into another site then the ID will be different but the URL structure will be the same.
+                    // Ex: https://html5.gamemonetize.co/5lmq5m1n60ijd3xm2pnkgfzm0mtz10to/
+                    // ID: 5lmq5m1n60ijd3xm2pnkgfzm0mtz10to
+                    // Ex: https://html5.gamemonetize.games/5lmq5m1n60ijd3xm2pnkgfzm0mtz10to/
+                    // ID: 5lmq5m1n60ijd3xm2pnkgfzm0mtz10to
+                    url = document.URL.split("/");
+                    id = url[3];
                     break;
                 case "debug":
                 default:

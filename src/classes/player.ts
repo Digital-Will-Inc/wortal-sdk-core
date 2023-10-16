@@ -122,6 +122,7 @@ export class Player {
                 return this._telegramPlayer?.id || generateRandomID();
             case "gd":
             case "gamepix":
+            case "gamemonetize":
             case "debug":
             default:
                 return generateRandomID();
@@ -141,6 +142,7 @@ export class Player {
             case "wortal":
             case "gd":
             case "gamepix":
+            case "gamemonetize":
             case "debug":
             default:
                 return "Player";
@@ -159,6 +161,7 @@ export class Player {
             case "gd":
             case "gamepix":
             case "telegram":
+            case "gamemonetize":
             case "debug":
             default:
                 return "https://storage.googleapis.com/html5gameportal.com/images/avatar.jpg";
@@ -177,6 +180,7 @@ export class Player {
             case "crazygames":
             case "gamepix":
             case "telegram":
+            case "gamemonetize":
             case "debug":
             default:
                 return false;

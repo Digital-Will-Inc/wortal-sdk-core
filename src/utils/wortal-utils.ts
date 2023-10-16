@@ -243,39 +243,41 @@ export function addPauseListener(): void {
 }
 
 /**
- * Adds an event handler to the GD events object. This is used to trigger callbacks from the GD SDK.
+ * Adds an event handler to the ExternalEvents object. This is used to trigger callbacks from external SDKs such as
+ * GD and GameMonetize that rely on a window object with a global event handler.
  * @param {string} eventName Name of the event.
  * @param {Function} callback Callback function to be called when the event is triggered.
  * @hidden
  */
-export function addGDCallback(eventName: string, callback: () => void): void {
+export function addExternalCallback(eventName: string, callback: () => void): void {
     if (typeof callback !== "function") {
-        throw invalidParams(undefined, "addGDCallback()");
+        throw invalidParams(undefined, "addExternalCallback()");
     }
 
-    if (typeof config.adConfig.gdCallbacks !== "undefined") {
-        config.adConfig.gdCallbacks[eventName] = callback;
+    if (typeof config.session.externalCallbacks !== "undefined") {
+        config.session.externalCallbacks[eventName] = callback;
     } else {
-        exception("GD callbacks is undefined. This is a fatal error that should have been caught during initialization.");
+        exception("externalCallbacks is undefined. This is a fatal error that should have been caught during initialization.");
     }
 }
 
 /**
- * Triggers a callback from the GD events object.
+ * Triggers a callback from an external SDK. This is used by SDKs such as GD and GameMonetize that use a window
+ * object with a global event handler to trigger callbacks.
  * @param {string} value Name of the event to trigger.
  * @hidden
  */
-export function gdEventTrigger(value: string): void {
-    if (typeof config.adConfig.gdCallbacks !== "undefined") {
-        const callback = config.adConfig.gdCallbacks[value];
+export function externalSDKEventTrigger(value: string): void {
+    if (typeof config.session.externalCallbacks !== "undefined") {
+        const callback = config.session.externalCallbacks[value];
         if (typeof callback !== "undefined") {
-            debug(`GD event triggered. Event: ${value}`);
+            debug(`External event triggered. Event: ${value}`);
             callback();
         } else {
-            debug(`GD event triggered, but no callback is defined for this event. Event: ${value}`);
+            debug(`External event triggered, but no callback is defined for this event. Event: ${value}`);
         }
     } else {
-        exception("GD event triggered, but GDCallbacks is undefined. This is a fatal error that should have been caught during initialization.");
+        exception("External event triggered, but externalCallbacks is undefined. This is a fatal error that should have been caught during initialization.");
     }
 }
 

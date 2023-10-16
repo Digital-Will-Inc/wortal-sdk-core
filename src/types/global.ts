@@ -8,6 +8,7 @@ declare global {
     const FBInstant: any;
     const gdsdk: any;
     const GamePix: any;
+    const sdk: any;
 
     interface Window {
         /**
@@ -37,10 +38,16 @@ declare global {
         adConfig: (params: object) => void;
         /**
          * GD SDK requires an options object to be set in the window that holds their configuration and events.
-         * he onEvent property is where we can listen for their SDK events.
+         * The onEvent property is where we can listen for their SDK events.
          * We use this to map their events to our own callbacks.
          */
         GD_OPTIONS: object;
+        /**
+         * GameMonetize SDK requires an options object to be set in the window that holds their configuration and events.
+         * The onEvent property is where we can listen for their SDK events.
+         * We use this to map their events to our own callbacks.
+         */
+        SDK_OPTIONS: object;
         /**
          * CrazyGames SDK
          */

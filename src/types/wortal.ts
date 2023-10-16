@@ -7,10 +7,14 @@ export const PLATFORM_DOMAINS = {
     "facebook": ["facebook.com", "www.facebook.com", "apps.fbsbx.com"],
     "crazygames": ["crazygames.com", "www.crazygames.com", "developer.crazygames.com"],
     "gamepix": ["gamepix.com", "my.gamepix.com", "test.builds.gamepix.com"],
+    // This isn't used as the game is served in an iframe from Wortal, which we check the query params of to detect Telegram.
+    // This is just added here for completeness.
+    "telegram": ["playdeck.io"],
+    "gamemonetize": ["gamemonetize.com", "gamemonetize.co", "gamemonetize.games"],
 }
 
 /** @hidden */
-export const GD_EVENTS = {
+export const EXTERNAL_EVENTS_GD_GameMonetize = {
     SDK_READY: "SDK_READY",
     BEFORE_AD: "SDK_GAME_PAUSE",
     AFTER_AD: "SDK_GAME_START",

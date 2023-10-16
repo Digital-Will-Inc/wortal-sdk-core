@@ -6,18 +6,17 @@ import {
     AdData,
     AdInstanceData, AdSenseConfig,
     FacebookAdUnitsResponse,
-    GDCallbacks,
     IAdInstance
 } from "../interfaces/ads";
 import { AdCallEventData, AnalyticsEventData } from "../interfaces/analytics";
 import { Error_Facebook_Rakuten } from "../interfaces/wortal";
 import { PlacementType } from "../types/ads";
-import { APIEndpoints, GD_EVENTS } from "../types/wortal";
+import { APIEndpoints, EXTERNAL_EVENTS_GD_GameMonetize } from "../types/wortal";
 import { API_URL, WORTAL_API } from "../utils/config";
 import { initializationError, operationFailed, rethrowError_Facebook_Rakuten } from "../utils/error-handler";
 import { debug, exception, warn } from "../utils/logger";
 import { isValidPlacementType } from "../utils/validators";
-import { addGDCallback } from "../utils/wortal-utils";
+import { addExternalCallback } from "../utils/wortal-utils";
 import { AnalyticsEvent } from "./analytics";
 
 /** @hidden */
@@ -258,10 +257,6 @@ export class AdConfig {
         hostID: ""
     };
 
-    // GD uses events to communicate the ad instance state rather than callbacks, so we need to store the callbacks
-    // and call them when the events are triggered.
-    private readonly _gdCallbacks: GDCallbacks | undefined;
-
     constructor() {
         debug("Initializing AdConfig..");
         const platform = config.session.platform;
@@ -271,8 +266,6 @@ export class AdConfig {
             window.adBreak = window.adConfig = function (o: any) {
                 window.adsbygoogle.push(o);
             };
-        } else if (platform === "gd") {
-            this._gdCallbacks = {};
         }
     }
 
@@ -356,10 +349,6 @@ export class AdConfig {
 
     adShown(): void {
         this._current.adsShown++;
-    }
-
-    get gdCallbacks(): GDCallbacks | undefined {
-        return this._gdCallbacks;
     }
 
     /**
@@ -470,6 +459,8 @@ function _showAd(placementType: PlacementType, placementId: string, description:
             return _showAd_CrazyGames(placementType, callbacks);
         case "gamepix":
             return _showAd_GamePix(placementType, callbacks);
+        case "gamemonetize":
+            //TODO: implement banner ads when available.
         case "telegram":
             //TODO: implement Telegram ads when available.
         default:
@@ -681,9 +672,9 @@ function _showInterstitial_Facebook_Rakuten(placementId: string, callbacks: AdCa
 /** @hidden */
 function _showInterstitial_GD(placementType: PlacementType, callbacks: AdCallbacks): void {
     debug("Attempting to show interstitial ad..");
-    addGDCallback(GD_EVENTS.BEFORE_AD, callbacks.beforeAd);
-    addGDCallback(GD_EVENTS.AFTER_AD, callbacks.afterAd);
-    addGDCallback(GD_EVENTS.NO_FILL, callbacks.noFill);
+    addExternalCallback(EXTERNAL_EVENTS_GD_GameMonetize.BEFORE_AD, callbacks.beforeAd);
+    addExternalCallback(EXTERNAL_EVENTS_GD_GameMonetize.AFTER_AD, callbacks.afterAd);
+    addExternalCallback(EXTERNAL_EVENTS_GD_GameMonetize.NO_FILL, callbacks.noFill);
 
     if (typeof config.platformSDK !== "undefined" && config.platformSDK.showAd !== "undefined") {
         config.platformSDK.showAd("interstitial");
@@ -758,16 +749,16 @@ function _showRewarded_Facebook_Rakuten(placementId: string, callbacks: AdCallba
 /** @hidden */
 function _showRewarded_GD(callbacks: AdCallbacks): void {
     debug("Attempting to show rewarded video..");
-    addGDCallback(GD_EVENTS.BEFORE_AD, callbacks.beforeAd);
-    addGDCallback(GD_EVENTS.AFTER_AD, callbacks.afterAd);
-    addGDCallback(GD_EVENTS.NO_FILL, callbacks.noFill);
+    addExternalCallback(EXTERNAL_EVENTS_GD_GameMonetize.BEFORE_AD, callbacks.beforeAd);
+    addExternalCallback(EXTERNAL_EVENTS_GD_GameMonetize.AFTER_AD, callbacks.afterAd);
+    addExternalCallback(EXTERNAL_EVENTS_GD_GameMonetize.NO_FILL, callbacks.noFill);
     if (callbacks.adDismissed) {
-        addGDCallback(GD_EVENTS.AD_DISMISSED, callbacks.adDismissed);
+        addExternalCallback(EXTERNAL_EVENTS_GD_GameMonetize.AD_DISMISSED, callbacks.adDismissed);
     } else {
-        addGDCallback(GD_EVENTS.AD_DISMISSED, () => debug("No adDismissed callback provided."));
+        addExternalCallback(EXTERNAL_EVENTS_GD_GameMonetize.AD_DISMISSED, () => debug("No adDismissed callback provided."));
     }
     if (callbacks.adViewed) {
-        addGDCallback(GD_EVENTS.AD_VIEWED, callbacks.adViewed);
+        addExternalCallback(EXTERNAL_EVENTS_GD_GameMonetize.AD_VIEWED, callbacks.adViewed);
     } else {
         exception("No adViewed callback provided. This is required for rewarded ads.");
         return;
