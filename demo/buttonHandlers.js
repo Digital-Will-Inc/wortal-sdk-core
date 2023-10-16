@@ -49,11 +49,19 @@ document.getElementById('ads-isBlocked').addEventListener('click', () => {
 });
 
 document.getElementById('ads-showInterstitial').addEventListener('click', () => {
-    showInterstitial();
+    adShowInterstitial();
 });
 
 document.getElementById('ads-showRewarded').addEventListener('click', () => {
-    showRewarded();
+    adShowRewarded();
+});
+
+document.getElementById('ads-showBanner').addEventListener('click', () => {
+    adShowBanner();
+});
+
+document.getElementById('ads-hideBanner').addEventListener('click', () => {
+    adHideBanner();
 });
 
 ////////////////////////////////////

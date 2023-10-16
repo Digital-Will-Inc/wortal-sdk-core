@@ -10,12 +10,12 @@ import {
 } from "../interfaces/ads";
 import { AdCallEventData, AnalyticsEventData } from "../interfaces/analytics";
 import { Error_Facebook_Rakuten } from "../interfaces/wortal";
-import { PlacementType } from "../types/ads";
+import { BannerPosition, PlacementType } from "../types/ads";
 import { APIEndpoints, EXTERNAL_EVENTS_GD_GameMonetize } from "../types/wortal";
 import { API_URL, WORTAL_API } from "../utils/config";
 import { initializationError, operationFailed, rethrowError_Facebook_Rakuten } from "../utils/error-handler";
 import { debug, exception, warn } from "../utils/logger";
-import { isValidPlacementType } from "../utils/validators";
+import { isValidPlacementType, isValidString } from "../utils/validators";
 import { addExternalCallback } from "../utils/wortal-utils";
 import { AnalyticsEvent } from "./analytics";
 
@@ -241,12 +241,65 @@ export class RewardedAd extends AdInstance {
 }
 
 /** @hidden */
+export class BannerAd {
+    logEvent = (success: boolean) => {
+        const analyticsData: AdCallEventData = {
+            format: "banner",
+            placement: "pause",
+            success: success,
+            platform: config.session.platform,
+            playerID: config.player.id,
+            gameID: config.session.gameId,
+            playTimeAtCall: config.game.gameTimer,
+        };
+
+        const eventData: AnalyticsEventData = {
+            name: "AdCall",
+            features: analyticsData,
+        };
+
+        const event = new AnalyticsEvent(eventData);
+        event.send();
+    }
+
+    show(position: BannerPosition): void {
+        const platform = config.session.platform;
+        if (platform === "facebook") {
+            config.platformSDK.loadBannerAdAsync(config.adConfig.bannerId, position)
+                .then(() => {
+                    this.logEvent(true);
+                })
+                .catch((error: Error_Facebook_Rakuten) => {
+                    exception("Banner ad failed to load.", error);
+                    this.logEvent(false);
+                });
+        }
+
+        if (platform === "gamemonetize") {
+            config.platformSDK.showBanner();
+            this.logEvent(true);
+        }
+    }
+
+    hide(): void {
+        const platform = config.session.platform;
+        if (platform === "facebook") {
+            config.platformSDK.hideBannerAdAsync()
+                .catch((error: Error_Facebook_Rakuten) => {
+                    exception("Banner ad failed to hide.", error);
+                });
+        }
+    }
+}
+
+/** @hidden */
 export class AdConfig {
     private _current: AdConfigData = {
         isAdBlocked: false,
         hasPrerollShown: false,
         interstitialId: "",
         rewardedId: "",
+        bannerId: "",
         adsCalled: 0,
         adsShown: 0,
     };
@@ -309,6 +362,10 @@ export class AdConfig {
 
     get rewardedId(): string {
         return this._current.rewardedId;
+    }
+
+    get bannerId(): string {
+        return this._current.bannerId;
     }
 
     get clientID(): string {
@@ -423,9 +480,23 @@ export class AdConfig {
 
                 for (let i = 0; i < adUnits.ads.length; i++) {
                     if (adUnits.ads[i].display_format === "interstitial") {
+                        if (isValidString(this._current.interstitialId)) {
+                            warn("Multiple interstitial ad units found. Using the first one.");
+                            return;
+                        }
                         this._current.interstitialId = adUnits.ads[i].placement_id;
                     } else if (adUnits.ads[i].display_format === "rewarded_video") {
+                        if (isValidString(this._current.rewardedId)) {
+                            warn("Multiple rewarded ad units found. Using the first one.");
+                            return;
+                        }
                         this._current.rewardedId = adUnits.ads[i].placement_id;
+                    } else if (adUnits.ads[i].display_format === "banner") {
+                        if (isValidString(this._current.bannerId)) {
+                            warn("Multiple banner ad units found. Using the first one.");
+                            return;
+                        }
+                        this._current.bannerId = adUnits.ads[i].placement_id;
                     }
                 }
             }).catch((error: any) => {
@@ -460,9 +531,9 @@ function _showAd(placementType: PlacementType, placementId: string, description:
         case "gamepix":
             return _showAd_GamePix(placementType, callbacks);
         case "gamemonetize":
-            //TODO: implement banner ads when available.
+        //TODO: implement banner ads when available.
         case "telegram":
-            //TODO: implement Telegram ads when available.
+        //TODO: implement Telegram ads when available.
         default:
             // Ensure we don't cause the game to get stuck waiting for callbacks if we reached this point.
             exception(`Unsupported platform for ads: ${config.session.platform}`);

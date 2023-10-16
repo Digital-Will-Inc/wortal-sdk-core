@@ -13,5 +13,10 @@
  */
 export type PlacementType = 'preroll' | 'start' | 'pause' | 'next' | 'browse' | 'reward'
 
+/**
+ * Position to place the banner ad.
+ */
+export type BannerPosition = 'top' | 'bottom'
+
 /** @hidden */
-export type AdType = 'interstitial' | 'rewarded'
+export type AdType = 'interstitial' | 'rewarded' | 'banner'

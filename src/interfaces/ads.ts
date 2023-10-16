@@ -43,6 +43,7 @@ export interface AdConfigData {
     hasPrerollShown: boolean;
     interstitialId: string;
     rewardedId: string;
+    bannerId: string;
     adsCalled: number;
     adsShown: number;
 }

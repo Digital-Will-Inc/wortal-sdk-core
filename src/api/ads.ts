@@ -1,6 +1,6 @@
-import { InterstitialAd, RewardedAd } from "../classes/ads";
+import { BannerAd, InterstitialAd, RewardedAd } from "../classes/ads";
 import { AdInstanceData } from "../interfaces/ads";
-import { PlacementType } from "../types/ads";
+import { BannerPosition, PlacementType } from "../types/ads";
 import { API_URL, WORTAL_API } from "../utils/config";
 import { invalidParams } from "../utils/error-handler";
 import { debug, warn } from "../utils/logger";
@@ -203,4 +203,25 @@ export function showRewarded(description: string, beforeAd: () => void, afterAd:
 
     const ad = new RewardedAd(data);
     ad.show();
+}
+
+/**
+ * Shows a banner ad. These are small ads that are shown at the top or bottom of the screen. They are typically used
+ * on menus or other non-gameplay screens. They can be shown or hidden at any time.
+ * @param shouldShow Whether the banner should be shown or hidden. Default is show.
+ * @param position Where the banner should be shown. Top or bottom of the screen. Default is the bottom.
+ */
+export function showBanner(shouldShow: boolean = true, position: BannerPosition = "bottom"): void {
+    const platform = config.session.platform;
+    if (platform === "facebook" && !isValidString(config.adConfig.bannerId)) {
+        warn("Ad Unit IDs not found. Please contact your Wortal representative to have the ad unit IDs configured.");
+        return;
+    }
+
+    const ad = new BannerAd();
+    if (shouldShow) {
+        ad.show(position);
+    } else {
+        ad.hide();
+    }
 }
