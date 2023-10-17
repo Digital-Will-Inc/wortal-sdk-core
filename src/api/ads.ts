@@ -180,6 +180,12 @@ export function showRewarded(description: string, beforeAd: () => void, afterAd:
         return;
     }
 
+    if (platform === "gamemonetize") {
+        warn(`Rewarded ads are not supported on ${platform} platform.`);
+        adDismissed();
+        noFill();
+    }
+
     // Don't bother calling if the ads are blocked.
     if (config.adConfig.isAdBlocked) {
         debug("Ads are blocked, skipping..");

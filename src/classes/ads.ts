@@ -274,11 +274,6 @@ export class BannerAd {
                     this.logEvent(false);
                 });
         }
-
-        if (platform === "gamemonetize") {
-            config.platformSDK.showBanner();
-            this.logEvent(true);
-        }
     }
 
     hide(): void {
@@ -525,13 +520,12 @@ function _showAd(placementType: PlacementType, placementId: string, description:
         case "facebook":
             return _showAd_Facebook_Rakuten(placementType, placementId, callbacks);
         case "gd":
-            return _showAd_GD(placementType, callbacks);
+        case "gamemonetize":
+            return _showAd_GD_GameMonetize(placementType, callbacks);
         case "crazygames":
             return _showAd_CrazyGames(placementType, callbacks);
         case "gamepix":
             return _showAd_GamePix(placementType, callbacks);
-        case "gamemonetize":
-        //TODO: implement banner ads when available.
         case "telegram":
         //TODO: implement Telegram ads when available.
         default:
@@ -661,16 +655,16 @@ function _showAd_Facebook_Rakuten(placementType: PlacementType, placementId: str
  * See: https://gamedistribution.com/sdk/html5
  * @hidden
  */
-function _showAd_GD(placementType: PlacementType, callbacks: AdCallbacks): void {
+function _showAd_GD_GameMonetize(placementType: PlacementType, callbacks: AdCallbacks): void {
     if (typeof config.platformSDK === "undefined") {
         exception("Platform SDK not initialized. This is a fatal error that should have been caught during initialization.");
         return;
     }
 
     if (placementType === "reward") {
-        return _showRewarded_GD(callbacks);
+        return _showRewarded_GD_GameMonetize(callbacks);
     } else {
-        return _showInterstitial_GD(placementType, callbacks);
+        return _showInterstitial_GD_GameMonetize(callbacks);
     }
 }
 
@@ -741,14 +735,19 @@ function _showInterstitial_Facebook_Rakuten(placementId: string, callbacks: AdCa
 }
 
 /** @hidden */
-function _showInterstitial_GD(placementType: PlacementType, callbacks: AdCallbacks): void {
+function _showInterstitial_GD_GameMonetize(callbacks: AdCallbacks): void {
     debug("Attempting to show interstitial ad..");
     addExternalCallback(EXTERNAL_EVENTS_GD_GameMonetize.BEFORE_AD, callbacks.beforeAd);
     addExternalCallback(EXTERNAL_EVENTS_GD_GameMonetize.AFTER_AD, callbacks.afterAd);
     addExternalCallback(EXTERNAL_EVENTS_GD_GameMonetize.NO_FILL, callbacks.noFill);
 
     if (typeof config.platformSDK !== "undefined" && config.platformSDK.showAd !== "undefined") {
-        config.platformSDK.showAd("interstitial");
+        if (config.session.platform === "gd") {
+            config.platformSDK.showAd("interstitial");
+        } else {
+            // GameMonetize uses the showBanner API even though it is an interstitial.
+            config.platformSDK.showBanner();
+        }
     }
 }
 
@@ -818,7 +817,7 @@ function _showRewarded_Facebook_Rakuten(placementId: string, callbacks: AdCallba
 }
 
 /** @hidden */
-function _showRewarded_GD(callbacks: AdCallbacks): void {
+function _showRewarded_GD_GameMonetize(callbacks: AdCallbacks): void {
     debug("Attempting to show rewarded video..");
     addExternalCallback(EXTERNAL_EVENTS_GD_GameMonetize.BEFORE_AD, callbacks.beforeAd);
     addExternalCallback(EXTERNAL_EVENTS_GD_GameMonetize.AFTER_AD, callbacks.afterAd);
