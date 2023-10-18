@@ -184,6 +184,7 @@ export function showRewarded(description: string, beforeAd: () => void, afterAd:
         warn(`Rewarded ads are not supported on ${platform} platform.`);
         adDismissed();
         noFill();
+        return;
     }
 
     // Don't bother calling if the ads are blocked.
