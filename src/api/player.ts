@@ -111,7 +111,7 @@ export function getDataAsync(keys: string[]): Promise<any> {
             }
         }
 
-        if (platform === "wortal" || platform === "gd" || platform === "crazygames") {
+        if (platform === "wortal" || platform === "gd" || platform === "crazygames" || platform === "gamemonetize") {
             const data = localStorage.getItem(`${config.session.gameId}-save-data`);
             if (data) {
                 const dataObj = JSON.parse(data);
@@ -287,7 +287,7 @@ export function setDataAsync(data: Record<string, unknown>): Promise<void> {
             }
         }
 
-        if (platform === "wortal" || platform === "gd" || platform === "crazygames") {
+        if (platform === "wortal" || platform === "gd" || platform === "crazygames" || platform === "gamemonetize") {
             try {
                 localStorage.setItem(`${config.session.gameId}-save-data`, JSON.stringify(data));
                 debug("Saved data to localStorage.");
