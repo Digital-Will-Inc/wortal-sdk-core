@@ -32,7 +32,7 @@ export abstract class CoreBase {
 
         const validationResult: ValidationResult = this.validateInitializeAsync();
         if (!validationResult.valid) {
-            throw validationResult.error as ErrorMessage;
+            return Promise.reject(validationResult.error);
         }
 
         return this.initializeAsyncImpl();
@@ -43,7 +43,7 @@ export abstract class CoreBase {
 
         const validationResult: ValidationResult = this.validateStartGameAsync();
         if (!validationResult.valid) {
-            throw validationResult.error as ErrorMessage;
+            return Promise.reject(validationResult.error);
         }
 
         return this.startGameAsyncImpl();
@@ -67,7 +67,7 @@ export abstract class CoreBase {
 
         const validationResult: ValidationResult = this.validateSetLoadingProgress(progress);
         if (!validationResult.valid) {
-            throw validationResult.error as ErrorMessage;
+            throw validationResult.error;
         }
 
         return this.setLoadingProgressImpl(progress);
@@ -78,7 +78,7 @@ export abstract class CoreBase {
 
         const validationResult: ValidationResult = this.validateOnPause(callback);
         if (!validationResult.valid) {
-            throw validationResult.error as ErrorMessage;
+            throw validationResult.error;
         }
 
         return this.onPauseImpl(callback);

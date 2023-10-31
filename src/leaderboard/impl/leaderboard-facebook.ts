@@ -24,9 +24,9 @@ export class LeaderboardFacebook extends LeaderboardBase {
     protected getConnectedPlayersEntriesAsyncImpl(name: string, count: number, offset: number): Promise<LeaderboardEntry[]> {
         const contextID = Wortal.context.getId();
         if (!isValidString(contextID)) {
-            throw invalidOperation("Global leaderboards are not supported on Facebook. Switch to a context before calling this API.",
+            return Promise.reject(invalidOperation("Global leaderboards are not supported on Facebook. Switch to a context before calling this API.",
                 WORTAL_API.LEADERBOARD_SEND_ENTRY_ASYNC,
-                "https://sdk.html5gameportal.com/api/leaderboard/");
+                "https://sdk.html5gameportal.com/api/leaderboard/"));
         }
         name += `.${contextID}`;
 
@@ -45,9 +45,9 @@ export class LeaderboardFacebook extends LeaderboardBase {
     protected getEntriesAsyncImpl(name: string, count: number, offset: number): Promise<LeaderboardEntry[]> {
         const contextID = Wortal.context.getId();
         if (!isValidString(contextID)) {
-            throw invalidOperation("Global leaderboards are not supported on Facebook. Switch to a context before calling this API.",
+            return Promise.reject(invalidOperation("Global leaderboards are not supported on Facebook. Switch to a context before calling this API.",
                 WORTAL_API.LEADERBOARD_SEND_ENTRY_ASYNC,
-                "https://sdk.html5gameportal.com/api/leaderboard/");
+                "https://sdk.html5gameportal.com/api/leaderboard/"));
         }
         name += `.${contextID}`;
 
@@ -66,9 +66,9 @@ export class LeaderboardFacebook extends LeaderboardBase {
     protected getEntryCountAsyncImpl(name: string): Promise<number> {
         const contextID = Wortal.context.getId();
         if (!isValidString(contextID)) {
-            throw invalidOperation("Global leaderboards are not supported on Facebook. Switch to a context before calling this API.",
+            return Promise.reject(invalidOperation("Global leaderboards are not supported on Facebook. Switch to a context before calling this API.",
                 WORTAL_API.LEADERBOARD_SEND_ENTRY_ASYNC,
-                "https://sdk.html5gameportal.com/api/leaderboard/");
+                "https://sdk.html5gameportal.com/api/leaderboard/"));
         }
         name += `.${contextID}`;
 
@@ -85,9 +85,9 @@ export class LeaderboardFacebook extends LeaderboardBase {
     protected getLeaderboardAsyncImpl(name: string): Promise<Leaderboard> {
         const contextID = Wortal.context.getId();
         if (!isValidString(contextID)) {
-            throw invalidOperation("Global leaderboards are not supported on Facebook. Switch to a context before calling this API.",
+            return Promise.reject(invalidOperation("Global leaderboards are not supported on Facebook. Switch to a context before calling this API.",
                 WORTAL_API.LEADERBOARD_SEND_ENTRY_ASYNC,
-                "https://sdk.html5gameportal.com/api/leaderboard/");
+                "https://sdk.html5gameportal.com/api/leaderboard/"));
         }
         name += `.${contextID}`;
 
@@ -103,9 +103,9 @@ export class LeaderboardFacebook extends LeaderboardBase {
     protected getPlayerEntryAsyncImpl(name: string): Promise<LeaderboardEntry> {
         const contextID = Wortal.context.getId();
         if (!isValidString(contextID)) {
-            throw invalidOperation("Global leaderboards are not supported on Facebook. Switch to a context before calling this API.",
+            return Promise.reject(invalidOperation("Global leaderboards are not supported on Facebook. Switch to a context before calling this API.",
                 WORTAL_API.LEADERBOARD_SEND_ENTRY_ASYNC,
-                "https://sdk.html5gameportal.com/api/leaderboard/");
+                "https://sdk.html5gameportal.com/api/leaderboard/"));
         }
         name += `.${contextID}`;
 
@@ -122,9 +122,9 @@ export class LeaderboardFacebook extends LeaderboardBase {
     protected sendEntryAsyncImpl(name: string, score: number, details: string): Promise<LeaderboardEntry> {
         const contextID = Wortal.context.getId();
         if (!isValidString(contextID)) {
-            throw invalidOperation("Global leaderboards are not supported on Facebook. Switch to a context before calling this API.",
+            return Promise.reject(invalidOperation("Global leaderboards are not supported on Facebook. Switch to a context before calling this API.",
                 WORTAL_API.LEADERBOARD_SEND_ENTRY_ASYNC,
-                "https://sdk.html5gameportal.com/api/leaderboard/");
+                "https://sdk.html5gameportal.com/api/leaderboard/"));
         }
         name += `.${contextID}`;
 

@@ -17,27 +17,27 @@ export class IAPCrazyGames extends IAPBase {
     }
 
     protected cancelSubscriptionAsyncImpl(purchaseToken: string): Promise<void> {
-        throw notSupported(undefined, WORTAL_API.IAP_CANCEL_SUBSCRIPTION_ASYNC, API_URL.IAP_CANCEL_SUBSCRIPTION_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.IAP_CANCEL_SUBSCRIPTION_ASYNC, API_URL.IAP_CANCEL_SUBSCRIPTION_ASYNC));
     }
 
     protected consumePurchaseAsyncImpl(token: string): Promise<void> {
-        throw notSupported(undefined, WORTAL_API.IAP_CONSUME_PURCHASE_ASYNC, API_URL.IAP_CONSUME_PURCHASE_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.IAP_CONSUME_PURCHASE_ASYNC, API_URL.IAP_CONSUME_PURCHASE_ASYNC));
     }
 
     protected getCatalogAsyncImpl(): Promise<Product[]> {
-        throw notSupported(undefined, WORTAL_API.IAP_GET_CATALOG_ASYNC, API_URL.IAP_GET_CATALOG_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.IAP_GET_CATALOG_ASYNC, API_URL.IAP_GET_CATALOG_ASYNC));
     }
 
     protected getPurchasesAsyncImpl(): Promise<Purchase[]> {
-        throw notSupported(undefined, WORTAL_API.IAP_GET_PURCHASES_ASYNC, API_URL.IAP_GET_PURCHASES_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.IAP_GET_PURCHASES_ASYNC, API_URL.IAP_GET_PURCHASES_ASYNC));
     }
 
     protected getSubscribableCatalogAsyncImpl(): Promise<SubscribableProduct[]> {
-        throw notSupported(undefined, WORTAL_API.IAP_GET_SUBSCRIBABLE_CATALOG_ASYNC, API_URL.IAP_GET_SUBSCRIBABLE_CATALOG_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.IAP_GET_SUBSCRIBABLE_CATALOG_ASYNC, API_URL.IAP_GET_SUBSCRIBABLE_CATALOG_ASYNC));
     }
 
     protected getSubscriptionsAsyncImpl(): Promise<Subscription[]> {
-        throw notSupported(undefined, WORTAL_API.IAP_GET_SUBSCRIPTIONS_ASYNC, API_URL.IAP_GET_SUBSCRIPTIONS_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.IAP_GET_SUBSCRIPTIONS_ASYNC, API_URL.IAP_GET_SUBSCRIPTIONS_ASYNC));
     }
 
     protected isEnabledImpl(): boolean {
@@ -45,11 +45,11 @@ export class IAPCrazyGames extends IAPBase {
     }
 
     protected makePurchaseAsyncImpl(purchase: PurchaseConfig): Promise<Purchase> {
-        throw notSupported(undefined, WORTAL_API.IAP_MAKE_PURCHASE_ASYNC, API_URL.IAP_MAKE_PURCHASE_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.IAP_MAKE_PURCHASE_ASYNC, API_URL.IAP_MAKE_PURCHASE_ASYNC));
     }
 
     protected purchaseSubscriptionAsyncImpl(productID: string): Promise<Subscription> {
-        throw notSupported(undefined, WORTAL_API.IAP_PURCHASE_SUBSCRIPTION_ASYNC, API_URL.IAP_PURCHASE_SUBSCRIPTION_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.IAP_PURCHASE_SUBSCRIPTION_ASYNC, API_URL.IAP_PURCHASE_SUBSCRIPTION_ASYNC));
     }
 
 }

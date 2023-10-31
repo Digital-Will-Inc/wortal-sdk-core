@@ -58,7 +58,7 @@ export class SessionLink extends SessionBase {
     }
 
     protected switchGameAsyncImpl(gameID: string, data?: object): Promise<void> {
-        throw notSupported(undefined, WORTAL_API.SESSION_SWITCH_GAME_ASYNC, API_URL.SESSION_SWITCH_GAME_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.SESSION_SWITCH_GAME_ASYNC, API_URL.SESSION_SWITCH_GAME_ASYNC));
     }
 
     protected _gameLoadingStartImpl(): void {

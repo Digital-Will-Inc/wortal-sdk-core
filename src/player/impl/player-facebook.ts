@@ -113,7 +113,7 @@ export class PlayerFacebook extends PlayerBase {
     }
 
     protected getTokenAsyncImpl(): Promise<string> {
-        throw notSupported(undefined, WORTAL_API.PLAYER_GET_TOKEN_ASYNC, API_URL.PLAYER_GET_TOKEN_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.PLAYER_GET_TOKEN_ASYNC, API_URL.PLAYER_GET_TOKEN_ASYNC));
     }
 
     protected setDataAsyncImpl(data: Record<string, unknown>): Promise<void> {

@@ -15,27 +15,27 @@ export class TournamentLink extends TournamentBase {
     }
 
     protected createAsyncImpl(payload: CreateTournamentPayload): Promise<Tournament> {
-        throw notSupported(undefined, WORTAL_API.TOURNAMENT_CREATE_ASYNC, API_URL.TOURNAMENT_CREATE_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.TOURNAMENT_CREATE_ASYNC, API_URL.TOURNAMENT_CREATE_ASYNC));
     }
 
     protected getAllAsyncImpl(): Promise<Tournament[]> {
-        throw notSupported(undefined, WORTAL_API.TOURNAMENT_GET_ALL_ASYNC, API_URL.TOURNAMENT_GET_ALL_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.TOURNAMENT_GET_ALL_ASYNC, API_URL.TOURNAMENT_GET_ALL_ASYNC));
     }
 
     protected getCurrentAsyncImpl(): Promise<Tournament> {
-        throw notSupported(undefined, WORTAL_API.TOURNAMENT_GET_CURRENT_ASYNC, API_URL.TOURNAMENT_GET_CURRENT_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.TOURNAMENT_GET_CURRENT_ASYNC, API_URL.TOURNAMENT_GET_CURRENT_ASYNC));
     }
 
     protected joinAsyncImpl(tournamentID: string): Promise<void> {
-        throw notSupported(undefined, WORTAL_API.TOURNAMENT_JOIN_ASYNC, API_URL.TOURNAMENT_JOIN_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.TOURNAMENT_JOIN_ASYNC, API_URL.TOURNAMENT_JOIN_ASYNC));
     }
 
     protected postScoreAsyncImpl(score: number): Promise<void> {
-        throw notSupported(undefined, WORTAL_API.TOURNAMENT_POST_SCORE_ASYNC, API_URL.TOURNAMENT_POST_SCORE_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.TOURNAMENT_POST_SCORE_ASYNC, API_URL.TOURNAMENT_POST_SCORE_ASYNC));
     }
 
     protected shareAsyncImpl(payload: ShareTournamentPayload): Promise<void> {
-        throw notSupported(undefined, WORTAL_API.TOURNAMENT_SHARE_ASYNC, API_URL.TOURNAMENT_SHARE_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.TOURNAMENT_SHARE_ASYNC, API_URL.TOURNAMENT_SHARE_ASYNC));
     }
 
 }

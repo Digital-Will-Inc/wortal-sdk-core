@@ -19,9 +19,9 @@ export class NotificationsFacebook extends NotificationsBase {
     protected cancelAllAsyncImpl(label?: string): Promise<boolean> {
         const url = this._getCancelAllURL();
         if (url === undefined) {
-            throw operationFailed("Failed to cancel all notifications. ASID is not available. This can occur if this API is called before the SDK has finished initializing.",
+            return Promise.reject(operationFailed("Failed to cancel all notifications. ASID is not available. This can occur if this API is called before the SDK has finished initializing.",
                 WORTAL_API.NOTIFICATIONS_CANCEL_ALL_ASYNC,
-                API_URL.NOTIFICATIONS_CANCEL_ALL_ASYNC);
+                API_URL.NOTIFICATIONS_CANCEL_ALL_ASYNC));
         }
 
         return new Promise((resolve, reject) => {
@@ -58,9 +58,9 @@ export class NotificationsFacebook extends NotificationsBase {
     protected cancelAsyncImpl(id: string): Promise<boolean> {
         const url = this._getCancelURL();
         if (url === undefined) {
-            throw operationFailed("Failed to cancel notification. ASID is not available. This can occur if this API is called before the SDK has finished initializing.",
+            return Promise.reject(operationFailed("Failed to cancel notification. ASID is not available. This can occur if this API is called before the SDK has finished initializing.",
                 WORTAL_API.NOTIFICATIONS_CANCEL_ASYNC,
-                API_URL.NOTIFICATIONS_CANCEL_ASYNC);
+                API_URL.NOTIFICATIONS_CANCEL_ASYNC));
         }
 
         return new Promise((resolve, reject) => {
@@ -97,9 +97,9 @@ export class NotificationsFacebook extends NotificationsBase {
     protected getHistoryAsyncImpl(): Promise<ScheduledNotification[]> {
         const url: string | undefined = this._getHistoryURL();
         if (url === undefined) {
-            throw operationFailed("Failed to get notifications. ASID is not available. This can occur if this API is called before the SDK has finished initializing.",
+            return Promise.reject(operationFailed("Failed to get notifications. ASID is not available. This can occur if this API is called before the SDK has finished initializing.",
                 WORTAL_API.NOTIFICATIONS_GET_HISTORY_ASYNC,
-                API_URL.NOTIFICATIONS_GET_HISTORY_ASYNC);
+                API_URL.NOTIFICATIONS_GET_HISTORY_ASYNC));
         }
 
         return new Promise((resolve, reject) => {

@@ -100,7 +100,7 @@ export class ContextLink extends ContextBase {
     }
 
     protected shareLinkAsyncImpl(payload: LinkSharePayload): Promise<string | void> {
-        throw notSupported(undefined, WORTAL_API.CONTEXT_SHARE_LINK_ASYNC, API_URL.CONTEXT_SHARE_LINK_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.CONTEXT_SHARE_LINK_ASYNC, API_URL.CONTEXT_SHARE_LINK_ASYNC));
     }
 
     protected switchAsyncImpl(contextID: string, payload?: SwitchPayload): Promise<void> {

@@ -26,7 +26,7 @@ export class PlayerViber extends PlayerBase {
     }
 
     protected canSubscribeBotAsyncImpl(): Promise<boolean> {
-        throw notSupported(undefined, WORTAL_API.PLAYER_CAN_SUBSCRIBE_BOT_ASYNC, API_URL.PLAYER_CAN_SUBSCRIBE_BOT_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.PLAYER_CAN_SUBSCRIBE_BOT_ASYNC, API_URL.PLAYER_CAN_SUBSCRIBE_BOT_ASYNC));
     }
 
     protected flushDataAsyncImpl(): Promise<void> {
@@ -37,7 +37,7 @@ export class PlayerViber extends PlayerBase {
     }
 
     protected getASIDAsyncImpl(): Promise<string> {
-        throw notSupported(undefined, WORTAL_API.PLAYER_GET_ASID_ASYNC, API_URL.PLAYER_GET_ASID_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.PLAYER_GET_ASID_ASYNC, API_URL.PLAYER_GET_ASID_ASYNC));
     }
 
     protected getConnectedPlayersAsyncImpl(payload?: ConnectedPlayerPayload): Promise<ConnectedPlayer[]> {
@@ -71,7 +71,7 @@ export class PlayerViber extends PlayerBase {
     }
 
     protected getSignedASIDAsyncImpl(): Promise<SignedASID> {
-        throw notSupported(undefined, WORTAL_API.PLAYER_GET_SIGNED_ASID_ASYNC, API_URL.PLAYER_GET_SIGNED_ASID_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.PLAYER_GET_SIGNED_ASID_ASYNC, API_URL.PLAYER_GET_SIGNED_ASID_ASYNC));
     }
 
     protected getSignedPlayerInfoAsyncImpl(): Promise<SignedPlayerInfo> {
@@ -88,7 +88,7 @@ export class PlayerViber extends PlayerBase {
     }
 
     protected getTokenAsyncImpl(): Promise<string> {
-        throw notSupported(undefined, WORTAL_API.PLAYER_GET_TOKEN_ASYNC, API_URL.PLAYER_GET_TOKEN_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.PLAYER_GET_TOKEN_ASYNC, API_URL.PLAYER_GET_TOKEN_ASYNC));
     }
 
     protected setDataAsyncImpl(data: Record<string, unknown>): Promise<void> {
@@ -102,7 +102,7 @@ export class PlayerViber extends PlayerBase {
     }
 
     protected subscribeBotAsyncImpl(): Promise<void> {
-        throw notSupported(undefined, WORTAL_API.PLAYER_SUBSCRIBE_BOT_ASYNC, API_URL.PLAYER_SUBSCRIBE_BOT_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.PLAYER_SUBSCRIBE_BOT_ASYNC, API_URL.PLAYER_SUBSCRIBE_BOT_ASYNC));
     }
 
 }

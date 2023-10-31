@@ -25,19 +25,19 @@ export class PlayerTelegram extends PlayerBase {
     }
 
     protected canSubscribeBotAsyncImpl(): Promise<boolean> {
-        throw notSupported(undefined, WORTAL_API.PLAYER_CAN_SUBSCRIBE_BOT_ASYNC, API_URL.PLAYER_CAN_SUBSCRIBE_BOT_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.PLAYER_CAN_SUBSCRIBE_BOT_ASYNC, API_URL.PLAYER_CAN_SUBSCRIBE_BOT_ASYNC));
     }
 
     protected flushDataAsyncImpl(): Promise<void> {
-        throw notSupported(undefined, WORTAL_API.PLAYER_FLUSH_DATA_ASYNC, API_URL.PLAYER_FLUSH_DATA_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.PLAYER_FLUSH_DATA_ASYNC, API_URL.PLAYER_FLUSH_DATA_ASYNC));
     }
 
     protected getASIDAsyncImpl(): Promise<string> {
-        throw notSupported(undefined, WORTAL_API.PLAYER_GET_ASID_ASYNC, API_URL.PLAYER_GET_ASID_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.PLAYER_GET_ASID_ASYNC, API_URL.PLAYER_GET_ASID_ASYNC));
     }
 
     protected getConnectedPlayersAsyncImpl(payload?: ConnectedPlayerPayload): Promise<ConnectedPlayer[]> {
-        throw notSupported(undefined, WORTAL_API.PLAYER_GET_CONNECTED_PLAYERS_ASYNC, API_URL.PLAYER_GET_CONNECTED_PLAYERS_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.PLAYER_GET_CONNECTED_PLAYERS_ASYNC, API_URL.PLAYER_GET_CONNECTED_PLAYERS_ASYNC));
     }
 
     protected getDataAsyncImpl(keys: string[]): Promise<any> {
@@ -59,7 +59,7 @@ export class PlayerTelegram extends PlayerBase {
 
                 const index: number = parseInt(data.playdeck.key.split("-").pop() as string);
                 if (isNaN(index)) {
-                    throw operationFailed("Error parsing chunk index.", WORTAL_API.PLAYER_GET_DATA_ASYNC);
+                    return Promise.reject(operationFailed("Error parsing chunk index.", WORTAL_API.PLAYER_GET_DATA_ASYNC));
                 }
 
                 chunks[index] = data.playdeck.value.data;
@@ -72,13 +72,13 @@ export class PlayerTelegram extends PlayerBase {
 
             const chunkCountData = await waitForTelegramCallback(TELEGRAM_API.GET_DATA);
             if (typeof chunkCountData === "undefined") {
-                throw operationFailed("Error getting chunkCount from storage.", WORTAL_API.PLAYER_GET_DATA_ASYNC);
+                return Promise.reject(operationFailed("Error getting chunkCount from storage.", WORTAL_API.PLAYER_GET_DATA_ASYNC));
             }
 
             // Now get each chunk and store it in an array to build the data string with.
             chunkCount = parseInt(chunkCountData.data);
             if (isNaN(chunkCount)) {
-                throw operationFailed("Error parsing chunkCount.", WORTAL_API.PLAYER_GET_DATA_ASYNC);
+                return Promise.reject(operationFailed("Error parsing chunkCount.", WORTAL_API.PLAYER_GET_DATA_ASYNC));
             }
 
             chunks = Array(chunkCount).fill("");
@@ -107,7 +107,7 @@ export class PlayerTelegram extends PlayerBase {
                 dataObj = JSON.parse(dataObj);
                 // If we still don't have an object then something went wrong.
                 if (typeof dataObj !== "object") {
-                    throw operationFailed("Error parsing data chunks.", WORTAL_API.PLAYER_GET_DATA_ASYNC);
+                    return Promise.reject(operationFailed("Error parsing data chunks.", WORTAL_API.PLAYER_GET_DATA_ASYNC));
                 }
             }
 
@@ -127,15 +127,15 @@ export class PlayerTelegram extends PlayerBase {
     }
 
     protected getSignedASIDAsyncImpl(): Promise<SignedASID> {
-        throw notSupported(undefined, WORTAL_API.PLAYER_GET_SIGNED_ASID_ASYNC, API_URL.PLAYER_GET_SIGNED_ASID_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.PLAYER_GET_SIGNED_ASID_ASYNC, API_URL.PLAYER_GET_SIGNED_ASID_ASYNC));
     }
 
     protected getSignedPlayerInfoAsyncImpl(): Promise<SignedPlayerInfo> {
-        throw notSupported(undefined, WORTAL_API.PLAYER_GET_SIGNED_PLAYER_INFO_ASYNC, API_URL.PLAYER_GET_SIGNED_PLAYER_INFO_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.PLAYER_GET_SIGNED_PLAYER_INFO_ASYNC, API_URL.PLAYER_GET_SIGNED_PLAYER_INFO_ASYNC));
     }
 
     protected getTokenAsyncImpl(): Promise<string> {
-        throw notSupported(undefined, WORTAL_API.PLAYER_GET_TOKEN_ASYNC, API_URL.PLAYER_GET_TOKEN_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.PLAYER_GET_TOKEN_ASYNC, API_URL.PLAYER_GET_TOKEN_ASYNC));
     }
 
     protected setDataAsyncImpl(data: Record<string, unknown>): Promise<void> {
@@ -168,7 +168,7 @@ export class PlayerTelegram extends PlayerBase {
     }
 
     protected subscribeBotAsyncImpl(): Promise<void> {
-        throw notSupported(undefined, WORTAL_API.PLAYER_SUBSCRIBE_BOT_ASYNC, API_URL.PLAYER_SUBSCRIBE_BOT_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.PLAYER_SUBSCRIBE_BOT_ASYNC, API_URL.PLAYER_SUBSCRIBE_BOT_ASYNC));
     }
 
     private _getStringSizeInBytes(str: string): number {

@@ -28,7 +28,7 @@ export class SessionGamePix extends SessionBase {
     }
 
     protected getEntryPointAsyncImpl(): Promise<string> {
-        throw notSupported(undefined, WORTAL_API.SESSION_GET_ENTRY_POINT_ASYNC, API_URL.SESSION_GET_ENTRY_POINT_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.SESSION_GET_ENTRY_POINT_ASYNC, API_URL.SESSION_GET_ENTRY_POINT_ASYNC));
     }
 
     protected getEntryPointDataImpl(): Record<string, unknown> {
@@ -52,7 +52,7 @@ export class SessionGamePix extends SessionBase {
     }
 
     protected switchGameAsyncImpl(gameID: string, data?: object): Promise<void> {
-        throw notSupported(undefined, WORTAL_API.SESSION_SWITCH_GAME_ASYNC, API_URL.SESSION_SWITCH_GAME_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.SESSION_SWITCH_GAME_ASYNC, API_URL.SESSION_SWITCH_GAME_ASYNC));
     }
 
     protected _gameLoadingStartImpl(): void {

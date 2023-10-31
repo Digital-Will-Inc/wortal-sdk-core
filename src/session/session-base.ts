@@ -128,7 +128,7 @@ export abstract class SessionBase {
 
         const validationResult = this.validateSwitchGameAsync(gameID, data);
         if (!validationResult.valid) {
-            throw validationResult.error;
+            return Promise.reject(validationResult.error);
         }
 
         return this.switchGameAsyncImpl(gameID, data);

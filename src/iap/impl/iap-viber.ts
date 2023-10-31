@@ -19,7 +19,7 @@ export class IAPViber extends IAPBase {
     }
 
     protected cancelSubscriptionAsyncImpl(purchaseToken: string): Promise<void> {
-        throw notSupported(undefined, WORTAL_API.IAP_CANCEL_SUBSCRIPTION_ASYNC, API_URL.IAP_CANCEL_SUBSCRIPTION_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.IAP_CANCEL_SUBSCRIPTION_ASYNC, API_URL.IAP_CANCEL_SUBSCRIPTION_ASYNC));
     }
 
     protected consumePurchaseAsyncImpl(token: string): Promise<void> {
@@ -50,11 +50,11 @@ export class IAPViber extends IAPBase {
     }
 
     protected getSubscribableCatalogAsyncImpl(): Promise<SubscribableProduct[]> {
-        throw notSupported(undefined, WORTAL_API.IAP_GET_SUBSCRIBABLE_CATALOG_ASYNC, API_URL.IAP_GET_SUBSCRIBABLE_CATALOG_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.IAP_GET_SUBSCRIBABLE_CATALOG_ASYNC, API_URL.IAP_GET_SUBSCRIBABLE_CATALOG_ASYNC));
     }
 
     protected getSubscriptionsAsyncImpl(): Promise<Subscription[]> {
-        throw notSupported(undefined, WORTAL_API.IAP_GET_SUBSCRIPTIONS_ASYNC, API_URL.IAP_GET_SUBSCRIPTIONS_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.IAP_GET_SUBSCRIPTIONS_ASYNC, API_URL.IAP_GET_SUBSCRIPTIONS_ASYNC));
     }
 
     protected isEnabledImpl(): boolean {
@@ -72,7 +72,7 @@ export class IAPViber extends IAPBase {
     }
 
     protected purchaseSubscriptionAsyncImpl(productID: string): Promise<Subscription> {
-        throw notSupported(undefined, WORTAL_API.IAP_PURCHASE_SUBSCRIPTION_ASYNC, API_URL.IAP_PURCHASE_SUBSCRIPTION_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.IAP_PURCHASE_SUBSCRIPTION_ASYNC, API_URL.IAP_PURCHASE_SUBSCRIPTION_ASYNC));
     }
 
 }

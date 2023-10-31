@@ -23,11 +23,11 @@ export class ContextCrazyGames extends ContextBase {
     }
 
     protected chooseAsyncImpl(payload?: ChoosePayload): Promise<void> {
-        throw notSupported(undefined, WORTAL_API.CONTEXT_CHOOSE_ASYNC, API_URL.CONTEXT_CHOOSE_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.CONTEXT_CHOOSE_ASYNC, API_URL.CONTEXT_CHOOSE_ASYNC));
     }
 
     protected createAsyncImpl(playerID?: string | string[]): Promise<void> {
-        throw notSupported(undefined, WORTAL_API.CONTEXT_CREATE_ASYNC, API_URL.CONTEXT_CREATE_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.CONTEXT_CREATE_ASYNC, API_URL.CONTEXT_CREATE_ASYNC));
     }
 
     protected getIdImpl(): string {
@@ -35,7 +35,7 @@ export class ContextCrazyGames extends ContextBase {
     }
 
     protected getPlayersAsyncImpl(): Promise<ConnectedPlayer[]> {
-        throw notSupported(undefined, WORTAL_API.CONTEXT_GET_PLAYERS_ASYNC, API_URL.CONTEXT_GET_PLAYERS_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.CONTEXT_GET_PLAYERS_ASYNC, API_URL.CONTEXT_GET_PLAYERS_ASYNC));
     }
 
     protected getTypeImpl(): ContextType {
@@ -43,7 +43,7 @@ export class ContextCrazyGames extends ContextBase {
     }
 
     protected inviteAsyncImpl(payload: InvitePayload): Promise<number> {
-        throw notSupported(undefined, WORTAL_API.CONTEXT_INVITE_ASYNC, API_URL.CONTEXT_INVITE_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.CONTEXT_INVITE_ASYNC, API_URL.CONTEXT_INVITE_ASYNC));
     }
 
     protected isSizeBetweenImpl(min?: number, max?: number): ContextSizeResponse | null {
@@ -51,14 +51,14 @@ export class ContextCrazyGames extends ContextBase {
     }
 
     protected shareAsyncImpl(payload: SharePayload): Promise<number> {
-        throw notSupported(undefined, WORTAL_API.CONTEXT_SHARE_ASYNC, API_URL.CONTEXT_SHARE_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.CONTEXT_SHARE_ASYNC, API_URL.CONTEXT_SHARE_ASYNC));
     }
 
     protected shareLinkAsyncImpl(payload: LinkSharePayload): Promise<string | void> {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             const callback = (error: Error_CrazyGames, link: string) => {
                 if (error) {
-                    throw rethrowError_CrazyGames(error, WORTAL_API.CONTEXT_SHARE_LINK_ASYNC, API_URL.CONTEXT_SHARE_LINK_ASYNC);
+                    reject(rethrowError_CrazyGames(error, WORTAL_API.CONTEXT_SHARE_LINK_ASYNC, API_URL.CONTEXT_SHARE_LINK_ASYNC));
                 } else {
                     resolve(link);
                 }
@@ -69,11 +69,11 @@ export class ContextCrazyGames extends ContextBase {
     }
 
     protected switchAsyncImpl(contextID: string, payload?: SwitchPayload): Promise<void> {
-        throw notSupported(undefined, WORTAL_API.CONTEXT_SWITCH_ASYNC, API_URL.CONTEXT_SWITCH_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.CONTEXT_SWITCH_ASYNC, API_URL.CONTEXT_SWITCH_ASYNC));
     }
 
     protected updateAsyncImpl(payload: UpdatePayload): Promise<void> {
-        throw notSupported(undefined, WORTAL_API.CONTEXT_UPDATE_ASYNC, API_URL.CONTEXT_UPDATE_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.CONTEXT_UPDATE_ASYNC, API_URL.CONTEXT_UPDATE_ASYNC));
     }
 
 }

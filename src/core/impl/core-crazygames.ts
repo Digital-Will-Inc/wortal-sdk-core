@@ -21,10 +21,10 @@ export class CoreCrazyGames extends CoreBase {
     }
 
     protected authenticateAsyncImpl(payload?: AuthPayload): Promise<AuthResponse> {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             const callback = (error: Error_CrazyGames, user: ICrazyGamesPlayer) => {
                 if (error) {
-                    throw rethrowError_CrazyGames(error, WORTAL_API.AUTHENTICATE_ASYNC, API_URL.AUTHENTICATE_ASYNC);
+                    reject(rethrowError_CrazyGames(error, WORTAL_API.AUTHENTICATE_ASYNC, API_URL.AUTHENTICATE_ASYNC));
                 } else {
                     debug("Crazy Games user authenticated: ", user);
                     Wortal.player._internalPlayer = new CrazyGamesPlayer(user);
@@ -46,10 +46,10 @@ export class CoreCrazyGames extends CoreBase {
     }
 
     protected linkAccountAsyncImpl(): Promise<boolean> {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             const callback = (error: Error_CrazyGames, response: AuthResponse_CrazyGames) => {
                 if (error) {
-                    throw rethrowError_CrazyGames(error, WORTAL_API.LINK_ACCOUNT_ASYNC, API_URL.LINK_ACCOUNT_ASYNC);
+                    reject(rethrowError_CrazyGames(error, WORTAL_API.LINK_ACCOUNT_ASYNC, API_URL.LINK_ACCOUNT_ASYNC));
                 } else {
                     if (response.response === "yes") {
                         resolve(true);
@@ -68,7 +68,7 @@ export class CoreCrazyGames extends CoreBase {
     }
 
     protected performHapticFeedbackAsyncImpl(): Promise<void> {
-        throw notSupported(undefined, WORTAL_API.PERFORM_HAPTIC_FEEDBACK_ASYNC, API_URL.PERFORM_HAPTIC_FEEDBACK_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.PERFORM_HAPTIC_FEEDBACK_ASYNC, API_URL.PERFORM_HAPTIC_FEEDBACK_ASYNC));
     }
 
     protected setLoadingProgressImpl(progress: number): void {
@@ -80,13 +80,13 @@ export class CoreCrazyGames extends CoreBase {
     }
 
     protected _initializePlatformAsyncImpl(): Promise<void> {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             const crazyGamesSDK = document.createElement("script");
             crazyGamesSDK.src = SDK_SRC.CRAZY_GAMES;
 
             crazyGamesSDK.onload = () => {
                 if (typeof window.CrazyGames.SDK === "undefined") {
-                    throw initializationError("Failed to load Crazy Games SDK.", "_initializePlatformAsyncImpl");
+                    reject(initializationError("Failed to load Crazy Games SDK.", "_initializePlatformAsyncImpl"));
                 }
 
                 debug("Crazy Games platform SDK loaded.");
@@ -110,7 +110,7 @@ export class CoreCrazyGames extends CoreBase {
             }
 
             crazyGamesSDK.onerror = () => {
-                throw initializationError("Failed to load Crazy Games SDK.", "_initializePlatformAsyncImpl");
+                reject(initializationError("Failed to load Crazy Games SDK.", "_initializePlatformAsyncImpl"));
             }
 
             document.head.appendChild(crazyGamesSDK);

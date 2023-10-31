@@ -17,7 +17,7 @@ export class CoreGamePix extends CoreBase {
     }
 
     protected authenticateAsyncImpl(payload?: AuthPayload): Promise<AuthResponse> {
-        throw notSupported(undefined, WORTAL_API.AUTHENTICATE_ASYNC, API_URL.AUTHENTICATE_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.AUTHENTICATE_ASYNC, API_URL.AUTHENTICATE_ASYNC));
     }
 
     protected initializeAsyncImpl(): Promise<void> {
@@ -25,7 +25,7 @@ export class CoreGamePix extends CoreBase {
     }
 
     protected linkAccountAsyncImpl(): Promise<boolean> {
-        throw notSupported(undefined, WORTAL_API.LINK_ACCOUNT_ASYNC, API_URL.LINK_ACCOUNT_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.LINK_ACCOUNT_ASYNC, API_URL.LINK_ACCOUNT_ASYNC));
     }
 
     protected onPauseImpl(callback: () => void): void {
@@ -33,7 +33,7 @@ export class CoreGamePix extends CoreBase {
     }
 
     protected performHapticFeedbackAsyncImpl(): Promise<void> {
-        throw notSupported(undefined, WORTAL_API.PERFORM_HAPTIC_FEEDBACK_ASYNC, API_URL.PERFORM_HAPTIC_FEEDBACK_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.PERFORM_HAPTIC_FEEDBACK_ASYNC, API_URL.PERFORM_HAPTIC_FEEDBACK_ASYNC));
     }
 
     protected setLoadingProgressImpl(progress: number): void {
@@ -45,22 +45,22 @@ export class CoreGamePix extends CoreBase {
     }
 
     protected _initializePlatformAsyncImpl(): Promise<void> {
-        return Promise.resolve()
-            .then(() => {
+        return new Promise((resolve, reject) => {
                 const gamePixSDK = document.createElement("script");
                 gamePixSDK.src = SDK_SRC.GAME_PIX;
 
                 gamePixSDK.onload = () => {
                     if (typeof GamePix === "undefined") {
-                        throw initializationError("Failed to load GamePix SDK.", "_initializePlatformAsyncImpl");
+                        reject(initializationError("Failed to load GamePix SDK.", "_initializePlatformAsyncImpl"));
                     }
 
                     debug("GamePix platform SDK loaded.");
                     Wortal._internalPlatformSDK = GamePix;
+                    resolve();
                 }
 
                 gamePixSDK.onerror = () => {
-                    throw initializationError("Failed to load GamePix SDK.", "_initializePlatformAsyncImpl");
+                    reject(initializationError("Failed to load GamePix SDK.", "_initializePlatformAsyncImpl"));
                 }
 
                 document.head.appendChild(gamePixSDK);

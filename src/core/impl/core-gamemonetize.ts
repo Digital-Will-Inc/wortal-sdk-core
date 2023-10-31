@@ -17,7 +17,7 @@ export class CoreGameMonetize extends CoreBase {
     }
 
     protected authenticateAsyncImpl(payload?: AuthPayload): Promise<AuthResponse> {
-        throw notSupported(undefined, WORTAL_API.AUTHENTICATE_ASYNC, API_URL.AUTHENTICATE_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.AUTHENTICATE_ASYNC, API_URL.AUTHENTICATE_ASYNC));
     }
 
     protected initializeAsyncImpl(): Promise<void> {
@@ -25,7 +25,7 @@ export class CoreGameMonetize extends CoreBase {
     }
 
     protected linkAccountAsyncImpl(): Promise<boolean> {
-        throw notSupported(undefined, WORTAL_API.LINK_ACCOUNT_ASYNC, API_URL.LINK_ACCOUNT_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.LINK_ACCOUNT_ASYNC, API_URL.LINK_ACCOUNT_ASYNC));
     }
 
     protected onPauseImpl(callback: () => void): void {
@@ -33,7 +33,7 @@ export class CoreGameMonetize extends CoreBase {
     }
 
     protected performHapticFeedbackAsyncImpl(): Promise<void> {
-        throw notSupported(undefined, WORTAL_API.PERFORM_HAPTIC_FEEDBACK_ASYNC, API_URL.PERFORM_HAPTIC_FEEDBACK_ASYNC);
+        return Promise.reject(notSupported(undefined, WORTAL_API.PERFORM_HAPTIC_FEEDBACK_ASYNC, API_URL.PERFORM_HAPTIC_FEEDBACK_ASYNC));
     }
 
     protected setLoadingProgressImpl(progress: number): void {
