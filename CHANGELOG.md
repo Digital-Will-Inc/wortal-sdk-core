@@ -1,10 +1,23 @@
 # Changelog
 
+## [1.7.0] - 2023-11-01
+### BREAKING CHANGE
+- NPM package/bundled SDK are no longer supported. SDK must be included at runtime via CDN.
+- Patch and minor versions will no longer be offered. Please use the v1 branch for continued support.
+
+### Added
+- Core
+  - Tracking for SDK initialization time
+
+### Changed
+- Core
+  - Restructured SDK to use dynamic module imports, reducing bundle size and load times significantly
+  - Improved logging and error handling
+
 ## [1.6.15] - 2023-10-17
 ### Added
 - Core
   - Support for GameMonetize platform
-
 - Ads
   - Banner ads
 
