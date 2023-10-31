@@ -1,25 +1,24 @@
-import { LeaderboardPlayerData } from "../types/leaderboard";
+import { LeaderboardPlayerData } from "../types/leaderboard-types";
 
-/** @hidden */
+/**
+ * Data for a leaderboard.
+ * @hidden
+ */
 export interface LeaderboardData {
     id: number;
     name: string;
     contextId: string;
 }
 
-/** @hidden */
+/**
+ * Data for a leaderboard entry.
+ * @hidden
+ */
 export interface LeaderboardEntryData {
     player?: LeaderboardPlayerData,
     rank: number,
     score: number,
     formattedScore?: string,
     timestamp?: number,
-    details?: string,
-}
-
-/** @hidden */
-export interface TelegramLeaderboardEntry {
-    position: number;
-    score: number;
-    username?: string;
+    details?: string | null,
 }
