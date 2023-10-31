@@ -1,8 +1,16 @@
-import { ErrorMessage, Error_Facebook_Rakuten } from "../interfaces/wortal";
-import { Error_CrazyGames } from "../types/wortal";
+import { ErrorMessage } from "./interfaces/error-message";
+import { ErrorMessage_Facebook } from "./interfaces/facebook-error";
+import { ErrorMessage_Link } from "./interfaces/link-error";
+import { ErrorMessage_Viber } from "./interfaces/viber-error";
+import { Error_CrazyGames } from "./types/crazygames-error-types";
 
-/** @hidden */
-export function rethrowError_Facebook_Rakuten(original: Error_Facebook_Rakuten, context: string, url?: string): ErrorMessage {
+/**
+ * Rethrows an error from the Facebook, Link or Viber SDKs as a Wortal error. Use this in a catch block when
+ * calling these SDKs to catch their errors and convert them to Wortal errors for consistent error handling.
+ * @hidden
+ */
+export function rethrowError_Facebook_Rakuten(original: ErrorMessage_Facebook | ErrorMessage_Link | ErrorMessage_Viber,
+                                              context: string, url?: string): ErrorMessage {
     return {
         code: original.code || "UNKNOWN",
         message: original.message || "No message provided by the platform SDK.",
@@ -11,66 +19,94 @@ export function rethrowError_Facebook_Rakuten(original: Error_Facebook_Rakuten, 
     }
 }
 
-/** @hidden */
+/**
+ * Rethrows an error from the CrazyGames SDK as a Wortal error. Use this in the error callback when calling the
+ * CrazyGames SDK to catch its errors and convert them to Wortal errors for consistent error handling.
+ * @hidden
+ */
 export function rethrowError_CrazyGames(original: Error_CrazyGames, context: string, url?: string): ErrorMessage {
     return {
-        code: _crazyGamesErrors[original] || "UNKNOWN",
-        message: ErrorMessages[_crazyGamesErrors[original]] || "No message provided by the platform SDK.",
+        code: ErrorMessages_CrazyGames[original] || "UNKNOWN",
+        message: ErrorMessages[ErrorMessages_CrazyGames[original]] || "No message provided by the platform SDK.",
         context: context,
         url: url,
     }
 }
 
-/** @hidden */
+/**
+ * Throw this in validation functions to indicate that the parameter is invalid.
+ * @hidden
+ */
 export function invalidParams(message: string = "", context: string, url?: string): ErrorMessage {
     return {
-        code: 'INVALID_PARAM',
+        code: "INVALID_PARAM",
         message: message || ErrorMessages["INVALID_PARAM"],
         context: context,
         url: url,
     }
 }
 
-/** @hidden */
+/**
+ * Throw this in situations where the caller does not have permission to perform the requested operation or the
+ * current state does permit the requested operation. Ex: calling a function that requires authentication when the
+ * user is not authenticated, or calling a function that requires a context when the game is in solo mode.
+ * @hidden
+ */
 export function invalidOperation(message: string, context: string, url?: string): ErrorMessage {
     return {
-        code: 'INVALID_OPERATION',
+        code: "INVALID_OPERATION",
         message: message,
         context: context,
         url: url,
     }
 }
 
-/** @hidden */
+/**
+ * Throw this to indicate the called function is not supported on the current platform.
+ * @hidden
+ */
 export function notSupported(message: string = "", context: string, url?: string): ErrorMessage {
     return {
-        code: 'NOT_SUPPORTED',
+        code: "NOT_SUPPORTED",
         message: message || ErrorMessages["NOT_SUPPORTED"],
         context: context,
         url: url || "https://sdk.html5gameportal.com/api/wortal/#getsupportedapis",
     }
 }
 
-/** @hidden */
+/**
+ * Throw this to indicate an operation, such as fetch, has failed. This is typically thrown during a failed web
+ * request and the message should include additional details about the failure such as the response code.
+ * @hidden
+ */
 export function operationFailed(message: string, context: string, url?: string): ErrorMessage {
     return {
-        code: 'OPERATION_FAILED',
+        code: "OPERATION_FAILED",
         message: message,
         context: context,
         url: url,
     }
 }
 
-/** @hidden */
+/**
+ * Throw this to indicate the SDK failed to initialize. This can occur if the Wortal SDK encountered an error during
+ * initialization or if the platform SDK failed to initialize. This should be a fatal error that prevents the SDK
+ * from being used.
+ * @hidden
+ */
 export function initializationError(message: string, context: string, url?: string): ErrorMessage {
     return {
-        code: 'INITIALIZATION_ERROR',
+        code: "INITIALIZATION_ERROR",
         message: message,
         context: context,
         url: url || "https://sdk.html5gameportal.com/wortal-html5/#initialization",
     }
 }
 
+/**
+ * All error codes and messages defined by the Wortal SDK.
+ * @hidden
+ */
 const ErrorMessages: Record<string, string> = {
     AUTH_IN_PROGRESS: "The game attempted to show an authentication prompt, but a prompt to authenticate is already in progress.",
     AUTH_NOT_ENABLED: "The game attempted to perform an operation that requires authentication, but the game has not enabled authentication.",
@@ -96,7 +132,11 @@ const ErrorMessages: Record<string, string> = {
     USER_NOT_AUTHENTICATED: "The game attempted to perform an operation that requires authentication, but the user is not authenticated.",
 }
 
-const _crazyGamesErrors: Record<string, string> = {
+/**
+ * Maps CrazyGames error codes to Wortal error codes.
+ * @hidden
+ */
+const ErrorMessages_CrazyGames: Record<string, string> = {
     authNotEnabled: "AUTH_NOT_ENABLED",
     userNotAuthenticated: "USER_NOT_AUTHENTICATED",
     showAuthPromptInProgress: "AUTH_IN_PROGRESS",
