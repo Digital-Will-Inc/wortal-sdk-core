@@ -117,7 +117,7 @@ export function exception(message: string, args?: unknown) {
  * @hidden
  */
 export function status(message: string, args?: unknown) {
-    console.debug(`%c${logPrefix}%c${statusLogPrefix}%c ${message}`, logPrefixStyle, statusLogPrefix, logTextStyle);
+    console.debug(`%c${logPrefix}%c${statusLogPrefix}%c ${message}`, logPrefixStyle, logStatusTagStyle, logTextStyle);
     if (args !== undefined) {
         console.debug(args);
     }
