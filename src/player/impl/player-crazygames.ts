@@ -1,6 +1,7 @@
 import { API_URL, WORTAL_API } from "../../data/core-data";
 import { notSupported, rethrowError_CrazyGames } from "../../errors/error-handler";
 import { Error_CrazyGames } from "../../errors/types/crazygames-error-types";
+import Wortal from "../../index";
 import { ConnectedPlayer } from "../classes/connected-player";
 import { CrazyGamesPlayer } from "../classes/crazygames-player";
 import { Player } from "../classes/player";
@@ -59,7 +60,7 @@ export class PlayerCrazyGames extends PlayerBase {
                 }
             };
 
-            window.Wortal._internalPlatformSDK.user.getUserToken(callback);
+            Wortal._internalPlatformSDK.user.getUserToken(callback);
         });
     }
 

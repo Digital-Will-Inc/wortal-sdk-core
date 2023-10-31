@@ -1,3 +1,4 @@
+import Wortal from "../../index";
 import { debug } from "../../utils/logger";
 import { Player } from "./player";
 
@@ -21,12 +22,12 @@ export class WortalPlayer extends Player {
     }
 
     private _isWortalFirstPlay(): boolean {
-        const cookieDate = this._getCookie(window.Wortal.session._internalSession.gameId);
+        const cookieDate = this._getCookie(Wortal.session._internalSession.gameId);
         if (cookieDate !== "") {
             this._data.daysSinceFirstPlay = this._getTimeFromCookieCreation(cookieDate);
             return false;
         } else {
-            this._setCookie(window.Wortal.session._internalSession.gameId);
+            this._setCookie(Wortal.session._internalSession.gameId);
             return true;
         }
     }

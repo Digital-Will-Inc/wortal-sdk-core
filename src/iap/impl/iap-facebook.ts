@@ -1,6 +1,7 @@
 import { API_URL, WORTAL_API } from "../../data/core-data";
 import { rethrowError_Facebook_Rakuten } from "../../errors/error-handler";
 import { ErrorMessage_Facebook } from "../../errors/interfaces/facebook-error";
+import Wortal from "../../index";
 import { IAPBase } from "../iap-base";
 import { Product } from "../interfaces/product";
 import { Purchase } from "../interfaces/purchase";
@@ -18,21 +19,21 @@ export class IAPFacebook extends IAPBase {
     }
 
     protected cancelSubscriptionAsyncImpl(purchaseToken: string): Promise<void> {
-        return window.Wortal._internalPlatformSDK.payments.cancelSubscriptionAsync(purchaseToken)
+        return Wortal._internalPlatformSDK.payments.cancelSubscriptionAsync(purchaseToken)
             .catch((error: ErrorMessage_Facebook) => {
                 throw rethrowError_Facebook_Rakuten(error, WORTAL_API.IAP_CANCEL_SUBSCRIPTION_ASYNC, API_URL.IAP_CANCEL_SUBSCRIPTION_ASYNC);
             });
     }
 
     protected consumePurchaseAsyncImpl(token: string): Promise<void> {
-        return window.Wortal._internalPlatformSDK.payments.consumePurchaseAsync(token)
+        return Wortal._internalPlatformSDK.payments.consumePurchaseAsync(token)
             .catch((error: ErrorMessage_Facebook) => {
                 throw rethrowError_Facebook_Rakuten(error, WORTAL_API.IAP_CONSUME_PURCHASE_ASYNC, API_URL.IAP_CONSUME_PURCHASE_ASYNC);
             });
     }
 
     protected getCatalogAsyncImpl(): Promise<Product[]> {
-        return window.Wortal._internalPlatformSDK.payments.getCatalogAsync()
+        return Wortal._internalPlatformSDK.payments.getCatalogAsync()
             .then((products: Product[]) => {
                 return products;
             })
@@ -42,7 +43,7 @@ export class IAPFacebook extends IAPBase {
     }
 
     protected getPurchasesAsyncImpl(): Promise<Purchase[]> {
-        return window.Wortal._internalPlatformSDK.payments.getPurchasesAsync()
+        return Wortal._internalPlatformSDK.payments.getPurchasesAsync()
             .then((purchases: Purchase[]) => {
                 return purchases;
             })
@@ -52,7 +53,7 @@ export class IAPFacebook extends IAPBase {
     }
 
     protected getSubscribableCatalogAsyncImpl(): Promise<SubscribableProduct[]> {
-        return window.Wortal._internalPlatformSDK.payments.getSubscribableCatalogAsync()
+        return Wortal._internalPlatformSDK.payments.getSubscribableCatalogAsync()
             .then((products: SubscribableProduct[]) => {
                 return products;
             })
@@ -62,7 +63,7 @@ export class IAPFacebook extends IAPBase {
     }
 
     protected getSubscriptionsAsyncImpl(): Promise<Subscription[]> {
-        return window.Wortal._internalPlatformSDK.payments.getSubscriptionsAsync()
+        return Wortal._internalPlatformSDK.payments.getSubscriptionsAsync()
             .then((subscriptions: Subscription[]) => {
                 return subscriptions;
             })
@@ -76,7 +77,7 @@ export class IAPFacebook extends IAPBase {
     }
 
     protected makePurchaseAsyncImpl(purchase: PurchaseConfig): Promise<Purchase> {
-        return window.Wortal._internalPlatformSDK.payments.purchaseAsync(purchase)
+        return Wortal._internalPlatformSDK.payments.purchaseAsync(purchase)
             .then((purchase: Purchase) => {
                 return purchase;
             })
@@ -86,7 +87,7 @@ export class IAPFacebook extends IAPBase {
     }
 
     protected purchaseSubscriptionAsyncImpl(productID: string): Promise<Subscription> {
-        return window.Wortal._internalPlatformSDK.payments.purchaseSubscriptionAsync(productID)
+        return Wortal._internalPlatformSDK.payments.purchaseSubscriptionAsync(productID)
             .then((subscription: Subscription) => {
                 return subscription;
             })

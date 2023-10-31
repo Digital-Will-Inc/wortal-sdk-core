@@ -1,5 +1,6 @@
 import { API_URL, WORTAL_API } from "../../data/core-data";
 import { notSupported } from "../../errors/error-handler";
+import Wortal from "../../index";
 import { detectDevice } from "../../utils/wortal-utils";
 import { TrafficSource } from "../interfaces/traffic-source";
 import { SessionBase } from "../session-base";
@@ -35,7 +36,7 @@ export class SessionGamePix extends SessionBase {
     }
 
     protected getLocaleImpl(): string {
-        return window.Wortal._internalPlatformSDK.lang();
+        return Wortal._internalPlatformSDK.lang();
     }
 
     protected getTrafficSourceImpl(): TrafficSource {
@@ -43,7 +44,7 @@ export class SessionGamePix extends SessionBase {
     }
 
     protected happyTimeImpl(): void {
-        return window.Wortal._internalPlatformSDK.happyMoment();
+        return Wortal._internalPlatformSDK.happyMoment();
     }
 
     protected setSessionDataImpl(data: Record<string, unknown>): void {
@@ -55,11 +56,11 @@ export class SessionGamePix extends SessionBase {
     }
 
     protected _gameLoadingStartImpl(): void {
-        return window.Wortal.session._internalGameState.startGameLoadTimer();
+        return Wortal.session._internalGameState.startGameLoadTimer();
     }
 
     protected _gameLoadingStopImpl(): void {
-        return window.Wortal.session._internalGameState.stopGameLoadTimer();
+        return Wortal.session._internalGameState.stopGameLoadTimer();
     }
 
 }

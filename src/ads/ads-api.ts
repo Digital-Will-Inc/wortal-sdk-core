@@ -1,3 +1,4 @@
+import Wortal from "../index";
 import { AdsBase } from "./ads-base";
 import { AdConfig } from "./classes/ad-config";
 import { BannerPosition } from "./types/banner-position";
@@ -32,7 +33,7 @@ export class AdsAPI {
      * @returns {boolean} True if ads are blocked for the current session. False if ads are not blocked.
      */
     public isAdBlocked(): boolean {
-        return window.Wortal.ads._internalAdConfig.isAdBlocked;
+        return Wortal.ads._internalAdConfig.isAdBlocked;
     }
 
     /**

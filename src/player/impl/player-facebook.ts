@@ -1,6 +1,7 @@
 import { API_URL, WORTAL_API } from "../../data/core-data";
 import { notSupported, rethrowError_Facebook_Rakuten } from "../../errors/error-handler";
 import { ErrorMessage_Facebook } from "../../errors/interfaces/facebook-error";
+import Wortal from "../../index";
 import { debug } from "../../utils/logger";
 import { ConnectedPlayer } from "../classes/connected-player";
 import { FacebookPlayer } from "../classes/facebook-player";
@@ -29,7 +30,7 @@ export class PlayerFacebook extends PlayerBase {
     }
 
     protected canSubscribeBotAsyncImpl(): Promise<boolean> {
-        return window.Wortal._internalPlatformSDK.player.canSubscribeBotAsync()
+        return Wortal._internalPlatformSDK.player.canSubscribeBotAsync()
             .then((canSubscribe: boolean) => {
                 return canSubscribe;
             })
@@ -39,14 +40,14 @@ export class PlayerFacebook extends PlayerBase {
     }
 
     protected flushDataAsyncImpl(): Promise<void> {
-        return window.Wortal._internalPlatformSDK.player.flushDataAsync()
+        return Wortal._internalPlatformSDK.player.flushDataAsync()
             .catch((error: ErrorMessage_Facebook) => {
                 throw rethrowError_Facebook_Rakuten(error, WORTAL_API.PLAYER_FLUSH_DATA_ASYNC, API_URL.PLAYER_FLUSH_DATA_ASYNC);
             });
     }
 
     protected getASIDAsyncImpl(): Promise<string> {
-        return window.Wortal._internalPlatformSDK.player.getASIDAsync()
+        return Wortal._internalPlatformSDK.player.getASIDAsync()
             .then((asid: string) => {
                 return asid;
             })
@@ -56,7 +57,7 @@ export class PlayerFacebook extends PlayerBase {
     }
 
     protected getConnectedPlayersAsyncImpl(payload?: ConnectedPlayerPayload): Promise<ConnectedPlayer[]> {
-        return window.Wortal._internalPlatformSDK.player.getConnectedPlayersAsync(payload)
+        return Wortal._internalPlatformSDK.player.getConnectedPlayersAsync(payload)
             .then((players: ConnectedPlayer_Facebook[]) => {
                 return players.map((player: ConnectedPlayer_Facebook) => {
                     const playerData: PlayerData = {
@@ -76,7 +77,7 @@ export class PlayerFacebook extends PlayerBase {
     }
 
     protected getDataAsyncImpl(keys: string[]): Promise<any> {
-        return window.Wortal._internalPlatformSDK.player.getDataAsync(keys)
+        return Wortal._internalPlatformSDK.player.getDataAsync(keys)
             .then((data: any) => {
                 return data;
             })
@@ -86,7 +87,7 @@ export class PlayerFacebook extends PlayerBase {
     }
 
     protected getSignedASIDAsyncImpl(): Promise<SignedASID> {
-        return window.Wortal._internalPlatformSDK.player.getSignedASIDAsync()
+        return Wortal._internalPlatformSDK.player.getSignedASIDAsync()
             .then((info: SignedASID_Facebook) => {
                 return {
                     asid: info.getASID(),
@@ -99,7 +100,7 @@ export class PlayerFacebook extends PlayerBase {
     }
 
     protected getSignedPlayerInfoAsyncImpl(): Promise<SignedPlayerInfo> {
-        return window.Wortal._internalPlatformSDK.player.getSignedPlayerInfoAsync()
+        return Wortal._internalPlatformSDK.player.getSignedPlayerInfoAsync()
             .then((info: SignedPlayerInfo_Facebook) => {
                 return {
                     id: info.getPlayerID(),
@@ -116,7 +117,7 @@ export class PlayerFacebook extends PlayerBase {
     }
 
     protected setDataAsyncImpl(data: Record<string, unknown>): Promise<void> {
-        return window.Wortal._internalPlatformSDK.player.setDataAsync(data)
+        return Wortal._internalPlatformSDK.player.setDataAsync(data)
             .then(() => {
                 debug("Saved data to cloud storage.");
             })
@@ -126,7 +127,7 @@ export class PlayerFacebook extends PlayerBase {
     }
 
     protected subscribeBotAsyncImpl(): Promise<void> {
-        return window.Wortal._internalPlatformSDK.player.subscribeBotAsync()
+        return Wortal._internalPlatformSDK.player.subscribeBotAsync()
             .catch((error: ErrorMessage_Facebook) => {
                 throw rethrowError_Facebook_Rakuten(error, WORTAL_API.PLAYER_CAN_SUBSCRIBE_BOT_ASYNC, API_URL.PLAYER_CAN_SUBSCRIBE_BOT_ASYNC);
             });

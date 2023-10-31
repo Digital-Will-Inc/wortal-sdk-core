@@ -1,6 +1,7 @@
 import { API_URL, WORTAL_API } from "../../data/core-data";
 import { notSupported } from "../../errors/error-handler";
 import { ErrorMessage_Link } from "../../errors/interfaces/link-error";
+import Wortal from "../../index";
 import { debug, warn } from "../../utils/logger";
 import { AdsBase } from "../ads-base";
 import { AdConfig } from "../classes/ad-config";
@@ -27,7 +28,7 @@ export class AdsLink extends AdsBase {
 
     protected showInterstitialImpl(ad: AdInstanceData): void {
         let preloadedInterstitial: AdInstance_Link_Viber;
-        window.Wortal._internalPlatformSDK.getInterstitialAdAsync(ad.adUnitId)
+        Wortal._internalPlatformSDK.getInterstitialAdAsync(ad.adUnitId)
             .then((interstitial: AdInstance_Link_Viber) => {
                 debug("Interstitial ad fetched successfully. Attempting to load..", interstitial);
                 ad.callbacks.beforeAd();
@@ -57,7 +58,7 @@ export class AdsLink extends AdsBase {
 
     protected showRewardedImpl(ad: AdInstanceData): void {
         let preloadedRewardedVideo: AdInstance_Link_Viber;
-        window.Wortal._internalPlatformSDK.getRewardedVideoAsync(ad.adUnitId)
+        Wortal._internalPlatformSDK.getRewardedVideoAsync(ad.adUnitId)
             .then((rewarded: AdInstance_Link_Viber) => {
                 debug("Rewarded video fetched successfully. Attempting to load..", rewarded);
                 ad.callbacks.beforeAd();

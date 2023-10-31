@@ -1,6 +1,7 @@
 import { API_URL, WORTAL_API } from "../../data/core-data";
 import { notSupported, rethrowError_Facebook_Rakuten } from "../../errors/error-handler";
 import { ErrorMessage_Viber } from "../../errors/interfaces/viber-error";
+import Wortal from "../../index";
 import { TrafficSource } from "../interfaces/traffic-source";
 import { SessionBase } from "../session-base";
 import { Device } from "../types/session-types";
@@ -23,11 +24,11 @@ export class SessionViber extends SessionBase {
     }
 
     protected getDeviceImpl(): Device {
-        return window.Wortal._internalPlatformSDK.getPlatform();
+        return Wortal._internalPlatformSDK.getPlatform();
     }
 
     protected getEntryPointAsyncImpl(): Promise<string> {
-        return window.Wortal._internalPlatformSDK.getEntryPointAsync()
+        return Wortal._internalPlatformSDK.getEntryPointAsync()
             .then((entryPoint: string) => {
                 return entryPoint;
             })
@@ -37,7 +38,7 @@ export class SessionViber extends SessionBase {
     }
 
     protected getEntryPointDataImpl(): Record<string, unknown> {
-        return window.Wortal._internalPlatformSDK.getEntryPointData();
+        return Wortal._internalPlatformSDK.getEntryPointData();
     }
 
     protected getLocaleImpl(): string {
@@ -45,7 +46,7 @@ export class SessionViber extends SessionBase {
     }
 
     protected getTrafficSourceImpl(): TrafficSource {
-        return window.Wortal._internalPlatformSDK.getTrafficSource();
+        return Wortal._internalPlatformSDK.getTrafficSource();
     }
 
     protected happyTimeImpl(): void {
@@ -53,7 +54,7 @@ export class SessionViber extends SessionBase {
     }
 
     protected setSessionDataImpl(data: Record<string, unknown>): void {
-        return window.Wortal._internalPlatformSDK.setSessionData(data);
+        return Wortal._internalPlatformSDK.setSessionData(data);
     }
 
     protected switchGameAsyncImpl(gameID: string, data?: object): Promise<void> {
@@ -61,11 +62,11 @@ export class SessionViber extends SessionBase {
     }
 
     protected _gameLoadingStartImpl(): void {
-        return window.Wortal.session._internalGameState.startGameLoadTimer();
+        return Wortal.session._internalGameState.startGameLoadTimer();
     }
 
     protected _gameLoadingStopImpl(): void {
-        return window.Wortal.session._internalGameState.stopGameLoadTimer();
+        return Wortal.session._internalGameState.stopGameLoadTimer();
     }
 
 }

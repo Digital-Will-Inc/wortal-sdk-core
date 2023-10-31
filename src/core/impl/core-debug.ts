@@ -1,6 +1,7 @@
 import { AuthPayload } from "../../auth/interfaces/auth-payload";
 import { AuthResponse } from "../../auth/interfaces/auth-response";
 import { SDK_SRC } from "../../data/core-data";
+import Wortal from "../../index";
 import { debug } from "../../utils/logger";
 import { onPauseFunctions } from "../../utils/wortal-utils";
 import { CoreBase } from "../core-base";
@@ -57,18 +58,18 @@ export class CoreDebug extends CoreBase {
             const metaElement = document.createElement("meta");
             const googleAdsSDK = document.createElement("script");
 
-            window.Wortal.ads._internalAdConfig.setClientID("ca-pub-123456789");
-            window.Wortal.ads._internalAdConfig.setHostID("");
-            window.Wortal.ads._internalAdConfig.setChannelID("");
+            Wortal.ads._internalAdConfig.setClientID("ca-pub-123456789");
+            Wortal.ads._internalAdConfig.setHostID("");
+            Wortal.ads._internalAdConfig.setChannelID("");
 
-            googleAdsSDK.setAttribute("data-ad-client", window.Wortal.ads._internalAdConfig.clientID);
+            googleAdsSDK.setAttribute("data-ad-client", Wortal.ads._internalAdConfig.clientID);
             googleAdsSDK.setAttribute("data-adbreak-test", "on");
 
             googleAdsSDK.setAttribute("src", SDK_SRC.GOOGLE);
             googleAdsSDK.setAttribute("type", "text/javascript");
 
             metaElement.setAttribute("name", "google-adsense-platform-account");
-            metaElement.setAttribute("content", window.Wortal.ads._internalAdConfig.hostID);
+            metaElement.setAttribute("content", Wortal.ads._internalAdConfig.hostID);
 
             googleAdsSDK.onload = () => {
                 debug("Debug platform SDK initialized with ads.");
@@ -77,7 +78,7 @@ export class CoreDebug extends CoreBase {
 
             googleAdsSDK.onerror = () => {
                 debug("Ad blocker detected. Debug platform SDK initialized without ads.");
-                window.Wortal.ads._internalAdConfig.setAdBlocked(true);
+                Wortal.ads._internalAdConfig.setAdBlocked(true);
                 resolve();
             };
 

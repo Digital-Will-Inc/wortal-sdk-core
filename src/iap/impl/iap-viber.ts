@@ -1,6 +1,7 @@
 import { API_URL, WORTAL_API } from "../../data/core-data";
 import { notSupported, rethrowError_Facebook_Rakuten } from "../../errors/error-handler";
 import { ErrorMessage_Viber } from "../../errors/interfaces/viber-error";
+import Wortal from "../../index";
 import { IAPBase } from "../iap-base";
 import { Product } from "../interfaces/product";
 import { Purchase } from "../interfaces/purchase";
@@ -22,14 +23,14 @@ export class IAPViber extends IAPBase {
     }
 
     protected consumePurchaseAsyncImpl(token: string): Promise<void> {
-        return window.Wortal._internalPlatformSDK.payments.consumePurchaseAsync(token)
+        return Wortal._internalPlatformSDK.payments.consumePurchaseAsync(token)
             .catch((error: ErrorMessage_Viber) => {
                 throw rethrowError_Facebook_Rakuten(error, WORTAL_API.IAP_CONSUME_PURCHASE_ASYNC, API_URL.IAP_CONSUME_PURCHASE_ASYNC);
             });
     }
 
     protected getCatalogAsyncImpl(): Promise<Product[]> {
-        return window.Wortal._internalPlatformSDK.payments.getCatalogAsync()
+        return Wortal._internalPlatformSDK.payments.getCatalogAsync()
             .then((products: Product[]) => {
                 return products;
             })
@@ -39,7 +40,7 @@ export class IAPViber extends IAPBase {
     }
 
     protected getPurchasesAsyncImpl(): Promise<Purchase[]> {
-        return window.Wortal._internalPlatformSDK.payments.getPurchasesAsync()
+        return Wortal._internalPlatformSDK.payments.getPurchasesAsync()
             .then((purchases: Purchase[]) => {
                 return purchases;
             })
@@ -61,7 +62,7 @@ export class IAPViber extends IAPBase {
     }
 
     protected makePurchaseAsyncImpl(purchase: PurchaseConfig): Promise<Purchase> {
-        return window.Wortal._internalPlatformSDK.payments.purchaseAsync(purchase)
+        return Wortal._internalPlatformSDK.payments.purchaseAsync(purchase)
             .then((purchase: Purchase) => {
                 return purchase;
             })

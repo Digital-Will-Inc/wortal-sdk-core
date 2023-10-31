@@ -1,6 +1,7 @@
 import { AuthPayload } from "../../auth/interfaces/auth-payload";
 import { AuthResponse } from "../../auth/interfaces/auth-response";
 import { initializationError, notSupported } from "../../errors/error-handler";
+import Wortal from "../../index";
 import { debug } from "../../utils/logger";
 import { addExternalCallback, externalSDKEventTrigger, onPauseFunctions } from "../../utils/wortal-utils";
 import { CoreBase } from "../core-base";
@@ -50,7 +51,7 @@ export class CoreGD extends CoreBase {
 
         return new Promise((resolve, reject) => {
             window.GD_OPTIONS = {
-                gameId: window.Wortal.session._internalSession.gameId,
+                gameId: Wortal.session._internalSession.gameId,
                 onEvent: (event: () => void) => {
                     externalSDKEventTrigger(event.name);
                 },
@@ -65,7 +66,7 @@ export class CoreGD extends CoreBase {
                 }
 
                 debug("Game Distribution platform SDK initialized.");
-                window.Wortal._internalPlatformSDK = gdsdk;
+                Wortal._internalPlatformSDK = gdsdk;
                 resolve();
             } else {
                 gdSDK = document.createElement("script");
@@ -78,7 +79,7 @@ export class CoreGD extends CoreBase {
                         reject(initializationError("Failed to load Game Distribution SDK.", "_initializePlatformAsyncImpl"));
                     }
 
-                    window.Wortal._internalPlatformSDK = gdsdk;
+                    Wortal._internalPlatformSDK = gdsdk;
                     addExternalCallback(GD_GAME_MONETIZE_API.SDK_READY, () => {
                         debug("Game Distribution platform SDK initialized.");
                         resolve();

@@ -1,5 +1,6 @@
 import { API_URL, WORTAL_API } from "../../data/core-data";
 import { ErrorMessage_Link } from "../../errors/interfaces/link-error";
+import Wortal from "../../index";
 import { ConnectedPlayer } from "../../player/classes/connected-player";
 import { PlayerData } from "../../player/interfaces/player-data";
 import { notSupported, rethrowError_Facebook_Rakuten } from "../../errors/error-handler";
@@ -26,7 +27,7 @@ export class ContextLink extends ContextBase {
     }
 
     protected chooseAsyncImpl(payload?: ChoosePayload): Promise<void> {
-        return window.Wortal._internalPlatformSDK.context.chooseAsync(payload)
+        return Wortal._internalPlatformSDK.context.chooseAsync(payload)
             .catch((error: ErrorMessage_Link) => {
                 throw rethrowError_Facebook_Rakuten(error, WORTAL_API.CONTEXT_CHOOSE_ASYNC, API_URL.CONTEXT_CHOOSE_ASYNC);
             });
@@ -38,18 +39,18 @@ export class ContextLink extends ContextBase {
             playerID = playerID[0];
         }
 
-        return window.Wortal._internalPlatformSDK.context.createAsync(playerID)
+        return Wortal._internalPlatformSDK.context.createAsync(playerID)
             .catch((error: ErrorMessage_Link) => {
                 throw rethrowError_Facebook_Rakuten(error, WORTAL_API.CONTEXT_CREATE_ASYNC, API_URL.CONTEXT_CREATE_ASYNC);
             });
     }
 
     protected getIdImpl(): string {
-        return window.Wortal._internalPlatformSDK.context.getID();
+        return Wortal._internalPlatformSDK.context.getID();
     }
 
     protected getPlayersAsyncImpl(): Promise<ConnectedPlayer[]> {
-        return window.Wortal._internalPlatformSDK.context.getPlayersAsync()
+        return Wortal._internalPlatformSDK.context.getPlayersAsync()
             .then((players: ConnectedPlayer_Link_Viber[]) => {
                 return players.map((player: ConnectedPlayer_Link_Viber) => {
                     const playerData: PlayerData = {
@@ -69,12 +70,12 @@ export class ContextLink extends ContextBase {
     }
 
     protected getTypeImpl(): ContextType {
-        return window.Wortal._internalPlatformSDK.context.getType();
+        return Wortal._internalPlatformSDK.context.getType();
     }
 
     protected inviteAsyncImpl(payload: InvitePayload): Promise<number> {
         const convertedPayload: LinkMessagePayload = this._convertToLinkMessagePayload(payload);
-        return window.Wortal._internalPlatformSDK.shareAsync(convertedPayload)
+        return Wortal._internalPlatformSDK.shareAsync(convertedPayload)
             .then((result: ShareResult) => {
                 return result.sharedCount;
             })
@@ -84,12 +85,12 @@ export class ContextLink extends ContextBase {
     }
 
     protected isSizeBetweenImpl(min?: number, max?: number): ContextSizeResponse | null {
-        return window.Wortal._internalPlatformSDK.context.isSizeBetween(min, max);
+        return Wortal._internalPlatformSDK.context.isSizeBetween(min, max);
     }
 
     protected shareAsyncImpl(payload: SharePayload): Promise<number> {
         const convertedPayload: LinkMessagePayload = this._convertToLinkMessagePayload(payload);
-        return window.Wortal._internalPlatformSDK.shareAsync(convertedPayload)
+        return Wortal._internalPlatformSDK.shareAsync(convertedPayload)
             .then((result: ShareResult) => {
                 return result.sharedCount;
             })
@@ -103,7 +104,7 @@ export class ContextLink extends ContextBase {
     }
 
     protected switchAsyncImpl(contextID: string, payload?: SwitchPayload): Promise<void> {
-        return window.Wortal._internalPlatformSDK.context.switchAsync(contextID, payload)
+        return Wortal._internalPlatformSDK.context.switchAsync(contextID, payload)
             .catch((error: ErrorMessage_Link) => {
                 throw rethrowError_Facebook_Rakuten(error, WORTAL_API.CONTEXT_SWITCH_ASYNC, API_URL.CONTEXT_SWITCH_ASYNC);
             });
@@ -111,7 +112,7 @@ export class ContextLink extends ContextBase {
 
     protected updateAsyncImpl(payload: UpdatePayload): Promise<void> {
         const convertedPayload: LinkMessagePayload = this._convertToLinkMessagePayload(payload);
-        return window.Wortal._internalPlatformSDK.updateAsync(convertedPayload)
+        return Wortal._internalPlatformSDK.updateAsync(convertedPayload)
             .catch((error: ErrorMessage_Link) => {
                 throw rethrowError_Facebook_Rakuten(error, WORTAL_API.CONTEXT_UPDATE_ASYNC, API_URL.CONTEXT_UPDATE_ASYNC);
             });

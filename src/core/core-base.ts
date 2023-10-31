@@ -3,6 +3,7 @@ import { AuthResponse } from "../auth/interfaces/auth-response";
 import { initializationError, invalidParams } from "../errors/error-handler";
 import { ErrorMessage } from "../errors/interfaces/error-message";
 import { ValidationResult } from "../errors/interfaces/validation-result";
+import Wortal from "../index";
 import { apiCall, debug, info, internalCall } from "../utils/logger";
 import { isValidNumber } from "../utils/validators";
 import { delayUntilConditionMet, removeLoadingCover } from "../utils/wortal-utils";
@@ -23,9 +24,9 @@ export abstract class CoreBase {
     public async initializeAsync(): Promise<void> {
         apiCall(WORTAL_API.INITIALIZE_ASYNC);
 
-        if (!window.Wortal._internalIsPlatformInitialized) {
+        if (!Wortal._internalIsPlatformInitialized) {
             debug("Platform not initialized yet, awaiting platform initialization..");
-            await delayUntilConditionMet(() => window.Wortal._internalIsPlatformInitialized,
+            await delayUntilConditionMet(() => Wortal._internalIsPlatformInitialized,
                 "Platform not initialized yet, awaiting platform initialization..");
         }
 
@@ -56,6 +57,7 @@ export abstract class CoreBase {
 
     public linkAccountAsync(): Promise<boolean> {
         apiCall(WORTAL_API.LINK_ACCOUNT_ASYNC);
+
         return this.linkAccountAsyncImpl();
     }
 
@@ -138,8 +140,8 @@ export abstract class CoreBase {
     protected defaultInitializeAsyncImpl(): Promise<void> {
         return this._initializeSDKAsyncImpl()
             .then(() => {
-                window.Wortal.analytics._logGameStart();
-                window.Wortal.isInitialized = true;
+                Wortal.analytics._logGameStart();
+                Wortal.isInitialized = true;
                 window.dispatchEvent(new Event("wortal-sdk-initialized"));
                 info("SDK initialization complete.");
             })
@@ -151,18 +153,18 @@ export abstract class CoreBase {
     }
 
     protected defaultStartGameAsyncImpl(): Promise<void> {
-        window.Wortal.analytics._logGameStart();
+        Wortal.analytics._logGameStart();
         return Promise.resolve();
     }
 
     // This is used when there's nothing specific to the platform that needs to happen at this point.
     protected defaultInitializeSDKAsyncImpl(): Promise<void> {
-        return Promise.all([window.Wortal.ads._internalAdConfig.initialize(), window.Wortal.player._internalPlayer.initialize()])
+        return Promise.all([Wortal.ads._internalAdConfig.initialize(), Wortal.player._internalPlayer.initialize()])
             .then(() => {
-                window.Wortal.ads._internalAdConfig.setPrerollShown(true);
-                window.Wortal.iap._internalTryEnableIAP();
+                Wortal.ads._internalAdConfig.setPrerollShown(true);
+                Wortal.iap._internalTryEnableIAP();
                 removeLoadingCover();
-                debug(`SDK initialized for ${window.Wortal._internalPlatform} platform.`);
+                debug(`SDK initialized for ${Wortal._internalPlatform} platform.`);
             })
             .catch((error: any) => {
                 throw initializationError(`Failed to initialize SDK during config.lateInitialize: ${error.message}`, `_initializeSDKAsyncGenericImpl`);
@@ -173,7 +175,7 @@ export abstract class CoreBase {
 //#region Validation
 
     protected validateInitializeAsync(): ValidationResult {
-        if (window.Wortal._internalIsAutoInit) {
+        if (Wortal._internalIsAutoInit) {
             return {
                 valid: false,
                 error: initializationError("SDK is configured to auto initialize. Only call this when manual initialization is enabled.",
@@ -182,7 +184,7 @@ export abstract class CoreBase {
             };
         }
 
-        if (window.Wortal.isInitialized) {
+        if (Wortal.isInitialized) {
             return {
                 valid: false,
                 error: initializationError("SDK already initialized.",
@@ -195,7 +197,7 @@ export abstract class CoreBase {
     }
 
     protected validateStartGameAsync(): ValidationResult {
-        if (window.Wortal._internalIsAutoInit) {
+        if (Wortal._internalIsAutoInit) {
             return {
                 valid: false,
                 error: initializationError("SDK is configured to auto initialize. Only call this when manual initialization is enabled.",
@@ -204,7 +206,7 @@ export abstract class CoreBase {
             };
         }
 
-        if (!window.Wortal.isInitialized) {
+        if (!Wortal.isInitialized) {
             return {
                 valid: false,
                 error: initializationError("SDK not initialized. Call initializeAsync first.",

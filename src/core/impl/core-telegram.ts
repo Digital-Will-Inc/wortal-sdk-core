@@ -1,6 +1,7 @@
 import { AuthPayload } from "../../auth/interfaces/auth-payload";
 import { AuthResponse } from "../../auth/interfaces/auth-response";
 import { notSupported } from "../../errors/error-handler";
+import Wortal from "../../index";
 import { debug, exception } from "../../utils/logger";
 import { onPauseFunctions, waitForTelegramCallback } from "../../utils/wortal-utils";
 import { CoreBase } from "../core-base";
@@ -53,8 +54,8 @@ export class CoreTelegram extends CoreBase {
             return waitForTelegramCallback(TELEGRAM_API.GET_LOCALE)
                 .then((locale: string) => {
                     //TODO: remove this when Telegram ads are implemented
-                    window.Wortal.ads._internalAdConfig.setAdBlocked(true);
-                    window.Wortal.session._internalSession.locale = locale;
+                    Wortal.ads._internalAdConfig.setAdBlocked(true);
+                    Wortal.session._internalSession.locale = locale;
                     debug("Telegram platform SDK loaded.");
                 })
                 .catch((error) => {

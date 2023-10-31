@@ -1,4 +1,5 @@
 import { ErrorMessage_Facebook } from "../../errors/interfaces/facebook-error";
+import Wortal from "../../index";
 import { debug, exception, warn } from "../../utils/logger";
 import { AdsBase } from "../ads-base";
 import { AdConfig } from "../classes/ad-config";
@@ -20,7 +21,7 @@ export class AdsFacebook extends AdsBase {
     }
 
     protected showBannerImpl(shouldShow: boolean, position: BannerPosition): void {
-        window.Wortal._internalPlatformSDK.loadBannerAdAsync(this._adConfig.bannerId, position)
+        Wortal._internalPlatformSDK.loadBannerAdAsync(this._adConfig.bannerId, position)
             .then(() => {
                 this.logAdCall("banner", "pause", true);
             })
@@ -32,7 +33,7 @@ export class AdsFacebook extends AdsBase {
 
     protected showInterstitialImpl(ad: AdInstanceData): void {
         let preloadedInterstitial: AdInstance_Facebook;
-        window.Wortal._internalPlatformSDK.getInterstitialAdAsync(ad.adUnitId)
+        Wortal._internalPlatformSDK.getInterstitialAdAsync(ad.adUnitId)
             .then((interstitial: AdInstance_Facebook) => {
                 debug("Interstitial ad fetched successfully. Attempting to load..", interstitial);
                 ad.callbacks.beforeAd();
@@ -62,7 +63,7 @@ export class AdsFacebook extends AdsBase {
 
     protected showRewardedImpl(ad: AdInstanceData): void {
         let preloadedRewardedVideo: AdInstance_Facebook;
-        window.Wortal._internalPlatformSDK.getRewardedVideoAsync(ad.adUnitId)
+        Wortal._internalPlatformSDK.getRewardedVideoAsync(ad.adUnitId)
             .then((rewarded: AdInstance_Facebook) => {
                 debug("Rewarded video fetched successfully. Attempting to load..", rewarded);
                 ad.callbacks.beforeAd();

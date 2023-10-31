@@ -1,5 +1,6 @@
 import { API_URL, WORTAL_API } from "../../data/core-data";
 import { notSupported } from "../../errors/error-handler";
+import Wortal from "../../index";
 import { delayUntilConditionMet, detectDevice, getAllQueryParameters } from "../../utils/wortal-utils";
 import { TrafficSource } from "../interfaces/traffic-source";
 import { SessionBase } from "../session-base";
@@ -15,11 +16,11 @@ export class SessionCrazyGames extends SessionBase {
     }
 
     protected gameplayStartImpl(): void {
-        return window.Wortal._internalPlatformSDK.game.gameplayStart();
+        return Wortal._internalPlatformSDK.game.gameplayStart();
     }
 
     protected gameplayStopImpl(): void {
-        return window.Wortal._internalPlatformSDK.game.gameplayStop();
+        return Wortal._internalPlatformSDK.game.gameplayStop();
     }
 
     protected getDeviceImpl(): Device {
@@ -43,7 +44,7 @@ export class SessionCrazyGames extends SessionBase {
     }
 
     protected happyTimeImpl(): void {
-        return window.Wortal._internalPlatformSDK.game.happytime();
+        return Wortal._internalPlatformSDK.game.happytime();
     }
 
     protected setSessionDataImpl(data: Record<string, unknown>): void {
@@ -55,17 +56,17 @@ export class SessionCrazyGames extends SessionBase {
     }
 
     protected _gameLoadingStartImpl(): void {
-        if (!window.Wortal._internalIsPlatformInitialized) {
-            delayUntilConditionMet(() => window.Wortal._internalIsPlatformInitialized).then(() => {
-                return window.Wortal._internalPlatformSDK.game.sdkGameLoadingStart();
+        if (!Wortal._internalIsPlatformInitialized) {
+            delayUntilConditionMet(() => Wortal._internalIsPlatformInitialized).then(() => {
+                return Wortal._internalPlatformSDK.game.sdkGameLoadingStart();
             });
         } else {
-            return window.Wortal._internalPlatformSDK.game.sdkGameLoadingStart();
+            return Wortal._internalPlatformSDK.game.sdkGameLoadingStart();
         }
     }
 
     protected _gameLoadingStopImpl(): void {
-        return window.Wortal._internalPlatformSDK.game.sdkGameLoadingStop();
+        return Wortal._internalPlatformSDK.game.sdkGameLoadingStop();
     }
 
 }

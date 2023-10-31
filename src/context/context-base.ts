@@ -1,5 +1,6 @@
 import { API_URL, WORTAL_API } from "../data/core-data";
 import { ValidationResult } from "../errors/interfaces/validation-result";
+import Wortal from "../index";
 import { ConnectedPlayer } from "../player/classes/connected-player";
 import { invalidParams } from "../errors/error-handler";
 import { apiCall } from "../utils/logger";
@@ -139,7 +140,7 @@ export abstract class ContextBase {
 
     protected validateCreateAsync(playerID?: string | string[]): ValidationResult {
         // Facebook takes anything here... single ID, array of IDs or nothing.
-        if (window.Wortal._internalPlatform === "facebook") {
+        if (Wortal._internalPlatform === "facebook") {
             return { valid: true };
         }
 

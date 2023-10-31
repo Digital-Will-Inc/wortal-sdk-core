@@ -1,6 +1,7 @@
 import { AuthPayload } from "../../auth/interfaces/auth-payload";
 import { AuthResponse } from "../../auth/interfaces/auth-response";
 import { initializationError, notSupported } from "../../errors/error-handler";
+import Wortal from "../../index";
 import { debug } from "../../utils/logger";
 import { onPauseFunctions } from "../../utils/wortal-utils";
 import { CoreBase } from "../core-base";
@@ -55,7 +56,7 @@ export class CoreGamePix extends CoreBase {
                     }
 
                     debug("GamePix platform SDK loaded.");
-                    window.Wortal._internalPlatformSDK = GamePix;
+                    Wortal._internalPlatformSDK = GamePix;
                 }
 
                 gamePixSDK.onerror = () => {

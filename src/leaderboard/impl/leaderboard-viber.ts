@@ -1,6 +1,7 @@
 import { API_URL, WORTAL_API } from "../../data/core-data";
 import { rethrowError_Facebook_Rakuten } from "../../errors/error-handler";
 import { ErrorMessage_Viber } from "../../errors/interfaces/viber-error";
+import Wortal from "../../index";
 import { Leaderboard } from "../classes/leaderboard";
 import { LeaderboardEntry } from "../classes/leaderboard-entry";
 import { Leaderboard_Viber, LeaderboardEntry_Viber } from "../interfaces/viber-leaderboard";
@@ -16,7 +17,7 @@ export class LeaderboardViber extends LeaderboardBase {
     }
 
     protected getConnectedPlayersEntriesAsyncImpl(name: string, count: number, offset: number): Promise<LeaderboardEntry[]> {
-        return window.Wortal._internalPlatformSDK.getLeaderboardAsync(name)
+        return Wortal._internalPlatformSDK.getLeaderboardAsync(name)
             .then((leaderboard: Leaderboard_Viber) => leaderboard.getConnectedPlayerEntriesAsync(count, offset))
             .then((entries: LeaderboardEntry_Viber[]) => {
                 return entries.map((entry: LeaderboardEntry_Viber) => {
@@ -29,7 +30,7 @@ export class LeaderboardViber extends LeaderboardBase {
     }
 
     protected getEntriesAsyncImpl(name: string, count: number, offset: number): Promise<LeaderboardEntry[]> {
-        return window.Wortal._internalPlatformSDK.getLeaderboardAsync(name)
+        return Wortal._internalPlatformSDK.getLeaderboardAsync(name)
             .then((leaderboard: Leaderboard_Viber) => leaderboard.getEntriesAsync(count, offset))
             .then((entries: LeaderboardEntry_Viber[]) => {
                 return entries.map((entry: LeaderboardEntry_Viber) => {
@@ -42,7 +43,7 @@ export class LeaderboardViber extends LeaderboardBase {
     }
 
     protected getEntryCountAsyncImpl(name: string): Promise<number> {
-        return window.Wortal._internalPlatformSDK.getLeaderboardAsync(name)
+        return Wortal._internalPlatformSDK.getLeaderboardAsync(name)
             .then((leaderboard: Leaderboard_Viber) => leaderboard.getEntryCountAsync())
             .then((count: number) => {
                 return count;
@@ -53,7 +54,7 @@ export class LeaderboardViber extends LeaderboardBase {
     }
 
     protected getLeaderboardAsyncImpl(name: string): Promise<Leaderboard> {
-        return window.Wortal._internalPlatformSDK.getLeaderboardAsync(name)
+        return Wortal._internalPlatformSDK.getLeaderboardAsync(name)
             .then((leaderboard: Leaderboard_Viber) => {
                 return this._convertViberLeaderboardToWortal(leaderboard);
             })
@@ -63,7 +64,7 @@ export class LeaderboardViber extends LeaderboardBase {
     }
 
     protected getPlayerEntryAsyncImpl(name: string): Promise<LeaderboardEntry> {
-        return window.Wortal._internalPlatformSDK.getLeaderboardAsync(name)
+        return Wortal._internalPlatformSDK.getLeaderboardAsync(name)
             .then((leaderboard: Leaderboard_Viber) => leaderboard.getPlayerEntryAsync())
             .then((entry: LeaderboardEntry_Viber) => {
                 return this._convertViberLeaderboardEntryToWortal(entry);
@@ -74,7 +75,7 @@ export class LeaderboardViber extends LeaderboardBase {
     }
 
     protected sendEntryAsyncImpl(name: string, score: number, details: string): Promise<LeaderboardEntry> {
-        return window.Wortal._internalPlatformSDK.getLeaderboardAsync(name)
+        return Wortal._internalPlatformSDK.getLeaderboardAsync(name)
             .then((leaderboard: Leaderboard_Viber) => leaderboard.setScoreAsync(score, details))
             .then((entry: LeaderboardEntry_Viber) => {
                 return this._convertViberLeaderboardEntryToWortal(entry);

@@ -1,6 +1,7 @@
 import { API_URL, WORTAL_API } from "../data/core-data";
 import { invalidParams } from "../errors/error-handler";
 import { ValidationResult } from "../errors/interfaces/validation-result";
+import Wortal from "../index";
 import { apiCall, internalCall } from "../utils/logger";
 import { isValidString } from "../utils/validators";
 import { GameState } from "./classes/game-state";
@@ -83,7 +84,7 @@ export abstract class SessionBase {
     public getPlatform(): Platform {
         apiCall(WORTAL_API.SESSION_GET_PLATFORM);
 
-        return window.Wortal._internalPlatform;
+        return Wortal._internalPlatform;
     }
 
     public getTrafficSource(): TrafficSource {

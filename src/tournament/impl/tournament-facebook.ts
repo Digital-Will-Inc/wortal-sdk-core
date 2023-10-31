@@ -1,6 +1,7 @@
 import { API_URL, WORTAL_API } from "../../data/core-data";
 import { invalidOperation, operationFailed, rethrowError_Facebook_Rakuten } from "../../errors/error-handler";
 import { ErrorMessage_Facebook } from "../../errors/interfaces/facebook-error";
+import Wortal from "../../index";
 import { isValidString } from "../../utils/validators";
 import { Tournament } from "../classes/tournament";
 import { CreateTournamentPayload } from "../interfaces/create-tournament-payload";
@@ -18,7 +19,7 @@ export class TournamentFacebook extends TournamentBase {
     }
 
     protected createAsyncImpl(payload: CreateTournamentPayload): Promise<Tournament> {
-        return window.Wortal._internalPlatformSDK.tournament.createAsync(payload)
+        return Wortal._internalPlatformSDK.tournament.createAsync(payload)
             .then((tournament: FacebookTournament) => {
                 return this._convertFacebookTournamentToWortal(tournament);
             })
@@ -28,7 +29,7 @@ export class TournamentFacebook extends TournamentBase {
     }
 
     protected getAllAsyncImpl(): Promise<Tournament[]> {
-        return window.Wortal._internalPlatformSDK.tournament.getTournamentsAsync()
+        return Wortal._internalPlatformSDK.tournament.getTournamentsAsync()
             .then((tournaments: FacebookTournament[]) => {
                 return tournaments.map((tournament: FacebookTournament) => {
                     return this._convertFacebookTournamentToWortal(tournament);
@@ -40,7 +41,7 @@ export class TournamentFacebook extends TournamentBase {
     }
 
     protected getCurrentAsyncImpl(): Promise<Tournament> {
-        const id = window.Wortal.context.getId();
+        const id = Wortal.context.getId();
         if (!isValidString(id)) {
             throw invalidOperation("No context ID found. Please ensure you are calling this API from within a context linked to a tournament.",
                 WORTAL_API.TOURNAMENT_GET_CURRENT_ASYNC,
@@ -76,21 +77,21 @@ export class TournamentFacebook extends TournamentBase {
     }
 
     protected joinAsyncImpl(tournamentID: string): Promise<void> {
-        return window.Wortal._internalPlatformSDK.tournament.joinAsync(tournamentID)
+        return Wortal._internalPlatformSDK.tournament.joinAsync(tournamentID)
             .catch((error: ErrorMessage_Facebook) => {
                 throw rethrowError_Facebook_Rakuten(error, WORTAL_API.TOURNAMENT_JOIN_ASYNC, API_URL.TOURNAMENT_JOIN_ASYNC);
             });
     }
 
     protected postScoreAsyncImpl(score: number): Promise<void> {
-        return window.Wortal._internalPlatformSDK.tournament.postScoreAsync(score)
+        return Wortal._internalPlatformSDK.tournament.postScoreAsync(score)
             .catch((error: ErrorMessage_Facebook) => {
                 throw rethrowError_Facebook_Rakuten(error, WORTAL_API.TOURNAMENT_POST_SCORE_ASYNC, API_URL.TOURNAMENT_POST_SCORE_ASYNC);
             });
     }
 
     protected shareAsyncImpl(payload: ShareTournamentPayload): Promise<void> {
-        return window.Wortal._internalPlatformSDK.tournament.shareAsync(payload)
+        return Wortal._internalPlatformSDK.tournament.shareAsync(payload)
             .catch((error: ErrorMessage_Facebook) => {
                 throw rethrowError_Facebook_Rakuten(error, WORTAL_API.TOURNAMENT_SHARE_ASYNC, API_URL.TOURNAMENT_SHARE_ASYNC);
             });

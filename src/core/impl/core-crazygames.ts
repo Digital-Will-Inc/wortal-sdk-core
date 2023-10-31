@@ -3,6 +3,7 @@ import { AuthResponse } from "../../auth/interfaces/auth-response";
 import { AuthResponse_CrazyGames } from "../../auth/interfaces/crazygames-auth";
 import { initializationError, notSupported, rethrowError_CrazyGames } from "../../errors/error-handler";
 import { Error_CrazyGames } from "../../errors/types/crazygames-error-types";
+import Wortal from "../../index";
 import { CrazyGamesPlayer } from "../../player/classes/crazygames-player";
 import { ICrazyGamesPlayer } from "../../player/interfaces/crazygames-player";
 import { debug, exception } from "../../utils/logger";
@@ -26,7 +27,7 @@ export class CoreCrazyGames extends CoreBase {
                     throw rethrowError_CrazyGames(error, WORTAL_API.AUTHENTICATE_ASYNC, API_URL.AUTHENTICATE_ASYNC);
                 } else {
                     debug("Crazy Games user authenticated: ", user);
-                    window.Wortal.player._internalPlayer = new CrazyGamesPlayer(user);
+                    Wortal.player._internalPlayer = new CrazyGamesPlayer(user);
 
                     const response: AuthResponse = {
                         status: "success",
@@ -36,7 +37,7 @@ export class CoreCrazyGames extends CoreBase {
                 }
             };
 
-            window.Wortal._internalPlatformSDK.user.showAuthPrompt(callback);
+            Wortal._internalPlatformSDK.user.showAuthPrompt(callback);
         });
     }
 
@@ -58,7 +59,7 @@ export class CoreCrazyGames extends CoreBase {
                 }
             };
 
-            window.Wortal._internalPlatformSDK.user.showAccountLinkPrompt(callback);
+            Wortal._internalPlatformSDK.user.showAccountLinkPrompt(callback);
         });
     }
 
@@ -89,7 +90,7 @@ export class CoreCrazyGames extends CoreBase {
                 }
 
                 debug("Crazy Games platform SDK loaded.");
-                window.Wortal._internalPlatformSDK = window.CrazyGames.SDK;
+                Wortal._internalPlatformSDK = window.CrazyGames.SDK;
 
                 const callback = (error: Error_CrazyGames, result: any) => {
                     if (error) {
@@ -100,12 +101,12 @@ export class CoreCrazyGames extends CoreBase {
                         // This seems to always return false as of v1.6.9. We still guard against this when we show ads
                         // as the CrazyGames SDK will return the adError callback, which triggers our noFill callback.
                         debug("CrazyGames adblock check complete.", result);
-                        window.Wortal.ads._internalAdConfig.setAdBlocked(result);
+                        Wortal.ads._internalAdConfig.setAdBlocked(result);
                         resolve();
                     }
                 };
 
-                window.Wortal._internalPlatformSDK.ad.hasAdblock(callback);
+                Wortal._internalPlatformSDK.ad.hasAdblock(callback);
             }
 
             crazyGamesSDK.onerror = () => {

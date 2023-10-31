@@ -1,5 +1,6 @@
 import { API_URL, WORTAL_API } from "../../data/core-data";
 import { notSupported } from "../../errors/error-handler";
+import Wortal from "../../index";
 import { debug, warn } from "../../utils/logger";
 import { AdsBase } from "../ads-base";
 import { AdConfig } from "../classes/ad-config";
@@ -26,7 +27,7 @@ export class AdsGamePix extends AdsBase {
 
     protected showInterstitialImpl(ad: AdInstanceData): void {
         ad.callbacks.beforeAd();
-        window.Wortal._internalPlatformSDK.interstitialAd()
+        Wortal._internalPlatformSDK.interstitialAd()
             .then((result: AdResult_GamePix) => {
                 // The docs say to check result.success but this was consistently undefined during testing despite
                 // the ad showing successfully.
@@ -48,7 +49,7 @@ export class AdsGamePix extends AdsBase {
 
     protected showRewardedImpl(ad: AdInstanceData): void {
         ad.callbacks.beforeAd();
-        window.Wortal._internalPlatformSDK.rewardAd()
+        Wortal._internalPlatformSDK.rewardAd()
             .then((result: AdResult_GamePix) => {
                 debug("Rewarded ad result", result);
                 if (result.success) {

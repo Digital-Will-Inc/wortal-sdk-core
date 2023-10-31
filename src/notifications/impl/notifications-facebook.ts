@@ -1,5 +1,6 @@
 import { API_URL, API_ENDPOINTS, WORTAL_API } from "../../data/core-data";
 import { operationFailed } from "../../errors/error-handler";
+import Wortal from "../../index";
 import { debug } from "../../utils/logger";
 import { ScheduledNotification } from "../classes/scheduled-notification";
 import { NotificationPayload } from "../interfaces/notification-payload";
@@ -189,34 +190,34 @@ export class NotificationsFacebook extends NotificationsBase {
     }
 
     private _getScheduleURL(): string | undefined {
-        if (typeof window.Wortal.player._internalPlayer.asid !== "string" || window.Wortal.player._internalPlayer.asid.length === 0) {
+        if (typeof Wortal.player._internalPlayer.asid !== "string" || Wortal.player._internalPlayer.asid.length === 0) {
             return undefined;
         } else {
-            return `${API_ENDPOINTS.NOTIFICATIONS}${window.Wortal.session._internalSession.gameId}/fb/${window.Wortal.player._internalPlayer.asid}`;
+            return `${API_ENDPOINTS.NOTIFICATIONS}${Wortal.session._internalSession.gameId}/fb/${Wortal.player._internalPlayer.asid}`;
         }
     }
 
     private _getHistoryURL(): string | undefined {
-        if (typeof window.Wortal.player._internalPlayer.asid !== "string" || window.Wortal.player._internalPlayer.asid.length === 0) {
+        if (typeof Wortal.player._internalPlayer.asid !== "string" || Wortal.player._internalPlayer.asid.length === 0) {
             return undefined;
         } else {
-            return `${API_ENDPOINTS.NOTIFICATIONS}${window.Wortal.session._internalSession.gameId}/fb/${window.Wortal.player._internalPlayer.asid}`;
+            return `${API_ENDPOINTS.NOTIFICATIONS}${Wortal.session._internalSession.gameId}/fb/${Wortal.player._internalPlayer.asid}`;
         }
     }
 
     private _getCancelURL(): string | undefined {
-        if (typeof window.Wortal.player._internalPlayer.asid !== "string" || window.Wortal.player._internalPlayer.asid.length === 0) {
+        if (typeof Wortal.player._internalPlayer.asid !== "string" || Wortal.player._internalPlayer.asid.length === 0) {
             return undefined;
         } else {
-            return `${API_ENDPOINTS.NOTIFICATIONS}${window.Wortal.session._internalSession.gameId}/fb/${window.Wortal.player._internalPlayer.asid}/cancel_notification`;
+            return `${API_ENDPOINTS.NOTIFICATIONS}${Wortal.session._internalSession.gameId}/fb/${Wortal.player._internalPlayer.asid}/cancel_notification`;
         }
     }
 
     private _getCancelAllURL(): string | undefined {
-        if (typeof window.Wortal.player._internalPlayer.asid !== "string" || window.Wortal.player._internalPlayer.asid.length === 0) {
+        if (typeof Wortal.player._internalPlayer.asid !== "string" || Wortal.player._internalPlayer.asid.length === 0) {
             return undefined;
         } else {
-            return `${API_ENDPOINTS.NOTIFICATIONS}${window.Wortal.session._internalSession.gameId}/fb/${window.Wortal.player._internalPlayer.asid}/cancel_all_notifications`;
+            return `${API_ENDPOINTS.NOTIFICATIONS}${Wortal.session._internalSession.gameId}/fb/${Wortal.player._internalPlayer.asid}/cancel_all_notifications`;
         }
     }
 

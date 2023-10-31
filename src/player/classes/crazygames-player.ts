@@ -1,6 +1,7 @@
 import { rethrowError_CrazyGames } from "../../errors/error-handler";
 import { ErrorMessage } from "../../errors/interfaces/error-message";
 import { Error_CrazyGames } from "../../errors/types/crazygames-error-types";
+import Wortal from "../../index";
 import { debug, exception } from "../../utils/logger";
 import { delayUntilConditionMet, generateRandomID } from "../../utils/wortal-utils";
 import { ICrazyGamesPlayer } from "../interfaces/crazygames-player";
@@ -43,9 +44,9 @@ export class CrazyGamesPlayer extends Player {
         };
 
         // The CrazyGames SDK takes a little longer to initialize than the others, so we have to wait for it here.
-        if (typeof window.Wortal._internalPlatformSDK === "undefined") {
+        if (typeof Wortal._internalPlatformSDK === "undefined") {
             await delayUntilConditionMet(() => {
-                return typeof window.Wortal._internalPlatformSDK !== "undefined";
+                return typeof Wortal._internalPlatformSDK !== "undefined";
             }, "Waiting for CrazyGames SDK to load...");
         }
 
@@ -81,7 +82,7 @@ export class CrazyGamesPlayer extends Player {
                 }
             };
 
-            window.Wortal._internalPlatformSDK.user.isUserAccountAvailable(callback);
+            Wortal._internalPlatformSDK.user.isUserAccountAvailable(callback);
         });
     }
 
@@ -96,7 +97,7 @@ export class CrazyGamesPlayer extends Player {
                 }
             };
 
-            window.Wortal._internalPlatformSDK.user.getUser(callback);
+            Wortal._internalPlatformSDK.user.getUser(callback);
         });
     }
 

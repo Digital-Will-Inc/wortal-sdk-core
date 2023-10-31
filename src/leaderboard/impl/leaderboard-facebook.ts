@@ -1,6 +1,7 @@
 import { API_URL, WORTAL_API } from "../../data/core-data";
 import { invalidOperation, rethrowError_Facebook_Rakuten } from "../../errors/error-handler";
 import { ErrorMessage_Facebook } from "../../errors/interfaces/facebook-error";
+import Wortal from "../../index";
 import { isValidString } from "../../utils/validators";
 import { Leaderboard } from "../classes/leaderboard";
 import { LeaderboardEntry } from "../classes/leaderboard-entry";
@@ -21,7 +22,7 @@ export class LeaderboardFacebook extends LeaderboardBase {
     }
 
     protected getConnectedPlayersEntriesAsyncImpl(name: string, count: number, offset: number): Promise<LeaderboardEntry[]> {
-        const contextID = window.Wortal.context.getId();
+        const contextID = Wortal.context.getId();
         if (!isValidString(contextID)) {
             throw invalidOperation("Global leaderboards are not supported on Facebook. Switch to a context before calling this API.",
                 WORTAL_API.LEADERBOARD_SEND_ENTRY_ASYNC,
@@ -29,7 +30,7 @@ export class LeaderboardFacebook extends LeaderboardBase {
         }
         name += `.${contextID}`;
 
-        return window.Wortal._internalPlatformSDK.getLeaderboardAsync(name)
+        return Wortal._internalPlatformSDK.getLeaderboardAsync(name)
             .then((leaderboard: Leaderboard_Facebook) => leaderboard.getConnectedPlayerEntriesAsync(count, offset))
             .then((entries: LeaderboardEntry_Facebook[]) => {
                 return entries.map((entry: LeaderboardEntry_Facebook) => {
@@ -42,7 +43,7 @@ export class LeaderboardFacebook extends LeaderboardBase {
     }
 
     protected getEntriesAsyncImpl(name: string, count: number, offset: number): Promise<LeaderboardEntry[]> {
-        const contextID = window.Wortal.context.getId();
+        const contextID = Wortal.context.getId();
         if (!isValidString(contextID)) {
             throw invalidOperation("Global leaderboards are not supported on Facebook. Switch to a context before calling this API.",
                 WORTAL_API.LEADERBOARD_SEND_ENTRY_ASYNC,
@@ -50,7 +51,7 @@ export class LeaderboardFacebook extends LeaderboardBase {
         }
         name += `.${contextID}`;
 
-        return window.Wortal._internalPlatformSDK.getLeaderboardAsync(name)
+        return Wortal._internalPlatformSDK.getLeaderboardAsync(name)
             .then((leaderboard: Leaderboard_Facebook) => leaderboard.getEntriesAsync(count, offset))
             .then((entries: LeaderboardEntry_Facebook[]) => {
                 return entries.map((entry: LeaderboardEntry_Facebook) => {
@@ -63,7 +64,7 @@ export class LeaderboardFacebook extends LeaderboardBase {
     }
 
     protected getEntryCountAsyncImpl(name: string): Promise<number> {
-        const contextID = window.Wortal.context.getId();
+        const contextID = Wortal.context.getId();
         if (!isValidString(contextID)) {
             throw invalidOperation("Global leaderboards are not supported on Facebook. Switch to a context before calling this API.",
                 WORTAL_API.LEADERBOARD_SEND_ENTRY_ASYNC,
@@ -71,7 +72,7 @@ export class LeaderboardFacebook extends LeaderboardBase {
         }
         name += `.${contextID}`;
 
-        return window.Wortal._internalPlatformSDK.getLeaderboardAsync(name)
+        return Wortal._internalPlatformSDK.getLeaderboardAsync(name)
             .then((leaderboard: Leaderboard_Facebook) => leaderboard.getEntryCountAsync())
             .then((count: number) => {
                 return count;
@@ -82,7 +83,7 @@ export class LeaderboardFacebook extends LeaderboardBase {
     }
 
     protected getLeaderboardAsyncImpl(name: string): Promise<Leaderboard> {
-        const contextID = window.Wortal.context.getId();
+        const contextID = Wortal.context.getId();
         if (!isValidString(contextID)) {
             throw invalidOperation("Global leaderboards are not supported on Facebook. Switch to a context before calling this API.",
                 WORTAL_API.LEADERBOARD_SEND_ENTRY_ASYNC,
@@ -90,7 +91,7 @@ export class LeaderboardFacebook extends LeaderboardBase {
         }
         name += `.${contextID}`;
 
-        return window.Wortal._internalPlatformSDK.getLeaderboardAsync(name)
+        return Wortal._internalPlatformSDK.getLeaderboardAsync(name)
             .then((leaderboard: Leaderboard_Facebook) => {
                 return this._convertFacebookLeaderboardToWortal(leaderboard);
             })
@@ -100,7 +101,7 @@ export class LeaderboardFacebook extends LeaderboardBase {
     }
 
     protected getPlayerEntryAsyncImpl(name: string): Promise<LeaderboardEntry> {
-        const contextID = window.Wortal.context.getId();
+        const contextID = Wortal.context.getId();
         if (!isValidString(contextID)) {
             throw invalidOperation("Global leaderboards are not supported on Facebook. Switch to a context before calling this API.",
                 WORTAL_API.LEADERBOARD_SEND_ENTRY_ASYNC,
@@ -108,7 +109,7 @@ export class LeaderboardFacebook extends LeaderboardBase {
         }
         name += `.${contextID}`;
 
-        return window.Wortal._internalPlatformSDK.getLeaderboardAsync(name)
+        return Wortal._internalPlatformSDK.getLeaderboardAsync(name)
             .then((leaderboard: Leaderboard_Facebook) => leaderboard.getPlayerEntryAsync())
             .then((entry: LeaderboardEntry_Facebook) => {
                 return this._convertFacebookLeaderboardEntryToWortal(entry);
@@ -119,7 +120,7 @@ export class LeaderboardFacebook extends LeaderboardBase {
     }
 
     protected sendEntryAsyncImpl(name: string, score: number, details: string): Promise<LeaderboardEntry> {
-        const contextID = window.Wortal.context.getId();
+        const contextID = Wortal.context.getId();
         if (!isValidString(contextID)) {
             throw invalidOperation("Global leaderboards are not supported on Facebook. Switch to a context before calling this API.",
                 WORTAL_API.LEADERBOARD_SEND_ENTRY_ASYNC,
@@ -127,7 +128,7 @@ export class LeaderboardFacebook extends LeaderboardBase {
         }
         name += `.${contextID}`;
 
-        return window.Wortal._internalPlatformSDK.getLeaderboardAsync(name)
+        return Wortal._internalPlatformSDK.getLeaderboardAsync(name)
             .then((leaderboard: Leaderboard_Facebook) => leaderboard.setScoreAsync(score, details))
             .then((entry: LeaderboardEntry_Facebook) => {
                 return this._convertFacebookLeaderboardEntryToWortal(entry);

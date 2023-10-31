@@ -3,6 +3,7 @@ import { EventData_AdCall, AnalyticsEventData } from "../analytics/interfaces/an
 import { API_URL, WORTAL_API } from "../data/core-data";
 import { invalidParams } from "../errors/error-handler";
 import { ValidationResult } from "../errors/interfaces/validation-result";
+import Wortal from "../index";
 import { apiCall, debug, warn } from "../utils/logger";
 import { isValidPlacementType, isValidString } from "../utils/validators";
 import { AdConfig } from "./classes/ad-config";
@@ -131,12 +132,12 @@ export abstract class AdsBase {
         const data: EventData_AdCall = {
             format: format,
             placement: placement,
-            platform: window.Wortal._internalPlatform,
+            platform: Wortal._internalPlatform,
             success: success,
             viewedRewarded: viewedReward,
-            playerID: window.Wortal.player._internalPlayer.id,
-            gameID: window.Wortal.session._internalSession.gameId,
-            playTimeAtCall: window.Wortal.session._internalGameState.gameTimer,
+            playerID: Wortal.player._internalPlayer.id,
+            gameID: Wortal.session._internalSession.gameId,
+            playTimeAtCall: Wortal.session._internalGameState.gameTimer,
         };
 
         const eventData: AnalyticsEventData = {
@@ -152,7 +153,7 @@ export abstract class AdsBase {
 //#region Validation
 
     protected validateShowInterstitial(placement: PlacementType, callbacks: AdCallbacks): ValidationResult {
-        const platform = window.Wortal._internalPlatform;
+        const platform = Wortal._internalPlatform;
         if (!isValidPlacementType(placement)) {
             return {
                 valid: false,
@@ -215,7 +216,7 @@ export abstract class AdsBase {
     }
 
     protected validateShowRewarded(callbacks: AdCallbacks): ValidationResult {
-        const platform = window.Wortal._internalPlatform;
+        const platform = Wortal._internalPlatform;
         if (callbacks.adViewed === undefined || typeof callbacks.adViewed !== "function") {
             return {
                 valid: false,

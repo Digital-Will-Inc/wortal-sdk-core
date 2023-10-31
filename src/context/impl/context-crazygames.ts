@@ -1,5 +1,6 @@
 import { API_URL, WORTAL_API } from "../../data/core-data";
 import { Error_CrazyGames } from "../../errors/types/crazygames-error-types";
+import Wortal from "../../index";
 import { ConnectedPlayer } from "../../player/classes/connected-player";
 import { notSupported, rethrowError_CrazyGames } from "../../errors/error-handler";
 import { ContextBase } from "../context-base";
@@ -63,7 +64,7 @@ export class ContextCrazyGames extends ContextBase {
                 }
             };
 
-            window.Wortal._internalPlatformSDK.game.inviteLink(payload.data, callback);
+            Wortal._internalPlatformSDK.game.inviteLink(payload.data, callback);
         });
     }
 

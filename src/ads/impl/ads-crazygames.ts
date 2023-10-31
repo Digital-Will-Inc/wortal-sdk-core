@@ -1,6 +1,7 @@
 import { API_URL, WORTAL_API } from "../../data/core-data";
 import { notSupported } from "../../errors/error-handler";
 import { Error_CrazyGames } from "../../errors/types/crazygames-error-types";
+import Wortal from "../../index";
 import { warn } from "../../utils/logger";
 import { AdsBase } from "../ads-base";
 import { AdConfig } from "../classes/ad-config";
@@ -39,7 +40,7 @@ export class AdsCrazyGames extends AdsBase {
             },
         };
 
-        window.Wortal._internalPlatformSDK.ad.requestAd("midgame", callbacksObj);
+        Wortal._internalPlatformSDK.ad.requestAd("midgame", callbacksObj);
     }
 
     protected showRewardedImpl(ad: AdInstanceData): void {
@@ -58,7 +59,7 @@ export class AdsCrazyGames extends AdsBase {
             },
         };
 
-        window.Wortal._internalPlatformSDK.ad.requestAd("rewarded", callbacksObj);
+        Wortal._internalPlatformSDK.ad.requestAd("rewarded", callbacksObj);
     }
 
 }

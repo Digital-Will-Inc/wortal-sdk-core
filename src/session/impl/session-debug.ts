@@ -1,3 +1,4 @@
+import Wortal from "../../index";
 import { detectDevice } from "../../utils/wortal-utils";
 import { TrafficSource } from "../interfaces/traffic-source";
 import { SessionBase } from "../session-base";
@@ -59,11 +60,11 @@ export class SessionDebug extends SessionBase {
     }
 
     protected _gameLoadingStartImpl(): void {
-        window.Wortal.session._internalGameState.startGameLoadTimer();
+        Wortal.session._internalGameState.startGameLoadTimer();
     }
 
     protected _gameLoadingStopImpl(): void {
-        window.Wortal.session._internalGameState.stopGameLoadTimer();
+        Wortal.session._internalGameState.stopGameLoadTimer();
     }
 
 }

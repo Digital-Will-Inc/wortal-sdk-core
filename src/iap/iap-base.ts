@@ -1,6 +1,7 @@
 import { API_URL, WORTAL_API } from "../data/core-data";
 import { invalidParams } from "../errors/error-handler";
 import { ValidationResult } from "../errors/interfaces/validation-result";
+import Wortal from "../index";
 import { apiCall, debug, internalCall } from "../utils/logger";
 import { isValidPurchaseConfig, isValidString } from "../utils/validators";
 import { Product } from "./interfaces/product";
@@ -111,9 +112,9 @@ export abstract class IAPBase {
         internalCall("IAP._tryEnableIAP");
 
         debug("Checking for IAP compatibility..");
-        const platform = window.Wortal.session.getPlatform();
+        const platform = Wortal.session.getPlatform();
         if (platform === "viber" || platform === "facebook") {
-            window.Wortal._internalPlatformSDK.payments.onReady(() => {
+            Wortal._internalPlatformSDK.payments.onReady(() => {
                 this._isIAPEnabled = true;
                 debug(`IAP initialized for ${platform} platform.`);
             });
@@ -121,7 +122,7 @@ export abstract class IAPBase {
             this._isIAPEnabled = true;
             debug("IAP initialized for debugging.");
         } else {
-            debug(`IAP not supported in this session. This may be due to platform, device or regional restrictions. \nPlatform: ${platform} // Device: ${window.Wortal.session.getDevice()} // Region: ${window.Wortal.session._internalSession.country}`);
+            debug(`IAP not supported in this session. This may be due to platform, device or regional restrictions. \nPlatform: ${platform} // Device: ${Wortal.session.getDevice()} // Region: ${Wortal.session._internalSession.country}`);
         }
     }
 

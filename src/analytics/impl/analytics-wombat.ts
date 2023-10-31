@@ -1,4 +1,5 @@
 import { ErrorMessage_Viber } from "../../errors/interfaces/viber-error";
+import Wortal from "../../index";
 import { exception } from "../../utils/logger";
 import { AnalyticsBase } from "../analytics-base";
 import { WombatEvent } from "../classes/WombatEvent";
@@ -19,10 +20,10 @@ export class AnalyticsWombat extends AnalyticsBase {
         const data: AnalyticsEventData = {
             name: "GameChoice",
             features: {
-                game: window.Wortal.session._internalSession.gameId,
-                player: window.Wortal.player._internalPlayer.id,
-                platform: window.Wortal._internalPlatform,
-                country: window.Wortal.session._internalSession.country,
+                game: Wortal.session._internalSession.gameId,
+                player: Wortal.player._internalPlayer.id,
+                platform: Wortal._internalPlatform,
+                country: Wortal.session._internalSession.country,
                 decision: decision,
                 choice: choice,
             }
@@ -36,14 +37,14 @@ export class AnalyticsWombat extends AnalyticsBase {
         const data: AnalyticsEventData = {
             name: "LevelEnd",
             features: {
-                game: window.Wortal.session._internalSession.gameId,
-                player: window.Wortal.player._internalPlayer.id,
-                platform: window.Wortal._internalPlatform,
-                country: window.Wortal.session._internalSession.country,
+                game: Wortal.session._internalSession.gameId,
+                player: Wortal.player._internalPlayer.id,
+                platform: Wortal._internalPlatform,
+                country: Wortal.session._internalSession.country,
                 level: level,
                 score: score,
                 wasCompleted: wasCompleted,
-                time: window.Wortal.session._internalGameState.levelTimer,
+                time: Wortal.session._internalGameState.levelTimer,
             }
         };
 
@@ -55,10 +56,10 @@ export class AnalyticsWombat extends AnalyticsBase {
         const data: AnalyticsEventData = {
             name: "LevelStart",
             features: {
-                game: window.Wortal.session._internalSession.gameId,
-                player: window.Wortal.player._internalPlayer.id,
-                platform: window.Wortal._internalPlatform,
-                country: window.Wortal.session._internalSession.country,
+                game: Wortal.session._internalSession.gameId,
+                player: Wortal.player._internalPlayer.id,
+                platform: Wortal._internalPlatform,
+                country: Wortal.session._internalSession.country,
                 level: level,
             }
         };
@@ -71,10 +72,10 @@ export class AnalyticsWombat extends AnalyticsBase {
         const data: AnalyticsEventData = {
             name: "LevelUp",
             features: {
-                game: window.Wortal.session._internalSession.gameId,
-                player: window.Wortal.player._internalPlayer.id,
-                platform: window.Wortal._internalPlatform,
-                country: window.Wortal.session._internalSession.country,
+                game: Wortal.session._internalSession.gameId,
+                player: Wortal.player._internalPlayer.id,
+                platform: Wortal._internalPlatform,
+                country: Wortal.session._internalSession.country,
                 level: level,
             }
         };
@@ -87,10 +88,10 @@ export class AnalyticsWombat extends AnalyticsBase {
         const data: AnalyticsEventData = {
             name: "Purchase",
             features: {
-                game: window.Wortal.session._internalSession.gameId,
-                player: window.Wortal.player._internalPlayer.id,
-                platform: window.Wortal._internalPlatform,
-                country: window.Wortal.session._internalSession.country,
+                game: Wortal.session._internalSession.gameId,
+                player: Wortal.player._internalPlayer.id,
+                platform: Wortal._internalPlatform,
+                country: Wortal.session._internalSession.country,
                 productID: productID,
                 ...details && {details},
             }
@@ -104,10 +105,10 @@ export class AnalyticsWombat extends AnalyticsBase {
         const data: AnalyticsEventData = {
             name: "PurchaseSubscription",
             features: {
-                game: window.Wortal.session._internalSession.gameId,
-                player: window.Wortal.player._internalPlayer.id,
-                platform: window.Wortal._internalPlatform,
-                country: window.Wortal.session._internalSession.country,
+                game: Wortal.session._internalSession.gameId,
+                player: Wortal.player._internalPlayer.id,
+                platform: Wortal._internalPlatform,
+                country: Wortal.session._internalSession.country,
                 productID: productID,
                 ...details && {details},
             }
@@ -121,10 +122,10 @@ export class AnalyticsWombat extends AnalyticsBase {
         const data: AnalyticsEventData = {
             name: "PostScore",
             features: {
-                game: window.Wortal.session._internalSession.gameId,
-                player: window.Wortal.player._internalPlayer.id,
-                platform: window.Wortal._internalPlatform,
-                country: window.Wortal.session._internalSession.country,
+                game: Wortal.session._internalSession.gameId,
+                player: Wortal.player._internalPlayer.id,
+                platform: Wortal._internalPlatform,
+                country: Wortal.session._internalSession.country,
                 score: score,
             }
         };
@@ -137,10 +138,10 @@ export class AnalyticsWombat extends AnalyticsBase {
         const data: AnalyticsEventData = {
             name: "SocialInvite",
             features: {
-                game: window.Wortal.session._internalSession.gameId,
-                player: window.Wortal.player._internalPlayer.id,
-                platform: window.Wortal._internalPlatform,
-                country: window.Wortal.session._internalSession.country,
+                game: Wortal.session._internalSession.gameId,
+                player: Wortal.player._internalPlayer.id,
+                platform: Wortal._internalPlatform,
+                country: Wortal.session._internalSession.country,
                 placement: placement,
             }
         };
@@ -153,10 +154,10 @@ export class AnalyticsWombat extends AnalyticsBase {
         const data: AnalyticsEventData = {
             name: "SocialShare",
             features: {
-                game: window.Wortal.session._internalSession.gameId,
-                player: window.Wortal.player._internalPlayer.id,
-                platform: window.Wortal._internalPlatform,
-                country: window.Wortal.session._internalSession.country,
+                game: Wortal.session._internalSession.gameId,
+                player: Wortal.player._internalPlayer.id,
+                platform: Wortal._internalPlatform,
+                country: Wortal.session._internalSession.country,
                 placement: placement,
             }
         };
@@ -169,13 +170,13 @@ export class AnalyticsWombat extends AnalyticsBase {
         const data: AnalyticsEventData = {
             name: "TutorialEnd",
             features: {
-                game: window.Wortal.session._internalSession.gameId,
-                player: window.Wortal.player._internalPlayer.id,
-                platform: window.Wortal._internalPlatform,
-                country: window.Wortal.session._internalSession.country,
+                game: Wortal.session._internalSession.gameId,
+                player: Wortal.player._internalPlayer.id,
+                platform: Wortal._internalPlatform,
+                country: Wortal.session._internalSession.country,
                 tutorial: tutorial,
                 wasCompleted: wasCompleted,
-                time: window.Wortal.session._internalGameState.levelTimer,
+                time: Wortal.session._internalGameState.levelTimer,
             }
         };
 
@@ -187,10 +188,10 @@ export class AnalyticsWombat extends AnalyticsBase {
         const data: AnalyticsEventData = {
             name: "TutorialStart",
             features: {
-                game: window.Wortal.session._internalSession.gameId,
-                player: window.Wortal.player._internalPlayer.id,
-                platform: window.Wortal._internalPlatform,
-                country: window.Wortal.session._internalSession.country,
+                game: Wortal.session._internalSession.gameId,
+                player: Wortal.player._internalPlayer.id,
+                platform: Wortal._internalPlatform,
+                country: Wortal.session._internalSession.country,
                 tutorial: tutorial,
             }
         };
@@ -206,12 +207,12 @@ export class AnalyticsWombat extends AnalyticsBase {
         const data: AnalyticsEventData = {
             name: "GameEnd",
             features: {
-                game: window.Wortal.session._internalSession.gameId,
-                timePlayed: window.Wortal.session._internalGameState.gameTimer,
-                platform: window.Wortal._internalPlatform,
-                player: window.Wortal.player._internalPlayer.id,
-                adsCalled: window.Wortal.ads._internalAdConfig.adsCalled,
-                adsShown: window.Wortal.ads._internalAdConfig.adsShown,
+                game: Wortal.session._internalSession.gameId,
+                timePlayed: Wortal.session._internalGameState.gameTimer,
+                platform: Wortal._internalPlatform,
+                player: Wortal.player._internalPlayer.id,
+                adsCalled: Wortal.ads._internalAdConfig.adsCalled,
+                adsShown: Wortal.ads._internalAdConfig.adsShown,
             }
         };
 
@@ -223,15 +224,15 @@ export class AnalyticsWombat extends AnalyticsBase {
         const data: AnalyticsEventData = {
             name: "GameStart",
             features: {
-                game: window.Wortal.session._internalSession.gameId,
-                browser: window.Wortal.session._internalSession.browser,
-                platform: window.Wortal._internalPlatform,
-                country: window.Wortal.session._internalSession.country,
-                player: window.Wortal.player._internalPlayer.id,
-                isFirstPlay: window.Wortal.player._internalPlayer.isFirstPlay,
-                daysSinceFirstPlay: window.Wortal.player._internalPlayer.daysSinceFirstPlay,
-                isAdBlocked: window.Wortal.ads._internalAdConfig.isAdBlocked,
-                loadTime: window.Wortal.session._internalGameState.gameLoadTimer,
+                game: Wortal.session._internalSession.gameId,
+                browser: Wortal.session._internalSession.browser,
+                platform: Wortal._internalPlatform,
+                country: Wortal.session._internalSession.country,
+                player: Wortal.player._internalPlayer.id,
+                isFirstPlay: Wortal.player._internalPlayer.isFirstPlay,
+                daysSinceFirstPlay: Wortal.player._internalPlayer.daysSinceFirstPlay,
+                isAdBlocked: Wortal.ads._internalAdConfig.isAdBlocked,
+                loadTime: Wortal.session._internalGameState.gameLoadTimer,
             }
         };
 
@@ -240,21 +241,21 @@ export class AnalyticsWombat extends AnalyticsBase {
     }
 
     protected _logTrafficSourceImpl() {
-        if (window.Wortal._internalPlatform !== "viber" && window.Wortal._internalPlatform !== "link") {
+        if (Wortal._internalPlatform !== "viber" && Wortal._internalPlatform !== "link") {
             return;
         }
 
-        window.Wortal.session.getEntryPointAsync()
+        Wortal.session.getEntryPointAsync()
             .then((entryPoint: string) => {
                 const data: AnalyticsEventData = {
                     name: "TrafficSource",
                     features: {
-                        game: window.Wortal.session._internalSession.gameId,
-                        platform: window.Wortal._internalPlatform,
-                        country: window.Wortal.session._internalSession.country,
-                        player: window.Wortal.player._internalPlayer.id,
+                        game: Wortal.session._internalSession.gameId,
+                        platform: Wortal._internalPlatform,
+                        country: Wortal.session._internalSession.country,
+                        player: Wortal.player._internalPlayer.id,
                         entryPoint: entryPoint,
-                        data: JSON.stringify(window.Wortal.session.getTrafficSource()),
+                        data: JSON.stringify(Wortal.session.getTrafficSource()),
                     }
                 };
 
@@ -267,12 +268,12 @@ export class AnalyticsWombat extends AnalyticsBase {
                 const data: AnalyticsEventData = {
                     name: "TrafficSource",
                     features: {
-                        game: window.Wortal.session._internalSession.gameId,
-                        platform: window.Wortal._internalPlatform,
-                        country: window.Wortal.session._internalSession.country,
-                        player: window.Wortal.player._internalPlayer.id,
+                        game: Wortal.session._internalSession.gameId,
+                        platform: Wortal._internalPlatform,
+                        country: Wortal.session._internalSession.country,
+                        player: Wortal.player._internalPlayer.id,
                         entryPoint: "unknown/error",
-                        data: JSON.stringify(window.Wortal.session.getTrafficSource()),
+                        data: JSON.stringify(Wortal.session.getTrafficSource()),
                     }
                 };
 

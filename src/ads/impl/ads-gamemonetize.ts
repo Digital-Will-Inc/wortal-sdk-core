@@ -1,5 +1,6 @@
 import { API_URL, GD_GAME_MONETIZE_API, WORTAL_API } from "../../data/core-data";
 import { notSupported } from "../../errors/error-handler";
+import Wortal from "../../index";
 import { addExternalCallback } from "../../utils/wortal-utils";
 import { AdsBase } from "../ads-base";
 import { AdConfig } from "../classes/ad-config";
@@ -29,7 +30,7 @@ export class AdsGameMonetize extends AdsBase {
         addExternalCallback(GD_GAME_MONETIZE_API.NO_FILL, ad.callbacks.noFill);
 
         // GameMonetize uses the showBanner API even though it is an interstitial.
-        window.Wortal._internalPlatformSDK.showBanner();
+        Wortal._internalPlatformSDK.showBanner();
         this.logAdCall("interstitial", ad.placementType, true);
     }
 

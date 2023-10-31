@@ -1,6 +1,7 @@
 import { API_URL, WORTAL_API } from "../data/core-data";
 import { invalidParams, operationFailed } from "../errors/error-handler";
 import { ValidationResult } from "../errors/interfaces/validation-result";
+import Wortal from "../index";
 import { apiCall, debug } from "../utils/logger";
 import { ConnectedPlayer } from "./classes/connected-player";
 import { Player } from "./classes/player";
@@ -152,7 +153,7 @@ export abstract class PlayerBase {
     protected defaultGetDataAsyncImpl(keys: string[]): Promise<any> {
         return new Promise((resolve, reject) => {
             try {
-                const data = localStorage.getItem(`${window.Wortal.session._internalSession.gameId}-save-data`);
+                const data = localStorage.getItem(`${Wortal.session._internalSession.gameId}-save-data`);
                 if (data) {
                     const dataObj = JSON.parse(data);
                     const result: any = {};
@@ -174,7 +175,7 @@ export abstract class PlayerBase {
     protected defaultSetDataAsyncImpl(data: Record<string, unknown>): Promise<void> {
         return new Promise((resolve, reject) => {
             try {
-                localStorage.setItem(`${window.Wortal.session._internalSession.gameId}-save-data`, JSON.stringify(data));
+                localStorage.setItem(`${Wortal.session._internalSession.gameId}-save-data`, JSON.stringify(data));
                 debug("Saved data to localStorage.");
                 return;
             } catch (error: any) {

@@ -23,6 +23,11 @@ export class PlayerAPI {
         return this._player._internalPlayer;
     }
 
+    /** @internal */
+    set _internalPlayer(player: Player) {
+        this._player._internalPlayer = player;
+    }
+
     /**
      * Checks if the current user can subscribe to the game's bot.
      * @example

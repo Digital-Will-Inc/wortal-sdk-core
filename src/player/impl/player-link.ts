@@ -1,6 +1,7 @@
 import { API_URL, WORTAL_API } from "../../data/core-data";
 import { notSupported, rethrowError_Facebook_Rakuten } from "../../errors/error-handler";
 import { ErrorMessage_Link } from "../../errors/interfaces/link-error";
+import Wortal from "../../index";
 import { debug } from "../../utils/logger";
 import { ConnectedPlayer } from "../classes/connected-player";
 import { LinkPlayer } from "../classes/link-player";
@@ -29,7 +30,7 @@ export class PlayerLink extends PlayerBase {
     }
 
     protected flushDataAsyncImpl(): Promise<void> {
-        return window.Wortal._internalPlatformSDK.player.flushDataAsync()
+        return Wortal._internalPlatformSDK.player.flushDataAsync()
             .catch((error: ErrorMessage_Link) => {
                 throw rethrowError_Facebook_Rakuten(error, WORTAL_API.PLAYER_FLUSH_DATA_ASYNC, API_URL.PLAYER_FLUSH_DATA_ASYNC);
             });
@@ -40,7 +41,7 @@ export class PlayerLink extends PlayerBase {
     }
 
     protected getConnectedPlayersAsyncImpl(payload?: ConnectedPlayerPayload): Promise<ConnectedPlayer[]> {
-        return window.Wortal._internalPlatformSDK.player.getConnectedPlayersAsync(payload)
+        return Wortal._internalPlatformSDK.player.getConnectedPlayersAsync(payload)
             .then((players: ConnectedPlayer_Link_Viber[]) => {
                 return players.map((player: ConnectedPlayer_Link_Viber) => {
                     const playerData: PlayerData = {
@@ -60,7 +61,7 @@ export class PlayerLink extends PlayerBase {
     }
 
     protected getDataAsyncImpl(keys: string[]): Promise<any> {
-        return window.Wortal._internalPlatformSDK.player.getDataAsync(keys)
+        return Wortal._internalPlatformSDK.player.getDataAsync(keys)
             .then((data: any) => {
                 return data;
             })
@@ -74,7 +75,7 @@ export class PlayerLink extends PlayerBase {
     }
 
     protected getSignedPlayerInfoAsyncImpl(): Promise<SignedPlayerInfo> {
-        return window.Wortal._internalPlatformSDK.player.getSignedPlayerInfoAsync()
+        return Wortal._internalPlatformSDK.player.getSignedPlayerInfoAsync()
             .then((info: SignedPlayerInfo_Link_Viber) => {
                 return {
                     id: info.getPlayerID(),
@@ -91,7 +92,7 @@ export class PlayerLink extends PlayerBase {
     }
 
     protected setDataAsyncImpl(data: Record<string, unknown>): Promise<void> {
-        return window.Wortal._internalPlatformSDK.player.setDataAsync(data)
+        return Wortal._internalPlatformSDK.player.setDataAsync(data)
             .then(() => {
                 debug("Saved data to cloud storage.");
             })

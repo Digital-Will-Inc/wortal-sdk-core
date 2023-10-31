@@ -1,6 +1,7 @@
 import { AuthPayload } from "../../auth/interfaces/auth-payload";
 import { AuthResponse } from "../../auth/interfaces/auth-response";
 import { initializationError, notSupported } from "../../errors/error-handler";
+import Wortal from "../../index";
 import { debug, warn } from "../../utils/logger";
 import { isValidString } from "../../utils/validators";
 import { getParameterByName, onPauseFunctions, removeLoadingCover } from "../../utils/wortal-utils";
@@ -67,9 +68,9 @@ export class CoreWortal extends CoreBase {
                 warn("Configuration \"channelid\" missing. Using default value. If testing in the Wortal dashboard than this can be safely ignored.");
             }
 
-            window.Wortal.ads._internalAdConfig.setClientID(clientIdParam!);
-            window.Wortal.ads._internalAdConfig.setHostID(hostIdParam || "");
-            window.Wortal.ads._internalAdConfig.setChannelID(channelIdParam || "");
+            Wortal.ads._internalAdConfig.setClientID(clientIdParam!);
+            Wortal.ads._internalAdConfig.setHostID(hostIdParam || "");
+            Wortal.ads._internalAdConfig.setChannelID(channelIdParam || "");
 
             const debugParam = getParameterByName("debug");
             const frequencyCapParam = `${getParameterByName("freqcap") || 30}s`;
@@ -80,9 +81,9 @@ export class CoreWortal extends CoreBase {
                 googleAdsSDK.setAttribute("data-ad-client", "ca-pub-123456789");
                 googleAdsSDK.setAttribute("data-adbreak-test", "on");
             } else {
-                googleAdsSDK.setAttribute("data-ad-host", window.Wortal.ads._internalAdConfig.hostID);
-                googleAdsSDK.setAttribute("data-ad-client", window.Wortal.ads._internalAdConfig.clientID);
-                googleAdsSDK.setAttribute("data-ad-host-channel", window.Wortal.ads._internalAdConfig.channelID);
+                googleAdsSDK.setAttribute("data-ad-host", Wortal.ads._internalAdConfig.hostID);
+                googleAdsSDK.setAttribute("data-ad-client", Wortal.ads._internalAdConfig.clientID);
+                googleAdsSDK.setAttribute("data-ad-host-channel", Wortal.ads._internalAdConfig.channelID);
                 googleAdsSDK.setAttribute("data-ad-frequency-hint", frequencyCapParam);
             }
 
@@ -90,7 +91,7 @@ export class CoreWortal extends CoreBase {
             googleAdsSDK.setAttribute("type", "text/javascript");
 
             metaElement.setAttribute("name", "google-adsense-platform-account");
-            metaElement.setAttribute("content", window.Wortal.ads._internalAdConfig.hostID);
+            metaElement.setAttribute("content", Wortal.ads._internalAdConfig.hostID);
 
             googleAdsSDK.onload = () => {
                 debug("Wortal platform SDK initialized with ads.");
@@ -100,7 +101,7 @@ export class CoreWortal extends CoreBase {
             //TODO: find a workaround for ad blockers on Wortal
             googleAdsSDK.onerror = () => {
                 debug("Ad blocker detected. Wortal platform SDK initialized without ads.");
-                window.Wortal.ads._internalAdConfig.setAdBlocked(true);
+                Wortal.ads._internalAdConfig.setAdBlocked(true);
                 resolve();
             };
 
@@ -110,24 +111,24 @@ export class CoreWortal extends CoreBase {
     }
 
     protected _initializeSDKAsyncImpl(): Promise<void> {
-        return Promise.all([window.Wortal.ads._internalAdConfig.initialize(), window.Wortal.player._internalPlayer.initialize()])
+        return Promise.all([Wortal.ads._internalAdConfig.initialize(), Wortal.player._internalPlayer.initialize()])
             .then(() => {
-                window.Wortal.iap._internalTryEnableIAP();
-                debug(`SDK initialized for ${window.Wortal._internalPlatform} platform.`);
+                Wortal.iap._internalTryEnableIAP();
+                debug(`SDK initialized for ${Wortal._internalPlatform} platform.`);
 
-                if (window.Wortal.ads._internalAdConfig.isAdBlocked) {
+                if (Wortal.ads._internalAdConfig.isAdBlocked) {
                     removeLoadingCover();
                     return;
                 }
 
                 debug("Showing pre-roll ad.");
-                window.Wortal.ads.showInterstitial("preroll", "Preroll",
+                Wortal.ads.showInterstitial("preroll", "Preroll",
                     () => {
-                        window.Wortal.ads._internalAdConfig.adCalled();
+                        Wortal.ads._internalAdConfig.adCalled();
                     },
                     () => {
-                        window.Wortal.ads._internalAdConfig.setPrerollShown(true);
-                        window.Wortal.ads._internalAdConfig.adShown();
+                        Wortal.ads._internalAdConfig.setPrerollShown(true);
+                        Wortal.ads._internalAdConfig.adShown();
                         removeLoadingCover();
                     });
             })

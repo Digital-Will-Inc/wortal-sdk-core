@@ -1,5 +1,6 @@
 import { API_URL, GD_GAME_MONETIZE_API, WORTAL_API } from "../../data/core-data";
 import { notSupported } from "../../errors/error-handler";
+import Wortal from "../../index";
 import { warn } from "../../utils/logger";
 import { addExternalCallback } from "../../utils/wortal-utils";
 import { AdsBase } from "../ads-base";
@@ -29,7 +30,7 @@ export class AdsGD extends AdsBase {
         addExternalCallback(GD_GAME_MONETIZE_API.AFTER_AD, ad.callbacks.afterAd);
         addExternalCallback(GD_GAME_MONETIZE_API.NO_FILL, ad.callbacks.noFill);
 
-        window.Wortal._internalPlatformSDK.showAd("interstitial");
+        Wortal._internalPlatformSDK.showAd("interstitial");
         this.logAdCall("interstitial", ad.placementType, true);
     }
 
@@ -41,9 +42,9 @@ export class AdsGD extends AdsBase {
         addExternalCallback(GD_GAME_MONETIZE_API.AD_DISMISSED, ad.callbacks.adDismissed!);
         addExternalCallback(GD_GAME_MONETIZE_API.AD_VIEWED, ad.callbacks.adViewed!);
 
-        window.Wortal._internalPlatformSDK.preloadAd("rewarded")
+        Wortal._internalPlatformSDK.preloadAd("rewarded")
             .then(() => {
-                window.Wortal._internalPlatformSDK.showAd("rewarded")
+                Wortal._internalPlatformSDK.showAd("rewarded")
                     .then(() => {
                         this.logAdCall("rewarded", ad.placementType, true, true);
                     })

@@ -1,5 +1,6 @@
 import { API_URL, WORTAL_API } from "../../data/core-data";
 import { ErrorMessage_Facebook } from "../../errors/interfaces/facebook-error";
+import Wortal from "../../index";
 import { ConnectedPlayer } from "../../player/classes/connected-player";
 import { ConnectedPlayer_Facebook } from "../../player/interfaces/facebook-player";
 import { PlayerData } from "../../player/interfaces/player-data";
@@ -24,25 +25,25 @@ export class ContextFacebook extends ContextBase {
     }
 
     protected chooseAsyncImpl(payload?: ChoosePayload): Promise<void> {
-        return window.Wortal._internalPlatformSDK.context.chooseAsync(payload)
+        return Wortal._internalPlatformSDK.context.chooseAsync(payload)
             .catch((error: ErrorMessage_Facebook) => {
                 throw rethrowError_Facebook_Rakuten(error, WORTAL_API.CONTEXT_CHOOSE_ASYNC, API_URL.CONTEXT_CHOOSE_ASYNC);
             });
     }
 
     protected createAsyncImpl(playerID?: string | string[]): Promise<void> {
-        return window.Wortal._internalPlatformSDK.context.createAsync(playerID)
+        return Wortal._internalPlatformSDK.context.createAsync(playerID)
             .catch((error: ErrorMessage_Facebook) => {
                 throw rethrowError_Facebook_Rakuten(error, WORTAL_API.CONTEXT_CREATE_ASYNC, API_URL.CONTEXT_CREATE_ASYNC);
             });
     }
 
     protected getIdImpl(): string {
-        return window.Wortal._internalPlatformSDK.context.getID();
+        return Wortal._internalPlatformSDK.context.getID();
     }
 
     protected getPlayersAsyncImpl(): Promise<ConnectedPlayer[]> {
-        return window.Wortal._internalPlatformSDK.context.getPlayersAsync()
+        return Wortal._internalPlatformSDK.context.getPlayersAsync()
             .then((players: ConnectedPlayer_Facebook[]) => {
                 return players.map((player: ConnectedPlayer_Facebook) => {
                     const playerData: PlayerData = {
@@ -63,11 +64,11 @@ export class ContextFacebook extends ContextBase {
     }
 
     protected getTypeImpl(): ContextType {
-        return window.Wortal._internalPlatformSDK.context.getType();
+        return Wortal._internalPlatformSDK.context.getType();
     }
 
     protected inviteAsyncImpl(payload: InvitePayload): Promise<number> {
-        return window.Wortal._internalPlatformSDK.inviteAsync(payload)
+        return Wortal._internalPlatformSDK.inviteAsync(payload)
             .then(() => {
                 return 0;
             })
@@ -77,12 +78,12 @@ export class ContextFacebook extends ContextBase {
     }
 
     protected isSizeBetweenImpl(min?: number, max?: number): ContextSizeResponse | null {
-        return window.Wortal._internalPlatformSDK.context.isSizeBetween(min, max);
+        return Wortal._internalPlatformSDK.context.isSizeBetween(min, max);
     }
 
     protected shareAsyncImpl(payload: SharePayload): Promise<number> {
         const convertedPayload: SharePayload = this._convertToFBInstantSharePayload(payload);
-        return window.Wortal._internalPlatformSDK.shareAsync(convertedPayload)
+        return Wortal._internalPlatformSDK.shareAsync(convertedPayload)
             .then(() => {
                 // FB doesn't return a shareResult, so we return 0.
                 return 0;
@@ -93,14 +94,14 @@ export class ContextFacebook extends ContextBase {
     }
 
     protected shareLinkAsyncImpl(payload: LinkSharePayload): Promise<string | void> {
-        return window.Wortal._internalPlatformSDK.shareLinkAsync(payload)
+        return Wortal._internalPlatformSDK.shareLinkAsync(payload)
             .catch((error: ErrorMessage_Facebook) => {
                 throw rethrowError_Facebook_Rakuten(error, WORTAL_API.CONTEXT_SHARE_LINK_ASYNC, API_URL.CONTEXT_SHARE_LINK_ASYNC);
             });
     }
 
     protected switchAsyncImpl(contextID: string, payload?: SwitchPayload): Promise<void> {
-        return window.Wortal._internalPlatformSDK.context.switchAsync(contextID, payload?.switchSilentlyIfSolo)
+        return Wortal._internalPlatformSDK.context.switchAsync(contextID, payload?.switchSilentlyIfSolo)
             .catch((error: ErrorMessage_Facebook) => {
                 throw rethrowError_Facebook_Rakuten(error, WORTAL_API.CONTEXT_SWITCH_ASYNC, API_URL.CONTEXT_SWITCH_ASYNC);
             });
@@ -108,7 +109,7 @@ export class ContextFacebook extends ContextBase {
 
     protected updateAsyncImpl(payload: UpdatePayload): Promise<void> {
         const convertedPayload: UpdatePayload = this._convertToFBInstantUpdatePayload(payload);
-        return window.Wortal._internalPlatformSDK.updateAsync(convertedPayload)
+        return Wortal._internalPlatformSDK.updateAsync(convertedPayload)
             .catch((error: ErrorMessage_Facebook) => {
                 throw rethrowError_Facebook_Rakuten(error, WORTAL_API.CONTEXT_UPDATE_ASYNC, API_URL.CONTEXT_UPDATE_ASYNC);
             });
@@ -119,7 +120,7 @@ export class ContextFacebook extends ContextBase {
         // We first check for an exact locale match, then a language match, then default. (en-US -> en -> default)
         // This may need to be revisited as its potentially problematic for some languages/dialects.
         if (typeof payload.text === "object") {
-            const locale: string = window.Wortal.session.getLocale();
+            const locale: string = Wortal.session.getLocale();
             if (locale in payload.text.localizations) {
                 payload.text = payload.text.localizations[locale];
             } else if (locale.substring(0, 2) in payload.text.localizations) {

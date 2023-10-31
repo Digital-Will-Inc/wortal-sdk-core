@@ -1,3 +1,4 @@
+import Wortal from "../index";
 import { Device } from "../session/types/session-types";
 import { invalidParams } from "../errors/error-handler";
 import { debug, exception } from "./logger";
@@ -104,7 +105,7 @@ export function generateRandomID(): string {
  * @hidden
  */
 export function addLoadingListener(): void {
-    const platform = window.Wortal.session.getPlatform();
+    const platform = Wortal.session.getPlatform();
     if (document.readyState === "loading") {
         if (platform === "wortal" || platform === "gd") {
             document.addEventListener("DOMContentLoaded", addLoadingCover);
@@ -122,7 +123,7 @@ export function addLoadingListener(): void {
  * @hidden
  */
 export function addLoadingCover(): void {
-    if (window.Wortal.ads._internalAdConfig.hasPrerollShown || window.Wortal.ads._internalAdConfig.isAdBlocked) {
+    if (Wortal.ads._internalAdConfig.hasPrerollShown || Wortal.ads._internalAdConfig.isAdBlocked) {
         return;
     }
 
@@ -151,7 +152,7 @@ export function removeLoadingCover(): void {
 export function addGameEndEventListener(): void {
     window.addEventListener("visibilitychange", () => {
         if (document.visibilityState === "hidden") {
-            window.Wortal.analytics._logGameEnd();
+            Wortal.analytics._logGameEnd();
         }
     });
 }
@@ -183,8 +184,8 @@ export function addExternalCallback(eventName: string, callback: () => void): vo
         throw invalidParams(undefined, "addExternalCallback()");
     }
 
-    if (typeof window.Wortal.session._internalSession.externalCallbacks !== "undefined") {
-        window.Wortal.session._internalSession.externalCallbacks[eventName] = callback;
+    if (typeof Wortal.session._internalSession.externalCallbacks !== "undefined") {
+        Wortal.session._internalSession.externalCallbacks[eventName] = callback;
     } else {
         exception("externalCallbacks is undefined. This is a fatal error that should have been caught during initialization.");
     }
@@ -197,8 +198,8 @@ export function addExternalCallback(eventName: string, callback: () => void): vo
  * @hidden
  */
 export function externalSDKEventTrigger(value: string): void {
-    if (typeof window.Wortal.session._internalSession.externalCallbacks !== "undefined") {
-        const callback = window.Wortal.session._internalSession.externalCallbacks[value];
+    if (typeof Wortal.session._internalSession.externalCallbacks !== "undefined") {
+        const callback = Wortal.session._internalSession.externalCallbacks[value];
         if (typeof callback !== "undefined") {
             debug(`External event triggered. Event: ${value}`);
             callback();

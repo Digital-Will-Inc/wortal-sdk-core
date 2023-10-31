@@ -1,6 +1,7 @@
 import { API_URL, WORTAL_API } from "../data/core-data";
 import { invalidParams } from "../errors/error-handler";
 import { ValidationResult } from "../errors/interfaces/validation-result";
+import Wortal from "../index";
 import { apiCall, internalCall, warn } from "../utils/logger";
 import { isValidNumber, isValidString } from "../utils/validators";
 
@@ -37,11 +38,11 @@ export abstract class AnalyticsBase {
             level = level.toString();
         }
 
-        window.Wortal.session._internalGameState.clearLevelTimerHandle();
+        Wortal.session._internalGameState.clearLevelTimerHandle();
 
         // We need a matching level name to track the time taken to pass the level.
-        if (window.Wortal.session._internalGameState.levelName !== level) {
-            window.Wortal.session._internalGameState.resetLevelTimer();
+        if (Wortal.session._internalGameState.levelName !== level) {
+            Wortal.session._internalGameState.resetLevelTimer();
         }
 
         this.logLevelEndImpl(level, score, wasCompleted);
@@ -59,10 +60,10 @@ export abstract class AnalyticsBase {
             level = level.toString();
         }
 
-        window.Wortal.session._internalGameState.setLevelName(level);
-        window.Wortal.session._internalGameState.clearLevelTimerHandle();
-        window.Wortal.session._internalGameState.resetLevelTimer();
-        window.Wortal.session._internalGameState.startLevelTimer();
+        Wortal.session._internalGameState.setLevelName(level);
+        Wortal.session._internalGameState.clearLevelTimerHandle();
+        Wortal.session._internalGameState.resetLevelTimer();
+        Wortal.session._internalGameState.startLevelTimer();
 
         this.logLevelStartImpl(level);
     }
@@ -78,11 +79,11 @@ export abstract class AnalyticsBase {
         // We report levels to GamePix via this analytics call because it's the closest API we have to
         // match theirs. This is done so that we don't have to ask game devs to change their code.
         //TODO: move this elsewhere (Stats API?)
-        if (window.Wortal._internalPlatform === "gamepix") {
+        if (Wortal._internalPlatform === "gamepix") {
             if (!isValidNumber(level)) {
                 const levelNumber = this._convertStringToNumber(level);
                 if (levelNumber) {
-                    window.Wortal._internalPlatformSDK.updateLevel(levelNumber);
+                    Wortal._internalPlatformSDK.updateLevel(levelNumber);
                 } else {
                     throw invalidParams(`GamePix requires a number for the level param, but one could not be extracted from the arg: ${level}`,
                         WORTAL_API.ANALYTICS_LOG_SCORE, API_URL.ANALYTICS_LOG_SCORE);
@@ -126,11 +127,11 @@ export abstract class AnalyticsBase {
         // We report scores to GamePix via this analytics call because it's the closest API we have to
         // match theirs. This is done so that we don't have to ask game devs to change their code.
         //TODO: move this elsewhere (Stats API?)
-        if (window.Wortal._internalPlatform === "gamepix") {
+        if (Wortal._internalPlatform === "gamepix") {
             if (!isValidNumber(score)) {
                 const scoreNumber = this._convertStringToNumber(score);
                 if (scoreNumber) {
-                    window.Wortal._internalPlatformSDK.updateScore(scoreNumber);
+                    Wortal._internalPlatformSDK.updateScore(scoreNumber);
                 } else {
                     throw invalidParams(`GamePix requires a number for the score param, but one could not be extracted from the arg: ${score}`,
                         WORTAL_API.ANALYTICS_LOG_SCORE, API_URL.ANALYTICS_LOG_SCORE);
@@ -166,11 +167,11 @@ export abstract class AnalyticsBase {
     public logTutorialEnd(tutorial: string = "Tutorial", wasCompleted: boolean = true): void {
         apiCall(WORTAL_API.ANALYTICS_LOG_TUTORIAL_END);
 
-        window.Wortal.session._internalGameState.clearLevelTimerHandle();
+        Wortal.session._internalGameState.clearLevelTimerHandle();
 
         // We need a matching tutorial name to track the time taken to pass the tutorial.
-        if (window.Wortal.session._internalGameState.levelName !== tutorial) {
-            window.Wortal.session._internalGameState.resetLevelTimer();
+        if (Wortal.session._internalGameState.levelName !== tutorial) {
+            Wortal.session._internalGameState.resetLevelTimer();
         }
 
         this.logTutorialEndImpl(tutorial, wasCompleted);
@@ -179,10 +180,10 @@ export abstract class AnalyticsBase {
     public logTutorialStart(tutorial: string = "Tutorial"): void {
         apiCall(WORTAL_API.ANALYTICS_LOG_TUTORIAL_START);
 
-        window.Wortal.session._internalGameState.setLevelName(tutorial);
-        window.Wortal.session._internalGameState.clearLevelTimerHandle();
-        window.Wortal.session._internalGameState.resetLevelTimer();
-        window.Wortal.session._internalGameState.startLevelTimer();
+        Wortal.session._internalGameState.setLevelName(tutorial);
+        Wortal.session._internalGameState.clearLevelTimerHandle();
+        Wortal.session._internalGameState.resetLevelTimer();
+        Wortal.session._internalGameState.startLevelTimer();
 
         this.logTutorialStartImpl(tutorial);
     }
@@ -199,7 +200,7 @@ export abstract class AnalyticsBase {
     _logGameStart(): void {
         internalCall("analytics._logGameStart");
 
-        window.Wortal.session._internalGameState.startGameTimer();
+        Wortal.session._internalGameState.startGameTimer();
 
         this._logGameStartImpl();
     }

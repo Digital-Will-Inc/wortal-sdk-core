@@ -2,6 +2,7 @@ import { AuthPayload } from "../../auth/interfaces/auth-payload";
 import { AuthResponse } from "../../auth/interfaces/auth-response";
 import { initializationError, notSupported } from "../../errors/error-handler";
 import { ErrorMessage_Viber } from "../../errors/interfaces/viber-error";
+import Wortal from "../../index";
 import { debug, info } from "../../utils/logger";
 import { CoreBase } from "../core-base";
 import { API_URL, SDK_SRC, WORTAL_API } from "../../data/core-data";
@@ -21,12 +22,12 @@ export class CoreViber extends CoreBase {
 
     protected initializeAsyncImpl(): Promise<void> {
         debug("Initializing SDK for Viber platform.");
-        return window.Wortal._internalPlatformSDK.initializeAsync()
+        return Wortal._internalPlatformSDK.initializeAsync()
             .then(() => {
-                window.Wortal.iap._internalTryEnableIAP();
-                return Promise.all([window.Wortal.ads._internalAdConfig.initialize(), window.Wortal.player._internalPlayer.initialize()])
+                Wortal.iap._internalTryEnableIAP();
+                return Promise.all([Wortal.ads._internalAdConfig.initialize(), Wortal.player._internalPlayer.initialize()])
                     .then(() => {
-                        window.Wortal.isInitialized = true;
+                        Wortal.isInitialized = true;
                         window.dispatchEvent(new Event("wortal-sdk-initialized"));
                         info("SDK initialization complete.");
                     })
@@ -48,7 +49,7 @@ export class CoreViber extends CoreBase {
     }
 
     protected onPauseImpl(callback: () => void): void {
-        window.Wortal._internalPlatformSDK.onPause(() => {
+        Wortal._internalPlatformSDK.onPause(() => {
             debug("onPause callback invoked.");
             callback();
         });
@@ -59,15 +60,15 @@ export class CoreViber extends CoreBase {
     }
 
     protected setLoadingProgressImpl(progress: number): void {
-        window.Wortal._internalPlatformSDK.setLoadingProgress(progress);
+        Wortal._internalPlatformSDK.setLoadingProgress(progress);
     }
 
     protected startGameAsyncImpl(): Promise<void> {
-        return window.Wortal._internalPlatformSDK.startGameAsync()
+        return Wortal._internalPlatformSDK.startGameAsync()
             .then(() => {
-                window.Wortal.session._gameLoadingStop();
-                window.Wortal.analytics._logTrafficSource();
-                window.Wortal.analytics._logGameStart();
+                Wortal.session._gameLoadingStop();
+                Wortal.analytics._logTrafficSource();
+                Wortal.analytics._logGameStart();
             })
             .catch((error: ErrorMessage_Viber) => {
                 throw initializationError(`Failed to initialize SDK during platformSDK.startGameAsync: ${error.message}`,
@@ -87,7 +88,7 @@ export class CoreViber extends CoreBase {
                 }
 
                 debug("Viber platform SDK initialized.");
-                window.Wortal._internalPlatformSDK = ViberPlay;
+                Wortal._internalPlatformSDK = ViberPlay;
                 resolve();
             }
 
@@ -100,15 +101,15 @@ export class CoreViber extends CoreBase {
     }
 
     protected _initializeSDKAsyncImpl(): Promise<void> {
-        return window.Wortal._internalPlatformSDK.initializeAsync()
+        return Wortal._internalPlatformSDK.initializeAsync()
             .then(() => {
-                return Promise.all([window.Wortal.ads._internalAdConfig.initialize(), window.Wortal.player._internalPlayer.initialize()])
+                return Promise.all([Wortal.ads._internalAdConfig.initialize(), Wortal.player._internalPlayer.initialize()])
                     .then(() => {
-                        window.Wortal.iap._internalTryEnableIAP();
-                        debug(`SDK initialized for ${window.Wortal._internalPlatform} platform.`);
-                        return window.Wortal._internalPlatformSDK.startGameAsync()
+                        Wortal.iap._internalTryEnableIAP();
+                        debug(`SDK initialized for ${Wortal._internalPlatform} platform.`);
+                        return Wortal._internalPlatformSDK.startGameAsync()
                             .then(() => {
-                                window.Wortal.analytics._logTrafficSource();
+                                Wortal.analytics._logTrafficSource();
                             })
                             .catch((error: ErrorMessage_Viber) => {
                                 throw initializationError(`Failed to initialize SDK during platformSDK.startGameAsync: ${error.message}`, `_initializeSDKAsyncImpl()`);

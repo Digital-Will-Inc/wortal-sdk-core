@@ -1,6 +1,7 @@
 import { AuthPayload } from "../../auth/interfaces/auth-payload";
 import { AuthResponse } from "../../auth/interfaces/auth-response";
 import { initializationError, notSupported } from "../../errors/error-handler";
+import Wortal from "../../index";
 import { debug } from "../../utils/logger";
 import { addExternalCallback, externalSDKEventTrigger, onPauseFunctions } from "../../utils/wortal-utils";
 import { CoreBase } from "../core-base";
@@ -49,7 +50,7 @@ export class CoreGameMonetize extends CoreBase {
         const id = "gamemonetize-sdk";
         return new Promise((resolve, reject) => {
             window.SDK_OPTIONS = {
-                gameId: window.Wortal.session._internalSession.gameId,
+                gameId: Wortal.session._internalSession.gameId,
                 onEvent: (event: () => void) => {
                     externalSDKEventTrigger(event.name);
                 },
@@ -64,7 +65,7 @@ export class CoreGameMonetize extends CoreBase {
                 }
 
                 debug("GameMonetize platform SDK initialized.");
-                window.Wortal._internalPlatformSDK = sdk;
+                Wortal._internalPlatformSDK = sdk;
                 resolve();
             } else {
                 gameMonetizeSDK = document.createElement("script");
@@ -77,7 +78,7 @@ export class CoreGameMonetize extends CoreBase {
                         reject(initializationError("Failed to load GameMonetize SDK.", "_initializePlatformAsyncImpl"));
                     }
 
-                    window.Wortal._internalPlatformSDK = sdk;
+                    Wortal._internalPlatformSDK = sdk;
                     addExternalCallback(GD_GAME_MONETIZE_API.SDK_READY, () => {
                         debug("GameMonetize platform SDK initialized.");
                         resolve();

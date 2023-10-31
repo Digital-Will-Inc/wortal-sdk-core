@@ -1,5 +1,6 @@
 import { API_URL, WORTAL_API } from "../../data/core-data";
 import { notSupported } from "../../errors/error-handler";
+import Wortal from "../../index";
 import { detectDevice } from "../../utils/wortal-utils";
 import { TrafficSource } from "../interfaces/traffic-source";
 import { SessionBase } from "../session-base";
@@ -38,7 +39,7 @@ export class SessionTelegram extends SessionBase {
         // Telegram app locale doesn't always match navigator.language. They have an async API to get the locale, but
         // getLocale is not asyc. So we fetch the locale on initialization and store it in the session object so that
         // we can return it synchronously later.
-        return window.Wortal.session._internalSession.locale;
+        return Wortal.session._internalSession.locale;
     }
 
     protected getTrafficSourceImpl(): TrafficSource {
@@ -58,11 +59,11 @@ export class SessionTelegram extends SessionBase {
     }
 
     protected _gameLoadingStartImpl(): void {
-        return window.Wortal.session._internalGameState.startGameLoadTimer();
+        return Wortal.session._internalGameState.startGameLoadTimer();
     }
 
     protected _gameLoadingStopImpl(): void {
-        return window.Wortal.session._internalGameState.stopGameLoadTimer();
+        return Wortal.session._internalGameState.stopGameLoadTimer();
     }
 
 }
