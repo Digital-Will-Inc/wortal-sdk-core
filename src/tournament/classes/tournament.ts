@@ -1,11 +1,11 @@
-import { TournamentData } from "../interfaces/tournament";
-import { debug } from "../utils/logger";
+import { debug } from "../../utils/logger";
+import { TournamentData } from "../interfaces/tournament-data";
 
 /**
  * Represents a tournament in the game.
  */
 export class Tournament {
-    private _current: TournamentData = {
+    private _data: TournamentData = {
         id: "",
         contextID: "",
         endTime: 0,
@@ -15,12 +15,12 @@ export class Tournament {
     constructor(id: string, contextID: string, endTime: number, title?: string, payload?: string) {
         debug(`Creating tournament: ${id} / ${contextID} / ${endTime} / ${title} / ${payload}`);
         // FB API docs say these are strings, but we're getting numbers returned.
-        this._current.id = id.toString();
-        this._current.contextID = contextID.toString();
-        this._current.endTime = endTime;
-        this._current.title = title;
+        this._data.id = id.toString();
+        this._data.contextID = contextID.toString();
+        this._data.endTime = endTime;
+        this._data.title = title;
         if (typeof payload === "string") {
-            this._current.payload = JSON.parse(payload);
+            this._data.payload = JSON.parse(payload);
         }
     }
 
@@ -28,35 +28,35 @@ export class Tournament {
      * The ID of the tournament.
      */
     get id(): string {
-        return this._current.id;
+        return this._data.id;
     }
 
     /**
      * The ID of the context in which the tournament is running.
      */
     get contextID(): string {
-        return this._current.contextID;
+        return this._data.contextID;
     }
 
     /**
      * Unix timestamp of when the tournament ends.
      */
     get endTime(): number {
-        return this._current.endTime;
+        return this._data.endTime;
     }
 
     /**
      * The title of the tournament.
      */
     get title(): string | undefined {
-        return this._current.title;
+        return this._data.title;
     }
 
     /**
      * Payload attached to the tournament.
      */
     get payload(): object | undefined {
-        return this._current.payload;
+        return this._data.payload;
     }
 
     /**
