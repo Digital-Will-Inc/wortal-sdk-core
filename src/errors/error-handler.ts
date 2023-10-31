@@ -1,3 +1,4 @@
+import { exception } from "../utils/logger";
 import { ErrorMessage } from "./interfaces/error-message";
 import { ErrorMessage_Facebook } from "./interfaces/facebook-error";
 import { ErrorMessage_Link } from "./interfaces/link-error";
@@ -11,12 +12,15 @@ import { Error_CrazyGames } from "./types/crazygames-error-types";
  */
 export function rethrowError_Facebook_Rakuten(original: ErrorMessage_Facebook | ErrorMessage_Link | ErrorMessage_Viber,
                                               context: string, url?: string): ErrorMessage {
-    return {
+    const error: ErrorMessage = {
         code: original.code || "UNKNOWN",
         message: original.message || "No message provided by the platform SDK.",
         context: context,
         url: url,
     }
+
+    exception(error.code, error);
+    return error;
 }
 
 /**
@@ -25,12 +29,15 @@ export function rethrowError_Facebook_Rakuten(original: ErrorMessage_Facebook | 
  * @hidden
  */
 export function rethrowError_CrazyGames(original: Error_CrazyGames, context: string, url?: string): ErrorMessage {
-    return {
+    const error: ErrorMessage = {
         code: ErrorMessages_CrazyGames[original] || "UNKNOWN",
         message: ErrorMessages[ErrorMessages_CrazyGames[original]] || "No message provided by the platform SDK.",
         context: context,
         url: url,
     }
+
+    exception(error.code, error);
+    return error;
 }
 
 /**
@@ -38,12 +45,15 @@ export function rethrowError_CrazyGames(original: Error_CrazyGames, context: str
  * @hidden
  */
 export function invalidParams(message: string = "", context: string, url?: string): ErrorMessage {
-    return {
+    const error: ErrorMessage = {
         code: "INVALID_PARAM",
         message: message || ErrorMessages["INVALID_PARAM"],
         context: context,
         url: url,
     }
+
+    exception(error.code, error);
+    return error;
 }
 
 /**
@@ -53,12 +63,15 @@ export function invalidParams(message: string = "", context: string, url?: strin
  * @hidden
  */
 export function invalidOperation(message: string, context: string, url?: string): ErrorMessage {
-    return {
+    const error: ErrorMessage = {
         code: "INVALID_OPERATION",
         message: message,
         context: context,
         url: url,
     }
+
+    exception(error.code, error);
+    return error;
 }
 
 /**
@@ -66,12 +79,15 @@ export function invalidOperation(message: string, context: string, url?: string)
  * @hidden
  */
 export function notSupported(message: string = "", context: string, url?: string): ErrorMessage {
-    return {
+    const error: ErrorMessage = {
         code: "NOT_SUPPORTED",
         message: message || ErrorMessages["NOT_SUPPORTED"],
         context: context,
         url: url || "https://sdk.html5gameportal.com/api/wortal/#getsupportedapis",
     }
+
+    exception(error.code, error);
+    return error;
 }
 
 /**
@@ -80,12 +96,15 @@ export function notSupported(message: string = "", context: string, url?: string
  * @hidden
  */
 export function operationFailed(message: string, context: string, url?: string): ErrorMessage {
-    return {
+    const error: ErrorMessage = {
         code: "OPERATION_FAILED",
         message: message,
         context: context,
         url: url,
     }
+
+    exception(error.code, error);
+    return error;
 }
 
 /**
@@ -95,12 +114,15 @@ export function operationFailed(message: string, context: string, url?: string):
  * @hidden
  */
 export function initializationError(message: string, context: string, url?: string): ErrorMessage {
-    return {
+    const error: ErrorMessage = {
         code: "INITIALIZATION_ERROR",
         message: message,
         context: context,
         url: url || "https://sdk.html5gameportal.com/wortal-html5/#initialization",
     }
+
+    exception(error.code, error);
+    return error;
 }
 
 /**
