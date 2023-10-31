@@ -14,7 +14,7 @@ export class AdConfigFacebook extends AdConfig {
         super();
     }
 
-    protected async initialize(): Promise<void> {
+    public async initialize(): Promise<void> {
         debug("Initializing AdConfig..")
         await this._getAdUnitIDs();
         debug("AdConfig initialized.", this._data);

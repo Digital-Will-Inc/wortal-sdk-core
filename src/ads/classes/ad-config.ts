@@ -25,7 +25,7 @@ export abstract class AdConfig {
     constructor() {
     }
 
-    protected abstract initialize(): Promise<void>;
+    public abstract initialize(): Promise<void>;
 
     get isAdBlocked(): boolean {
         return this._data.isAdBlocked;

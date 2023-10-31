@@ -1,5 +1,6 @@
 import { rethrowError_Facebook_Rakuten } from "../../errors/error-handler";
 import { ErrorMessage_Link } from "../../errors/interfaces/link-error";
+import Wortal from "../../index";
 import { debug, exception, warn } from "../../utils/logger";
 import { isValidString } from "../../utils/validators";
 import { AdUnit_Link_Viber } from "../interfaces/rakuten-ads";
@@ -14,7 +15,7 @@ export class AdConfigLink extends AdConfig {
         super();
     }
 
-    protected async initialize(): Promise<void> {
+    public async initialize(): Promise<void> {
         debug("Initializing AdConfig..");
         await this._getAdUnitIDs();
         debug("AdConfig initialized.", this._data);
@@ -22,7 +23,7 @@ export class AdConfigLink extends AdConfig {
 
     private async _getAdUnitIDs(): Promise<void> {
         debug("Fetching ad unit IDs from Link SDK..");
-        return window.Wortal._internalPlatformSDK.getAdUnitsAsync()
+        return Wortal._internalPlatformSDK.getAdUnitsAsync()
             .then((adUnits: AdUnit_Link_Viber[]) => {
                 if (adUnits == null || undefined) {
                     exception("Failed to retrieve ad units. This may be due to a server error or platform malfunction.");

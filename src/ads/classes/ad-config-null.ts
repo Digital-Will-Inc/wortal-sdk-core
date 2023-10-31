@@ -11,7 +11,7 @@ export class AdConfigNull extends AdConfig {
         super();
     }
 
-    protected initialize(): Promise<void> {
+    public initialize(): Promise<void> {
         debug("Initializing AdConfig..");
         debug("AdConfig initialized.", this._data);
         return Promise.resolve();
