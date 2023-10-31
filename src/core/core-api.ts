@@ -46,15 +46,20 @@ export class CoreAPI {
 
     // This holds the current platform SDK and access to its APIs. This is set in _initializePlatformAsync.
     // Some platforms, such as Telegram, do not require including an SDK so this will remain an empty object.
-    private _platformSDK: CrazyGamesSDK | FacebookSDK | GameMonetizeSDK | GamePixSDK | GDSDK | LinkSDK | ViberSDK | unknown;
+    private _platformSDK: CrazyGamesSDK | FacebookSDK | GameMonetizeSDK | GamePixSDK | GDSDK | LinkSDK | ViberSDK | any;
     private _platform: Platform = "debug";
 
     constructor() {
     }
 
     /** @internal */
-    get _internalPlatformSDK(): CrazyGamesSDK | FacebookSDK | GameMonetizeSDK | GamePixSDK | GDSDK | LinkSDK | ViberSDK | unknown {
+    get _internalPlatformSDK(): CrazyGamesSDK | FacebookSDK | GameMonetizeSDK | GamePixSDK | GDSDK | LinkSDK | ViberSDK | any {
         return this._platformSDK;
+    }
+
+    /** @internal */
+    set _internalPlatformSDK(value: CrazyGamesSDK | FacebookSDK | GameMonetizeSDK | GamePixSDK | GDSDK | LinkSDK | ViberSDK | any) {
+        this._platformSDK = value;
     }
 
     /** @internal */
@@ -537,7 +542,7 @@ export class CoreAPI {
             }
             case "telegram": {
                 const {CoreTelegram} = await import(/* webpackChunkName: "telegram" */ "./impl/core-telegram");
-                const {AdsNull} = await import(/* webpackChunkName: "telegram" */ "../ads/impl/ads-null");
+                const {AdsTelegram} = await import(/* webpackChunkName: "telegram" */ "../ads/impl/ads-telegram");
                 const {ContextTelegram} = await import(/* webpackChunkName: "telegram" */ "../context/impl/context-telegram");
                 const {IAPTelegram} = await import(/* webpackChunkName: "telegram" */ "../iap/impl/iap-telegram");
                 const {LeaderboardTelegram} = await import(/* webpackChunkName: "telegram" */ "../leaderboard/impl/leaderboard-telegram");
@@ -547,7 +552,7 @@ export class CoreAPI {
                 const {TournamentTelegram} = await import(/* webpackChunkName: "telegram" */ "../tournament/impl/tournament-telegram");
 
                 this._core = new CoreTelegram();
-                this.ads = new AdsAPI(new AdsNull());
+                this.ads = new AdsAPI(new AdsTelegram());
                 this.analytics = new AnalyticsAPI(new AnalyticsWombat());
                 this.context = new ContextAPI(new ContextTelegram());
                 this.iap = new InAppPurchaseAPI(new IAPTelegram());
