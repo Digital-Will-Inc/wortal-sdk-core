@@ -136,7 +136,7 @@ export abstract class AdsBase {
             success: success,
             viewedRewarded: viewedReward,
             playerID: Wortal.player._internalPlayer.id,
-            gameID: Wortal.session._internalSession.gameId,
+            gameID: Wortal.session._internalSession.gameID,
             playTimeAtCall: Wortal.session._internalGameState.gameTimer,
         };
 

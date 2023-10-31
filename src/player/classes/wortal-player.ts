@@ -22,12 +22,12 @@ export class WortalPlayer extends Player {
     }
 
     private _isWortalFirstPlay(): boolean {
-        const cookieDate = this._getCookie(Wortal.session._internalSession.gameId);
+        const cookieDate = this._getCookie(Wortal.session._internalSession.gameID);
         if (cookieDate !== "") {
             this._data.daysSinceFirstPlay = this._getTimeFromCookieCreation(cookieDate);
             return false;
         } else {
-            this._setCookie(Wortal.session._internalSession.gameId);
+            this._setCookie(Wortal.session._internalSession.gameID);
             return true;
         }
     }

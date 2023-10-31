@@ -50,7 +50,7 @@ export class CoreGameMonetize extends CoreBase {
         const id = "gamemonetize-sdk";
         return new Promise((resolve, reject) => {
             window.SDK_OPTIONS = {
-                gameId: Wortal.session._internalSession.gameId,
+                gameId: Wortal.session._internalSession.gameID,
                 onEvent: (event: () => void) => {
                     externalSDKEventTrigger(event.name);
                 },

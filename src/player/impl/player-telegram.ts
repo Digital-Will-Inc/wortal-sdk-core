@@ -68,7 +68,7 @@ export class PlayerTelegram extends PlayerBase {
 
         const fetchAndBuildData = async () => {
             // First get the chunkCount so that we know how many chunks to retrieve.
-            requestData(`${Wortal.session._internalSession.gameId}-save-data-chunkCount`);
+            requestData(`${Wortal.session._internalSession.gameID}-save-data-chunkCount`);
 
             const chunkCountData = await waitForTelegramCallback(TELEGRAM_API.GET_DATA);
             if (typeof chunkCountData === "undefined") {
@@ -85,7 +85,7 @@ export class PlayerTelegram extends PlayerBase {
             window.addEventListener("message", getDataCallback);
 
             for (let i = 0; i < chunkCount; i++) {
-                requestData(`${Wortal.session._internalSession.gameId}-save-data-${i}`);
+                requestData(`${Wortal.session._internalSession.gameID}-save-data-${i}`);
             }
 
             // Wait for all chunks to be retrieved then clear the listener.
@@ -153,14 +153,14 @@ export class PlayerTelegram extends PlayerBase {
         if (this._getStringSizeInBytes(dataString) > 8000) {
             const chunks: string[] = this._splitJSONStringIntoChunks(dataString);
 
-            setData(`${Wortal.session._internalSession.gameId}-save-data-chunkCount`, chunks.length.toString());
+            setData(`${Wortal.session._internalSession.gameID}-save-data-chunkCount`, chunks.length.toString());
 
             chunks.forEach((chunk: string, index: number) => {
-                setData(`${Wortal.session._internalSession.gameId}-save-data-${index}`, chunk);
+                setData(`${Wortal.session._internalSession.gameID}-save-data-${index}`, chunk);
             });
         } else {
-            setData(`${Wortal.session._internalSession.gameId}-save-data-chunkCount`, "1");
-            setData(`${Wortal.session._internalSession.gameId}-save-data-0`, dataString);
+            setData(`${Wortal.session._internalSession.gameID}-save-data-chunkCount`, "1");
+            setData(`${Wortal.session._internalSession.gameID}-save-data-0`, dataString);
         }
 
         debug("Saved data to Telegram storage.");

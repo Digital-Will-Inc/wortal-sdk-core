@@ -20,7 +20,7 @@ export class AnalyticsWombat extends AnalyticsBase {
         const data: AnalyticsEventData = {
             name: "GameChoice",
             features: {
-                game: Wortal.session._internalSession.gameId,
+                game: Wortal.session._internalSession.gameID,
                 player: Wortal.player._internalPlayer.id,
                 platform: Wortal._internalPlatform,
                 country: Wortal.session._internalSession.country,
@@ -37,7 +37,7 @@ export class AnalyticsWombat extends AnalyticsBase {
         const data: AnalyticsEventData = {
             name: "LevelEnd",
             features: {
-                game: Wortal.session._internalSession.gameId,
+                game: Wortal.session._internalSession.gameID,
                 player: Wortal.player._internalPlayer.id,
                 platform: Wortal._internalPlatform,
                 country: Wortal.session._internalSession.country,
@@ -56,7 +56,7 @@ export class AnalyticsWombat extends AnalyticsBase {
         const data: AnalyticsEventData = {
             name: "LevelStart",
             features: {
-                game: Wortal.session._internalSession.gameId,
+                game: Wortal.session._internalSession.gameID,
                 player: Wortal.player._internalPlayer.id,
                 platform: Wortal._internalPlatform,
                 country: Wortal.session._internalSession.country,
@@ -72,7 +72,7 @@ export class AnalyticsWombat extends AnalyticsBase {
         const data: AnalyticsEventData = {
             name: "LevelUp",
             features: {
-                game: Wortal.session._internalSession.gameId,
+                game: Wortal.session._internalSession.gameID,
                 player: Wortal.player._internalPlayer.id,
                 platform: Wortal._internalPlatform,
                 country: Wortal.session._internalSession.country,
@@ -88,7 +88,7 @@ export class AnalyticsWombat extends AnalyticsBase {
         const data: AnalyticsEventData = {
             name: "Purchase",
             features: {
-                game: Wortal.session._internalSession.gameId,
+                game: Wortal.session._internalSession.gameID,
                 player: Wortal.player._internalPlayer.id,
                 platform: Wortal._internalPlatform,
                 country: Wortal.session._internalSession.country,
@@ -105,7 +105,7 @@ export class AnalyticsWombat extends AnalyticsBase {
         const data: AnalyticsEventData = {
             name: "PurchaseSubscription",
             features: {
-                game: Wortal.session._internalSession.gameId,
+                game: Wortal.session._internalSession.gameID,
                 player: Wortal.player._internalPlayer.id,
                 platform: Wortal._internalPlatform,
                 country: Wortal.session._internalSession.country,
@@ -122,7 +122,7 @@ export class AnalyticsWombat extends AnalyticsBase {
         const data: AnalyticsEventData = {
             name: "PostScore",
             features: {
-                game: Wortal.session._internalSession.gameId,
+                game: Wortal.session._internalSession.gameID,
                 player: Wortal.player._internalPlayer.id,
                 platform: Wortal._internalPlatform,
                 country: Wortal.session._internalSession.country,
@@ -138,7 +138,7 @@ export class AnalyticsWombat extends AnalyticsBase {
         const data: AnalyticsEventData = {
             name: "SocialInvite",
             features: {
-                game: Wortal.session._internalSession.gameId,
+                game: Wortal.session._internalSession.gameID,
                 player: Wortal.player._internalPlayer.id,
                 platform: Wortal._internalPlatform,
                 country: Wortal.session._internalSession.country,
@@ -154,7 +154,7 @@ export class AnalyticsWombat extends AnalyticsBase {
         const data: AnalyticsEventData = {
             name: "SocialShare",
             features: {
-                game: Wortal.session._internalSession.gameId,
+                game: Wortal.session._internalSession.gameID,
                 player: Wortal.player._internalPlayer.id,
                 platform: Wortal._internalPlatform,
                 country: Wortal.session._internalSession.country,
@@ -170,7 +170,7 @@ export class AnalyticsWombat extends AnalyticsBase {
         const data: AnalyticsEventData = {
             name: "TutorialEnd",
             features: {
-                game: Wortal.session._internalSession.gameId,
+                game: Wortal.session._internalSession.gameID,
                 player: Wortal.player._internalPlayer.id,
                 platform: Wortal._internalPlatform,
                 country: Wortal.session._internalSession.country,
@@ -188,7 +188,7 @@ export class AnalyticsWombat extends AnalyticsBase {
         const data: AnalyticsEventData = {
             name: "TutorialStart",
             features: {
-                game: Wortal.session._internalSession.gameId,
+                game: Wortal.session._internalSession.gameID,
                 player: Wortal.player._internalPlayer.id,
                 platform: Wortal._internalPlatform,
                 country: Wortal.session._internalSession.country,
@@ -207,7 +207,7 @@ export class AnalyticsWombat extends AnalyticsBase {
         const data: AnalyticsEventData = {
             name: "GameEnd",
             features: {
-                game: Wortal.session._internalSession.gameId,
+                game: Wortal.session._internalSession.gameID,
                 timePlayed: Wortal.session._internalGameState.gameTimer,
                 platform: Wortal._internalPlatform,
                 player: Wortal.player._internalPlayer.id,
@@ -224,7 +224,7 @@ export class AnalyticsWombat extends AnalyticsBase {
         const data: AnalyticsEventData = {
             name: "GameStart",
             features: {
-                game: Wortal.session._internalSession.gameId,
+                game: Wortal.session._internalSession.gameID,
                 browser: Wortal.session._internalSession.browser,
                 platform: Wortal._internalPlatform,
                 country: Wortal.session._internalSession.country,
@@ -250,7 +250,7 @@ export class AnalyticsWombat extends AnalyticsBase {
                 const data: AnalyticsEventData = {
                     name: "TrafficSource",
                     features: {
-                        game: Wortal.session._internalSession.gameId,
+                        game: Wortal.session._internalSession.gameID,
                         platform: Wortal._internalPlatform,
                         country: Wortal.session._internalSession.country,
                         player: Wortal.player._internalPlayer.id,
@@ -268,7 +268,7 @@ export class AnalyticsWombat extends AnalyticsBase {
                 const data: AnalyticsEventData = {
                     name: "TrafficSource",
                     features: {
-                        game: Wortal.session._internalSession.gameId,
+                        game: Wortal.session._internalSession.gameID,
                         platform: Wortal._internalPlatform,
                         country: Wortal.session._internalSession.country,
                         player: Wortal.player._internalPlayer.id,

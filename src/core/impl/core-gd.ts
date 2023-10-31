@@ -51,7 +51,7 @@ export class CoreGD extends CoreBase {
 
         return new Promise((resolve, reject) => {
             window.GD_OPTIONS = {
-                gameId: Wortal.session._internalSession.gameId,
+                gameId: Wortal.session._internalSession.gameID,
                 onEvent: (event: () => void) => {
                     externalSDKEventTrigger(event.name);
                 },

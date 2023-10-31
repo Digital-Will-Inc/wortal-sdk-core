@@ -193,7 +193,7 @@ export class NotificationsFacebook extends NotificationsBase {
         if (typeof Wortal.player._internalPlayer.asid !== "string" || Wortal.player._internalPlayer.asid.length === 0) {
             return undefined;
         } else {
-            return `${API_ENDPOINTS.NOTIFICATIONS}${Wortal.session._internalSession.gameId}/fb/${Wortal.player._internalPlayer.asid}`;
+            return `${API_ENDPOINTS.NOTIFICATIONS}${Wortal.session._internalSession.gameID}/fb/${Wortal.player._internalPlayer.asid}`;
         }
     }
 
@@ -201,7 +201,7 @@ export class NotificationsFacebook extends NotificationsBase {
         if (typeof Wortal.player._internalPlayer.asid !== "string" || Wortal.player._internalPlayer.asid.length === 0) {
             return undefined;
         } else {
-            return `${API_ENDPOINTS.NOTIFICATIONS}${Wortal.session._internalSession.gameId}/fb/${Wortal.player._internalPlayer.asid}`;
+            return `${API_ENDPOINTS.NOTIFICATIONS}${Wortal.session._internalSession.gameID}/fb/${Wortal.player._internalPlayer.asid}`;
         }
     }
 
@@ -209,7 +209,7 @@ export class NotificationsFacebook extends NotificationsBase {
         if (typeof Wortal.player._internalPlayer.asid !== "string" || Wortal.player._internalPlayer.asid.length === 0) {
             return undefined;
         } else {
-            return `${API_ENDPOINTS.NOTIFICATIONS}${Wortal.session._internalSession.gameId}/fb/${Wortal.player._internalPlayer.asid}/cancel_notification`;
+            return `${API_ENDPOINTS.NOTIFICATIONS}${Wortal.session._internalSession.gameID}/fb/${Wortal.player._internalPlayer.asid}/cancel_notification`;
         }
     }
 
@@ -217,7 +217,7 @@ export class NotificationsFacebook extends NotificationsBase {
         if (typeof Wortal.player._internalPlayer.asid !== "string" || Wortal.player._internalPlayer.asid.length === 0) {
             return undefined;
         } else {
-            return `${API_ENDPOINTS.NOTIFICATIONS}${Wortal.session._internalSession.gameId}/fb/${Wortal.player._internalPlayer.asid}/cancel_all_notifications`;
+            return `${API_ENDPOINTS.NOTIFICATIONS}${Wortal.session._internalSession.gameID}/fb/${Wortal.player._internalPlayer.asid}/cancel_all_notifications`;
         }
     }
 
