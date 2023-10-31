@@ -1,6 +1,6 @@
 {
     "name": "@digital-will/wortal-sdk",
-    "version": "1.6.15",
+    "version": "1.7.0",
     "description": "SDK for integrating games into the Wortal HTML5 content platform.",
     "homepage": "https://sdk.html5gameportal.com/",
     "bugs": "https://github.com/Digital-Will-Inc/wortal-sdk-core/issues",

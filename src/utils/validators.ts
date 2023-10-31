@@ -1,12 +1,18 @@
-import { PlacementType } from "../types/ads";
-import { ShareTo } from "../types/wortal";
+import { PlacementType } from "../ads/types/ad-sense-types";
+import { ShareTo } from "./wortal-utils";
 
-/** @hidden */
+/**
+ * Validates if the given object is a valid string and not empty.
+ * @hidden
+ */
 export function isValidString(obj: any): boolean {
     return (typeof obj === "string" && obj !== "");
 }
 
-/** @hidden */
+/**
+ * Validates if the given object is a valid number and not NaN.
+ * @hidden
+ */
 export function isValidNumber(obj: any): boolean {
     if (typeof obj !== "number") {
         return false;
@@ -15,12 +21,19 @@ export function isValidNumber(obj: any): boolean {
     }
 }
 
-/** @hidden */
+/**
+ * Validates if the given object is a valid PlacementType.
+ * @see PlacementType
+ * @hidden
+ */
 export function isValidPlacementType(value: any): value is PlacementType {
-    return ['preroll', 'start', 'pause', 'next', 'browse', 'reward'].includes(value);
+    return ["preroll", "start", "pause", "next", "browse", "reward"].includes(value);
 }
 
-/** @hidden */
+/**
+ * Validates if the given object contains a valid text property in a payload.
+ * @hidden
+ */
 export function isValidPayloadText(obj: any): boolean {
     if (typeof obj === "string" && obj !== "") {
         return true;
@@ -32,7 +45,10 @@ export function isValidPayloadText(obj: any): boolean {
     return false;
 }
 
-/** @hidden */
+/**
+ * Validates if the given object contains a valid image property in a payload. This needs to be a base64 encoded string.
+ * @hidden
+ */
 export function isValidPayloadImage(obj: any): boolean {
     if (typeof obj === "string" && obj !== "") {
         if (obj.startsWith("data:")) {
@@ -42,12 +58,18 @@ export function isValidPayloadImage(obj: any): boolean {
     return false;
 }
 
-/** @hidden */
+/**
+ * Validates if the given object contains a valid productID property in a purchase config.
+ * @hidden
+ */
 export function isValidPurchaseConfig(obj: any): boolean {
     return (typeof obj.productID === "string" && obj.productID !== "");
 }
 
-/** @hidden */
+/**
+ * Validates if the given object contains a valid shareTo property.
+ * @hidden
+ */
 export function isValidShareDestination(value: any): value is ShareTo {
-    return ['facebook', 'twitter'].includes(value);
+    return ["facebook", "twitter"].includes(value);
 }

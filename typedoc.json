@@ -1,7 +1,7 @@
 {
     "entryPointStrategy": "expand",
-    "entryPoints": ["./src/api", "./src/classes", "./src/interfaces", "./src/types"],
-    "exclude": ["./src/utils/*.ts"],
+    "entryPoints": ["./src"],
+    "exclude": ["./src/utils/*.ts", "./src/data/*.ts"],
     "out": "docs",
     "readme": "none",
     "name": "Wortal SDK Core",

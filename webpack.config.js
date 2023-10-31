@@ -12,7 +12,7 @@ module.exports = {
     output: {
         path: path.join(__dirname, 'dist'),
         filename: `wortal-core.js`,
-        chunkFilename: IS_PRODUCTION ? '[name].[chunkhash].js' : '[name].chunk.js',
+        chunkFilename: '[name].js',
         publicPath: '',
         library: {
             root: 'Wortal',
@@ -37,6 +37,14 @@ module.exports = {
         ]
     },
     optimization: {
+        splitChunks: {
+            cacheGroups: {
+                shared: {
+                    name: 'wortal-common',
+                    minChunks: 2,
+                },
+            },
+        },
         minimize: true,
         minimizer: [
             new TerserPlugin({
