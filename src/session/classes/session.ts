@@ -1,15 +1,17 @@
-import { ExternalCallbacks, GameData } from "../interfaces/session";
-import { Platform, SessionData } from "../types/session";
-import { PLATFORM_DOMAINS } from "../types/wortal";
-import { debug } from "../utils/logger";
+import { ExternalCallbacks } from "../../core/interfaces/external-callbacks";
+import Wortal from "../../index";
+import { debug, exception, warn } from "../../utils/logger";
+import { SessionData } from "../interfaces/session-data";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import country from "../utils/intl-data.json";
-import { getParameterByName } from "../utils/wortal-utils";
+import country from "../../data/intl-data.json";
 
-/** @hidden */
+/**
+ * Contains data about the current game session such as the platform, country, and game ID.
+ * @hidden
+ */
 export class Session {
-    private _current: SessionData = {
+    private _data: SessionData = {
         country: "",
         platform: "debug",
         gameId: "",
@@ -24,30 +26,25 @@ export class Session {
 
     constructor() {
         debug("Initializing session...");
-        this._current.country = this._setCountry();
-        this._current.platform = this._setPlatform();
-        this._current.gameId = this._setGameID();
-        this._current.browser = navigator.userAgent;
-        if (this._current.platform === "gd" || this._current.platform === "gamemonetize") {
+        this._data.country = this._setCountry();
+        this._data.gameId = this._setGameID();
+        this._data.browser = navigator.userAgent;
+        if (this._data.platform === "gd" || this._data.platform === "gamemonetize") {
             this._externalCallbacks = {};
         }
-        debug("Session initialized: ", this._current);
+        debug("Session initialized: ", this._data);
     }
 
     get gameId(): string {
-        return this._current.gameId;
+        return this._data.gameId;
     }
 
     get browser(): string {
-        return this._current.browser;
-    }
-
-    get platform(): Platform {
-        return this._current.platform;
+        return this._data.browser;
     }
 
     get country(): string {
-        return this._current.country;
+        return this._data.country;
     }
 
     get locale(): string {
@@ -62,50 +59,19 @@ export class Session {
         return this._externalCallbacks;
     }
 
-    private _setPlatform(): Platform {
-        const location = window.location;
-        const host = location.host;
-
-        if (PLATFORM_DOMAINS["viber"].some(domain => host.includes(domain))) {
-            return "viber";
-        } else if (PLATFORM_DOMAINS["link"].some(domain => host.includes(domain))) {
-            return "link";
-        } else if (PLATFORM_DOMAINS["gd"].some(domain => host.includes(domain))) {
-            return "gd";
-        } else if (PLATFORM_DOMAINS["facebook"].some(domain => host.includes(domain))) {
-            return "facebook";
-        } else if (PLATFORM_DOMAINS["wortal"].some(domain => host.includes(domain))) {
-            // We may be embedding the game in a different app/page, so we need to check the URL for a query param
-            // that flags the platform.
-            if (getParameterByName("telegram")) {
-                return "telegram";
-            } else {
-                return "wortal";
-            }
-        } else if (PLATFORM_DOMAINS["crazygames"].some(domain => host.includes(domain))) {
-            return "crazygames";
-        } else if (PLATFORM_DOMAINS["gamepix"].some(domain => host.includes(domain))) {
-            return "gamepix";
-        } else if (PLATFORM_DOMAINS["gamemonetize"].some(domain => host.includes(domain))) {
-            return "gamemonetize";
-        } else {
-            return "debug";
-        }
-    }
-
     private _setGameID(): string {
-        const platform = this.platform;
+        const platform = Wortal._internalPlatform;
         let id: string = window.wortalGameID;
         // Always use the URL parsing method for GD and Gamemonetize as we need their IDs to initialize the SDK.
         if (id === undefined || (platform === "gd" || platform === "gamemonetize")) {
             debug("Game ID not found in window.wortalGameID, trying to get it from the URL...");
             // We keep this in for backwards compatibility. As of v1.6.13 Wortal will automatically add the game ID to
-            // wortal-data.js when uploaded a revision, but some games have not (and may never) be updated so we
+            // wortal-data.js when uploaded a revision, but some games have not (and may never) be updated, so we
             // need a fallback for getting the gameID.
             let url: string[] = [];
             let subdomain: string[] = [];
 
-            switch (this.platform) {
+            switch (platform) {
                 case "wortal":
                     // Example URL: https://gameportal.digitalwill.co.jp/games/cactus-bowling/19/
                     // ID: 19
@@ -183,67 +149,5 @@ export class Session {
         const arr = zone.split("/");
         const city = arr[arr.length - 1];
         return country[city];
-    }
-}
-
-/** @hidden */
-export class GameState {
-    private _current: GameData = {
-        gameTimer: 0,
-        levelName: "",
-        levelTimer: 0,
-        levelTimerHandle: 0,
-        gameLoadTimer: 0,
-    };
-
-    get gameTimer(): number {
-        return this._current.gameTimer;
-    }
-
-    get gameLoadTimer(): number {
-        return this._current.gameLoadTimer;
-    }
-
-    startGameTimer(): void {
-        window.setInterval(() => {
-            if (document.visibilityState !== "hidden") {
-                this._current.gameTimer += 1
-            }
-        }, 1000);
-    }
-
-    startGameLoadTimer(): void {
-        this._current.gameLoadTimer = performance.now();
-    }
-
-    stopGameLoadTimer(): void {
-        this._current.gameLoadTimer = performance.now() - this._current.gameLoadTimer;
-    }
-
-    get levelName(): string {
-        return this._current.levelName;
-    }
-
-    setLevelName(name: string): void {
-        this._current.levelName = name;
-    }
-
-    get levelTimer(): number {
-        return this._current.levelTimer;
-    }
-
-    resetLevelTimer(): void {
-        this._current.levelTimer = 0;
-    }
-
-    startLevelTimer(): void {
-        this._current.levelTimerHandle = window.setInterval(() => this._current.levelTimer += 1, 1000);
-    }
-
-    clearLevelTimerHandle(): void {
-        if (this._current.levelTimerHandle !== null) {
-            clearInterval(this._current.levelTimerHandle);
-        }
-        this._current.levelTimerHandle = 0;
     }
 }
