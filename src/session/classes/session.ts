@@ -1,6 +1,6 @@
 import { ExternalCallbacks } from "../../core/interfaces/external-callbacks";
 import Wortal from "../../index";
-import { debug, exception, warn } from "../../utils/logger";
+import { debug } from "../../utils/logger";
 import { SessionData } from "../interfaces/session-data";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -13,8 +13,7 @@ import country from "../../data/intl-data.json";
 export class Session {
     private _data: SessionData = {
         country: "",
-        platform: "debug",
-        gameId: "",
+        gameID: "",
         browser: "",
     };
 
@@ -27,16 +26,16 @@ export class Session {
     constructor() {
         debug("Initializing session...");
         this._data.country = this._setCountry();
-        this._data.gameId = this._setGameID();
+        this._data.gameID = this._setGameID();
         this._data.browser = navigator.userAgent;
-        if (this._data.platform === "gd" || this._data.platform === "gamemonetize") {
+        if (Wortal._internalPlatform === "gd" || Wortal._internalPlatform === "gamemonetize") {
             this._externalCallbacks = {};
         }
         debug("Session initialized: ", this._data);
     }
 
-    get gameId(): string {
-        return this._data.gameId;
+    get gameID(): string {
+        return this._data.gameID;
     }
 
     get browser(): string {
@@ -66,7 +65,7 @@ export class Session {
         if (id === undefined || (platform === "gd" || platform === "gamemonetize")) {
             debug("Game ID not found in window.wortalGameID, trying to get it from the URL...");
             // We keep this in for backwards compatibility. As of v1.6.13 Wortal will automatically add the game ID to
-            // wortal-data.js when uploaded a revision, but some games have not (and may never) be updated, so we
+            // wortal-data.js when uploading a revision, but some games have not (and may never) be updated, so we
             // need a fallback for getting the gameID.
             let url: string[] = [];
             let subdomain: string[] = [];
