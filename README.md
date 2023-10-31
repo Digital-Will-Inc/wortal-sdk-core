@@ -7,30 +7,9 @@
 The recommended way to include the SDK is to include the script in your game's `index.html`.
 This will allow the SDK to receive automatic updates without requiring you to update your game.
 
-Add the SDK Core script in the `<head>` of your game's `index.html` before any game scripts, replacing `x.x` with the version number.
+Add the SDK Core script in the `<head>` of your game's `index.html` before any game scripts.
 
-`<script src="https://storage.googleapis.com/html5gameportal.com/wortal-sdk/wortal-core-x.x.js"></script>`
-
-**[Get the latest release here](https://github.com/Digital-Will-Inc/wortal-sdk-core/releases)**
-
-### NPM
-
-Alternatively you can install the SDK via NPM.
-
-`npm i @digital-will/wortal-sdk`
-
-Please note that using the NPM package to bundle the SDK with your game build prevents the game from receiving automatic
-updates to the SDK. Any patches or updates to the SDK will require you to update the SDK version in your game then rebuild and redeploy.
-
-### Versioning
-
-The SDK uses [Semantic Versioning](https://semver.org/) and enables the game developer to pick a strategy for updating
-the SDK including receiving automatic updates.
-
-- Patch-specific (no auto-updates): https://storage.googleapis.com/html5gameportal.com/wortal-sdk/wortal-core-x.x.x.js
-- Minor version (receives auto updates): https://storage.googleapis.com/html5gameportal.com/wortal-sdk/wortal-core-x.x.js
-
-Please note that new minor versions may contain new and experimental features but should not introduce any breaking changes.
+`<script src="https://storage.googleapis.com/html5gameportal.com/wortal-sdk/v1/wortal-core.js"></script>`
 
 ## Initialization
 
