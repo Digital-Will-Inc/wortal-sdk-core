@@ -9,6 +9,10 @@
 - Core
   - Tracking for SDK initialization time
 
+### Fixed
+- Core
+  - Initialization fails if client does not have a timezone set
+
 ### Changed
 - Core
   - Restructured SDK to use dynamic module imports, reducing bundle size and load times significantly
