@@ -143,8 +143,12 @@ export class Session {
 
     private _setCountry(): string {
         // This isn't very reliable as the time zone can be easily changed, but we want a way to get the country
-        // without using any personal information or geolocation to avoid GDPR/privacy law issues.
+        // without using geolocation.
         const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        if (typeof zone === "undefined") {
+            debug("Could not get time zone, defaulting to unknown.");
+            return "unknown";
+        }
         const arr = zone.split("/");
         const city = arr[arr.length - 1];
         return country[city];
