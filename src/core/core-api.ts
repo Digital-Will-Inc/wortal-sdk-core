@@ -28,6 +28,7 @@ import { GDSDK } from "./interfaces/gd-sdk";
 import { InitializationOptions } from "./interfaces/initialization-options";
 import { LinkSDK } from "./interfaces/link-sdk";
 import { ViberSDK } from "./interfaces/viber-sdk";
+import { YandexSDK } from "./interfaces/yandex-sdk";
 
 /**
  * Core module for the SDK. This is the main entry point for the SDK. It is responsible for initializing the SDK
@@ -46,19 +47,19 @@ export class CoreAPI {
 
     // This holds the current platform SDK and access to its APIs. This is set in _initializePlatformAsync.
     // Some platforms, such as Telegram, do not require including an SDK so this will remain an empty object.
-    private _platformSDK: CrazyGamesSDK | FacebookSDK | GameMonetizeSDK | GamePixSDK | GDSDK | LinkSDK | ViberSDK | any;
+    private _platformSDK: CrazyGamesSDK | FacebookSDK | GameMonetizeSDK | GamePixSDK | GDSDK | LinkSDK | ViberSDK | YandexSDK | any;
     private _platform: Platform = "debug";
 
     constructor() {
     }
 
     /** @internal */
-    get _internalPlatformSDK(): CrazyGamesSDK | FacebookSDK | GameMonetizeSDK | GamePixSDK | GDSDK | LinkSDK | ViberSDK | any {
+    get _internalPlatformSDK(): CrazyGamesSDK | FacebookSDK | GameMonetizeSDK | GamePixSDK | GDSDK | LinkSDK | ViberSDK | YandexSDK | any {
         return this._platformSDK;
     }
 
     /** @internal */
-    set _internalPlatformSDK(value: CrazyGamesSDK | FacebookSDK | GameMonetizeSDK | GamePixSDK | GDSDK | LinkSDK | ViberSDK | any) {
+    set _internalPlatformSDK(value: CrazyGamesSDK | FacebookSDK | GameMonetizeSDK | GamePixSDK | GDSDK | LinkSDK | ViberSDK | YandexSDK) {
         this._platformSDK = value;
     }
 
@@ -609,6 +610,13 @@ export class CoreAPI {
                 this.player = new PlayerAPI(new PlayerWortal());
                 this.session = new SessionAPI(new SessionWortal());
                 this.tournament = new TournamentAPI(new TournamentWortal());
+
+                break;
+            }
+            case "yandex": {
+                const {CoreYandex} = await import(/* webpackChunkName: "yandex" */ "./impl/core-yandex");
+
+                this._core = new CoreYandex();
 
                 break;
             }
