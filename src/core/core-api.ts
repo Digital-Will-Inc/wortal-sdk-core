@@ -616,10 +616,12 @@ export class CoreAPI {
             case "yandex": {
                 const {CoreYandex} = await import(/* webpackChunkName: "yandex" */ "./impl/core-yandex");
                 const {AdsYandex} = await import(/* webpackChunkName: "yandex" */ "../ads/impl/ads-yandex");
+                const {ContextYandex} = await import(/* webpackChunkName: "yandex" */ "../context/impl/context-yandex");
 
                 this._core = new CoreYandex();
                 this.ads = new AdsAPI(new AdsYandex());
                 this.analytics = new AnalyticsAPI(new AnalyticsWombat());
+                this.context = new ContextAPI(new ContextYandex());
 
                 break;
             }
