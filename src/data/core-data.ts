@@ -14,6 +14,7 @@ export const PLATFORM_DOMAINS: PlatformDomains = {
     // This is just added here for completeness.
     "telegram": ["playdeck.io"],
     "gamemonetize": ["gamemonetize.com", "gamemonetize.co", "gamemonetize.games"],
+    "yandex": ["yandex.com", "yandex.ru"],
 }
 
 /**
@@ -39,6 +40,7 @@ export const SDK_SRC = {
     CRAZY_GAMES: "https://sdk.crazygames.com/crazygames-sdk-v2.js",
     GAME_PIX: "https://integration.gamepix.com/sdk/v3/gamepix.sdk.js",
     GAME_MONETIZE: "https://api.gamemonetize.com/sdk.js",
+    YANDEX: "https://yandex.ru/games/sdk/v2",
 }
 
 /**
