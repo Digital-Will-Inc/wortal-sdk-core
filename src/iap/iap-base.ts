@@ -1,7 +1,6 @@
 import { API_URL, WORTAL_API } from "../data/core-data";
 import { invalidOperation, invalidParams } from "../errors/error-handler";
 import { ValidationResult } from "../errors/interfaces/validation-result";
-import Wortal from "../index";
 import { apiCall, debug, internalCall } from "../utils/logger";
 import { isValidPurchaseConfig, isValidString } from "../utils/validators";
 import { Product } from "./interfaces/product";
@@ -129,18 +128,7 @@ export abstract class IAPBase {
         internalCall("IAP._tryEnableIAP");
 
         debug("Checking for IAP compatibility..");
-        const platform = Wortal.session.getPlatform();
-        if (platform === "viber" || platform === "facebook") {
-            Wortal._internalPlatformSDK.payments.onReady(() => {
-                this._isIAPEnabled = true;
-                debug(`IAP initialized for ${platform} platform.`);
-            });
-        } else if (platform === "debug") {
-            this._isIAPEnabled = true;
-            debug("IAP initialized for debugging.");
-        } else {
-            debug(`IAP not supported in this session. This may be due to platform, device or regional restrictions. \nPlatform: ${platform} // Device: ${Wortal.session.getDevice()} // Region: ${Wortal.session._internalSession.country}`);
-        }
+        return this._tryEnableIAPImpl();
     }
 
 //#endregion
@@ -155,6 +143,7 @@ export abstract class IAPBase {
     protected abstract isEnabledImpl(): boolean;
     protected abstract makePurchaseAsyncImpl(purchase: PurchaseConfig): Promise<Purchase>;
     protected abstract purchaseSubscriptionAsyncImpl(productID: string): Promise<Subscription>;
+    protected abstract _tryEnableIAPImpl(): void;
 
 //#endregion
 //#region Validation

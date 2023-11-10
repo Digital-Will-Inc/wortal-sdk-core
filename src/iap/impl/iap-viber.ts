@@ -2,6 +2,7 @@ import { API_URL, WORTAL_API } from "../../data/core-data";
 import { notSupported, rethrowError_Facebook_Rakuten } from "../../errors/error-handler";
 import { ErrorMessage_Viber } from "../../errors/interfaces/viber-error";
 import Wortal from "../../index";
+import { debug } from "../../utils/logger";
 import { IAPBase } from "../iap-base";
 import { Product } from "../interfaces/product";
 import { Purchase } from "../interfaces/purchase";
@@ -73,6 +74,14 @@ export class IAPViber extends IAPBase {
 
     protected purchaseSubscriptionAsyncImpl(productID: string): Promise<Subscription> {
         return Promise.reject(notSupported(undefined, WORTAL_API.IAP_PURCHASE_SUBSCRIPTION_ASYNC, API_URL.IAP_PURCHASE_SUBSCRIPTION_ASYNC));
+    }
+
+    protected _tryEnableIAPImpl(): void {
+        this._isIAPEnabled = false;
+        Wortal._internalPlatformSDK.payments.onReady(() => {
+            this._isIAPEnabled = true;
+            debug(`IAP initialized for ${Wortal._internalPlatform} platform.`);
+        });
     }
 
 }
