@@ -18,7 +18,13 @@ export class CoreYandex extends CoreBase {
     }
 
     protected authenticateAsyncImpl(payload?: AuthPayload): Promise<AuthResponse> {
-        return Promise.reject(notSupported(undefined, WORTAL_API.AUTHENTICATE_ASYNC, API_URL.AUTHENTICATE_ASYNC));
+        return Wortal._internalPlatformSDK.auth.openAuthDialog()
+            .then(() => {
+                return { success: true };
+            })
+            .catch((error: Error) => {
+                return { success: false, error: error.message };
+            });
     }
 
     protected initializeAsyncImpl(): Promise<void> {

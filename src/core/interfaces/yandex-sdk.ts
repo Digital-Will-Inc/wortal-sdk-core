@@ -33,6 +33,9 @@ export interface YandexSDK {
     init(): Promise<YandexSDK>;
     getPayments(params: {signed: true}): Promise<YandexIAPObject>;
     getLeaderboards(): Promise<YandexLeaderboardObject>;
+    auth: {
+        openAuthDialog(): Promise<void>;
+    }
     features: {
         LoadingAPI?: {
             ready(): void;
