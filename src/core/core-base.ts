@@ -1,7 +1,6 @@
 import { AuthPayload } from "../auth/interfaces/auth-payload";
 import { AuthResponse } from "../auth/interfaces/auth-response";
 import { initializationError, invalidParams } from "../errors/error-handler";
-import { ErrorMessage } from "../errors/interfaces/error-message";
 import { ValidationResult } from "../errors/interfaces/validation-result";
 import Wortal from "../index";
 import { apiCall, debug, info, internalCall } from "../utils/logger";
@@ -140,7 +139,6 @@ export abstract class CoreBase {
     protected defaultInitializeAsyncImpl(): Promise<void> {
         return this._initializeSDKAsyncImpl()
             .then(() => {
-                Wortal.analytics._logGameStart();
                 Wortal.isInitialized = true;
                 window.dispatchEvent(new Event("wortal-sdk-initialized"));
                 info("SDK initialization complete.");
