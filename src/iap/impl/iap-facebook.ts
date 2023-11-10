@@ -2,6 +2,7 @@ import { API_URL, WORTAL_API } from "../../data/core-data";
 import { rethrowError_Facebook_Rakuten } from "../../errors/error-handler";
 import { ErrorMessage_Facebook } from "../../errors/interfaces/facebook-error";
 import Wortal from "../../index";
+import { debug } from "../../utils/logger";
 import { IAPBase } from "../iap-base";
 import { Product } from "../interfaces/product";
 import { Purchase } from "../interfaces/purchase";
@@ -94,6 +95,14 @@ export class IAPFacebook extends IAPBase {
             .catch((error: ErrorMessage_Facebook) => {
                 throw rethrowError_Facebook_Rakuten(error, WORTAL_API.IAP_PURCHASE_SUBSCRIPTION_ASYNC, API_URL.IAP_PURCHASE_SUBSCRIPTION_ASYNC);
             });
+    }
+
+    protected _tryEnableIAPImpl(): void {
+        this._isIAPEnabled = false;
+        Wortal._internalPlatformSDK.payments.onReady(() => {
+            this._isIAPEnabled = true;
+            debug(`IAP initialized for ${Wortal._internalPlatform} platform.`);
+        });
     }
 
 }

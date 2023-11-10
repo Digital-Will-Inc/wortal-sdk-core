@@ -1,3 +1,4 @@
+import { debug } from "../../utils/logger";
 import { IAPBase } from "../iap-base";
 import { Product } from "../interfaces/product";
 import { Purchase } from "../interfaces/purchase";
@@ -49,6 +50,11 @@ export class IAPDebug extends IAPBase {
 
     protected purchaseSubscriptionAsyncImpl(productID: string): Promise<Subscription> {
         return Promise.resolve(this._getMockSubscription());
+    }
+
+    protected _tryEnableIAPImpl(): void {
+        this._isIAPEnabled = true;
+        debug("IAP initialized for debugging.");
     }
 
     private _getMockProduct(): Product {
