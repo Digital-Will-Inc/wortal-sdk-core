@@ -618,12 +618,22 @@ export class CoreAPI {
                 const {AdsYandex} = await import(/* webpackChunkName: "yandex" */ "../ads/impl/ads-yandex");
                 const {ContextYandex} = await import(/* webpackChunkName: "yandex" */ "../context/impl/context-yandex");
                 const {IAPYandex} = await import(/* webpackChunkName: "yandex" */ "../iap/impl/iap-yandex");
+                const {LeaderboardYandex} = await import(/* webpackChunkName: "yandex" */ "../leaderboard/impl/leaderboard-yandex");
+                const {NotificationsYandex} = await import(/* webpackChunkName: "yandex" */ "../notifications/impl/notifications-yandex");
+                const {PlayerYandex} = await import(/* webpackChunkName: "yandex" */ "../player/impl/player-yandex");
+                const {SessionYandex} = await import(/* webpackChunkName: "yandex" */ "../session/impl/session-yandex");
+                const {TournamentYandex} = await import(/* webpackChunkName: "yandex" */ "../tournament/impl/tournament-yandex");
 
                 this._core = new CoreYandex();
                 this.ads = new AdsAPI(new AdsYandex());
                 this.analytics = new AnalyticsAPI(new AnalyticsWombat());
                 this.context = new ContextAPI(new ContextYandex());
                 this.iap = new InAppPurchaseAPI(new IAPYandex());
+                this.leaderboard = new LeaderboardAPI(new LeaderboardYandex());
+                this.notifications = new NotificationsAPI(new NotificationsYandex());
+                this.player = new PlayerAPI(new PlayerYandex());
+                this.session = new SessionAPI(new SessionYandex());
+                this.tournament = new TournamentAPI(new TournamentYandex());
 
                 break;
             }
