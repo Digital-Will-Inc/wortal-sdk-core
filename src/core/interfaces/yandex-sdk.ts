@@ -7,6 +7,7 @@ import {
     LeaderboardEntry_Yandex,
     LeaderboardGetEntriesOptions_Yandex, LeaderboardGetEntriesResult_Yandex
 } from "../../leaderboard/interfaces/yandex-leaderboard";
+import { PlayerPhotoSize_Yandex } from "../../player/types/yandex-player-types";
 
 /*
 * PLATFORM NOTE
@@ -25,6 +26,7 @@ import {
 
 /**
  * Yandex SDK interface
+ * https://yandex.com/dev/games/doc/en/sdk/sdk-about
  * @hidden
  */
 export interface YandexSDK {
@@ -67,4 +69,21 @@ export interface YandexLeaderboardObject {
     setLeaderboardScore(leaderboardName: string, score: number, extraData?: string): Promise<void>;
     getLeaderboardPlayerEntry(leaderboardName: string): Promise<LeaderboardEntry_Yandex>;
     getLeaderboardEntries(leaderboardName: string, options: LeaderboardGetEntriesOptions_Yandex): Promise<LeaderboardGetEntriesResult_Yandex>;
+}
+
+/**
+ * Object used by Yandex SDK to access the Player API.
+ * https://yandex.com/dev/games/doc/en/sdk/sdk-player
+ * @hidden
+ */
+export interface YandexPlayerObject {
+    setData(data: Record<string, unknown>, flush: boolean): Promise<void>;
+    getData(keys: string[]): Promise<Record<string, unknown>>;
+    setStats(stats: Record<string, number>): Promise<void>;
+    incrementStats(stats: Record<string, number>): Promise<Record<string, number>>;
+    getStats(keys: string[]): Promise<Record<string, number>>;
+    getUniqueID(): string;
+    getName(): string;
+    getPhoto(size: PlayerPhotoSize_Yandex): string;
+    getIDsPerGame(): Record<number, string>;
 }
