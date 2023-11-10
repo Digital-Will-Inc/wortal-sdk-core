@@ -182,7 +182,7 @@ export abstract class AdsBase {
         }
 
         // Don't allow preroll ads to be shown more than once or after the game has started.
-        if (placement === "preroll" && (this._adConfig.hasPrerollShown || window.Wortal.session._internalGameState.gameTimer > 10)) {
+        if (placement === "preroll" && (this._adConfig.hasPrerollShown || Wortal.session._internalGameState.gameTimer > 10)) {
             return {
                 valid: false,
                 error: invalidParams("Preroll ads can only be shown once during game load.",
