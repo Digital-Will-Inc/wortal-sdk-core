@@ -2,11 +2,6 @@
 
 ## Integration
 
-### CDN
-
-The recommended way to include the SDK is to include the script in your game's `index.html`.
-This will allow the SDK to receive automatic updates without requiring you to update your game.
-
 Add the SDK Core script in the `<head>` of your game's `index.html` before any game scripts.
 
 `<script src="https://storage.googleapis.com/html5gameportal.com/wortal-sdk/v1/wortal-core.js"></script>`
