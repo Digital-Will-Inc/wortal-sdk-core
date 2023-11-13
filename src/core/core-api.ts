@@ -27,6 +27,7 @@ import { GamePixSDK } from "./interfaces/gamepix-sdk";
 import { GDSDK } from "./interfaces/gd-sdk";
 import { InitializationOptions } from "./interfaces/initialization-options";
 import { LinkSDK } from "./interfaces/link-sdk";
+import { PokiSDK } from "./interfaces/poki-sdk";
 import { ViberSDK } from "./interfaces/viber-sdk";
 
 /**
@@ -46,19 +47,19 @@ export class CoreAPI {
 
     // This holds the current platform SDK and access to its APIs. This is set in _initializePlatformAsync.
     // Some platforms, such as Telegram, do not require including an SDK so this will remain an empty object.
-    private _platformSDK: CrazyGamesSDK | FacebookSDK | GameMonetizeSDK | GamePixSDK | GDSDK | LinkSDK | ViberSDK | any;
+    private _platformSDK: CrazyGamesSDK | FacebookSDK | GameMonetizeSDK | GamePixSDK | GDSDK | LinkSDK | PokiSDK | ViberSDK | any;
     private _platform: Platform = "debug";
 
     constructor() {
     }
 
     /** @internal */
-    get _internalPlatformSDK(): CrazyGamesSDK | FacebookSDK | GameMonetizeSDK | GamePixSDK | GDSDK | LinkSDK | ViberSDK | any {
+    get _internalPlatformSDK(): CrazyGamesSDK | FacebookSDK | GameMonetizeSDK | GamePixSDK | GDSDK | LinkSDK | PokiSDK | ViberSDK | any {
         return this._platformSDK;
     }
 
     /** @internal */
-    set _internalPlatformSDK(value: CrazyGamesSDK | FacebookSDK | GameMonetizeSDK | GamePixSDK | GDSDK | LinkSDK | ViberSDK | any) {
+    set _internalPlatformSDK(value: CrazyGamesSDK | FacebookSDK | GameMonetizeSDK | GamePixSDK | GDSDK | LinkSDK | PokiSDK | ViberSDK | any) {
         this._platformSDK = value;
     }
 
@@ -537,6 +538,30 @@ export class CoreAPI {
                 this.player = new PlayerAPI(new PlayerLink());
                 this.session = new SessionAPI(new SessionLink());
                 this.tournament = new TournamentAPI(new TournamentLink());
+
+                break;
+            }
+            case "poki": {
+                const {CorePoki} = await import(/* webpackChunkName: "poki" */ "./impl/core-poki");
+                const {AdsPoki} = await import(/* webpackChunkName: "poki" */ "../ads/impl/ads-poki");
+                const {ContextPoki} = await import(/* webpackChunkName: "poki" */ "../context/impl/context-poki");
+                const {IAPPoki} = await import(/* webpackChunkName: "poki" */ "../iap/impl/iap-poki");
+                const {LeaderboardPoki} = await import(/* webpackChunkName: "poki" */ "../leaderboard/impl/leaderboard-poki");
+                const {NotificationsPoki} = await import(/* webpackChunkName: "poki" */ "../notifications/impl/notifications-poki");
+                const {PlayerPoki} = await import(/* webpackChunkName: "poki" */ "../player/impl/player-poki");
+                const {SessionPoki} = await import(/* webpackChunkName: "poki" */ "../session/impl/session-poki");
+                const {TournamentPoki} = await import(/* webpackChunkName: "poki" */ "../tournament/impl/tournament-poki");
+
+                this._core = new CorePoki();
+                this.ads = new AdsAPI(new AdsPoki());
+                this.analytics = new AnalyticsAPI(new AnalyticsWombat());
+                this.context = new ContextAPI(new ContextPoki());
+                this.iap = new InAppPurchaseAPI(new IAPPoki());
+                this.leaderboard = new LeaderboardAPI(new LeaderboardPoki());
+                this.notifications = new NotificationsAPI(new NotificationsPoki());
+                this.player = new PlayerAPI(new PlayerPoki());
+                this.session = new SessionAPI(new SessionPoki());
+                this.tournament = new TournamentAPI(new TournamentPoki());
 
                 break;
             }
