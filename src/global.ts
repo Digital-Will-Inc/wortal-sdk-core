@@ -1,3 +1,4 @@
+import { PokiSDK } from "./core/interfaces/poki-sdk";
 import { ShareTo } from "./utils/wortal-utils";
 
 declare global {
@@ -9,6 +10,7 @@ declare global {
     const gdsdk: any;
     const GamePix: any;
     const sdk: any;
+    const PokiSDK: PokiSDK;
 
     interface Window {
         /**
