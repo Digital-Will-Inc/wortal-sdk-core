@@ -50,7 +50,7 @@ export class CoreGameMonetize extends CoreBase {
         const id = "gamemonetize-sdk";
         return new Promise((resolve, reject) => {
             window.SDK_OPTIONS = {
-                gameId: Wortal.session._internalSession.gameID,
+                gameId: this._getPlatformGameID(),
                 onEvent: (event: () => void) => {
                     externalSDKEventTrigger(event.name);
                 },
@@ -119,5 +119,19 @@ export class CoreGameMonetize extends CoreBase {
         WORTAL_API.SESSION_GAME_LOADING_START,
         WORTAL_API.SESSION_GAME_LOADING_STOP,
     ];
+
+    private _getPlatformGameID(): string {
+        // Example URL: https://gamemonetize.com/trash-factory
+        // ID: trash-factory
+        // If this is embedded into another site then the ID will be different but the URL structure will be the same.
+        // Ex: https://html5.gamemonetize.co/5lmq5m1n60ijd3xm2pnkgfzm0mtz10to/
+        // ID: 5lmq5m1n60ijd3xm2pnkgfzm0mtz10to
+        // Ex: https://html5.gamemonetize.games/5lmq5m1n60ijd3xm2pnkgfzm0mtz10to/
+        // ID: 5lmq5m1n60ijd3xm2pnkgfzm0mtz10to
+        const url = document.URL.split("/");
+        const id = url[3];
+        debug("Initializing GameMonetize SDK with game ID: " + id);
+        return id;
+    }
 
 }
