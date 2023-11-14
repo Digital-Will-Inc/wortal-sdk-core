@@ -51,7 +51,7 @@ export class CoreGD extends CoreBase {
 
         return new Promise((resolve, reject) => {
             window.GD_OPTIONS = {
-                gameId: Wortal.session._internalSession.gameID,
+                gameId: this._getPlatformGameID(),
                 onEvent: (event: () => void) => {
                     externalSDKEventTrigger(event.name);
                 },
@@ -120,5 +120,14 @@ export class CoreGD extends CoreBase {
         WORTAL_API.SESSION_GAME_LOADING_START,
         WORTAL_API.SESSION_GAME_LOADING_STOP,
     ];
+
+    private _getPlatformGameID(): string {
+        // Example URL: https://revision.gamedistribution.com/b712105e1fff4bceb87667522d798f97
+        // ID: b712105e1fff4bceb87667522d798f97
+        const url = document.URL.split("/");
+        const id = url[3];
+        debug("Initializing Game Distribution SDK with game ID: " + id);
+        return id;
+    }
 
 }
