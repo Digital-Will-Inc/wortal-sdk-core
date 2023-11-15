@@ -1,3 +1,4 @@
+import { AchievementsAPI } from "../achievements/achievements-api";
 import { AuthPayload } from "../auth/interfaces/auth-payload";
 import { AuthResponse } from "../auth/interfaces/auth-response";
 import { ContextWortal } from "../context/impl/context-wortal";
@@ -45,35 +46,60 @@ export class CoreAPI {
     private _isAutoInit: boolean = true;
     private _isPlatformInitialized: boolean = false;
 
-    // This holds the current platform SDK and access to its APIs. This is set in _initializePlatformAsync.
-    // Some platforms, such as Telegram, do not require including an SDK so this will remain an empty object.
     private _platformSDK: CrazyGamesSDK | FacebookSDK | GameMonetizeSDK | GamePixSDK | GDSDK | LinkSDK | ViberSDK | any;
     private _platform: Platform = "debug";
 
     constructor() {
     }
 
-    /** @internal */
+    /**
+     * Holds a reference to the external SDK for the current platform. This is set in _initializePlatformAsync.
+     * Some platforms, such as Telegram, do not require including an SDK so this will remain an empty object.
+     *
+     * See the platform specific SDK interface in core/interfaces for details on what APIs are available.
+     *
+     * **Do not attempt to access this before _initializePlatformAsync has finished and _internalIsPlatformInitialized is
+     * true, as it will not be set.**
+     * @internal
+     */
     get _internalPlatformSDK(): CrazyGamesSDK | FacebookSDK | GameMonetizeSDK | GamePixSDK | GDSDK | LinkSDK | ViberSDK | any {
         return this._platformSDK;
     }
 
-    /** @internal */
+    /**
+     * Sets the external SDK for the current platform. This should only ever be called in _initializePlatformAsync
+     * after loading the platform specific SDK.
+     * @internal
+     */
     set _internalPlatformSDK(value: CrazyGamesSDK | FacebookSDK | GameMonetizeSDK | GamePixSDK | GDSDK | LinkSDK | ViberSDK | any) {
         this._platformSDK = value;
     }
 
-    /** @internal */
+    /**
+     * Returns the current platform. This is set in _loadCoreAsync and should be used by the SDK to determine
+     * which platform specific APIs to use.
+     * @internal
+     */
     get _internalPlatform(): Platform {
         return this._platform;
     }
 
-    /** @internal */
+    /**
+     * Returns whether the platform has been initialized. This is set in _initializePlatformAsync and should be used
+     * to determine whether the platform specific APIs are ready to use.
+     *
+     * **Do not attempt to access _internalPlatformSDK before this is true, as it will not be set.**
+     * @internal
+     */
     get _internalIsPlatformInitialized(): boolean {
         return this._isPlatformInitialized;
     }
 
-    /** @internal */
+    /**
+     * Flag set to determine whether the SDK should initialize automatically or wait for the developer to call initializeAsync.
+     * This determines the initialization path in _loadCoreAsync, and is set by the developer in the initialization options.
+     * @internal
+     */
     get _internalIsAutoInit(): boolean {
         return this._isAutoInit;
     }
@@ -81,19 +107,36 @@ export class CoreAPI {
 //#endregion
 //#region Public API
 
+    // We assign these in _loadAPIsAsync because we need to dynamically import the platform specific modules.
+    // Every platform should always have an implementation of every module, even if it doesn't support that module's functionality.
+
+    /** Achievements module */
+    public achievements!: AchievementsAPI;
+    /** Ads module */
     public ads!: AdsAPI;
+    /** Analytics module */
     public analytics!: AnalyticsAPI;
+    /** Context module */
     public context!: ContextAPI;
+    /** In-app purchase module */
     public iap!: InAppPurchaseAPI;
+    /** Leaderboard module */
     public leaderboard!: LeaderboardAPI;
+    /** Notifications module */
     public notifications!: NotificationsAPI;
+    /** Player module */
     public player!: PlayerAPI;
+    /** Session module */
     public session!: SessionAPI;
+    /** Stats module */
     public stats!: StatsAPI;
+    /** Tournament module */
     public tournament!: TournamentAPI;
 
     /**
-     * Returns true if the SDK has been initialized. No APIs should be called before the SDK has been initialized.
+     * Returns true if the SDK has been initialized.
+     *
+     * **No APIs should be called before the SDK has been initialized.**
      */
     public isInitialized: boolean = false;
 
@@ -405,6 +448,7 @@ export class CoreAPI {
         switch (platform) {
             case "crazygames": {
                 const {CoreCrazyGames} = await import(/* webpackChunkName: "crazygames" */ "./impl/core-crazygames");
+                const {AchievementsCrazyGames} = await import(/* webpackChunkName: "crazygames" */ "../achievements/impl/achievements-crazygames");
                 const {AdsCrazyGames} = await import(/* webpackChunkName: "crazygames" */"../ads/impl/ads-crazygames");
                 const {ContextCrazyGames} = await import(/* webpackChunkName: "crazygames" */"../context/impl/context-crazygames");
                 const {IAPCrazyGames} = await import(/* webpackChunkName: "crazygames" */"../iap/impl/iap-crazygames");
@@ -416,6 +460,7 @@ export class CoreAPI {
                 const {TournamentCrazyGames} = await import(/* webpackChunkName: "crazygames" */"../tournament/impl/tournament-crazygames");
 
                 this._core = new CoreCrazyGames();
+                this.achievements = new AchievementsAPI(new AchievementsCrazyGames());
                 this.ads = new AdsAPI(new AdsCrazyGames());
                 this.analytics = new AnalyticsAPI(new AnalyticsWombat());
                 this.context = new ContextAPI(new ContextCrazyGames());
@@ -431,6 +476,7 @@ export class CoreAPI {
             }
             case "facebook": {
                 const {CoreFacebook} = await import(/* webpackChunkName: "facebook" */ "./impl/core-facebook");
+                const {AchievementsFacebook} = await import(/* webpackChunkName: "facebook" */ "../achievements/impl/achievements-facebook");
                 const {AdsFacebook} = await import(/* webpackChunkName: "facebook" */ "../ads/impl/ads-facebook");
                 const {ContextFacebook} = await import(/* webpackChunkName: "facebook" */ "../context/impl/context-facebook");
                 const {IAPFacebook} = await import(/* webpackChunkName: "facebook" */ "../iap/impl/iap-facebook");
@@ -442,6 +488,7 @@ export class CoreAPI {
                 const {TournamentFacebook} = await import(/* webpackChunkName: "facebook" */ "../tournament/impl/tournament-facebook");
 
                 this._core = new CoreFacebook();
+                this.achievements = new AchievementsAPI(new AchievementsFacebook());
                 this.ads = new AdsAPI(new AdsFacebook());
                 this.analytics = new AnalyticsAPI(new AnalyticsWombat());
                 this.context = new ContextAPI(new ContextFacebook());
@@ -457,6 +504,7 @@ export class CoreAPI {
             }
             case "gamemonetize": {
                 const {CoreGameMonetize} = await import(/* webpackChunkName: "gamemonetize" */ "./impl/core-gamemonetize");
+                const {AchievementsGameMonetize} = await import(/* webpackChunkName: "gamemonetize" */ "../achievements/impl/achievements-gamemonetize");
                 const {AdsGameMonetize} = await import(/* webpackChunkName: "gamemonetize" */ "../ads/impl/ads-gamemonetize");
                 const {ContextGameMonetize} = await import(/* webpackChunkName: "gamemonetize" */ "../context/impl/context-gamemonetize");
                 const {IAPGameMonetize} = await import(/* webpackChunkName: "gamemonetize" */ "../iap/impl/iap-gamemonetize");
@@ -468,6 +516,7 @@ export class CoreAPI {
                 const {TournamentGameMonetize} = await import(/* webpackChunkName: "gamemonetize" */ "../tournament/impl/tournament-gamemonetize");
 
                 this._core = new CoreGameMonetize();
+                this.achievements = new AchievementsAPI(new AchievementsGameMonetize());
                 this.ads = new AdsAPI(new AdsGameMonetize());
                 this.analytics = new AnalyticsAPI(new AnalyticsWombat());
                 this.context = new ContextAPI(new ContextGameMonetize());
@@ -483,6 +532,7 @@ export class CoreAPI {
             }
             case "gamepix": {
                 const {CoreGamePix} = await import(/* webpackChunkName: "gamepix" */ "./impl/core-gamepix");
+                const {AchievementsGamePix} = await import(/* webpackChunkName: "gamepix" */ "../achievements/impl/achievements-gamepix");
                 const {AdsGamePix} = await import(/* webpackChunkName: "gamepix" */ "../ads/impl/ads-gamepix");
                 const {ContextGamePix} = await import(/* webpackChunkName: "gamepix" */ "../context/impl/context-gamepix");
                 const {IAPGamePix} = await import(/* webpackChunkName: "gamepix" */ "../iap/impl/iap-gamepix");
@@ -494,6 +544,7 @@ export class CoreAPI {
                 const {TournamentGamePix} = await import(/* webpackChunkName: "gamepix" */ "../tournament/impl/tournament-gamepix");
 
                 this._core = new CoreGamePix();
+                this.achievements = new AchievementsAPI(new AchievementsGamePix());
                 this.ads = new AdsAPI(new AdsGamePix());
                 this.analytics = new AnalyticsAPI(new AnalyticsDisabled());
                 this.context = new ContextAPI(new ContextGamePix());
@@ -509,6 +560,7 @@ export class CoreAPI {
             }
             case "gd": {
                 const {CoreGD} = await import(/* webpackChunkName: "gd" */ "./impl/core-gd");
+                const {AchievementsGD} = await import(/* webpackChunkName: "gd" */ "../achievements/impl/achievements-gd");
                 const {AdsGD} = await import(/* webpackChunkName: "gd" */ "../ads/impl/ads-gd");
                 const {ContextGD} = await import(/* webpackChunkName: "gd" */ "../context/impl/context-gd");
                 const {IAPGD} = await import(/* webpackChunkName: "gd" */ "../iap/impl/iap-gd");
@@ -520,6 +572,7 @@ export class CoreAPI {
                 const {TournamentGD} = await import(/* webpackChunkName: "gd" */ "../tournament/impl/tournament-gd");
 
                 this._core = new CoreGD();
+                this.achievements = new AchievementsAPI(new AchievementsGD());
                 this.ads = new AdsAPI(new AdsGD());
                 this.analytics = new AnalyticsAPI(new AnalyticsDisabled());
                 this.context = new ContextAPI(new ContextGD());
@@ -535,6 +588,7 @@ export class CoreAPI {
             }
             case "link": {
                 const {CoreLink} = await import(/* webpackChunkName: "link" */ "./impl/core-link");
+                const {AchievementsLink} = await import(/* webpackChunkName: "link" */ "../achievements/impl/achievements-link");
                 const {AdsLink} = await import(/* webpackChunkName: "link" */ "../ads/impl/ads-link");
                 const {ContextLink} = await import(/* webpackChunkName: "link" */ "../context/impl/context-link");
                 const {IAPLink} = await import(/* webpackChunkName: "link" */ "../iap/impl/iap-link");
@@ -546,6 +600,7 @@ export class CoreAPI {
                 const {TournamentLink} = await import(/* webpackChunkName: "link" */ "../tournament/impl/tournament-link");
 
                 this._core = new CoreLink();
+                this.achievements = new AchievementsAPI(new AchievementsLink());
                 this.ads = new AdsAPI(new AdsLink());
                 this.analytics = new AnalyticsAPI(new AnalyticsWombat());
                 this.context = new ContextAPI(new ContextLink());
@@ -561,6 +616,7 @@ export class CoreAPI {
             }
             case "telegram": {
                 const {CoreTelegram} = await import(/* webpackChunkName: "telegram" */ "./impl/core-telegram");
+                const {AchievementsTelegram} = await import(/* webpackChunkName: "telegram" */ "../achievements/impl/achievements-telegram");
                 const {AdsTelegram} = await import(/* webpackChunkName: "telegram" */ "../ads/impl/ads-telegram");
                 const {ContextTelegram} = await import(/* webpackChunkName: "telegram" */ "../context/impl/context-telegram");
                 const {IAPTelegram} = await import(/* webpackChunkName: "telegram" */ "../iap/impl/iap-telegram");
@@ -572,6 +628,7 @@ export class CoreAPI {
                 const {TournamentTelegram} = await import(/* webpackChunkName: "telegram" */ "../tournament/impl/tournament-telegram");
 
                 this._core = new CoreTelegram();
+                this.achievements = new AchievementsAPI(new AchievementsTelegram());
                 this.ads = new AdsAPI(new AdsTelegram());
                 this.analytics = new AnalyticsAPI(new AnalyticsWombat());
                 this.context = new ContextAPI(new ContextTelegram());
@@ -587,6 +644,7 @@ export class CoreAPI {
             }
             case "viber": {
                 const {CoreViber} = await import(/* webpackChunkName: "viber" */ "./impl/core-viber");
+                const {AchievementsViber} = await import(/* webpackChunkName: "viber" */ "../achievements/impl/achievements-viber");
                 const {AdsViber} = await import(/* webpackChunkName: "viber" */ "../ads/impl/ads-viber");
                 const {ContextViber} = await import(/* webpackChunkName: "viber" */ "../context/impl/context-viber");
                 const {IAPViber} = await import(/* webpackChunkName: "viber" */ "../iap/impl/iap-viber");
@@ -598,6 +656,7 @@ export class CoreAPI {
                 const {TournamentViber} = await import(/* webpackChunkName: "viber" */ "../tournament/impl/tournament-viber");
 
                 this._core = new CoreViber();
+                this.achievements = new AchievementsAPI(new AchievementsViber());
                 this.ads = new AdsAPI(new AdsViber());
                 this.analytics = new AnalyticsAPI(new AnalyticsWombat());
                 this.context = new ContextAPI(new ContextViber());
@@ -613,6 +672,7 @@ export class CoreAPI {
             }
             case "wortal": {
                 const {CoreWortal} = await import(/* webpackChunkName: "wortal" */ "./impl/core-wortal");
+                const {AchievementsWortal} = await import(/* webpackChunkName: "wortal" */ "../achievements/impl/achievements-wortal");
                 const {AdsWortal} = await import(/* webpackChunkName: "wortal" */ "../ads/impl/ads-wortal");
                 const {ContextWortal} = await import(/* webpackChunkName: "wortal" */ "../context/impl/context-wortal");
                 const {IAPWortal} = await import(/* webpackChunkName: "wortal" */ "../iap/impl/iap-wortal");
@@ -624,6 +684,7 @@ export class CoreAPI {
                 const {TournamentWortal} = await import(/* webpackChunkName: "wortal" */ "../tournament/impl/tournament-wortal");
 
                 this._core = new CoreWortal();
+                this.achievements = new AchievementsAPI(new AchievementsWortal());
                 this.ads = new AdsAPI(new AdsWortal());
                 this.analytics = new AnalyticsAPI(new AnalyticsWombat());
                 this.context = new ContextAPI(new ContextWortal());
@@ -639,6 +700,7 @@ export class CoreAPI {
             }
             case "debug": {
                 const {CoreDebug} = await import(/* webpackChunkName: "debug" */ "./impl/core-debug");
+                const {AchievementsDebug} = await import(/* webpackChunkName: "debug" */ "../achievements/impl/achievements-debug");
                 const {AdsDebug} = await import(/* webpackChunkName: "debug" */ "../ads/impl/ads-debug");
                 const {ContextDebug} = await import(/* webpackChunkName: "debug" */ "../context/impl/context-debug");
                 const {IAPDebug} = await import(/* webpackChunkName: "debug" */ "../iap/impl/iap-debug");
@@ -650,6 +712,7 @@ export class CoreAPI {
                 const {TournamentDebug} = await import(/* webpackChunkName: "debug" */ "../tournament/impl/tournament-debug");
 
                 this._core = new CoreDebug();
+                this.achievements = new AchievementsAPI(new AchievementsDebug());
                 this.ads = new AdsAPI(new AdsDebug());
                 this.analytics = new AnalyticsAPI(new AnalyticsDisabled());
                 this.context = new ContextAPI(new ContextDebug());

@@ -130,6 +130,7 @@ export function initializationError(message: string, context: string, url?: stri
  * @hidden
  */
 const ErrorMessages: Record<string, string> = {
+    ACHIEVEMENT_NOT_FOUND: "No achievement with the requested name was found. Either the achievement does not exist yet, or the name did not match any registered achievement configuration for the game.",
     AUTH_IN_PROGRESS: "The game attempted to show an authentication prompt, but a prompt to authenticate is already in progress.",
     AUTH_NOT_ENABLED: "The game attempted to perform an operation that requires authentication, but the game has not enabled authentication.",
     CLIENT_UNSUPPORTED_OPERATION: "The client does not support the current operation. This may be due to lack of support on the client version or platform, or because the operation is not allowed for the game or player.",
