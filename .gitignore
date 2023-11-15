@@ -17,6 +17,15 @@ demo/wortal-common.js*
 demo/analytics.js*
 demo/debug.js*
 demo/waves.*
+demo/wortal-data.js
+demo/wortal.js
+demo/crazygames.js
+demo/facebook.js
+demo/gamemonetize.js
+demo/gamepix.js
+demo/gd.js
+demo/link.js
+demo/viber.js
 
 ### Node template
 # Logs

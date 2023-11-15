@@ -37,6 +37,10 @@ document.getElementById('session').addEventListener('click', () => {
     showGrid('grid-session');
 });
 
+document.getElementById('stats').addEventListener('click', () => {
+    showGrid('grid-stats');
+});
+
 document.getElementById('tournament').addEventListener('click', () => {
     showGrid('grid-tournament');
 });
@@ -354,6 +358,17 @@ document.getElementById('session-gameLoadingStart').addEventListener('click', ()
 
 document.getElementById('session-gameLoadingStop').addEventListener('click', () => {
     sessionGameLoadingStop();
+});
+
+////////////////////////////////////
+// Stats
+////////////////////////////////////
+document.getElementById('stats-getStatsAsync').addEventListener('click', () => {
+    statsGetStatsAsync();
+});
+
+document.getElementById('stats-postStatsAsync').addEventListener('click', () => {
+    statsPostStatsAsync();
 });
 
 ////////////////////////////////////

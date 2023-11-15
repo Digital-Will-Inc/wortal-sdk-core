@@ -17,7 +17,7 @@
         "build:prod": "webpack --mode=production",
         "demo:dev": "bash scripts/build-demo.sh && bash scripts/deploy-demo.sh --dev",
         "demo:prod": "bash scripts/build-demo.sh && bash scripts/deploy-demo.sh --prod",
-        "demo:run": "npx serve demo/",
+        "demo:run": "node scripts/prepareDemo.js && npx serve demo/",
         "docs": "shx rm -rf docs && typedoc --plugin typedoc-plugin-markdown",
         "lint": "eslint src --ext .ts",
         "typecheck": "tsc --noEmit -p tsconfig.json"

@@ -5,19 +5,21 @@ SDK_DIR="../dist"
 
 cd "$DEMO_DIR" || exit
 
-# Remove the old bundle
-if [ -f demo.zip ]; then
-  rm demo.zip
-fi
+# Remove the old bundle.
+rm -f demo.zip
 
-# Find the latest build
-latest_sdk=$(find "$SDK_DIR"/wortal-core.js | head -n 1)
-if [ -z "$latest_sdk" ]; then
-  echo "No wortal-core.js file found in $SDK_DIR"
-  exit 1
-fi
+# List the chunks. Skip Telegram as it will block the FB upload of the demo due to window.parent.postMessage calls.
+chunks=("wortal-core.js" "wortal-common.js" "analytics.js" "crazygames.js" "debug.js" "facebook.js" "gamemonetize.js" "gamepix.js" "gd.js" "link.js" "viber.js" "wortal.js")
 
-# Copy the latest build into the demo directory
-cp "$latest_sdk" .
+# Loop through the array and copy chunks to the demo folder.
+for chunk in "${chunks[@]}"; do
+  file=$(find "$SDK_DIR/$chunk" | head -n 1)
+  if [ -z "$file" ]; then
+    echo "No $chunk chunk found in $SDK_DIR"
+    exit 1
+  fi
+  cp "$file" .
+done
 
+# Create the bundle.
 zip -r demo.zip ./*

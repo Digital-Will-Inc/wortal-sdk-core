@@ -8,7 +8,18 @@
     <link rel="stylesheet" href="waves.css">
     <link rel="stylesheet" href="debugConsole.css">
     <script src="wortal-data.js"></script>
-    <script src="wortal-core.js" data-manual-init="true"></script>
+	<script src="wortal-common.js"></script>
+	<script src="analytics.js"></script>
+    <script src="crazygames.js"></script>
+    <script src="debug.js"></script>
+    <script src="facebook.js"></script>
+    <script src="gamemonetize.js"></script>
+    <script src="gamepix.js"></script>
+    <script src="gd.js"></script>
+    <script src="link.js"></script>
+    <script src="viber.js"></script>
+    <script src="wortal.js"></script>
+    <script src="wortal-core.js" data-manual-init="true" data-debug-mode="true"></script>
     <script src="waves.umd.js"></script>
 </head>
 <body>
@@ -22,6 +33,7 @@
         <button class="output-button" id="notifications">Notifications</button>
         <button class="output-button" id="player">Player</button>
         <button class="output-button" id="session">Session</button>
+        <button class="output-button" id="stats">Stats</button>
         <button class="output-button" id="tournament">Tournament</button>
     </div>
 
@@ -133,6 +145,12 @@
         <button class="output-button back-button">Back</button>
     </div>
 
+    <div class="secondary-grid" id="grid-stats">
+        <button class="output-button" id="stats-getStatsAsync">getStatsAsync</button>
+        <button class="output-button" id="stats-postStatsAsync">getStatsAsync</button>
+        <button class="output-button back-button">Back</button>
+    </div>
+
     <div class="secondary-grid" id="grid-tournament">
         <button class="output-button" id="tournament-getCurrentAsync">getCurrentAsync</button>
         <button class="output-button" id="tournament-getAllAsync">getAllAsync</button>
@@ -167,6 +185,7 @@
     <script src="api/notifications.js"></script>
     <script src="api/player.js"></script>
     <script src="api/session.js"></script>
+    <script src="api/stats.js"></script>
     <script src="api/tournament.js"></script>
     <script src="buttonHandlers.js"></script>
     <script src="utils.js"></script>

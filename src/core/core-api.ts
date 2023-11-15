@@ -3,6 +3,7 @@ import { AuthResponse } from "../auth/interfaces/auth-response";
 import { ContextWortal } from "../context/impl/context-wortal";
 import { Platform } from "../session/types/session-types";
 import { initializationError } from "../errors/error-handler";
+import { StatsAPI } from "../stats/stats-api";
 import { debug, info, internalCall, performanceLog, status } from "../utils/logger";
 import {
     addGameEndEventListener,
@@ -88,6 +89,7 @@ export class CoreAPI {
     public notifications!: NotificationsAPI;
     public player!: PlayerAPI;
     public session!: SessionAPI;
+    public stats!: StatsAPI;
     public tournament!: TournamentAPI;
 
     /**
@@ -281,7 +283,10 @@ export class CoreAPI {
             status("Loading chunks...");
             const startTime: number = performance.now();
 
-            await this._loadChunksAsync(this._platform);
+            // Debug mode requires the chunks to be included in the bundle.
+            if (!options.debugMode) {
+                await this._loadChunksAsync(this._platform);
+            }
 
             const endTime: number = performance.now();
             const executionTime: number = endTime - startTime;
@@ -359,6 +364,7 @@ export class CoreAPI {
 
     async _loadChunksAsync(platform: Platform): Promise<void> {
         internalCall("_loadChunksAsync");
+
         const baseURL: string = "https://storage.googleapis.com/html5gameportal.com/wortal-sdk/v1/";
         const chunks: string[] = [];
         const promises: Promise<void>[] = [];
@@ -392,6 +398,7 @@ export class CoreAPI {
 
     async _loadAPIsAsync(platform: Platform): Promise<void> {
         internalCall("_loadAPIsAsync");
+
         const {AnalyticsWombat} = await import(/* webpackChunkName: "analytics" */ "../analytics/impl/analytics-wombat");
         const {AnalyticsDisabled} = await import(/* webpackChunkName: "analytics" */ "../analytics/impl/analytics-disabled");
 
@@ -405,6 +412,7 @@ export class CoreAPI {
                 const {NotificationsCrazyGames} = await import(/* webpackChunkName: "crazygames" */"../notifications/impl/notifications-crazygames");
                 const {PlayerCrazyGames} = await import(/* webpackChunkName: "crazygames" */"../player/impl/player-crazygames");
                 const {SessionCrazyGames} = await import(/* webpackChunkName: "crazygames" */"../session/impl/session-crazygames");
+                const {StatsCrazyGames} = await import(/* webpackChunkName: "crazygames" */"../stats/impl/stats-crazygames");
                 const {TournamentCrazyGames} = await import(/* webpackChunkName: "crazygames" */"../tournament/impl/tournament-crazygames");
 
                 this._core = new CoreCrazyGames();
@@ -416,6 +424,7 @@ export class CoreAPI {
                 this.notifications = new NotificationsAPI(new NotificationsCrazyGames());
                 this.player = new PlayerAPI(new PlayerCrazyGames());
                 this.session = new SessionAPI(new SessionCrazyGames());
+                this.stats = new StatsAPI(new StatsCrazyGames());
                 this.tournament = new TournamentAPI(new TournamentCrazyGames());
 
                 break;
@@ -429,6 +438,7 @@ export class CoreAPI {
                 const {NotificationsFacebook} = await import(/* webpackChunkName: "facebook" */ "../notifications/impl/notifications-facebook");
                 const {PlayerFacebook} = await import(/* webpackChunkName: "facebook" */ "../player/impl/player-facebook");
                 const {SessionFacebook} = await import(/* webpackChunkName: "facebook" */ "../session/impl/session-facebook");
+                const {StatsFacebook} = await import(/* webpackChunkName: "facebook" */ "../stats/impl/stats-facebook");
                 const {TournamentFacebook} = await import(/* webpackChunkName: "facebook" */ "../tournament/impl/tournament-facebook");
 
                 this._core = new CoreFacebook();
@@ -440,6 +450,7 @@ export class CoreAPI {
                 this.notifications = new NotificationsAPI(new NotificationsFacebook());
                 this.player = new PlayerAPI(new PlayerFacebook());
                 this.session = new SessionAPI(new SessionFacebook());
+                this.stats = new StatsAPI(new StatsFacebook());
                 this.tournament = new TournamentAPI(new TournamentFacebook());
 
                 break;
@@ -453,6 +464,7 @@ export class CoreAPI {
                 const {NotificationsGameMonetize} = await import(/* webpackChunkName: "gamemonetize" */ "../notifications/impl/notifications-gamemonetize");
                 const {PlayerGameMonetize} = await import(/* webpackChunkName: "gamemonetize" */ "../player/impl/player-gamemonetize");
                 const {SessionGameMonetize} = await import(/* webpackChunkName: "gamemonetize" */ "../session/impl/session-gamemonetize");
+                const {StatsGameMonetize} = await import(/* webpackChunkName: "gamemonetize" */ "../stats/impl/stats-gamemonetize");
                 const {TournamentGameMonetize} = await import(/* webpackChunkName: "gamemonetize" */ "../tournament/impl/tournament-gamemonetize");
 
                 this._core = new CoreGameMonetize();
@@ -464,6 +476,7 @@ export class CoreAPI {
                 this.notifications = new NotificationsAPI(new NotificationsGameMonetize());
                 this.player = new PlayerAPI(new PlayerGameMonetize());
                 this.session = new SessionAPI(new SessionGameMonetize());
+                this.stats = new StatsAPI(new StatsGameMonetize());
                 this.tournament = new TournamentAPI(new TournamentGameMonetize());
 
                 break;
@@ -477,6 +490,7 @@ export class CoreAPI {
                 const {NotificationsGamePix} = await import(/* webpackChunkName: "gamepix" */ "../notifications/impl/notifications-gamepix");
                 const {PlayerGamePix} = await import(/* webpackChunkName: "gamepix" */ "../player/impl/player-gamepix");
                 const {SessionGamePix} = await import(/* webpackChunkName: "gamepix" */ "../session/impl/session-gamepix");
+                const {StatsGamePix} = await import(/* webpackChunkName: "gamepix" */ "../stats/impl/stats-gamepix");
                 const {TournamentGamePix} = await import(/* webpackChunkName: "gamepix" */ "../tournament/impl/tournament-gamepix");
 
                 this._core = new CoreGamePix();
@@ -488,6 +502,7 @@ export class CoreAPI {
                 this.notifications = new NotificationsAPI(new NotificationsGamePix());
                 this.player = new PlayerAPI(new PlayerGamePix());
                 this.session = new SessionAPI(new SessionGamePix());
+                this.stats = new StatsAPI(new StatsGamePix());
                 this.tournament = new TournamentAPI(new TournamentGamePix());
 
                 break;
@@ -501,6 +516,7 @@ export class CoreAPI {
                 const {NotificationsGD} = await import(/* webpackChunkName: "gd" */ "../notifications/impl/notifications-gd");
                 const {PlayerGD} = await import(/* webpackChunkName: "gd" */ "../player/impl/player-gd");
                 const {SessionGD} = await import(/* webpackChunkName: "gd" */ "../session/impl/session-gd");
+                const {StatsGD} = await import(/* webpackChunkName: "gd" */ "../stats/impl/stats-gd");
                 const {TournamentGD} = await import(/* webpackChunkName: "gd" */ "../tournament/impl/tournament-gd");
 
                 this._core = new CoreGD();
@@ -512,6 +528,7 @@ export class CoreAPI {
                 this.notifications = new NotificationsAPI(new NotificationsGD());
                 this.player = new PlayerAPI(new PlayerGD());
                 this.session = new SessionAPI(new SessionGD());
+                this.stats = new StatsAPI(new StatsGD());
                 this.tournament = new TournamentAPI(new TournamentGD());
 
                 break;
@@ -525,6 +542,7 @@ export class CoreAPI {
                 const {NotificationsLink} = await import(/* webpackChunkName: "link" */ "../notifications/impl/notifications-link");
                 const {PlayerLink} = await import(/* webpackChunkName: "link" */ "../player/impl/player-link");
                 const {SessionLink} = await import(/* webpackChunkName: "link" */ "../session/impl/session-link");
+                const {StatsLink} = await import(/* webpackChunkName: "link" */ "../stats/impl/stats-link");
                 const {TournamentLink} = await import(/* webpackChunkName: "link" */ "../tournament/impl/tournament-link");
 
                 this._core = new CoreLink();
@@ -536,6 +554,7 @@ export class CoreAPI {
                 this.notifications = new NotificationsAPI(new NotificationsLink());
                 this.player = new PlayerAPI(new PlayerLink());
                 this.session = new SessionAPI(new SessionLink());
+                this.stats = new StatsAPI(new StatsLink());
                 this.tournament = new TournamentAPI(new TournamentLink());
 
                 break;
@@ -549,6 +568,7 @@ export class CoreAPI {
                 const {NotificationsTelegram} = await import(/* webpackChunkName: "telegram" */ "../notifications/impl/notifications-telegram");
                 const {PlayerTelegram} = await import(/* webpackChunkName: "telegram" */ "../player/impl/player-telegram");
                 const {SessionTelegram} = await import(/* webpackChunkName: "telegram" */ "../session/impl/session-telegram");
+                const {StatsTelegram} = await import(/* webpackChunkName: "telegram" */ "../stats/impl/stats-telegram");
                 const {TournamentTelegram} = await import(/* webpackChunkName: "telegram" */ "../tournament/impl/tournament-telegram");
 
                 this._core = new CoreTelegram();
@@ -560,6 +580,7 @@ export class CoreAPI {
                 this.notifications = new NotificationsAPI(new NotificationsTelegram());
                 this.player = new PlayerAPI(new PlayerTelegram());
                 this.session = new SessionAPI(new SessionTelegram());
+                this.stats = new StatsAPI(new StatsTelegram());
                 this.tournament = new TournamentAPI(new TournamentTelegram());
 
                 break;
@@ -573,6 +594,7 @@ export class CoreAPI {
                 const {NotificationsViber} = await import(/* webpackChunkName: "viber" */ "../notifications/impl/notifications-viber");
                 const {PlayerViber} = await import(/* webpackChunkName: "viber" */ "../player/impl/player-viber");
                 const {SessionViber} = await import(/* webpackChunkName: "viber" */ "../session/impl/session-viber");
+                const {StatsViber} = await import(/* webpackChunkName: "viber" */ "../stats/impl/stats-viber");
                 const {TournamentViber} = await import(/* webpackChunkName: "viber" */ "../tournament/impl/tournament-viber");
 
                 this._core = new CoreViber();
@@ -584,6 +606,7 @@ export class CoreAPI {
                 this.notifications = new NotificationsAPI(new NotificationsViber());
                 this.player = new PlayerAPI(new PlayerViber());
                 this.session = new SessionAPI(new SessionViber());
+                this.stats = new StatsAPI(new StatsViber());
                 this.tournament = new TournamentAPI(new TournamentViber());
 
                 break;
@@ -597,6 +620,7 @@ export class CoreAPI {
                 const {NotificationsWortal} = await import(/* webpackChunkName: "wortal" */ "../notifications/impl/notifications-wortal");
                 const {PlayerWortal} = await import(/* webpackChunkName: "wortal" */ "../player/impl/player-wortal");
                 const {SessionWortal} = await import(/* webpackChunkName: "wortal" */ "../session/impl/session-wortal");
+                const {StatsWortal} = await import(/* webpackChunkName: "wortal" */ "../stats/impl/stats-wortal");
                 const {TournamentWortal} = await import(/* webpackChunkName: "wortal" */ "../tournament/impl/tournament-wortal");
 
                 this._core = new CoreWortal();
@@ -608,6 +632,7 @@ export class CoreAPI {
                 this.notifications = new NotificationsAPI(new NotificationsWortal());
                 this.player = new PlayerAPI(new PlayerWortal());
                 this.session = new SessionAPI(new SessionWortal());
+                this.stats = new StatsAPI(new StatsWortal());
                 this.tournament = new TournamentAPI(new TournamentWortal());
 
                 break;
@@ -621,6 +646,7 @@ export class CoreAPI {
                 const {NotificationsDebug} = await import(/* webpackChunkName: "debug" */ "../notifications/impl/notifications-debug");
                 const {PlayerDebug} = await import(/* webpackChunkName: "debug" */ "../player/impl/player-debug");
                 const {SessionDebug} = await import(/* webpackChunkName: "debug" */ "../session/impl/session-debug");
+                const {StatsDebug} = await import(/* webpackChunkName: "debug" */ "../stats/impl/stats-debug");
                 const {TournamentDebug} = await import(/* webpackChunkName: "debug" */ "../tournament/impl/tournament-debug");
 
                 this._core = new CoreDebug();
@@ -632,6 +658,7 @@ export class CoreAPI {
                 this.notifications = new NotificationsAPI(new NotificationsDebug());
                 this.player = new PlayerAPI(new PlayerDebug());
                 this.session = new SessionAPI(new SessionDebug());
+                this.stats = new StatsAPI(new StatsDebug());
                 this.tournament = new TournamentAPI(new TournamentDebug());
 
                 break;
