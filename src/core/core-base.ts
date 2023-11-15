@@ -7,6 +7,7 @@ import { apiCall, debug, info, internalCall } from "../utils/logger";
 import { isValidNumber } from "../utils/validators";
 import { delayUntilConditionMet, removeLoadingCover } from "../utils/wortal-utils";
 import { API_URL, WORTAL_API } from "../data/core-data";
+import { getWaves } from "../waves-wortal";
 
 /**
  * Base class for implementations of the Wortal SDK core functionality. Extend this class to implement the core functionality.
@@ -240,6 +241,20 @@ export abstract class CoreBase {
         }
 
         return {valid: true};
+    }
+
+    protected async defaultAuthenticateAsyncImpl(payload?: AuthPayload): Promise<AuthResponse> {
+        if (Waves) {
+            try {
+                await getWaves().setup();
+                return { status: (getWaves().authToken)? "success" : "cancel" };
+            } catch (error: any) {
+                debug(`Error authenticating with Waves: ${error.message}`);
+                return { status: "error" };
+            }
+        }
+
+        throw new Error("Method not implemented.");
     }
 
 //#endregion

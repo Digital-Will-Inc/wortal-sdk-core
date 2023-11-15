@@ -12,7 +12,11 @@
 
 ### Demo
 demo/*.zip
-demo/wortal-core*.js
+demo/wortal-core*.js*
+demo/wortal-common.js*
+demo/analytics.js*
+demo/debug.js*
+demo/waves.*
 
 ### Node template
 # Logs

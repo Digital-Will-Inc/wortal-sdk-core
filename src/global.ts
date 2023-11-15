@@ -1,4 +1,5 @@
 import { ShareTo } from "./utils/wortal-utils";
+import type { Platform } from "./session/types/session-types";
 
 declare global {
     const __VERSION__: string;
@@ -68,11 +69,33 @@ declare global {
          * @hidden
          */
         shareGame: (destination: ShareTo, message: string) => void;
+
+        /**
+         * Waves client SDK instance
+         */
+        waves?: Waves;
     }
 
     interface CrazyGamesSDK {
         SDK: any;
     }
+
+    class Waves {
+        constructor(options: {
+            baseUrl?: string
+            platform?: Platform
+            gameId?: number
+            authToken?: string
+        });
+
+        public setup(forceDialog?: boolean): Promise<void>;
+        get authToken(): string | undefined;
+        set authToken(token: string | undefined);
+        public saveData<T=any>(data: T): Promise<void>;
+        public getData<T=any>(): Promise<T>;
+    }
+
+
 }
 
 export {};
