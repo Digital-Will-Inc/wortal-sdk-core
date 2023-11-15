@@ -11,6 +11,7 @@ window.Wortal = Wortal;
 const options: InitializationOptions = {
     autoInitialize: isAutoInitEnabled(),
     platform: determinePlatform(),
+    debugMode: isDebugMode(),
 }
 
 Wortal._loadCoreAsync(options)
@@ -19,13 +20,15 @@ Wortal._loadCoreAsync(options)
     });
 
 function isAutoInitEnabled(): boolean {
-    let isAutoInit: boolean = true;
     const scriptElement = document.currentScript;
     const manualInitFlag = scriptElement?.getAttribute("data-manual-init");
-    if (manualInitFlag === "true") {
-        isAutoInit = false;
-    }
-    return isAutoInit;
+    return manualInitFlag !== "true";
+}
+
+function isDebugMode(): boolean {
+    const scriptElement = document.currentScript;
+    const debugFlag = scriptElement?.getAttribute("data-debug-mode");
+    return debugFlag === "true";
 }
 
 function determinePlatform(): Platform {
