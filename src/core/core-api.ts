@@ -283,7 +283,10 @@ export class CoreAPI {
             status("Loading chunks...");
             const startTime: number = performance.now();
 
-            await this._loadChunksAsync(this._platform);
+            // Debug mode requires the chunks to be included in the bundle.
+            if (!options.debugMode) {
+                await this._loadChunksAsync(this._platform);
+            }
 
             const endTime: number = performance.now();
             const executionTime: number = endTime - startTime;

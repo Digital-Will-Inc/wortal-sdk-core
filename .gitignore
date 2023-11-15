@@ -13,6 +13,18 @@
 ### Demo
 demo/*.zip
 demo/wortal-core*.js
+demo/wortal-common.js
+demo/wortal-data.js
+demo/wortal.js
+demo/analytics.js
+demo/crazygames.js
+demo/debug.js
+demo/facebook.js
+demo/gamemonetize.js
+demo/gamepix.js
+demo/gd.js
+demo/link.js
+demo/viber.js
 
 ### Node template
 # Logs
