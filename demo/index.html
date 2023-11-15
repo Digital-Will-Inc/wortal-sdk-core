@@ -23,6 +23,7 @@
 <body>
     <div class="button-container" id="main-grid">
         <button class="output-button" id="core">Core</button>
+        <button class="output-button" id="achievements">Achievements</button>
         <button class="output-button" id="ads">Ads</button>
         <button class="output-button" id="analytics">Analytics</button>
         <button class="output-button" id="context">Context</button>
@@ -41,6 +42,12 @@
         <button class="output-button" id="core-onPause">onPause</button>
         <button class="output-button" id="core-performHapticFeedbackAsync">performHapticFeedbackAsync</button>
         <button class="output-button" id="core-getSupportedAPIs">getSupportedAPIs</button>
+        <button class="output-button back-button">Back</button>
+    </div>
+
+    <div class="secondary-grid" id="grid-achievements">
+        <button class="output-button" id="achievements-getAchievementsAsync">getAchievementsAsync</button>
+        <button class="output-button" id="achievements-unlockAchievementAsync">unlockAchievementAsync</button>
         <button class="output-button back-button">Back</button>
     </div>
 
@@ -174,6 +181,7 @@
     </audio>
 
     <script src="index.js"></script>
+    <script src="api/achievements.js"></script>
     <script src="api/ads.js"></script>
     <script src="api/analytics.js"></script>
     <script src="api/context.js"></script>

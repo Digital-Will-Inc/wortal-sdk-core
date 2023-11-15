@@ -5,6 +5,10 @@ document.getElementById('core').addEventListener('click', () => {
     showGrid('grid-core');
 });
 
+document.getElementById('achievements').addEventListener('click', () => {
+    showGrid('grid-achievements');
+});
+
 document.getElementById('ads').addEventListener('click', () => {
     showGrid('grid-ads');
 });
@@ -43,6 +47,17 @@ document.getElementById('stats').addEventListener('click', () => {
 
 document.getElementById('tournament').addEventListener('click', () => {
     showGrid('grid-tournament');
+});
+
+////////////////////////////////////
+// Achievements
+////////////////////////////////////
+document.getElementById('achievements-getAchievementsAsync').addEventListener('click', () => {
+    achievementsGetAchievementsAsync();
+});
+
+document.getElementById('achievements-unlockAchievementAsync').addEventListener('click', () => {
+    achievementsUnlockAchievementAsync();
 });
 
 ////////////////////////////////////
