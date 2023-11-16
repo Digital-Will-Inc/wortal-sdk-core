@@ -14,7 +14,7 @@ export const PLATFORM_DOMAINS: PlatformDomains = {
     // This is just added here for completeness.
     "telegram": ["playdeck.io"],
     "gamemonetize": ["gamemonetize.com", "gamemonetize.co", "gamemonetize.games"],
-    "poki": ["poki.com", "poki.dev"],
+    "poki": ["poki.com", "poki.dev", "poki-user-content.com"],
 }
 
 /**
