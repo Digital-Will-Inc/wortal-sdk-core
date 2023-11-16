@@ -29,6 +29,7 @@ import { GamePixSDK } from "./interfaces/gamepix-sdk";
 import { GDSDK } from "./interfaces/gd-sdk";
 import { InitializationOptions } from "./interfaces/initialization-options";
 import { LinkSDK } from "./interfaces/link-sdk";
+import { PokiSDK } from "./interfaces/poki-sdk";
 import { ViberSDK } from "./interfaces/viber-sdk";
 
 /**
@@ -46,7 +47,7 @@ export class CoreAPI {
     private _isAutoInit: boolean = true;
     private _isPlatformInitialized: boolean = false;
 
-    private _platformSDK: CrazyGamesSDK | FacebookSDK | GameMonetizeSDK | GamePixSDK | GDSDK | LinkSDK | ViberSDK | any;
+    private _platformSDK: CrazyGamesSDK | FacebookSDK | GameMonetizeSDK | GamePixSDK | GDSDK | LinkSDK | PokiSDK | ViberSDK | any;
     private _platform: Platform = "debug";
 
     constructor() {
@@ -62,7 +63,7 @@ export class CoreAPI {
      * true, as it will not be set.**
      * @internal
      */
-    get _internalPlatformSDK(): CrazyGamesSDK | FacebookSDK | GameMonetizeSDK | GamePixSDK | GDSDK | LinkSDK | ViberSDK | any {
+    get _internalPlatformSDK(): CrazyGamesSDK | FacebookSDK | GameMonetizeSDK | GamePixSDK | GDSDK | LinkSDK | PokiSDK | ViberSDK | any {
         return this._platformSDK;
     }
 
@@ -71,7 +72,7 @@ export class CoreAPI {
      * after loading the platform specific SDK.
      * @internal
      */
-    set _internalPlatformSDK(value: CrazyGamesSDK | FacebookSDK | GameMonetizeSDK | GamePixSDK | GDSDK | LinkSDK | ViberSDK | any) {
+    set _internalPlatformSDK(value: CrazyGamesSDK | FacebookSDK | GameMonetizeSDK | GamePixSDK | GDSDK | LinkSDK | PokiSDK | ViberSDK | any) {
         this._platformSDK = value;
     }
 
@@ -611,6 +612,34 @@ export class CoreAPI {
                 this.session = new SessionAPI(new SessionLink());
                 this.stats = new StatsAPI(new StatsLink());
                 this.tournament = new TournamentAPI(new TournamentLink());
+
+                break;
+            }
+            case "poki": {
+                const {CorePoki} = await import(/* webpackChunkName: "poki" */ "./impl/core-poki");
+                const {AchievementsPoki} = await import(/* webpackChunkName: "poki" */ "../achievements/impl/achievements-poki");
+                const {AdsPoki} = await import(/* webpackChunkName: "poki" */ "../ads/impl/ads-poki");
+                const {ContextPoki} = await import(/* webpackChunkName: "poki" */ "../context/impl/context-poki");
+                const {IAPPoki} = await import(/* webpackChunkName: "poki" */ "../iap/impl/iap-poki");
+                const {LeaderboardPoki} = await import(/* webpackChunkName: "poki" */ "../leaderboard/impl/leaderboard-poki");
+                const {NotificationsPoki} = await import(/* webpackChunkName: "poki" */ "../notifications/impl/notifications-poki");
+                const {PlayerPoki} = await import(/* webpackChunkName: "poki" */ "../player/impl/player-poki");
+                const {SessionPoki} = await import(/* webpackChunkName: "poki" */ "../session/impl/session-poki");
+                const {StatsPoki} = await import(/* webpackChunkName: "poki" */ "../stats/impl/stats-poki");
+                const {TournamentPoki} = await import(/* webpackChunkName: "poki" */ "../tournament/impl/tournament-poki");
+
+                this._core = new CorePoki();
+                this.achievements = new AchievementsAPI(new AchievementsPoki());
+                this.ads = new AdsAPI(new AdsPoki());
+                this.analytics = new AnalyticsAPI(new AnalyticsWombat());
+                this.context = new ContextAPI(new ContextPoki());
+                this.iap = new InAppPurchaseAPI(new IAPPoki());
+                this.leaderboard = new LeaderboardAPI(new LeaderboardPoki());
+                this.notifications = new NotificationsAPI(new NotificationsPoki());
+                this.player = new PlayerAPI(new PlayerPoki());
+                this.session = new SessionAPI(new SessionPoki());
+                this.stats = new StatsAPI(new StatsPoki());
+                this.tournament = new TournamentAPI(new TournamentPoki());
 
                 break;
             }

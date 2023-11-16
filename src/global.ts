@@ -1,14 +1,22 @@
+import { FacebookSDK } from "./core/interfaces/facebook-sdk";
+import { GameMonetizeSDK } from "./core/interfaces/gamemonetize-sdk";
+import { GamePixSDK } from "./core/interfaces/gamepix-sdk";
+import { GDSDK } from "./core/interfaces/gd-sdk";
+import { LinkSDK } from "./core/interfaces/link-sdk";
+import { PokiSDK } from "./core/interfaces/poki-sdk";
+import { ViberSDK } from "./core/interfaces/viber-sdk";
 import { ShareTo } from "./utils/wortal-utils";
 
 declare global {
     const __VERSION__: string;
 
-    const LinkGame: any;
-    const ViberPlay: any;
-    const FBInstant: any;
-    const gdsdk: any;
-    const GamePix: any;
-    const sdk: any;
+    const LinkGame: LinkSDK;
+    const ViberPlay: ViberSDK;
+    const FBInstant: FacebookSDK;
+    const gdsdk: GDSDK;
+    const GamePix: GamePixSDK;
+    const sdk: GameMonetizeSDK;
+    const PokiSDK: PokiSDK;
 
     interface Window {
         /**
