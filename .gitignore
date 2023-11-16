@@ -12,6 +12,7 @@
 
 ### Demo
 demo/*.zip
+demo/chunks/*.js
 demo/wortal-core*.js
 demo/wortal-common.js
 demo/wortal-data.js
@@ -24,6 +25,7 @@ demo/gamemonetize.js
 demo/gamepix.js
 demo/gd.js
 demo/link.js
+demo/poki.js
 demo/viber.js
 
 ### Node template
