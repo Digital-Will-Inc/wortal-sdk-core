@@ -17,10 +17,11 @@
         "build:prod": "webpack --mode=production",
         "demo:dev": "bash scripts/build-demo.sh && bash scripts/deploy-demo.sh --dev",
         "demo:prod": "bash scripts/build-demo.sh && bash scripts/deploy-demo.sh --prod",
-        "demo:run": "python3 -m http.server --directory demo",
+        "demo:run": "bash scripts/build-demo.sh && python3 -m http.server --directory demo",
         "docs": "rm -rf docs && typedoc --plugin typedoc-plugin-markdown",
         "lint": "eslint src --ext .ts",
-        "typecheck": "tsc --noEmit -p tsconfig.json"
+        "typecheck": "tsc --noEmit -p tsconfig.json",
+        "generate": "node tools/generator.js"
     },
     "devDependencies": {
         "@digital-will/wortal-cli": "^1.0.0",

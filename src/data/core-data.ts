@@ -14,6 +14,7 @@ export const PLATFORM_DOMAINS: PlatformDomains = {
     // This is just added here for completeness.
     "telegram": ["playdeck.io"],
     "gamemonetize": ["gamemonetize.com", "gamemonetize.co", "gamemonetize.games"],
+    "poki": ["poki.com", "poki.dev", "poki-user-content.com"],
 }
 
 /**
@@ -39,6 +40,7 @@ export const SDK_SRC = {
     CRAZY_GAMES: "https://sdk.crazygames.com/crazygames-sdk-v2.js",
     GAME_PIX: "https://integration.gamepix.com/sdk/v3/gamepix.sdk.js",
     GAME_MONETIZE: "https://api.gamemonetize.com/sdk.js",
+    POKI: "https://game-cdn.poki.com/scripts/v2/poki-sdk.js"
 }
 
 /**
@@ -82,6 +84,8 @@ export const WORTAL_API= {
     ON_PAUSE: "onPause",
     PERFORM_HAPTIC_FEEDBACK_ASYNC: "performHapticFeedbackAsync",
     GET_SUPPORTED_APIS: "getSupportedAPIs",
+    ACHIEVEMENTS_GET_ACHIEVEMENTS_ASYNC: "achievements.getAchievementsAsync",
+    ACHIEVEMENTS_UNLOCK_ACHIEVEMENT_ASYNC: "achievements.unlockAchievementAsync",
     ADS_IS_AD_BLOCKED: "ads.isAdBlocked",
     ADS_SHOW_INTERSTITIAL: "ads.showInterstitial",
     ADS_SHOW_REWARDED: "ads.showRewarded",
@@ -180,6 +184,8 @@ export const API_URL = {
     SET_LOADING_PROGRESS: "https://sdk.html5gameportal.com/api/wortal/#setloadingprogress",
     ON_PAUSE: "https://sdk.html5gameportal.com/api/wortal/#onpause",
     PERFORM_HAPTIC_FEEDBACK_ASYNC: "https://sdk.html5gameportal.com/api/wortal/#performhapticfeedbackasync",
+    ACHIEVEMENTS_GET_ACHIEVEMENTS_ASYNC: "https://sdk.html5gameportal.com/api/achievements/#getachievementsasync",
+    ACHIEVEMENTS_UNLOCK_ACHIEVEMENT_ASYNC: "https://sdk.html5gameportal.com/api/achievements/#unlockachievementasync",
     ADS_SHOW_INTERSTITIAL: "https://sdk.html5gameportal.com/api/ads/#showinterstitial",
     ADS_SHOW_REWARDED: "https://sdk.html5gameportal.com/api/ads/#showrewarded",
     ADS_SHOW_BANNER: "https://sdk.html5gameportal.com/api/ads/#showbanner",
