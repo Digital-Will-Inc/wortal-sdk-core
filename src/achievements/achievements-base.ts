@@ -16,13 +16,13 @@ export abstract class AchievementsBase {
 //#region Public API
 
     public getAchievementsAsync(): Promise<Achievement[]> {
-        apiCall(WORTAL_API.ACHIEVEMENTS_GET_ACHIEVEMENTS);
+        apiCall(WORTAL_API.ACHIEVEMENTS_GET_ACHIEVEMENTS_ASYNC);
 
         return this.getAchievementsAsyncImpl();
     }
 
     public unlockAchievementAsync(achievementName: string): Promise<boolean> {
-        apiCall(WORTAL_API.ACHIEVEMENTS_UNLOCK_ACHIEVEMENT);
+        apiCall(WORTAL_API.ACHIEVEMENTS_UNLOCK_ACHIEVEMENT_ASYNC);
 
         const validationResult = this.validateUnlockAchievement(achievementName);
         if (!validationResult.valid) {
@@ -45,7 +45,7 @@ export abstract class AchievementsBase {
         if (!isValidString(achievementName)) {
             return {
                 valid: false,
-                error: invalidParams(undefined, WORTAL_API.ACHIEVEMENTS_UNLOCK_ACHIEVEMENT, API_URL.ACHIEVEMENTS_UNLOCK_ACHIEVEMENT),
+                error: invalidParams(undefined, WORTAL_API.ACHIEVEMENTS_UNLOCK_ACHIEVEMENT_ASYNC, API_URL.ACHIEVEMENTS_UNLOCK_ACHIEVEMENT_ASYNC),
             };
         }
 

@@ -9,11 +9,11 @@ import { Achievement } from "../interfaces/achievement";
  */
 export class AchievementsGamePix extends AchievementsBase {
     protected getAchievementsAsyncImpl(): Promise<Achievement[]> {
-        return Promise.reject(notSupported(undefined, WORTAL_API.ACHIEVEMENTS_GET_ACHIEVEMENTS, API_URL.ACHIEVEMENTS_GET_ACHIEVEMENTS));
+        return Promise.reject(notSupported(undefined, WORTAL_API.ACHIEVEMENTS_GET_ACHIEVEMENTS_ASYNC, API_URL.ACHIEVEMENTS_GET_ACHIEVEMENTS_ASYNC));
     }
 
     protected unlockAchievementAsyncImpl(achievementName: string): Promise<boolean> {
-        return Promise.reject(notSupported(undefined, WORTAL_API.ACHIEVEMENTS_UNLOCK_ACHIEVEMENT, API_URL.ACHIEVEMENTS_UNLOCK_ACHIEVEMENT));
+        return Promise.reject(notSupported(undefined, WORTAL_API.ACHIEVEMENTS_UNLOCK_ACHIEVEMENT_ASYNC, API_URL.ACHIEVEMENTS_UNLOCK_ACHIEVEMENT_ASYNC));
     }
 
 }
