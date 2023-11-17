@@ -20,7 +20,8 @@
         "demo:run": "bash scripts/build-demo.sh && python3 -m http.server --directory demo",
         "docs": "rm -rf docs && typedoc --plugin typedoc-plugin-markdown",
         "lint": "eslint src --ext .ts",
-        "typecheck": "tsc --noEmit -p tsconfig.json"
+        "typecheck": "tsc --noEmit -p tsconfig.json",
+        "generate": "node tools/generator.js"
     },
     "devDependencies": {
         "@digital-will/wortal-cli": "^1.0.0",
