@@ -52,7 +52,7 @@ export class StatsAPI {
      * <li>INVALID_PARAMS</li>
      * </ul>
      */
-    public postStatsAsync(level: string | number, value: string | number, payload?: PostStatsPayload): Promise<void> {
+    public postStatsAsync(level: string | number, value: number, payload?: PostStatsPayload): Promise<void> {
         return this._stats.postStatsAsync(level, value, payload);
     }
 }

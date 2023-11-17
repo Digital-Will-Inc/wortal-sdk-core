@@ -11,11 +11,11 @@ import { StatsBase } from "../stats-base";
  */
 export class StatsLink extends StatsBase {
     protected getStatsAsyncImpl(level: string | number, payload?: GetStatsPayload): Promise<Stats[]> {
-        return Promise.reject(notSupported(undefined, WORTAL_API.STATS_GET_STATS, API_URL.STATS_GET_STATS));
+        return Promise.reject(notSupported(undefined, WORTAL_API.STATS_GET_STATS_ASYNC, API_URL.STATS_GET_STATS_ASYNC));
     }
 
-    protected postStatsAsyncImpl(level: string | number, value: string | number, payload?: PostStatsPayload): Promise<void> {
-        return Promise.reject(notSupported(undefined, WORTAL_API.STATS_POST_STATS, API_URL.STATS_POST_STATS));
+    protected postStatsAsyncImpl(level: string | number, value: number, payload?: PostStatsPayload): Promise<void> {
+        return Promise.reject(notSupported(undefined, WORTAL_API.STATS_POST_STATS_ASYNC, API_URL.STATS_POST_STATS_ASYNC));
     }
 
 }
