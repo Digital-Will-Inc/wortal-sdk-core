@@ -1,13 +1,12 @@
 import { AuthPayload } from "../auth/interfaces/auth-payload";
 import { AuthResponse } from "../auth/interfaces/auth-response";
-import { initializationError, invalidParams } from "../errors/error-handler";
+import { initializationError, invalidParams, invalidOperation } from "../errors/error-handler";
 import { ValidationResult } from "../errors/interfaces/validation-result";
 import Wortal from "../index";
-import { apiCall, debug, info, internalCall } from "../utils/logger";
+import { apiCall, debug, exception, info, internalCall } from "../utils/logger";
 import { isValidNumber } from "../utils/validators";
 import { delayUntilConditionMet, removeLoadingCover } from "../utils/wortal-utils";
 import { API_URL, WORTAL_API } from "../data/core-data";
-import { getWaves } from "../waves-wortal";
 
 /**
  * Base class for implementations of the Wortal SDK core functionality. Extend this class to implement the core functionality.
@@ -244,17 +243,20 @@ export abstract class CoreBase {
     }
 
     protected async defaultAuthenticateAsyncImpl(payload?: AuthPayload): Promise<AuthResponse> {
-        if (Waves) {
+        if (window.waves) {
             try {
-                await getWaves().setup();
-                return { status: (getWaves().authToken)? "success" : "cancel" };
+                if (payload) {
+                    window.waves.init(payload)
+                }
+                await window.waves.authenticate();
+                return { status: (window.waves.authToken)? "success" : "cancel" };
             } catch (error: any) {
-                debug(`Error authenticating with Waves: ${error.message}`);
+                exception(`Error authenticating with Waves: ${error.message}`);
                 return { status: "error" };
             }
         }
 
-        throw new Error("Method not implemented.");
+        throw invalidOperation("Waves Client is not available", WORTAL_API.AUTHENTICATE_ASYNC, API_URL.AUTHENTICATE_ASYNC);
     }
 
 //#endregion

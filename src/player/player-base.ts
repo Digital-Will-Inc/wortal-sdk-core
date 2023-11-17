@@ -2,13 +2,12 @@ import { API_URL, WORTAL_API } from "../data/core-data";
 import { invalidParams, operationFailed } from "../errors/error-handler";
 import { ValidationResult } from "../errors/interfaces/validation-result";
 import Wortal from "../index";
-import { apiCall, debug } from "../utils/logger";
+import { apiCall, debug, exception } from "../utils/logger";
 import { ConnectedPlayer } from "./classes/connected-player";
 import { Player } from "./classes/player";
 import { ConnectedPlayerPayload } from "./interfaces/connected-player-payload";
 import { SignedASID } from "./interfaces/facebook-player";
 import { SignedPlayerInfo } from "./interfaces/signed-player-info";
-import { getWaves } from "../waves-wortal";
 
 /**
  * Base class for the Player API. Extend this class to implement the Player API for a specific platform.
@@ -163,19 +162,19 @@ export abstract class PlayerBase {
                         dataObj = {...dataObj, ...localSaveData};
                     }
                 } catch (error: any) {
-                    debug(`Error loading object from localStorage: ${error.message}`);
+                    exception(`Error loading object from localStorage: ${error.message}`);
                 }
             }
 
             // if Waves available and authenticated, try to get data from Waves
-            if (Waves && getWaves().authToken) {
+            if (window.waves && window.waves.authToken) {
                 try {
-                    const wavesData = await getWaves().getData();
+                    const wavesData = await window.waves.getData();
                     if (wavesData) {
                         dataObj = {...dataObj, ...wavesData};
                     }
                 } catch (error: any) {
-                    debug(`Error loading object from waves: ${error.message}`);
+                    exception(`Error loading object from waves: ${error.message}`);
                 }
             }
 
@@ -195,25 +194,50 @@ export abstract class PlayerBase {
         }
     }
 
-    protected async defaultSetDataAsyncImpl(data: Record<string, unknown>): Promise<void> {
-        try {
-            localStorage.setItem(`${Wortal.session._internalSession.gameID}-save-data`, JSON.stringify(data));
-            debug("Saved data to localStorage.");
+    // protected async defaultSetDataAsyncImpl(data: Record<string, unknown>): Promise<void> {
+    //     try {
+    //         localStorage.setItem(`${Wortal.session._internalSession.gameID}-save-data`, JSON.stringify(data));
+    //         debug("Saved data to localStorage.");
+
+    //         // if Waves available
+    //         if (window.waves) {
+    //             try {
+    //                 // will show dialog if user is not authenticated on waves
+    //                 await window.waves.saveData(data);
+    //             } catch (error: any) {
+    //                 // could be caused by user cancel or network error
+    //                 exception(`Error saving object to waves: ${error.message}`);
+    //             }
+    //         }
+    //     } catch (error: any) {
+    //         throw operationFailed(`Error saving object to localStorage: ${error.message}`,
+    //             WORTAL_API.PLAYER_SET_DATA_ASYNC, API_URL.PLAYER_SET_DATA_ASYNC);
+    //     }
+    // }
+
+    protected defaultSetDataAsyncImpl(data: Record<string, unknown>): Promise<void> {
+        return new Promise((resolve, reject) => {
+            try {
+                localStorage.setItem(`${Wortal.session._internalSession.gameID}-save-data`, JSON.stringify(data));
+                debug("Saved data to localStorage.");
+
+            } catch (error: any) {
+                reject(operationFailed(`Error saving object to localStorage: ${error.message}`,
+                    WORTAL_API.PLAYER_SET_DATA_ASYNC, API_URL.PLAYER_SET_DATA_ASYNC));
+            }
 
             // if Waves available
-            if (Waves) {
-                try {
-                    // will show dialog if user is not authenticated on waves
-                    await getWaves().saveData(data);
-                } catch (error: any) {
-                    // could be caused by user cancel or network error
-                    debug(`Error saving object to waves: ${error.message}`);
-                }
+            if (window.waves) {
+                window.waves.saveData(data)
+                    .then(() => resolve())
+                    .catch(
+                        // could be caused by user cancel or network error
+                        (error: any) => reject(exception(`Error saving object to waves: ${error.message}`))
+                    );
+            } else {
+                resolve();
             }
-        } catch (error: any) {
-            throw operationFailed(`Error saving object to localStorage: ${error.message}`,
-                WORTAL_API.PLAYER_SET_DATA_ASYNC, API_URL.PLAYER_SET_DATA_ASYNC);
-        }
+        });
     }
 
 //#endregion

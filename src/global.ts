@@ -73,29 +73,37 @@ declare global {
         /**
          * Waves client SDK instance
          */
-        waves?: Waves;
+        waves: Waves;
     }
 
     interface CrazyGamesSDK {
         SDK: any;
     }
 
-    class Waves {
-        constructor(options: {
-            baseUrl?: string
-            platform?: Platform
-            gameId?: number
-            authToken?: string
-        });
 
-        public setup(forceDialog?: boolean): Promise<void>;
-        get authToken(): string | undefined;
-        set authToken(token: string | undefined);
-        public saveData<T=any>(data: T): Promise<void>;
-        public getData<T=any>(): Promise<T>;
+    interface WavesOptions {
+        baseUrl?: string;
+        platform?: Platform;
+        gameId?: number;
+        authToken?: string;
     }
 
-
+    class Waves {
+        constructor();
+        init(options: WavesOptions): void;
+        /**
+         * authenticate will check if there is no authToken it will open a dialog
+         * to prompt the user to login and save the auth token
+         * @param forceDialog if true, will always prompt the user to login
+         */
+        authenticate(forceDialog?: boolean): Promise<void>;
+        get authToken(): string | undefined;
+        set authToken(token: string | undefined);
+        saveData<T = any>(gameData: T): Promise<{
+            message: string;
+        }>;
+        getData<T = any>(): Promise<T>;
+    }
 }
 
 export {};

@@ -396,11 +396,38 @@ export class CoreAPI {
         });
     }
 
+    protected _loadWavesClientDeps(): void {
+        internalCall("_loadWavesClientDeps");
+        const wavesClientId = "waves-client";
+        const wavesClientCssId = `${wavesClientId}-css`;
+        const head = document.getElementsByTagName("head")[0];
+
+        if (!document.getElementById(wavesClientCssId)) {
+            const link = document.createElement("link");
+            link.id = wavesClientCssId;
+            link.rel = "stylesheet";
+            link.type = "text/css";
+            link.href = "https://storage.googleapis.com/html5gameportal.com/waves-client/waves.css";
+            head.appendChild(link);
+        }
+
+        const wavesClientJsId = `${wavesClientId}-js`;
+        if (!document.getElementById(wavesClientJsId)) {
+            const wavesJs = document.createElement("script");
+            wavesJs.id = `${wavesClientId}-js`;
+            wavesJs.src = "https://storage.googleapis.com/html5gameportal.com/waves-client/waves.umd.js";
+            head.appendChild(wavesJs);
+        }
+    }
+
     async _loadAPIsAsync(platform: Platform): Promise<void> {
         internalCall("_loadAPIsAsync");
 
         const {AnalyticsWombat} = await import(/* webpackChunkName: "analytics" */ "../analytics/impl/analytics-wombat");
         const {AnalyticsDisabled} = await import(/* webpackChunkName: "analytics" */ "../analytics/impl/analytics-disabled");
+
+        console.log("Loading Waves deps...")
+        this._loadWavesClientDeps();
 
         switch (platform) {
             case "crazygames": {
