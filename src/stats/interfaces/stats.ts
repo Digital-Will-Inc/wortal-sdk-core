@@ -11,7 +11,7 @@ export interface Stats {
     /**
      * The value of the stat.
      */
-    value: string;
+    value: number;
     /**
      * The period of time over which the stat is tracked.
      */
