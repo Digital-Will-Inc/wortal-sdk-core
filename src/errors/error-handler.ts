@@ -1,4 +1,5 @@
 import { exception } from "../utils/logger";
+import { ErrorMessage_AddictingGames } from "./interfaces/addictinggames-error";
 import { ErrorMessage } from "./interfaces/error-message";
 import { ErrorMessage_Facebook } from "./interfaces/facebook-error";
 import { ErrorMessage_Link } from "./interfaces/link-error";
@@ -32,6 +33,23 @@ export function rethrowError_CrazyGames(original: Error_CrazyGames, context: str
     const error: ErrorMessage = {
         code: ErrorMessages_CrazyGames[original] || "UNKNOWN",
         message: ErrorMessages[ErrorMessages_CrazyGames[original]] || "No message provided by the platform SDK.",
+        context: context,
+        url: url,
+    }
+
+    exception(error.code, error);
+    return error;
+}
+
+/**
+ * Rethrows an error from the AddictingGames SDK as a Wortal error. Use this in the error callback when calling the
+ * AddictingGames SDK to catch its errors and convert them to Wortal errors for consistent error handling.
+ * @hidden
+ */
+export function rethrowError_AddictingGames(original: ErrorMessage_AddictingGames, context: string, url?: string): ErrorMessage {
+    const error: ErrorMessage = {
+        code: original.status.toString(),
+        message: original.message || "No message provided by the platform SDK.",
         context: context,
         url: url,
     }
