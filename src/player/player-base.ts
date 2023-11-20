@@ -178,42 +178,18 @@ export abstract class PlayerBase {
                 }
             }
 
-            if (dataObj) {
-                const result: any = {};
-                keys.forEach((key: string) => {
-                    result[key] = dataObj[key];
-                });
-                return result;
-            } else {
-                debug("No save data found in localStorage. Returning empty object.");
-                return {};
-            }
+            // filter data by keys
+            const result: Record<string, any> = {};
+            keys.forEach((key: string) => {
+                result[key] = dataObj[key];
+            });
+            return result;
+
         } catch (error: any) {
             throw operationFailed(`Error saving object to localStorage: ${error.message}`,
                 WORTAL_API.PLAYER_GET_DATA_ASYNC, API_URL.PLAYER_GET_DATA_ASYNC);
         }
     }
-
-    // protected async defaultSetDataAsyncImpl(data: Record<string, unknown>): Promise<void> {
-    //     try {
-    //         localStorage.setItem(`${Wortal.session._internalSession.gameID}-save-data`, JSON.stringify(data));
-    //         debug("Saved data to localStorage.");
-
-    //         // if Waves available
-    //         if (window.waves) {
-    //             try {
-    //                 // will show dialog if user is not authenticated on waves
-    //                 await window.waves.saveData(data);
-    //             } catch (error: any) {
-    //                 // could be caused by user cancel or network error
-    //                 exception(`Error saving object to waves: ${error.message}`);
-    //             }
-    //         }
-    //     } catch (error: any) {
-    //         throw operationFailed(`Error saving object to localStorage: ${error.message}`,
-    //             WORTAL_API.PLAYER_SET_DATA_ASYNC, API_URL.PLAYER_SET_DATA_ASYNC);
-    //     }
-    // }
 
     protected defaultSetDataAsyncImpl(data: Record<string, unknown>): Promise<void> {
         return new Promise((resolve, reject) => {
