@@ -1,3 +1,4 @@
+import { AddictingGamesSDK } from "./core/interfaces/addictinggames-sdk";
 import { FacebookSDK } from "./core/interfaces/facebook-sdk";
 import { GameMonetizeSDK } from "./core/interfaces/gamemonetize-sdk";
 import { GamePixSDK } from "./core/interfaces/gamepix-sdk";
@@ -18,6 +19,7 @@ declare global {
     const GamePix: GamePixSDK;
     const sdk: GameMonetizeSDK;
     const PokiSDK: PokiSDK;
+    const SWAGAPI: AddictingGamesSDK;
 
     interface Window {
         /**
@@ -30,6 +32,11 @@ declare global {
          * @hidden
          */
         wortalGameID: string;
+        /**
+         * ID of the game as set by AddictingGames. This is included in wortal-data.js.
+         * @hidden
+         */
+        addictingGamesID: string;
         /**
          * This is set by the Wortal backend and is used to identify a Wortal player via session.
          * @hidden

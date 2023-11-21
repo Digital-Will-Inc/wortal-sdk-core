@@ -1,5 +1,7 @@
+let statsID = "testscore";
+
 function statsGetStatsAsync() {
-    Wortal.stats.getStatsAsync("Level 1")
+    Wortal.stats.getStatsAsync(statsID)
         .then(results => {
             appendText(results);
         })
@@ -9,7 +11,7 @@ function statsGetStatsAsync() {
 }
 
 function statsPostStatsAsync() {
-    Wortal.stats.postStatsAsync("Level 1", 10)
+    Wortal.stats.postStatsAsync(statsID, 10)
         .then(() => {
             appendText("Stats posted successfully");
         })

@@ -1,5 +1,3 @@
-import { API_URL, WORTAL_API } from "../../data/core-data";
-import { notSupported } from "../../errors/error-handler";
 import { GetStatsPayload } from "../interfaces/get-stats-payload";
 import { PostStatsPayload } from "../interfaces/post-stats-payload";
 import { Stats } from "../interfaces/stats";
@@ -14,7 +12,7 @@ export class StatsDebug extends StatsBase {
         return Promise.resolve(this._getMockStats());
     }
 
-    protected postStatsAsyncImpl(level: string | number, value: string | number, payload?: PostStatsPayload): Promise<void> {
+    protected postStatsAsyncImpl(level: string | number, value: number, payload?: PostStatsPayload): Promise<void> {
         return Promise.resolve();
     }
 
@@ -22,17 +20,17 @@ export class StatsDebug extends StatsBase {
         return [
             {
                 level: "Level 1",
-                value: "100",
+                value: 100,
                 period: "alltime",
             },
             {
                 level: "Level 2",
-                value: "200",
+                value: 200,
                 period: "daily",
             },
             {
                 level: "Level 3",
-                value: "300",
+                value: 300,
                 period: "weekly",
                 valueType: "time",
                 lowerIsBetter: true,

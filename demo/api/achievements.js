@@ -1,3 +1,5 @@
+let achievementID = "ach";
+
 function achievementsGetAchievementsAsync() {
     Wortal.achievements.getAchievementsAsync()
         .then(achievements => {
@@ -9,7 +11,7 @@ function achievementsGetAchievementsAsync() {
 }
 
 function achievementsUnlockAchievementAsync() {
-    Wortal.achievements.unlockAchievementAsync("achievementId")
+    Wortal.achievements.unlockAchievementAsync(achievementID)
         .then(achievement => {
             appendText("Achievement unlocked: " + achievement);
         })

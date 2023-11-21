@@ -22,6 +22,7 @@ import { PlayerAPI } from "../player/player-api";
 import { SessionAPI } from "../session/session-api";
 import { TournamentAPI } from "../tournament/tournament-api";
 import { CoreBase } from "./core-base";
+import { AddictingGamesSDK } from "./interfaces/addictinggames-sdk";
 import { CrazyGamesSDK } from "./interfaces/crazygames-sdk";
 import { FacebookSDK } from "./interfaces/facebook-sdk";
 import { GameMonetizeSDK } from "./interfaces/gamemonetize-sdk";
@@ -48,7 +49,9 @@ export class CoreAPI {
     private _isPlatformInitialized: boolean = false;
     private _isWavesEnabled: boolean = false;
 
-    private _platformSDK: CrazyGamesSDK | FacebookSDK | GameMonetizeSDK | GamePixSDK | GDSDK | LinkSDK | PokiSDK | ViberSDK | any;
+    private _platformSDK: AddictingGamesSDK | CrazyGamesSDK | FacebookSDK | GameMonetizeSDK | GamePixSDK | GDSDK |
+        LinkSDK | PokiSDK | ViberSDK | any;
+
     private _platform: Platform = "debug";
 
     constructor() {
@@ -64,7 +67,8 @@ export class CoreAPI {
      * true, as it will not be set.**
      * @internal
      */
-    get _internalPlatformSDK(): CrazyGamesSDK | FacebookSDK | GameMonetizeSDK | GamePixSDK | GDSDK | LinkSDK | PokiSDK | ViberSDK | any {
+    get _internalPlatformSDK(): AddictingGamesSDK | CrazyGamesSDK | FacebookSDK | GameMonetizeSDK | GamePixSDK | GDSDK |
+        LinkSDK | PokiSDK | ViberSDK | any {
         return this._platformSDK;
     }
 
@@ -73,7 +77,8 @@ export class CoreAPI {
      * after loading the platform specific SDK.
      * @internal
      */
-    set _internalPlatformSDK(value: CrazyGamesSDK | FacebookSDK | GameMonetizeSDK | GamePixSDK | GDSDK | LinkSDK | PokiSDK | ViberSDK | any) {
+    set _internalPlatformSDK(value: AddictingGamesSDK | CrazyGamesSDK | FacebookSDK | GameMonetizeSDK | GamePixSDK |
+        GDSDK | LinkSDK | PokiSDK | ViberSDK | any) {
         this._platformSDK = value;
     }
 
@@ -478,6 +483,10 @@ export class CoreAPI {
         this._isWavesEnabled = true;
     }
 
+    // This is a big ugly mess. We should probably refactor this to be more elegant and less repetitive, but
+    // we don't want to break the dynamic import and chunking, so we'll leave it for now until we have a
+    // better idea of how to do it.
+    //TODO: find a better way to do this without breaking the dynamic import and chunking
     async _loadAPIsAsync(platform: Platform): Promise<void> {
         internalCall("_loadAPIsAsync");
 
@@ -488,6 +497,34 @@ export class CoreAPI {
         this._loadWavesClientDeps(platform);
 
         switch (platform) {
+            case "addictinggames": {
+                const {CoreAddictingGames} = await import(/* webpackChunkName: "addictinggames" */ "./impl/core-addictinggames");
+                const {AchievementsAddictingGames} = await import(/* webpackChunkName: "addictinggames" */ "../achievements/impl/achievements-addictinggames");
+                const {AdsAddictingGames} = await import(/* webpackChunkName: "addictinggames" */ "../ads/impl/ads-addictinggames");
+                const {ContextAddictingGames} = await import(/* webpackChunkName: "addictinggames" */ "../context/impl/context-addictinggames");
+                const {IAPAddictingGames} = await import(/* webpackChunkName: "addictinggames" */ "../iap/impl/iap-addictinggames");
+                const {LeaderboardAddictingGames} = await import(/* webpackChunkName: "addictinggames" */ "../leaderboard/impl/leaderboard-addictinggames");
+                const {NotificationsAddictingGames} = await import(/* webpackChunkName: "addictinggames" */ "../notifications/impl/notifications-addictinggames");
+                const {PlayerAddictingGames} = await import(/* webpackChunkName: "addictinggames" */ "../player/impl/player-addictinggames");
+                const {SessionAddictingGames} = await import(/* webpackChunkName: "addictinggames" */ "../session/impl/session-addictinggames");
+                const {StatsAddictingGames} = await import(/* webpackChunkName: "addictinggames" */ "../stats/impl/stats-addictinggames");
+                const {TournamentAddictingGames} = await import(/* webpackChunkName: "addictinggames" */ "../tournament/impl/tournament-addictinggames");
+
+                this._core = new CoreAddictingGames();
+                this.achievements = new AchievementsAPI(new AchievementsAddictingGames());
+                this.ads = new AdsAPI(new AdsAddictingGames());
+                this.analytics = new AnalyticsAPI(new AnalyticsWombat());
+                this.context = new ContextAPI(new ContextAddictingGames());
+                this.iap = new InAppPurchaseAPI(new IAPAddictingGames());
+                this.leaderboard = new LeaderboardAPI(new LeaderboardAddictingGames());
+                this.notifications = new NotificationsAPI(new NotificationsAddictingGames());
+                this.player = new PlayerAPI(new PlayerAddictingGames());
+                this.session = new SessionAPI(new SessionAddictingGames());
+                this.stats = new StatsAPI(new StatsAddictingGames());
+                this.tournament = new TournamentAPI(new TournamentAddictingGames());
+
+                break;
+            }
             case "crazygames": {
                 const {CoreCrazyGames} = await import(/* webpackChunkName: "crazygames" */ "./impl/core-crazygames");
                 const {AchievementsCrazyGames} = await import(/* webpackChunkName: "crazygames" */ "../achievements/impl/achievements-crazygames");

@@ -11,22 +11,15 @@
 /docs
 
 ### Demo
-demo/*.zip
-demo/chunks/*.js
-demo/wortal-core*.js
-demo/wortal-common.js
-demo/wortal-data.js
-demo/wortal.js
-demo/analytics.js
-demo/crazygames.js
-demo/debug.js
-demo/facebook.js
-demo/gamemonetize.js
-demo/gamepix.js
-demo/gd.js
-demo/link.js
-demo/poki.js
-demo/viber.js
+demo/*
+!demo/api
+!demo/assets
+!demo/buttonHandlers.js
+!demo/index.js
+!demo/index.html
+!demo/style.css
+!demo/utils.js
+!demo/wortal-data.js
 
 ### Node template
 # Logs

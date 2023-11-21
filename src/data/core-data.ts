@@ -15,6 +15,7 @@ export const PLATFORM_DOMAINS: PlatformDomains = {
     "telegram": ["playdeck.io"],
     "gamemonetize": ["gamemonetize.com", "gamemonetize.co", "gamemonetize.games"],
     "poki": ["poki.com", "poki.dev", "poki-user-content.com"],
+    "addictinggames": ["addictinggames.com", "shockwave.com"],
 }
 
 /**
@@ -40,7 +41,9 @@ export const SDK_SRC = {
     CRAZY_GAMES: "https://sdk.crazygames.com/crazygames-sdk-v2.js",
     GAME_PIX: "https://integration.gamepix.com/sdk/v3/gamepix.sdk.js",
     GAME_MONETIZE: "https://api.gamemonetize.com/sdk.js",
-    POKI: "https://game-cdn.poki.com/scripts/v2/poki-sdk.js"
+    POKI: "https://game-cdn.poki.com/scripts/v2/poki-sdk.js",
+    ADDICTING_GAMES_SDK: "https://swagapi.shockwave.com/dist/swag-api.js",
+    ADDICTING_GAMES_CSS: "https://swagapi.shockwave.com/dist/swag-api.css",
 }
 
 /**
@@ -161,8 +164,8 @@ export const WORTAL_API= {
     SESSION_GAMEPLAY_STOP: "session.gameplayStop",
     SESSION_GAME_LOADING_START: "session.gameLoadingStart",
     SESSION_GAME_LOADING_STOP: "session.gameLoadingStop",
-    STATS_GET_STATS: "stats.getStatsAsync",
-    STATS_POST_STATS: "stats.postStatsAsync",
+    STATS_GET_STATS_ASYNC: "stats.getStatsAsync",
+    STATS_POST_STATS_ASYNC: "stats.postStatsAsync",
     TOURNAMENT_GET_CURRENT_ASYNC: "tournament.getCurrentAsync",
     TOURNAMENT_GET_ALL_ASYNC: "tournament.getAllAsync",
     TOURNAMENT_POST_SCORE_ASYNC: "tournament.postScoreAsync",
@@ -239,8 +242,8 @@ export const API_URL = {
     SESSION_GET_ENTRY_POINT_ASYNC: "https://sdk.html5gameportal.com/api/session/#getentrypointasync",
     SESSION_ON_ORIENTATION_CHANGE: "https://sdk.html5gameportal.com/api/session/#onorientationchange",
     SESSION_SWITCH_GAME_ASYNC: "https://sdk.html5gameportal.com/api/session/#switchgameasync",
-    STATS_GET_STATS: "https://sdk.html5gameportal.com/api/stats/#getstatsasync",
-    STATS_POST_STATS: "https://sdk.html5gameportal.com/api/stats/#poststatsasync",
+    STATS_GET_STATS_ASYNC: "https://sdk.html5gameportal.com/api/stats/#getstatsasync",
+    STATS_POST_STATS_ASYNC: "https://sdk.html5gameportal.com/api/stats/#poststatsasync",
     TOURNAMENT_GET_CURRENT_ASYNC: "https://sdk.html5gameportal.com/api/tournament/#getcurrentasync",
     TOURNAMENT_GET_ALL_ASYNC: "https://sdk.html5gameportal.com/api/tournament/#getallasync",
     TOURNAMENT_POST_SCORE_ASYNC: "https://sdk.html5gameportal.com/api/tournament/#postscoreasync",
