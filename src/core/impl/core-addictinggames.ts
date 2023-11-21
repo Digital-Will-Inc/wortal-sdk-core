@@ -83,7 +83,7 @@ export class CoreAddictingGames extends CoreBase {
     }
 
     protected _initializeSDKAsyncImpl(): Promise<void> {
-        return Promise.resolve(undefined);
+        return this.defaultInitializeSDKAsyncImpl();
     }
 
     protected _supportedAPIs: string[] = [
