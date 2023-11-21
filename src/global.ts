@@ -1,3 +1,4 @@
+import { CoreAPI } from "./core/core-api";
 import { AddictingGamesSDK } from "./core/interfaces/addictinggames-sdk";
 import { FacebookSDK } from "./core/interfaces/facebook-sdk";
 import { GameMonetizeSDK } from "./core/interfaces/gamemonetize-sdk";
@@ -6,6 +7,7 @@ import { GDSDK } from "./core/interfaces/gd-sdk";
 import { LinkSDK } from "./core/interfaces/link-sdk";
 import { PokiSDK } from "./core/interfaces/poki-sdk";
 import { ViberSDK } from "./core/interfaces/viber-sdk";
+import { YandexSDK } from "./core/interfaces/yandex-sdk";
 import { ShareTo } from "./utils/wortal-utils";
 import type { Platform } from "./session/types/session-types";
 
@@ -20,13 +22,14 @@ declare global {
     const sdk: GameMonetizeSDK;
     const PokiSDK: PokiSDK;
     const SWAGAPI: AddictingGamesSDK;
+    const YaGames: YandexSDK; // This is only used to call init() apparently. The SDK is accessed via window.ysdk.
 
     interface Window {
         /**
          * Wortal SDK
          * @hidden
          */
-        Wortal: any;
+        Wortal: CoreAPI;
         /**
          * ID of the game as set by wortal-data.js. This is used to identify the game on the Wortal backend.
          * @hidden
@@ -78,13 +81,17 @@ declare global {
          */
         CrazyGames: CrazyGamesSDK;
         /**
+         * Yandex SDK
+         * @hidden
+         */
+        ysdk: YandexSDK;
+        /**
          * Shares the game on the specified platform. This is only supported on Wortal and was ported over from the now
          * deprecated wortal.js. It is not recommended to use this function, as it is called from the page
          * displaying the game.
          * @hidden
          */
         shareGame: (destination: ShareTo, message: string) => void;
-
         /**
          * Waves client SDK instance
          */

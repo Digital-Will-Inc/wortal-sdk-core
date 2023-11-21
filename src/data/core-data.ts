@@ -3,6 +3,7 @@
  * @hidden
  */
 export const PLATFORM_DOMAINS: PlatformDomains = {
+    "yandex": ["yandex.com", "yandex.ru"],
     "viber": ["vbrplsbx.io"],
     "link": ["rgsbx.net", "lgsbx.net"],
     "wortal": ["html5gameportal.com", "html5gameportal.dev"],
@@ -44,6 +45,7 @@ export const SDK_SRC = {
     POKI: "https://game-cdn.poki.com/scripts/v2/poki-sdk.js",
     ADDICTING_GAMES_SDK: "https://swagapi.shockwave.com/dist/swag-api.js",
     ADDICTING_GAMES_CSS: "https://swagapi.shockwave.com/dist/swag-api.css",
+    YANDEX: "https://yandex.ru/games/sdk/v2",
 }
 
 /**

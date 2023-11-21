@@ -32,6 +32,7 @@ import { InitializationOptions } from "./interfaces/initialization-options";
 import { LinkSDK } from "./interfaces/link-sdk";
 import { PokiSDK } from "./interfaces/poki-sdk";
 import { ViberSDK } from "./interfaces/viber-sdk";
+import { YandexSDK } from "./interfaces/yandex-sdk";
 
 /**
  * Core module for the SDK. This is the main entry point for the SDK. It is responsible for initializing the SDK
@@ -50,7 +51,7 @@ export class CoreAPI {
     private _isWavesEnabled: boolean = false;
 
     private _platformSDK: AddictingGamesSDK | CrazyGamesSDK | FacebookSDK | GameMonetizeSDK | GamePixSDK | GDSDK |
-        LinkSDK | PokiSDK | ViberSDK | any;
+        LinkSDK | PokiSDK | ViberSDK | YandexSDK | any;
 
     private _platform: Platform = "debug";
 
@@ -68,7 +69,7 @@ export class CoreAPI {
      * @internal
      */
     get _internalPlatformSDK(): AddictingGamesSDK | CrazyGamesSDK | FacebookSDK | GameMonetizeSDK | GamePixSDK | GDSDK |
-        LinkSDK | PokiSDK | ViberSDK | any {
+        LinkSDK | PokiSDK | ViberSDK | YandexSDK | any {
         return this._platformSDK;
     }
 
@@ -78,7 +79,7 @@ export class CoreAPI {
      * @internal
      */
     set _internalPlatformSDK(value: AddictingGamesSDK | CrazyGamesSDK | FacebookSDK | GameMonetizeSDK | GamePixSDK |
-        GDSDK | LinkSDK | PokiSDK | ViberSDK | any) {
+        GDSDK | LinkSDK | PokiSDK | ViberSDK | YandexSDK | any) {
         this._platformSDK = value;
     }
 
@@ -802,6 +803,34 @@ export class CoreAPI {
                 this.session = new SessionAPI(new SessionWortal());
                 this.stats = new StatsAPI(new StatsWortal());
                 this.tournament = new TournamentAPI(new TournamentWortal());
+
+                break;
+            }
+            case "yandex": {
+                const {CoreYandex} = await import(/* webpackChunkName: "yandex" */ "./impl/core-yandex");
+                const {AchievementsYandex} = await import(/* webpackChunkName: "yandex" */ "../achievements/impl/achievements-yandex");
+                const {AdsYandex} = await import(/* webpackChunkName: "yandex" */ "../ads/impl/ads-yandex");
+                const {ContextYandex} = await import(/* webpackChunkName: "yandex" */ "../context/impl/context-yandex");
+                const {IAPYandex} = await import(/* webpackChunkName: "yandex" */ "../iap/impl/iap-yandex");
+                const {LeaderboardYandex} = await import(/* webpackChunkName: "yandex" */ "../leaderboard/impl/leaderboard-yandex");
+                const {NotificationsYandex} = await import(/* webpackChunkName: "yandex" */ "../notifications/impl/notifications-yandex");
+                const {PlayerYandex} = await import(/* webpackChunkName: "yandex" */ "../player/impl/player-yandex");
+                const {SessionYandex} = await import(/* webpackChunkName: "yandex" */ "../session/impl/session-yandex");
+                const {StatsYandex} = await import(/* webpackChunkName: "yandex" */ "../stats/impl/stats-yandex");
+                const {TournamentYandex} = await import(/* webpackChunkName: "yandex" */ "../tournament/impl/tournament-yandex");
+
+                this._core = new CoreYandex();
+                this.achievements = new AchievementsAPI(new AchievementsYandex());
+                this.ads = new AdsAPI(new AdsYandex());
+                this.analytics = new AnalyticsAPI(new AnalyticsWombat());
+                this.context = new ContextAPI(new ContextYandex());
+                this.iap = new InAppPurchaseAPI(new IAPYandex());
+                this.leaderboard = new LeaderboardAPI(new LeaderboardYandex());
+                this.notifications = new NotificationsAPI(new NotificationsYandex());
+                this.player = new PlayerAPI(new PlayerYandex());
+                this.session = new SessionAPI(new SessionYandex());
+                this.stats = new StatsAPI(new StatsYandex());
+                this.tournament = new TournamentAPI(new TournamentYandex());
 
                 break;
             }
