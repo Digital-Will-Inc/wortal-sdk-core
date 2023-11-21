@@ -47,6 +47,7 @@ export class CoreAPI {
     private _isInitialized: boolean = false;
     private _isAutoInit: boolean = true;
     private _isPlatformInitialized: boolean = false;
+    private _isWavesEnabled: boolean = false;
 
     private _platformSDK: AddictingGamesSDK | CrazyGamesSDK | FacebookSDK | GameMonetizeSDK | GamePixSDK | GDSDK |
         LinkSDK | PokiSDK | ViberSDK | any;
@@ -108,6 +109,15 @@ export class CoreAPI {
      */
     get _internalIsAutoInit(): boolean {
         return this._isAutoInit;
+    }
+
+    /**
+     * Flag set to determine whether the Waves Client SDK is initialized
+     * This determines if the waves game save feature is enabled.
+     * @internal
+     */
+    get _internalIsWavesEnabled(): boolean {
+        return this._isWavesEnabled;
     }
 
 //#endregion
@@ -445,6 +455,34 @@ export class CoreAPI {
         });
     }
 
+    protected _loadWavesClientDeps(platform: Platform): void {
+        internalCall("_loadWavesClientDeps");
+        const baseUrl = platform === "debug" ? "." : "https://storage.googleapis.com/html5gameportal.com/waves-client"
+
+        const wavesClientId = "waves-client";
+        const head = document.getElementsByTagName("head")[0];
+
+        const wavesClientCssId = `${wavesClientId}-css`;
+        if (!document.getElementById(wavesClientCssId)) {
+            const link = document.createElement("link");
+            link.id = wavesClientCssId;
+            link.rel = "stylesheet";
+            link.type = "text/css";
+            link.href = `${baseUrl}/waves.css`;
+            head.appendChild(link);
+        }
+
+        const wavesClientJsId = `${wavesClientId}-js`;
+        if (!document.getElementById(wavesClientJsId)) {
+            const wavesJs = document.createElement("script");
+            wavesJs.id = `${wavesClientId}-js`;
+            wavesJs.src = `${baseUrl}/waves.umd.js`;
+            head.appendChild(wavesJs);
+        }
+
+        this._isWavesEnabled = true;
+    }
+
     // This is a big ugly mess. We should probably refactor this to be more elegant and less repetitive, but
     // we don't want to break the dynamic import and chunking, so we'll leave it for now until we have a
     // better idea of how to do it.
@@ -454,6 +492,9 @@ export class CoreAPI {
 
         const {AnalyticsWombat} = await import(/* webpackChunkName: "analytics" */ "../analytics/impl/analytics-wombat");
         const {AnalyticsDisabled} = await import(/* webpackChunkName: "analytics" */ "../analytics/impl/analytics-disabled");
+
+        console.log("Loading Waves deps...")
+        this._loadWavesClientDeps(platform);
 
         switch (platform) {
             case "addictinggames": {

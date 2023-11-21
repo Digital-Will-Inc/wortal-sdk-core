@@ -7,6 +7,7 @@ import { LinkSDK } from "./core/interfaces/link-sdk";
 import { PokiSDK } from "./core/interfaces/poki-sdk";
 import { ViberSDK } from "./core/interfaces/viber-sdk";
 import { ShareTo } from "./utils/wortal-utils";
+import type { Platform } from "./session/types/session-types";
 
 declare global {
     const __VERSION__: string;
@@ -83,10 +84,39 @@ declare global {
          * @hidden
          */
         shareGame: (destination: ShareTo, message: string) => void;
+
+        /**
+         * Waves client SDK instance
+         */
+        waves: Waves;
     }
 
     interface CrazyGamesSDK {
         SDK: any;
+    }
+
+
+    interface WavesOptions {
+        baseUrl?: string;
+        platform?: Platform;
+        gameId?: number;
+        authToken?: string;
+    }
+
+    interface Waves {
+        init(options: WavesOptions): void;
+        /**
+         * authenticate will check if there is no authToken it will open a dialog
+         * to prompt the user to login and save the auth token
+         * @param forceDialog if true, will always prompt the user to login
+         */
+        authenticate(forceDialog?: boolean): Promise<void>;
+        get authToken(): string | undefined;
+        set authToken(token: string | undefined);
+        saveData<T = any>(gameData: T): Promise<{
+            message: string;
+        }>;
+        getData<T = any>(): Promise<T>;
     }
 }
 

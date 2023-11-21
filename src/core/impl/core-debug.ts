@@ -19,6 +19,9 @@ export class CoreDebug extends CoreBase {
     }
 
     protected authenticateAsyncImpl(payload?: AuthPayload): Promise<AuthResponse> {
+        if (Wortal._internalIsWavesEnabled) {
+            return this.defaultAuthenticateAsyncImpl(payload);
+        }
         debug("Player authenticated successfully. Payload:", payload);
         const response: AuthResponse = {
             status: "success",

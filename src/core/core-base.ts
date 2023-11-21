@@ -1,9 +1,9 @@
 import { AuthPayload } from "../auth/interfaces/auth-payload";
 import { AuthResponse } from "../auth/interfaces/auth-response";
-import { initializationError, invalidParams } from "../errors/error-handler";
+import { initializationError, invalidParams, invalidOperation } from "../errors/error-handler";
 import { ValidationResult } from "../errors/interfaces/validation-result";
 import Wortal from "../index";
-import { apiCall, debug, info, internalCall } from "../utils/logger";
+import { apiCall, debug, exception, info, internalCall } from "../utils/logger";
 import { isValidNumber } from "../utils/validators";
 import { delayUntilConditionMet, removeLoadingCover } from "../utils/wortal-utils";
 import { API_URL, WORTAL_API } from "../data/core-data";
@@ -240,6 +240,23 @@ export abstract class CoreBase {
         }
 
         return {valid: true};
+    }
+
+    protected async defaultAuthenticateAsyncImpl(payload?: AuthPayload): Promise<AuthResponse> {
+        if (window.waves) {
+            try {
+                if (payload) {
+                    window.waves.init(payload)
+                }
+                await window.waves.authenticate();
+                return { status: (window.waves.authToken)? "success" : "cancel" };
+            } catch (error: any) {
+                exception(`Error authenticating with Waves: ${error.message}`);
+                return { status: "error" };
+            }
+        }
+
+        throw invalidOperation("Waves Client is not available", WORTAL_API.AUTHENTICATE_ASYNC, API_URL.AUTHENTICATE_ASYNC);
     }
 
 //#endregion
