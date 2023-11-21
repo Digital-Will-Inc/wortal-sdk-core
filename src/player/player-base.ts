@@ -167,7 +167,7 @@ export abstract class PlayerBase {
             }
 
             // if Waves available and authenticated, try to get data from Waves
-            if (window.waves && window.waves.authToken) {
+            if (Wortal._internalIsWavesEnabled && window.waves && window.waves.authToken) {
                 try {
                     const wavesData = await window.waves.getData();
                     if (wavesData) {
@@ -202,8 +202,8 @@ export abstract class PlayerBase {
                     WORTAL_API.PLAYER_SET_DATA_ASYNC, API_URL.PLAYER_SET_DATA_ASYNC));
             }
 
-            // if Waves available
-            if (window.waves) {
+            // if Waves available and authenticated
+            if (Wortal._internalIsWavesEnabled && window.waves && window.waves.authToken) {
                 window.waves.saveData(data)
                     .then(() => resolve())
                     .catch(

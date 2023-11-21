@@ -46,6 +46,7 @@ export class CoreAPI {
     private _isInitialized: boolean = false;
     private _isAutoInit: boolean = true;
     private _isPlatformInitialized: boolean = false;
+    private _isWavesEnabled: boolean = false;
 
     private _platformSDK: CrazyGamesSDK | FacebookSDK | GameMonetizeSDK | GamePixSDK | GDSDK | LinkSDK | PokiSDK | ViberSDK | any;
     private _platform: Platform = "debug";
@@ -103,6 +104,15 @@ export class CoreAPI {
      */
     get _internalIsAutoInit(): boolean {
         return this._isAutoInit;
+    }
+
+    /**
+     * Flag set to determine whether the Waves Client SDK is initialized
+     * This determines if the waves game save feature is enabled.
+     * @internal
+     */
+    get _internalIsWavesEnabled(): boolean {
+        return this._isWavesEnabled;
     }
 
 //#endregion
@@ -440,18 +450,20 @@ export class CoreAPI {
         });
     }
 
-    protected _loadWavesClientDeps(): void {
+    protected _loadWavesClientDeps(platform: Platform): void {
         internalCall("_loadWavesClientDeps");
+        const baseUrl = platform === "debug" ? "." : "https://storage.googleapis.com/html5gameportal.com/waves-client"
+
         const wavesClientId = "waves-client";
-        const wavesClientCssId = `${wavesClientId}-css`;
         const head = document.getElementsByTagName("head")[0];
 
+        const wavesClientCssId = `${wavesClientId}-css`;
         if (!document.getElementById(wavesClientCssId)) {
             const link = document.createElement("link");
             link.id = wavesClientCssId;
             link.rel = "stylesheet";
             link.type = "text/css";
-            link.href = "https://storage.googleapis.com/html5gameportal.com/waves-client/waves.css";
+            link.href = `${baseUrl}/waves.css`;
             head.appendChild(link);
         }
 
@@ -459,9 +471,11 @@ export class CoreAPI {
         if (!document.getElementById(wavesClientJsId)) {
             const wavesJs = document.createElement("script");
             wavesJs.id = `${wavesClientId}-js`;
-            wavesJs.src = "https://storage.googleapis.com/html5gameportal.com/waves-client/waves.umd.js";
+            wavesJs.src = `${baseUrl}/waves.umd.js`;
             head.appendChild(wavesJs);
         }
+
+        this._isWavesEnabled = true;
     }
 
     async _loadAPIsAsync(platform: Platform): Promise<void> {
@@ -471,7 +485,7 @@ export class CoreAPI {
         const {AnalyticsDisabled} = await import(/* webpackChunkName: "analytics" */ "../analytics/impl/analytics-disabled");
 
         console.log("Loading Waves deps...")
-        this._loadWavesClientDeps();
+        this._loadWavesClientDeps(platform);
 
         switch (platform) {
             case "crazygames": {
