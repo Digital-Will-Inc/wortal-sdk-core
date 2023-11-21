@@ -1,6 +1,7 @@
 import { API_URL, WORTAL_API } from "../data/core-data";
-import { invalidOperation, invalidParams } from "../errors/error-handler";
+import { invalidOperation, invalidParams, notInitialized } from "../errors/error-handler";
 import { ValidationResult } from "../errors/interfaces/validation-result";
+import Wortal from "../index";
 import { apiCall, debug, internalCall } from "../utils/logger";
 import { isValidPurchaseConfig, isValidString } from "../utils/validators";
 import { Product } from "./interfaces/product";
@@ -152,14 +153,27 @@ export abstract class IAPBase {
         if (!isValidString(purchaseToken)) {
             return {
                 valid: false,
-                error: invalidParams(undefined, WORTAL_API.IAP_CANCEL_SUBSCRIPTION_ASYNC, API_URL.IAP_CANCEL_SUBSCRIPTION_ASYNC)
+                error: invalidParams(undefined,
+                    WORTAL_API.IAP_CANCEL_SUBSCRIPTION_ASYNC,
+                    API_URL.IAP_CANCEL_SUBSCRIPTION_ASYNC)
+            };
+        }
+
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.IAP_CANCEL_SUBSCRIPTION_ASYNC,
+                    API_URL.IAP_CANCEL_SUBSCRIPTION_ASYNC)
             };
         }
 
         if (!this._isIAPEnabled) {
             return {
                 valid: false,
-                error: invalidOperation("IAP is not enabled.", WORTAL_API.IAP_CANCEL_SUBSCRIPTION_ASYNC, API_URL.IAP_CANCEL_SUBSCRIPTION_ASYNC)
+                error: invalidOperation("IAP is not enabled.",
+                    WORTAL_API.IAP_CANCEL_SUBSCRIPTION_ASYNC,
+                    API_URL.IAP_CANCEL_SUBSCRIPTION_ASYNC)
             };
         }
 
@@ -170,14 +184,27 @@ export abstract class IAPBase {
         if (!isValidString(token)) {
             return {
                 valid: false,
-                error: invalidParams(undefined, WORTAL_API.IAP_CONSUME_PURCHASE_ASYNC, API_URL.IAP_CONSUME_PURCHASE_ASYNC)
+                error: invalidParams(undefined,
+                    WORTAL_API.IAP_CONSUME_PURCHASE_ASYNC,
+                    API_URL.IAP_CONSUME_PURCHASE_ASYNC)
+            };
+        }
+
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.IAP_CONSUME_PURCHASE_ASYNC,
+                    API_URL.IAP_CONSUME_PURCHASE_ASYNC)
             };
         }
 
         if (!this._isIAPEnabled) {
             return {
                 valid: false,
-                error: invalidOperation("IAP is not enabled.", WORTAL_API.IAP_CANCEL_SUBSCRIPTION_ASYNC, API_URL.IAP_CANCEL_SUBSCRIPTION_ASYNC)
+                error: invalidOperation("IAP is not enabled.",
+                    WORTAL_API.IAP_CANCEL_SUBSCRIPTION_ASYNC,
+                    API_URL.IAP_CANCEL_SUBSCRIPTION_ASYNC)
             };
         }
 
@@ -185,10 +212,21 @@ export abstract class IAPBase {
     }
 
     protected validateGetCatalogAsync(): ValidationResult {
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.IAP_GET_CATALOG_ASYNC,
+                    API_URL.IAP_GET_CATALOG_ASYNC)
+            };
+        }
+
         if (!this._isIAPEnabled) {
             return {
                 valid: false,
-                error: invalidOperation("IAP is not enabled.", WORTAL_API.IAP_CANCEL_SUBSCRIPTION_ASYNC, API_URL.IAP_CANCEL_SUBSCRIPTION_ASYNC)
+                error: invalidOperation("IAP is not enabled.",
+                    WORTAL_API.IAP_CANCEL_SUBSCRIPTION_ASYNC,
+                    API_URL.IAP_CANCEL_SUBSCRIPTION_ASYNC)
             };
         }
 
@@ -196,10 +234,21 @@ export abstract class IAPBase {
     }
 
     protected validateGetPurchasesAsync(): ValidationResult {
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.IAP_GET_PURCHASES_ASYNC,
+                    API_URL.IAP_GET_PURCHASES_ASYNC)
+            };
+        }
+
         if (!this._isIAPEnabled) {
             return {
                 valid: false,
-                error: invalidOperation("IAP is not enabled.", WORTAL_API.IAP_CANCEL_SUBSCRIPTION_ASYNC, API_URL.IAP_CANCEL_SUBSCRIPTION_ASYNC)
+                error: invalidOperation("IAP is not enabled.",
+                    WORTAL_API.IAP_CANCEL_SUBSCRIPTION_ASYNC,
+                    API_URL.IAP_CANCEL_SUBSCRIPTION_ASYNC)
             };
         }
 
@@ -207,10 +256,21 @@ export abstract class IAPBase {
     }
 
     protected validateGetSubscribableCatalogAsync(): ValidationResult {
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.IAP_GET_SUBSCRIBABLE_CATALOG_ASYNC,
+                    API_URL.IAP_GET_SUBSCRIBABLE_CATALOG_ASYNC)
+            };
+        }
+
         if (!this._isIAPEnabled) {
             return {
                 valid: false,
-                error: invalidOperation("IAP is not enabled.", WORTAL_API.IAP_CANCEL_SUBSCRIPTION_ASYNC, API_URL.IAP_CANCEL_SUBSCRIPTION_ASYNC)
+                error: invalidOperation("IAP is not enabled.",
+                    WORTAL_API.IAP_CANCEL_SUBSCRIPTION_ASYNC,
+                    API_URL.IAP_CANCEL_SUBSCRIPTION_ASYNC)
             };
         }
 
@@ -218,10 +278,21 @@ export abstract class IAPBase {
     }
 
     protected validateGetSubscriptionsAsync(): ValidationResult {
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.IAP_GET_SUBSCRIPTIONS_ASYNC,
+                    API_URL.IAP_GET_SUBSCRIPTIONS_ASYNC)
+            };
+        }
+
         if (!this._isIAPEnabled) {
             return {
                 valid: false,
-                error: invalidOperation("IAP is not enabled.", WORTAL_API.IAP_CANCEL_SUBSCRIPTION_ASYNC, API_URL.IAP_CANCEL_SUBSCRIPTION_ASYNC)
+                error: invalidOperation("IAP is not enabled.",
+                    WORTAL_API.IAP_CANCEL_SUBSCRIPTION_ASYNC,
+                    API_URL.IAP_CANCEL_SUBSCRIPTION_ASYNC)
             };
         }
 
@@ -232,14 +303,27 @@ export abstract class IAPBase {
         if (!isValidPurchaseConfig(purchase)) {
             return {
                 valid: false,
-                error: invalidParams(undefined, WORTAL_API.IAP_MAKE_PURCHASE_ASYNC, API_URL.IAP_MAKE_PURCHASE_ASYNC)
+                error: invalidParams(undefined,
+                    WORTAL_API.IAP_MAKE_PURCHASE_ASYNC,
+                    API_URL.IAP_MAKE_PURCHASE_ASYNC)
+            };
+        }
+
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.IAP_MAKE_PURCHASE_ASYNC,
+                    API_URL.IAP_MAKE_PURCHASE_ASYNC)
             };
         }
 
         if (!this._isIAPEnabled) {
             return {
                 valid: false,
-                error: invalidOperation("IAP is not enabled.", WORTAL_API.IAP_CANCEL_SUBSCRIPTION_ASYNC, API_URL.IAP_CANCEL_SUBSCRIPTION_ASYNC)
+                error: invalidOperation("IAP is not enabled.",
+                    WORTAL_API.IAP_CANCEL_SUBSCRIPTION_ASYNC,
+                    API_URL.IAP_CANCEL_SUBSCRIPTION_ASYNC)
             };
         }
 
@@ -250,14 +334,27 @@ export abstract class IAPBase {
         if (!isValidString(productID)) {
             return {
                 valid: false,
-                error: invalidParams(undefined, WORTAL_API.IAP_PURCHASE_SUBSCRIPTION_ASYNC, API_URL.IAP_PURCHASE_SUBSCRIPTION_ASYNC)
+                error: invalidParams(undefined,
+                    WORTAL_API.IAP_PURCHASE_SUBSCRIPTION_ASYNC,
+                    API_URL.IAP_PURCHASE_SUBSCRIPTION_ASYNC)
+            };
+        }
+
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.IAP_PURCHASE_SUBSCRIPTION_ASYNC,
+                    API_URL.IAP_PURCHASE_SUBSCRIPTION_ASYNC)
             };
         }
 
         if (!this._isIAPEnabled) {
             return {
                 valid: false,
-                error: invalidOperation("IAP is not enabled.", WORTAL_API.IAP_CANCEL_SUBSCRIPTION_ASYNC, API_URL.IAP_CANCEL_SUBSCRIPTION_ASYNC)
+                error: invalidOperation("IAP is not enabled.",
+                    WORTAL_API.IAP_CANCEL_SUBSCRIPTION_ASYNC,
+                    API_URL.IAP_CANCEL_SUBSCRIPTION_ASYNC)
             };
         }
 

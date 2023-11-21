@@ -1,5 +1,5 @@
 import { API_URL, WORTAL_API } from "../data/core-data";
-import { invalidParams, operationFailed } from "../errors/error-handler";
+import { invalidParams, notInitialized, operationFailed } from "../errors/error-handler";
 import { ValidationResult } from "../errors/interfaces/validation-result";
 import Wortal from "../index";
 import { apiCall, debug, exception } from "../utils/logger";
@@ -34,11 +34,21 @@ export abstract class PlayerBase {
     public canSubscribeBotAsync(): Promise<boolean> {
         apiCall(WORTAL_API.PLAYER_CAN_SUBSCRIBE_BOT_ASYNC);
 
+        const validationResult: ValidationResult = this.validateCanSubscribeBotAsync();
+        if (!validationResult.valid) {
+            return Promise.reject(validationResult.error);
+        }
+
         return this.canSubscribeBotAsyncImpl();
     }
 
     public flushDataAsync(): Promise<void> {
         apiCall(WORTAL_API.PLAYER_FLUSH_DATA_ASYNC);
+
+        const validationResult: ValidationResult = this.validateFlushDataAsync();
+        if (!validationResult.valid) {
+            return Promise.reject(validationResult.error);
+        }
 
         return this.flushDataAsyncImpl();
     }
@@ -46,11 +56,19 @@ export abstract class PlayerBase {
     public getASIDAsync(): Promise<string> {
         apiCall(WORTAL_API.PLAYER_GET_ASID_ASYNC);
 
+        // We don't validate this call because it's called from the SDK itself during Player initialization on FB.
+        // We need the ASID to fetch the ad unit IDs from the Wortal API, so we can't have this fail.
+
         return this.getASIDAsyncImpl();
     }
 
     public getConnectedPlayersAsync(payload?: ConnectedPlayerPayload): Promise<ConnectedPlayer[]> {
         apiCall(WORTAL_API.PLAYER_GET_CONNECTED_PLAYERS_ASYNC);
+
+        const validationResult: ValidationResult = this.validateGetConnectedPlayersAsync(payload);
+        if (!validationResult.valid) {
+            return Promise.reject(validationResult.error);
+        }
 
         return this.getConnectedPlayersAsyncImpl(payload);
     }
@@ -69,11 +87,21 @@ export abstract class PlayerBase {
     public getID(): string | null {
         apiCall(WORTAL_API.PLAYER_GET_ID);
 
+        const validationResult: ValidationResult = this.validateGetID();
+        if (!validationResult.valid) {
+            throw validationResult.error;
+        }
+
         return this._player.id;
     }
 
     public getName(): string | null {
         apiCall(WORTAL_API.PLAYER_GET_NAME);
+
+        const validationResult: ValidationResult = this.validateGetName();
+        if (!validationResult.valid) {
+            throw validationResult.error;
+        }
 
         return this._player.name;
     }
@@ -81,11 +109,21 @@ export abstract class PlayerBase {
     public getPhoto(): string | null {
         apiCall(WORTAL_API.PLAYER_GET_PHOTO);
 
+        const validationResult: ValidationResult = this.validateGetPhoto();
+        if (!validationResult.valid) {
+            throw validationResult.error;
+        }
+
         return this._player.photo;
     }
 
     public getSignedASIDAsync(): Promise<SignedASID> {
         apiCall(WORTAL_API.PLAYER_GET_SIGNED_ASID_ASYNC);
+
+        const validationResult: ValidationResult = this.validateGetSignedASIDAsync();
+        if (!validationResult.valid) {
+            return Promise.reject(validationResult.error);
+        }
 
         return this.getSignedASIDAsyncImpl();
     }
@@ -93,17 +131,32 @@ export abstract class PlayerBase {
     public getSignedPlayerInfoAsync(): Promise<SignedPlayerInfo> {
         apiCall(WORTAL_API.PLAYER_GET_SIGNED_PLAYER_INFO_ASYNC);
 
+        const validationResult: ValidationResult = this.validateGetSignedPlayerInfoAsync();
+        if (!validationResult.valid) {
+            return Promise.reject(validationResult.error);
+        }
+
         return this.getSignedPlayerInfoAsyncImpl();
     }
 
     public getTokenAsync(): Promise<string> {
         apiCall(WORTAL_API.PLAYER_GET_TOKEN_ASYNC);
 
+        const validationResult: ValidationResult = this.validateGetTokenAsync();
+        if (!validationResult.valid) {
+            return Promise.reject(validationResult.error);
+        }
+
         return this.getTokenAsyncImpl();
     }
 
     public isFirstPlay(): boolean {
         apiCall(WORTAL_API.PLAYER_IS_FIRST_PLAY);
+
+        const validationResult: ValidationResult = this.validateIsFirstPlay();
+        if (!validationResult.valid) {
+            throw validationResult.error;
+        }
 
         return this._player.isFirstPlay
     }
@@ -127,11 +180,21 @@ export abstract class PlayerBase {
     public setDataAsync(data: Record<string, unknown>): Promise<void> {
         apiCall(WORTAL_API.PLAYER_SET_DATA_ASYNC);
 
+        const validationResult: ValidationResult = this.validateSetDataAsync(data);
+        if (!validationResult.valid) {
+            return Promise.reject(validationResult.error);
+        }
+
         return this.setDataAsyncImpl(data);
     }
 
     public subscribeBotAsync(): Promise<void> {
         apiCall(WORTAL_API.PLAYER_SUBSCRIBE_BOT_ASYNC);
+
+        const validationResult: ValidationResult = this.validateSubscribeBotAsync();
+        if (!validationResult.valid) {
+            return Promise.reject(validationResult.error);
+        }
 
         return this.subscribeBotAsyncImpl();
     }
@@ -219,11 +282,152 @@ export abstract class PlayerBase {
 //#endregion
 //#region Validation
 
+    protected validateCanSubscribeBotAsync(): ValidationResult {
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.PLAYER_CAN_SUBSCRIBE_BOT_ASYNC,
+                    API_URL.PLAYER_CAN_SUBSCRIBE_BOT_ASYNC),
+            };
+        }
+
+        return { valid: true };
+    }
+
+    protected validateFlushDataAsync(): ValidationResult {
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.PLAYER_FLUSH_DATA_ASYNC,
+                    API_URL.PLAYER_FLUSH_DATA_ASYNC),
+            };
+        }
+
+        return { valid: true };
+    }
+
+    protected validateGetConnectedPlayersAsync(payload?: ConnectedPlayerPayload): ValidationResult {
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.PLAYER_GET_CONNECTED_PLAYERS_ASYNC,
+                    API_URL.PLAYER_GET_CONNECTED_PLAYERS_ASYNC),
+            };
+        }
+
+        return { valid: true };
+    }
+
     protected validateGetDataAsync(keys: string[]): ValidationResult {
         if (!Array.isArray(keys) || !keys.length) {
             return {
                 valid: false,
-                error: invalidParams(undefined, WORTAL_API.PLAYER_GET_DATA_ASYNC, API_URL.PLAYER_GET_DATA_ASYNC),
+                error: invalidParams(undefined,
+                    WORTAL_API.PLAYER_GET_DATA_ASYNC,
+                    API_URL.PLAYER_GET_DATA_ASYNC),
+            };
+        }
+
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.PLAYER_GET_DATA_ASYNC,
+                    API_URL.PLAYER_GET_DATA_ASYNC),
+            };
+        }
+
+        return { valid: true };
+    }
+
+    protected validateGetID(): ValidationResult {
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.PLAYER_GET_ID,
+                    API_URL.PLAYER_GET_ID),
+            };
+        }
+
+        return { valid: true };
+    }
+
+    protected validateGetName(): ValidationResult {
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.PLAYER_GET_NAME,
+                    API_URL.PLAYER_GET_NAME),
+            };
+        }
+
+        return { valid: true };
+    }
+
+    protected validateGetPhoto(): ValidationResult {
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.PLAYER_GET_PHOTO,
+                    API_URL.PLAYER_GET_PHOTO),
+            };
+        }
+
+        return { valid: true };
+    }
+
+    protected validateGetSignedASIDAsync(): ValidationResult {
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.PLAYER_GET_SIGNED_ASID_ASYNC,
+                    API_URL.PLAYER_GET_SIGNED_ASID_ASYNC),
+            };
+        }
+
+        return { valid: true };
+    }
+
+    protected validateGetSignedPlayerInfoAsync(): ValidationResult {
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.PLAYER_GET_SIGNED_PLAYER_INFO_ASYNC,
+                    API_URL.PLAYER_GET_SIGNED_PLAYER_INFO_ASYNC),
+            };
+        }
+
+        return { valid: true };
+    }
+
+    protected validateGetTokenAsync(): ValidationResult {
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.PLAYER_GET_TOKEN_ASYNC,
+                    API_URL.PLAYER_GET_TOKEN_ASYNC),
+            };
+        }
+
+        return { valid: true };
+    }
+
+    protected validateIsFirstPlay(): ValidationResult {
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.PLAYER_IS_FIRST_PLAY,
+                    API_URL.PLAYER_IS_FIRST_PLAY),
             };
         }
 
@@ -234,7 +438,53 @@ export abstract class PlayerBase {
         if (typeof callback !== "function") {
             return {
                 valid: false,
-                error: invalidParams(undefined, WORTAL_API.PLAYER_ON_LOGIN, API_URL.PLAYER_ON_LOGIN),
+                error: invalidParams(undefined,
+                    WORTAL_API.PLAYER_ON_LOGIN,
+                    API_URL.PLAYER_ON_LOGIN),
+            };
+        }
+
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.PLAYER_ON_LOGIN,
+                    API_URL.PLAYER_ON_LOGIN),
+            };
+        }
+
+        return { valid: true };
+    }
+
+    protected validateSetDataAsync(data: Record<string, unknown>): ValidationResult {
+        if (typeof data !== "object") {
+            return {
+                valid: false,
+                error: invalidParams(undefined,
+                    WORTAL_API.PLAYER_SET_DATA_ASYNC,
+                    API_URL.PLAYER_SET_DATA_ASYNC),
+            };
+        }
+
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.PLAYER_SET_DATA_ASYNC,
+                    API_URL.PLAYER_SET_DATA_ASYNC),
+            };
+        }
+
+        return { valid: true };
+    }
+
+    protected validateSubscribeBotAsync(): ValidationResult {
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.PLAYER_SUBSCRIBE_BOT_ASYNC,
+                    API_URL.PLAYER_SUBSCRIBE_BOT_ASYNC),
             };
         }
 

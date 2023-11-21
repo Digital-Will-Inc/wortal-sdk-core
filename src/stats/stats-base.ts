@@ -1,6 +1,7 @@
 import { API_URL, WORTAL_API } from "../data/core-data";
-import { invalidParams } from "../errors/error-handler";
+import { invalidParams, notInitialized } from "../errors/error-handler";
 import { ValidationResult } from "../errors/interfaces/validation-result";
+import Wortal from "../index";
 import { apiCall } from "../utils/logger";
 import { isValidNumber, isValidString } from "../utils/validators";
 import { GetStatsPayload } from "./interfaces/get-stats-payload";
@@ -52,7 +53,18 @@ export abstract class StatsBase {
         if (!isValidString(level) && !isValidNumber(level)) {
             return {
                 valid: false,
-                error: invalidParams(undefined, WORTAL_API.STATS_GET_STATS_ASYNC, API_URL.STATS_GET_STATS_ASYNC),
+                error: invalidParams(undefined,
+                    WORTAL_API.STATS_GET_STATS_ASYNC,
+                    API_URL.STATS_GET_STATS_ASYNC),
+            };
+        }
+
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.STATS_GET_STATS_ASYNC,
+                    API_URL.STATS_GET_STATS_ASYNC),
             };
         }
 
@@ -63,7 +75,18 @@ export abstract class StatsBase {
         if ((!isValidString(level) && !isValidNumber(level)) || (!isValidNumber(value))) {
             return {
                 valid: false,
-                error: invalidParams(undefined, WORTAL_API.STATS_POST_STATS_ASYNC, API_URL.STATS_POST_STATS_ASYNC),
+                error: invalidParams(undefined,
+                    WORTAL_API.STATS_POST_STATS_ASYNC,
+                    API_URL.STATS_POST_STATS_ASYNC),
+            };
+        }
+
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.STATS_POST_STATS_ASYNC,
+                    API_URL.STATS_POST_STATS_ASYNC),
             };
         }
 

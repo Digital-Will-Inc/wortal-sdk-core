@@ -144,6 +144,23 @@ export function initializationError(message: string, context: string, url?: stri
 }
 
 /**
+ * Throw this to indicate the SDK has not been initialized yet. This can occur if the game attempts to call an SDK
+ * function before the SDK has been initialized.
+ * @hidden
+ */
+export function notInitialized(message: string = "", context: string, url?: string): ErrorMessage {
+    const error: ErrorMessage = {
+        code: "NOT_INITIALIZED",
+        message: message || ErrorMessages["NOT_INITIALIZED"],
+        context: context,
+        url: url,
+    }
+
+    exception(error.code, error);
+    return error;
+}
+
+/**
  * All error codes and messages defined by the Wortal SDK.
  * @hidden
  */
@@ -159,6 +176,7 @@ const ErrorMessages: Record<string, string> = {
     LEADERBOARD_WRONG_CONTEXT: "Attempted to write to a leaderboard that's associated with a context other than the one the game is currently being played in.",
     LINK_IN_PROGRESS: "The game attempted to show an account linking prompt, but a prompt to link accounts is already in progress.",
     NETWORK_FAILURE: "The client experienced an issue with a network request. This is likely due to a transient issue, such as the player's internet connection dropping.",
+    NOT_INITIALIZED: "The SDK has not been initialized yet. This can occur if the game attempts to call an SDK function before the SDK has been initialized. Check Wortal.isInitialized or wait for Wortal.initializeAsync to complete before calling other SDK functions.",
     NOT_SUPPORTED: "Function or feature is not currently supported on the platform currently being played on.",
     OPERATION_FAILED: "The operation failed, this is typically thrown during a failed web request and the message may include additional details about the failure.",
     PAYMENTS_NOT_INITIALIZED: "The client has not completed setting up payments or is not accepting payments API calls.",

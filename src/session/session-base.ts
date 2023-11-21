@@ -1,5 +1,5 @@
 import { API_URL, WORTAL_API } from "../data/core-data";
-import { invalidParams } from "../errors/error-handler";
+import { invalidParams, notInitialized } from "../errors/error-handler";
 import { ValidationResult } from "../errors/interfaces/validation-result";
 import Wortal from "../index";
 import { apiCall, internalCall } from "../utils/logger";
@@ -37,11 +37,21 @@ export abstract class SessionBase {
     public gameplayStart(): void {
         apiCall(WORTAL_API.SESSION_GAMEPLAY_START);
 
+        const validationResult = this.validateGameplayStart();
+        if (!validationResult.valid) {
+            throw validationResult.error;
+        }
+
         return this.gameplayStartImpl();
     }
 
     public gameplayStop(): void {
         apiCall(WORTAL_API.SESSION_GAMEPLAY_STOP);
+
+        const validationResult = this.validateGameplayStop();
+        if (!validationResult.valid) {
+            throw validationResult.error;
+        }
 
         return this.gameplayStopImpl();
     }
@@ -55,11 +65,21 @@ export abstract class SessionBase {
     public getEntryPointAsync(): Promise<string> {
         apiCall(WORTAL_API.SESSION_GET_ENTRY_POINT_ASYNC);
 
+        const validationResult = this.validateGetEntryPointAsync();
+        if (!validationResult.valid) {
+            return Promise.reject(validationResult.error);
+        }
+
         return this.getEntryPointAsyncImpl();
     }
 
     public getEntryPointData(): Record<string, unknown> {
         apiCall(WORTAL_API.SESSION_GET_ENTRY_POINT_DATA);
+
+        const validationResult = this.validateGetEntryPointData();
+        if (!validationResult.valid) {
+            throw validationResult.error;
+        }
 
         return this.getEntryPointDataImpl();
     }
@@ -90,11 +110,21 @@ export abstract class SessionBase {
     public getTrafficSource(): TrafficSource {
         apiCall(WORTAL_API.SESSION_GET_TRAFFIC_SOURCE);
 
+        const validationResult = this.validateGetTrafficSource();
+        if (!validationResult.valid) {
+            throw validationResult.error;
+        }
+
         return this.getTrafficSourceImpl();
     }
 
     public happyTime(): void {
         apiCall(WORTAL_API.SESSION_HAPPY_TIME);
+
+        const validationResult = this.validateHappyTime();
+        if (!validationResult.valid) {
+            throw validationResult.error;
+        }
 
         return this.happyTimeImpl();
     }
@@ -119,6 +149,11 @@ export abstract class SessionBase {
 
     public setSessionData(data: Record<string, unknown>): void {
         apiCall(WORTAL_API.SESSION_SET_SESSION_DATA);
+
+        const validationResult = this.validateSetSessionData(data);
+        if (!validationResult.valid) {
+            throw validationResult.error;
+        }
 
         return this.setSessionDataImpl(data);
     }
@@ -169,11 +204,122 @@ export abstract class SessionBase {
 //#endregion
 //#region Validation
 
+    protected validateGameplayStart(): ValidationResult {
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.SESSION_GAMEPLAY_START,
+                    API_URL.SESSION_GAMEPLAY_START),
+            };
+        }
+
+        return { valid: true }
+    }
+
+    protected validateGameplayStop(): ValidationResult {
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.SESSION_GAMEPLAY_STOP,
+                    API_URL.SESSION_GAMEPLAY_STOP),
+            };
+        }
+
+        return { valid: true }
+    }
+
+    protected validateGetEntryPointAsync(): ValidationResult {
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.SESSION_GET_ENTRY_POINT_ASYNC,
+                    API_URL.SESSION_GET_ENTRY_POINT_ASYNC),
+            };
+        }
+
+        return { valid: true }
+    }
+
+    protected validateGetEntryPointData(): ValidationResult {
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.SESSION_GET_ENTRY_POINT_DATA,
+                    API_URL.SESSION_GET_ENTRY_POINT_DATA),
+            };
+        }
+
+        return { valid: true }
+    }
+
+    protected validateGetTrafficSource(): ValidationResult {
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.SESSION_GET_TRAFFIC_SOURCE,
+                    API_URL.SESSION_GET_TRAFFIC_SOURCE),
+            };
+        }
+
+        return { valid: true }
+    }
+
+    protected validateHappyTime(): ValidationResult {
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.SESSION_HAPPY_TIME,
+                    API_URL.SESSION_HAPPY_TIME),
+            };
+        }
+
+        return { valid: true }
+    }
+
     protected validateOnOrientationChange(callback: (orientation: Orientation) => void): ValidationResult {
         if (typeof callback !== "function") {
             return {
                 valid: false,
-                error: invalidParams(undefined, WORTAL_API.SESSION_ON_ORIENTATION_CHANGE, API_URL.SESSION_ON_ORIENTATION_CHANGE),
+                error: invalidParams(undefined,
+                    WORTAL_API.SESSION_ON_ORIENTATION_CHANGE,
+                    API_URL.SESSION_ON_ORIENTATION_CHANGE),
+            };
+        }
+
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.SESSION_ON_ORIENTATION_CHANGE,
+                    API_URL.SESSION_ON_ORIENTATION_CHANGE),
+            };
+        }
+
+        return { valid: true }
+    }
+
+    protected validateSetSessionData(data: Record<string, unknown>): ValidationResult {
+        if (typeof data !== "object") {
+            return {
+                valid: false,
+                error: invalidParams(undefined,
+                    WORTAL_API.SESSION_SET_SESSION_DATA,
+                    API_URL.SESSION_SET_SESSION_DATA),
+            };
+        }
+
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.SESSION_SET_SESSION_DATA,
+                    API_URL.SESSION_SET_SESSION_DATA),
             };
         }
 
@@ -184,7 +330,18 @@ export abstract class SessionBase {
         if (!isValidString(gameID)) {
             return {
                 valid: false,
-                error: invalidParams(undefined, WORTAL_API.SESSION_SWITCH_GAME_ASYNC, API_URL.SESSION_SWITCH_GAME_ASYNC),
+                error: invalidParams(undefined,
+                    WORTAL_API.SESSION_SWITCH_GAME_ASYNC,
+                    API_URL.SESSION_SWITCH_GAME_ASYNC),
+            };
+        }
+
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.SESSION_SWITCH_GAME_ASYNC,
+                    API_URL.SESSION_SWITCH_GAME_ASYNC),
             };
         }
 

@@ -1,6 +1,7 @@
 import { API_URL, WORTAL_API } from "../data/core-data";
-import { invalidParams } from "../errors/error-handler";
+import { invalidParams, notInitialized } from "../errors/error-handler";
 import { ValidationResult } from "../errors/interfaces/validation-result";
+import Wortal from "../index";
 import { apiCall } from "../utils/logger";
 import { isValidString } from "../utils/validators";
 import { Achievement } from "./interfaces/achievement";
@@ -17,6 +18,11 @@ export abstract class AchievementsBase {
 
     public getAchievementsAsync(): Promise<Achievement[]> {
         apiCall(WORTAL_API.ACHIEVEMENTS_GET_ACHIEVEMENTS_ASYNC);
+
+        const validationResult = this.validateGetAchievements();
+        if (!validationResult.valid) {
+            return Promise.reject(validationResult.error);
+        }
 
         return this.getAchievementsAsyncImpl();
     }
@@ -41,11 +47,35 @@ export abstract class AchievementsBase {
 //#endregion
 //#region Validation
 
+    protected validateGetAchievements(): ValidationResult {
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.ACHIEVEMENTS_GET_ACHIEVEMENTS_ASYNC,
+                    API_URL.ACHIEVEMENTS_GET_ACHIEVEMENTS_ASYNC),
+            };
+        }
+
+        return { valid: true };
+    }
+
     protected validateUnlockAchievement(achievementName: string): ValidationResult {
         if (!isValidString(achievementName)) {
             return {
                 valid: false,
-                error: invalidParams(undefined, WORTAL_API.ACHIEVEMENTS_UNLOCK_ACHIEVEMENT_ASYNC, API_URL.ACHIEVEMENTS_UNLOCK_ACHIEVEMENT_ASYNC),
+                error: invalidParams(undefined,
+                    WORTAL_API.ACHIEVEMENTS_UNLOCK_ACHIEVEMENT_ASYNC,
+                    API_URL.ACHIEVEMENTS_UNLOCK_ACHIEVEMENT_ASYNC),
+            };
+        }
+
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.ACHIEVEMENTS_UNLOCK_ACHIEVEMENT_ASYNC,
+                    API_URL.ACHIEVEMENTS_UNLOCK_ACHIEVEMENT_ASYNC),
             };
         }
 
