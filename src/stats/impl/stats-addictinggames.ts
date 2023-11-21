@@ -15,21 +15,16 @@ import { StatsBase } from "../stats-base";
  */
 export class StatsAddictingGames extends StatsBase {
     protected getStatsAsyncImpl(level: string | number, payload?: GetStatsPayload): Promise<Stats[]> {
-        Wortal._internalPlatformSDK.getScoreCategories()
-            .then((categories: any) => {
-                console.log(categories);
-            })
-            .catch((error: any) => {
-                console.log(error);
-            });
-
         const options: GetStatsPayload_AddictingGames = {
             level_key: level.toString(),
+            period: payload?.period,
         };
 
         return Wortal._internalPlatformSDK.getScores(options)
             .then((stats: StatConfig_AddictingGames[]) => {
-                console.log(stats);
+                return stats.map((stat: StatConfig_AddictingGames) => {
+                    return this._convertToWortalStats(stat);
+                });
             })
             .catch((error: ErrorMessage_AddictingGames) => {
                 throw rethrowError_AddictingGames(error, WORTAL_API.STATS_GET_STATS_ASYNC, API_URL.STATS_GET_STATS_ASYNC);
@@ -41,6 +36,15 @@ export class StatsAddictingGames extends StatsBase {
             .catch((error: ErrorMessage_AddictingGames) => {
                 throw rethrowError_AddictingGames(error, WORTAL_API.STATS_POST_STATS_ASYNC, API_URL.STATS_POST_STATS_ASYNC);
             });
+    }
+
+    private _convertToWortalStats(stats: StatConfig_AddictingGames): Stats {
+        return {
+            level: stats.level_key,
+            value: stats.value,
+            valueType: stats.value_type,
+            lowerIsBetter: stats.reverse,
+        };
     }
 
 }
