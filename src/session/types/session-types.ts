@@ -1,7 +1,7 @@
 /**
  * Platform the game is currently being played on.
  */
-export type Platform = "wortal" | "link" | "viber" | "gd" | "facebook" | "crazygames" | "gamepix" | "telegram" |
+export type Platform = "yandex" | "wortal" | "link" | "viber" | "gd" | "facebook" | "crazygames" | "gamepix" | "telegram" |
     "gamemonetize" | "poki" | "addictinggames" | "debug"
 
 /**
