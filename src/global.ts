@@ -96,8 +96,7 @@ declare global {
         authToken?: string;
     }
 
-    class Waves {
-        constructor();
+    interface Waves {
         init(options: WavesOptions): void;
         /**
          * authenticate will check if there is no authToken it will open a dialog
