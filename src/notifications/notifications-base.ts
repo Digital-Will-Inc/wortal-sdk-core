@@ -1,6 +1,7 @@
 import { API_URL, WORTAL_API } from "../data/core-data";
-import { invalidParams } from "../errors/error-handler";
+import { invalidParams, notInitialized } from "../errors/error-handler";
 import { ValidationResult } from "../errors/interfaces/validation-result";
+import Wortal from "../index";
 import { apiCall } from "../utils/logger";
 import { isValidString } from "../utils/validators";
 import { ScheduledNotification } from "./classes/scheduled-notification";
@@ -20,6 +21,11 @@ export abstract class NotificationsBase {
     public cancelAllAsync(label?: string): Promise<boolean> {
         apiCall(WORTAL_API.NOTIFICATIONS_CANCEL_ALL_ASYNC);
 
+        const validationResult: ValidationResult = this.validateCancelAllAsync(label);
+        if (!validationResult.valid) {
+            return Promise.reject(validationResult.error);
+        }
+
         return this.cancelAllAsyncImpl(label);
     }
 
@@ -36,6 +42,11 @@ export abstract class NotificationsBase {
 
     public getHistoryAsync(): Promise<ScheduledNotification[]> {
         apiCall(WORTAL_API.NOTIFICATIONS_GET_HISTORY_ASYNC);
+
+        const validationResult: ValidationResult = this.validateGetHistoryAsync();
+        if (!validationResult.valid) {
+            return Promise.reject(validationResult.error);
+        }
 
         return this.getHistoryAsyncImpl();
     }
@@ -62,11 +73,48 @@ export abstract class NotificationsBase {
 //#endregion
 //#region Validation
 
+    protected validateCancelAllAsync(label?: string): ValidationResult {
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.NOTIFICATIONS_CANCEL_ALL_ASYNC,
+                    API_URL.NOTIFICATIONS_CANCEL_ALL_ASYNC),
+            };
+        }
+
+        return { valid: true };
+    }
+
     protected validateCancelAsync(id: string): ValidationResult {
         if (!isValidString(id)) {
             return {
                 valid: false,
-                error: invalidParams(undefined, WORTAL_API.NOTIFICATIONS_CANCEL_ASYNC, API_URL.NOTIFICATIONS_CANCEL_ASYNC),
+                error: invalidParams(undefined,
+                    WORTAL_API.NOTIFICATIONS_CANCEL_ASYNC,
+                    API_URL.NOTIFICATIONS_CANCEL_ASYNC),
+            };
+        }
+
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.NOTIFICATIONS_CANCEL_ASYNC,
+                    API_URL.NOTIFICATIONS_CANCEL_ASYNC),
+            };
+        }
+
+        return { valid: true };
+    }
+
+    protected validateGetHistoryAsync(): ValidationResult {
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.NOTIFICATIONS_GET_HISTORY_ASYNC,
+                    API_URL.NOTIFICATIONS_GET_HISTORY_ASYNC),
             };
         }
 
@@ -77,14 +125,27 @@ export abstract class NotificationsBase {
         if (!isValidString(payload.title)) {
             return {
                 valid: false,
-                error: invalidParams("title", WORTAL_API.NOTIFICATIONS_SCHEDULE_ASYNC, API_URL.NOTIFICATIONS_SCHEDULE_ASYNC),
+                error: invalidParams("title",
+                    WORTAL_API.NOTIFICATIONS_SCHEDULE_ASYNC,
+                    API_URL.NOTIFICATIONS_SCHEDULE_ASYNC),
             };
         }
 
         if (!isValidString(payload.body)) {
             return {
                 valid: false,
-                error: invalidParams("body", WORTAL_API.NOTIFICATIONS_SCHEDULE_ASYNC, API_URL.NOTIFICATIONS_SCHEDULE_ASYNC),
+                error: invalidParams("body",
+                    WORTAL_API.NOTIFICATIONS_SCHEDULE_ASYNC,
+                    API_URL.NOTIFICATIONS_SCHEDULE_ASYNC),
+            };
+        }
+
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.NOTIFICATIONS_SCHEDULE_ASYNC,
+                    API_URL.NOTIFICATIONS_SCHEDULE_ASYNC),
             };
         }
 

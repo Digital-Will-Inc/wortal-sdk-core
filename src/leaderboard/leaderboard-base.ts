@@ -1,6 +1,7 @@
 import { API_URL, WORTAL_API } from "../data/core-data";
-import { invalidParams } from "../errors/error-handler";
+import { invalidParams, notInitialized } from "../errors/error-handler";
 import { ValidationResult } from "../errors/interfaces/validation-result";
+import Wortal from "../index";
 import { apiCall } from "../utils/logger";
 import { isValidString } from "../utils/validators";
 import { Leaderboard } from "./classes/leaderboard";
@@ -99,7 +100,18 @@ export abstract class LeaderboardBase {
         if (!isValidString(name)) {
             return {
                 valid: false,
-                error: invalidParams(undefined, WORTAL_API.LEADERBOARD_GET_CONNECTED_PLAYER_ENTRIES_ASYNC, API_URL.LEADERBOARD_GET_CONNECTED_PLAYER_ENTRIES_ASYNC)
+                error: invalidParams(undefined,
+                    WORTAL_API.LEADERBOARD_GET_CONNECTED_PLAYER_ENTRIES_ASYNC,
+                    API_URL.LEADERBOARD_GET_CONNECTED_PLAYER_ENTRIES_ASYNC)
+            }
+        }
+
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.LEADERBOARD_GET_CONNECTED_PLAYER_ENTRIES_ASYNC,
+                    API_URL.LEADERBOARD_GET_CONNECTED_PLAYER_ENTRIES_ASYNC)
             }
         }
 
@@ -110,7 +122,18 @@ export abstract class LeaderboardBase {
         if (!isValidString(name)) {
             return {
                 valid: false,
-                error: invalidParams(undefined, WORTAL_API.LEADERBOARD_GET_ENTRIES_ASYNC, API_URL.LEADERBOARD_GET_ENTRIES_ASYNC)
+                error: invalidParams(undefined,
+                    WORTAL_API.LEADERBOARD_GET_ENTRIES_ASYNC,
+                    API_URL.LEADERBOARD_GET_ENTRIES_ASYNC)
+            }
+        }
+
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.LEADERBOARD_GET_ENTRIES_ASYNC,
+                    API_URL.LEADERBOARD_GET_ENTRIES_ASYNC)
             }
         }
 
@@ -121,7 +144,18 @@ export abstract class LeaderboardBase {
         if (!isValidString(name)) {
             return {
                 valid: false,
-                error: invalidParams(undefined, WORTAL_API.LEADERBOARD_GET_ENTRY_COUNT_ASYNC, API_URL.LEADERBOARD_GET_ENTRY_COUNT_ASYNC)
+                error: invalidParams(undefined,
+                    WORTAL_API.LEADERBOARD_GET_ENTRY_COUNT_ASYNC,
+                    API_URL.LEADERBOARD_GET_ENTRY_COUNT_ASYNC)
+            }
+        }
+
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.LEADERBOARD_GET_ENTRY_COUNT_ASYNC,
+                    API_URL.LEADERBOARD_GET_ENTRY_COUNT_ASYNC)
             }
         }
 
@@ -132,7 +166,18 @@ export abstract class LeaderboardBase {
         if (!isValidString(name)) {
             return {
                 valid: false,
-                error: invalidParams(undefined, WORTAL_API.LEADERBOARD_GET_LEADERBOARD_ASYNC, API_URL.LEADERBOARD_GET_LEADERBOARD_ASYNC)
+                error: invalidParams(undefined,
+                    WORTAL_API.LEADERBOARD_GET_LEADERBOARD_ASYNC,
+                    API_URL.LEADERBOARD_GET_LEADERBOARD_ASYNC)
+            }
+        }
+
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.LEADERBOARD_GET_LEADERBOARD_ASYNC,
+                    API_URL.LEADERBOARD_GET_LEADERBOARD_ASYNC)
             }
         }
 
@@ -143,7 +188,18 @@ export abstract class LeaderboardBase {
         if (!isValidString(name)) {
             return {
                 valid: false,
-                error: invalidParams(undefined, WORTAL_API.LEADERBOARD_GET_PLAYER_ENTRY_ASYNC, API_URL.LEADERBOARD_GET_PLAYER_ENTRY_ASYNC)
+                error: invalidParams(undefined,
+                    WORTAL_API.LEADERBOARD_GET_PLAYER_ENTRY_ASYNC,
+                    API_URL.LEADERBOARD_GET_PLAYER_ENTRY_ASYNC)
+            }
+        }
+
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.LEADERBOARD_GET_PLAYER_ENTRY_ASYNC,
+                    API_URL.LEADERBOARD_GET_PLAYER_ENTRY_ASYNC)
             }
         }
 
@@ -154,7 +210,18 @@ export abstract class LeaderboardBase {
         if (!isValidString(name)) {
             return {
                 valid: false,
-                error: invalidParams(undefined, WORTAL_API.LEADERBOARD_SEND_ENTRY_ASYNC, API_URL.LEADERBOARD_SEND_ENTRY_ASYNC)
+                error: invalidParams(undefined,
+                    WORTAL_API.LEADERBOARD_SEND_ENTRY_ASYNC,
+                    API_URL.LEADERBOARD_SEND_ENTRY_ASYNC)
+            }
+        }
+
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.LEADERBOARD_SEND_ENTRY_ASYNC,
+                    API_URL.LEADERBOARD_SEND_ENTRY_ASYNC)
             }
         }
 

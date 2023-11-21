@@ -2,7 +2,7 @@ import { API_URL, WORTAL_API } from "../data/core-data";
 import { ValidationResult } from "../errors/interfaces/validation-result";
 import Wortal from "../index";
 import { ConnectedPlayer } from "../player/classes/connected-player";
-import { invalidParams } from "../errors/error-handler";
+import { invalidParams, notInitialized } from "../errors/error-handler";
 import { apiCall } from "../utils/logger";
 import { isValidPayloadImage, isValidPayloadText, isValidString } from "../utils/validators";
 import { ChoosePayload } from "./interfaces/choose-payload";
@@ -27,6 +27,11 @@ export abstract class ContextBase {
     public chooseAsync(payload?: ChoosePayload): Promise<void> {
         apiCall(WORTAL_API.CONTEXT_CHOOSE_ASYNC);
 
+        const validationResult = this.validateChooseAsync(payload);
+        if (!validationResult.valid) {
+            return Promise.reject(validationResult.error);
+        }
+
         return this.chooseAsyncImpl(payload);
     }
 
@@ -44,17 +49,32 @@ export abstract class ContextBase {
     public getId(): string {
         apiCall(WORTAL_API.CONTEXT_GET_ID);
 
+        const validationResult = this.validateGetId();
+        if (!validationResult.valid) {
+            throw validationResult.error;
+        }
+
         return this.getIdImpl();
     }
 
     public getPlayersAsync(): Promise<ConnectedPlayer[]> {
         apiCall(WORTAL_API.CONTEXT_GET_PLAYERS_ASYNC);
 
+        const validationResult = this.validateGetPlayersAsync();
+        if (!validationResult.valid) {
+            return Promise.reject(validationResult.error);
+        }
+
         return this.getPlayersAsyncImpl();
     }
 
     public getType(): ContextType {
         apiCall(WORTAL_API.CONTEXT_GET_TYPE);
+
+        const validationResult = this.validateGetType();
+        if (!validationResult.valid) {
+            throw validationResult.error;
+        }
 
         return this.getTypeImpl();
     }
@@ -72,6 +92,11 @@ export abstract class ContextBase {
 
     public isSizeBetween(min?: number, max?: number): ContextSizeResponse | null {
         apiCall(WORTAL_API.CONTEXT_IS_SIZE_BETWEEN);
+
+        const validationResult = this.validateIsSizeBetween(min, max);
+        if (!validationResult.valid) {
+            throw validationResult.error;
+        }
 
         return this.isSizeBetweenImpl(min, max);
     }
@@ -138,6 +163,19 @@ export abstract class ContextBase {
 //#endregion
 //#region Validation
 
+    protected validateChooseAsync(payload?: ChoosePayload): ValidationResult {
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.CONTEXT_CHOOSE_ASYNC,
+                    API_URL.CONTEXT_CHOOSE_ASYNC)
+            };
+        }
+
+        return { valid: true };
+    }
+
     protected validateCreateAsync(playerID?: string | string[]): ValidationResult {
         // Facebook takes anything here... single ID, array of IDs or nothing.
         if (Wortal._internalPlatform === "facebook") {
@@ -151,7 +189,57 @@ export abstract class ContextBase {
         if (!isValidString(playerID)) {
             return {
                 valid: false,
-                error: invalidParams(undefined, WORTAL_API.CONTEXT_CREATE_ASYNC, API_URL.CONTEXT_CREATE_ASYNC)
+                error: invalidParams(undefined,
+                    WORTAL_API.CONTEXT_CREATE_ASYNC,
+                    API_URL.CONTEXT_CREATE_ASYNC)
+            };
+        }
+
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.CONTEXT_CREATE_ASYNC,
+                    API_URL.CONTEXT_CREATE_ASYNC)
+            };
+        }
+
+        return { valid: true };
+    }
+
+    protected validateGetId(): ValidationResult {
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.CONTEXT_GET_ID,
+                    API_URL.CONTEXT_GET_ID)
+            };
+        }
+
+        return { valid: true };
+    }
+
+    protected validateGetPlayersAsync(): ValidationResult {
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.CONTEXT_GET_PLAYERS_ASYNC,
+                    API_URL.CONTEXT_GET_PLAYERS_ASYNC)
+            };
+        }
+
+        return { valid: true };
+    }
+
+    protected validateGetType(): ValidationResult {
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.CONTEXT_GET_TYPE,
+                    API_URL.CONTEXT_GET_TYPE)
             };
         }
 
@@ -162,14 +250,40 @@ export abstract class ContextBase {
         if (!isValidPayloadText(payload.text)) {
             return {
                 valid: false,
-                error: invalidParams(undefined, WORTAL_API.CONTEXT_INVITE_ASYNC, API_URL.CONTEXT_INVITE_ASYNC)
+                error: invalidParams(undefined,
+                    WORTAL_API.CONTEXT_INVITE_ASYNC,
+                    API_URL.CONTEXT_INVITE_ASYNC)
             };
         }
 
         if (!isValidPayloadImage(payload.image)) {
             return {
                 valid: false,
-                error: invalidParams(undefined, WORTAL_API.CONTEXT_INVITE_ASYNC, API_URL.CONTEXT_INVITE_ASYNC)
+                error: invalidParams(undefined,
+                    WORTAL_API.CONTEXT_INVITE_ASYNC,
+                    API_URL.CONTEXT_INVITE_ASYNC)
+            };
+        }
+
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.CONTEXT_INVITE_ASYNC,
+                    API_URL.CONTEXT_INVITE_ASYNC)
+            };
+        }
+
+        return { valid: true };
+    }
+
+    protected validateIsSizeBetween(min?: number, max?: number): ValidationResult {
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.CONTEXT_IS_SIZE_BETWEEN,
+                    API_URL.CONTEXT_IS_SIZE_BETWEEN)
             };
         }
 
@@ -180,14 +294,27 @@ export abstract class ContextBase {
         if (!isValidPayloadText(payload.text)) {
             return {
                 valid: false,
-                error: invalidParams(undefined, WORTAL_API.CONTEXT_SHARE_ASYNC, API_URL.CONTEXT_SHARE_ASYNC)
+                error: invalidParams(undefined,
+                    WORTAL_API.CONTEXT_SHARE_ASYNC,
+                    API_URL.CONTEXT_SHARE_ASYNC)
             };
         }
 
         if (!isValidPayloadImage(payload.image)) {
             return {
                 valid: false,
-                error: invalidParams(undefined, WORTAL_API.CONTEXT_SHARE_ASYNC, API_URL.CONTEXT_SHARE_ASYNC)
+                error: invalidParams(undefined,
+                    WORTAL_API.CONTEXT_SHARE_ASYNC,
+                    API_URL.CONTEXT_SHARE_ASYNC)
+            };
+        }
+
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.CONTEXT_SHARE_ASYNC,
+                    API_URL.CONTEXT_SHARE_ASYNC)
             };
         }
 
@@ -198,7 +325,18 @@ export abstract class ContextBase {
         if (typeof payload.data === "undefined") {
             return {
                 valid: false,
-                error: invalidParams(undefined, WORTAL_API.CONTEXT_SHARE_LINK_ASYNC, API_URL.CONTEXT_SHARE_LINK_ASYNC)
+                error: invalidParams(undefined,
+                    WORTAL_API.CONTEXT_SHARE_LINK_ASYNC,
+                    API_URL.CONTEXT_SHARE_LINK_ASYNC)
+            };
+        }
+
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.CONTEXT_SHARE_LINK_ASYNC,
+                    API_URL.CONTEXT_SHARE_LINK_ASYNC)
             };
         }
 
@@ -209,7 +347,18 @@ export abstract class ContextBase {
         if (!isValidString(contextID)) {
             return {
                 valid: false,
-                error: invalidParams(undefined, WORTAL_API.CONTEXT_SWITCH_ASYNC, API_URL.CONTEXT_SWITCH_ASYNC)
+                error: invalidParams(undefined,
+                    WORTAL_API.CONTEXT_SWITCH_ASYNC,
+                    API_URL.CONTEXT_SWITCH_ASYNC)
+            };
+        }
+
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.CONTEXT_SWITCH_ASYNC,
+                    API_URL.CONTEXT_SWITCH_ASYNC)
             };
         }
 
@@ -220,14 +369,27 @@ export abstract class ContextBase {
         if (!isValidPayloadText(payload.text)) {
             return {
                 valid: false,
-                error: invalidParams(undefined, WORTAL_API.CONTEXT_UPDATE_ASYNC, API_URL.CONTEXT_UPDATE_ASYNC)
+                error: invalidParams(undefined,
+                    WORTAL_API.CONTEXT_UPDATE_ASYNC,
+                    API_URL.CONTEXT_UPDATE_ASYNC)
             };
         }
 
         if (!isValidPayloadImage(payload.image)) {
             return {
                 valid: false,
-                error: invalidParams(undefined, WORTAL_API.CONTEXT_UPDATE_ASYNC, API_URL.CONTEXT_UPDATE_ASYNC)
+                error: invalidParams(undefined,
+                    WORTAL_API.CONTEXT_UPDATE_ASYNC,
+                    API_URL.CONTEXT_UPDATE_ASYNC)
+            };
+        }
+
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.CONTEXT_UPDATE_ASYNC,
+                    API_URL.CONTEXT_UPDATE_ASYNC)
             };
         }
 

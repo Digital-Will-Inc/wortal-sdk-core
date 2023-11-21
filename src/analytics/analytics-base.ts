@@ -1,5 +1,5 @@
 import { API_URL, WORTAL_API } from "../data/core-data";
-import { invalidParams } from "../errors/error-handler";
+import { invalidParams, notInitialized } from "../errors/error-handler";
 import { ValidationResult } from "../errors/interfaces/validation-result";
 import Wortal from "../index";
 import { apiCall, internalCall, warn } from "../utils/logger";
@@ -167,6 +167,11 @@ export abstract class AnalyticsBase {
     public logTutorialEnd(tutorial: string = "Tutorial", wasCompleted: boolean = true): void {
         apiCall(WORTAL_API.ANALYTICS_LOG_TUTORIAL_END);
 
+        const validation = this.validateLogTutorialEnd(tutorial, wasCompleted);
+        if (!validation.valid) {
+            throw validation.error;
+        }
+
         Wortal.session._internalGameState.clearLevelTimerHandle();
 
         // We need a matching tutorial name to track the time taken to pass the tutorial.
@@ -180,6 +185,11 @@ export abstract class AnalyticsBase {
     public logTutorialStart(tutorial: string = "Tutorial"): void {
         apiCall(WORTAL_API.ANALYTICS_LOG_TUTORIAL_START);
 
+        const validation = this.validateLogTutorialStart(tutorial);
+        if (!validation.valid) {
+            throw validation.error;
+        }
+
         Wortal.session._internalGameState.setLevelName(tutorial);
         Wortal.session._internalGameState.clearLevelTimerHandle();
         Wortal.session._internalGameState.resetLevelTimer();
@@ -190,6 +200,8 @@ export abstract class AnalyticsBase {
 
 //#endregion
 //#region Internal API
+
+    // No need to validate these, they are internal and may be called before the SDK is initialized.
 
     _logGameEnd(): void {
         internalCall("analytics._logGameEnd");
@@ -237,14 +249,27 @@ export abstract class AnalyticsBase {
         if (!isValidString(decision)) {
             return {
                 valid: false,
-                error: invalidParams(undefined, WORTAL_API.ANALYTICS_LOG_GAME_CHOICE, API_URL.ANALYTICS_LOG_GAME_CHOICE),
+                error: invalidParams(undefined,
+                    WORTAL_API.ANALYTICS_LOG_GAME_CHOICE,
+                    API_URL.ANALYTICS_LOG_GAME_CHOICE),
             };
         }
 
         if (!isValidString(choice)) {
             return {
                 valid: false,
-                error: invalidParams(undefined, WORTAL_API.ANALYTICS_LOG_GAME_CHOICE, API_URL.ANALYTICS_LOG_GAME_CHOICE),
+                error: invalidParams(undefined,
+                    WORTAL_API.ANALYTICS_LOG_GAME_CHOICE,
+                    API_URL.ANALYTICS_LOG_GAME_CHOICE),
+            };
+        }
+
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.ANALYTICS_LOG_GAME_CHOICE,
+                    API_URL.ANALYTICS_LOG_GAME_CHOICE),
             };
         }
 
@@ -255,14 +280,27 @@ export abstract class AnalyticsBase {
         if (!isValidString(level) && !isValidNumber(level)) {
             return {
                 valid: false,
-                error: invalidParams(undefined, WORTAL_API.ANALYTICS_LOG_LEVEL_END, API_URL.ANALYTICS_LOG_LEVEL_END),
+                error: invalidParams(undefined,
+                    WORTAL_API.ANALYTICS_LOG_LEVEL_END,
+                    API_URL.ANALYTICS_LOG_LEVEL_END),
             };
         }
 
         if (!isValidString(score) && !isValidNumber(score)) {
             return {
                 valid: false,
-                error: invalidParams(undefined, WORTAL_API.ANALYTICS_LOG_LEVEL_END, API_URL.ANALYTICS_LOG_LEVEL_END),
+                error: invalidParams(undefined,
+                    WORTAL_API.ANALYTICS_LOG_LEVEL_END,
+                    API_URL.ANALYTICS_LOG_LEVEL_END),
+            };
+        }
+
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.ANALYTICS_LOG_LEVEL_END,
+                    API_URL.ANALYTICS_LOG_LEVEL_END),
             };
         }
 
@@ -273,7 +311,18 @@ export abstract class AnalyticsBase {
         if (!isValidString(level) && !isValidNumber(level)) {
             return {
                 valid: false,
-                error: invalidParams(undefined, WORTAL_API.ANALYTICS_LOG_LEVEL_START, API_URL.ANALYTICS_LOG_LEVEL_START),
+                error: invalidParams(undefined,
+                    WORTAL_API.ANALYTICS_LOG_LEVEL_START,
+                    API_URL.ANALYTICS_LOG_LEVEL_START),
+            };
+        }
+
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.ANALYTICS_LOG_LEVEL_START,
+                    API_URL.ANALYTICS_LOG_LEVEL_START),
             };
         }
 
@@ -288,6 +337,15 @@ export abstract class AnalyticsBase {
             };
         }
 
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.ANALYTICS_LOG_LEVEL_UP,
+                    API_URL.ANALYTICS_LOG_LEVEL_UP),
+            };
+        }
+
         return { valid: true };
     }
 
@@ -296,6 +354,15 @@ export abstract class AnalyticsBase {
             return {
                 valid: false,
                 error: invalidParams(undefined, WORTAL_API.ANALYTICS_LOG_PURCHASE, API_URL.ANALYTICS_LOG_PURCHASE),
+            };
+        }
+
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.ANALYTICS_LOG_PURCHASE,
+                    API_URL.ANALYTICS_LOG_PURCHASE),
             };
         }
 
@@ -310,6 +377,15 @@ export abstract class AnalyticsBase {
             };
         }
 
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.ANALYTICS_LOG_PURCHASE_SUBSCRIPTION,
+                    API_URL.ANALYTICS_LOG_PURCHASE_SUBSCRIPTION),
+            };
+        }
+
         return { valid: true };
     }
 
@@ -318,6 +394,15 @@ export abstract class AnalyticsBase {
             return {
                 valid: false,
                 error: invalidParams(undefined, WORTAL_API.ANALYTICS_LOG_SCORE, API_URL.ANALYTICS_LOG_SCORE),
+            };
+        }
+
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.ANALYTICS_LOG_SCORE,
+                    API_URL.ANALYTICS_LOG_SCORE),
             };
         }
 
@@ -332,6 +417,15 @@ export abstract class AnalyticsBase {
             };
         }
 
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.ANALYTICS_LOG_SOCIAL_INVITE,
+                    API_URL.ANALYTICS_LOG_SOCIAL_INVITE),
+            };
+        }
+
         return { valid: true };
     }
 
@@ -340,6 +434,41 @@ export abstract class AnalyticsBase {
             return {
                 valid: false,
                 error: invalidParams(undefined, WORTAL_API.ANALYTICS_LOG_SOCIAL_SHARE, API_URL.ANALYTICS_LOG_SOCIAL_SHARE),
+            };
+        }
+
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.ANALYTICS_LOG_SOCIAL_SHARE,
+                    API_URL.ANALYTICS_LOG_SOCIAL_SHARE),
+            };
+        }
+
+        return { valid: true };
+    }
+
+    protected validateLogTutorialEnd(tutorial: string, wasCompleted: boolean): ValidationResult {
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.ANALYTICS_LOG_TUTORIAL_END,
+                    API_URL.ANALYTICS_LOG_TUTORIAL_END),
+            };
+        }
+
+        return { valid: true };
+    }
+
+    protected validateLogTutorialStart(tutorial: string): ValidationResult {
+        if (!Wortal.isInitialized) {
+            return {
+                valid: false,
+                error: notInitialized(undefined,
+                    WORTAL_API.ANALYTICS_LOG_TUTORIAL_START,
+                    API_URL.ANALYTICS_LOG_TUTORIAL_START),
             };
         }
 
