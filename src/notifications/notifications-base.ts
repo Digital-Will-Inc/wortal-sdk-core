@@ -2,7 +2,6 @@ import { API_URL, WORTAL_API } from "../data/core-data";
 import { invalidParams, notInitialized } from "../errors/error-handler";
 import { ValidationResult } from "../errors/interfaces/validation-result";
 import Wortal from "../index";
-import { apiCall } from "../utils/logger";
 import { isValidString } from "../utils/validators";
 import { ScheduledNotification } from "./classes/scheduled-notification";
 import { NotificationPayload } from "./interfaces/notification-payload";
@@ -19,7 +18,7 @@ export abstract class NotificationsBase {
 //#region Public API
 
     public cancelAllAsync(label?: string): Promise<boolean> {
-        apiCall(WORTAL_API.NOTIFICATIONS_CANCEL_ALL_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.NOTIFICATIONS_CANCEL_ALL_ASYNC);
 
         const validationResult: ValidationResult = this.validateCancelAllAsync(label);
         if (!validationResult.valid) {
@@ -30,7 +29,7 @@ export abstract class NotificationsBase {
     }
 
     public cancelAsync(id: string): Promise<boolean> {
-        apiCall(WORTAL_API.NOTIFICATIONS_CANCEL_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.NOTIFICATIONS_CANCEL_ASYNC);
 
         const validationResult: ValidationResult = this.validateCancelAsync(id);
         if (!validationResult.valid) {
@@ -41,7 +40,7 @@ export abstract class NotificationsBase {
     }
 
     public getHistoryAsync(): Promise<ScheduledNotification[]> {
-        apiCall(WORTAL_API.NOTIFICATIONS_GET_HISTORY_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.NOTIFICATIONS_GET_HISTORY_ASYNC);
 
         const validationResult: ValidationResult = this.validateGetHistoryAsync();
         if (!validationResult.valid) {
@@ -52,7 +51,7 @@ export abstract class NotificationsBase {
     }
 
     public scheduleAsync(payload: NotificationPayload): Promise<NotificationScheduleResult> {
-        apiCall(WORTAL_API.NOTIFICATIONS_SCHEDULE_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.NOTIFICATIONS_SCHEDULE_ASYNC);
 
         const validationResult: ValidationResult = this.validateScheduleAsync(payload);
         if (!validationResult.valid) {

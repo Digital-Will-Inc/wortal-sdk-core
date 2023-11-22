@@ -3,7 +3,6 @@ import { AuthResponse } from "../../auth/interfaces/auth-response";
 import { API_URL, SDK_SRC, WORTAL_API } from "../../data/core-data";
 import { initializationError, notSupported } from "../../errors/error-handler";
 import Wortal from "../../index";
-import { debug } from "../../utils/logger";
 import { onPauseFunctions } from "../../utils/wortal-utils";
 import { CoreBase } from "../core-base";
 
@@ -68,7 +67,7 @@ export class CoreAddictingGames extends CoreBase {
                 });
 
                 Wortal._internalPlatformSDK.startSession().then(() => {
-                    debug("AddictingGames platform SDK loaded.");
+                    Wortal._log.debug("AddictingGames platform SDK loaded.");
                     resolve();
                 });
             }

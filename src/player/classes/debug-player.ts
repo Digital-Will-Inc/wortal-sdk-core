@@ -1,4 +1,4 @@
-import { debug } from "../../utils/logger";
+import Wortal from "../../index";
 import { generateRandomID } from "../../utils/wortal-utils";
 import { Player } from "./player";
 
@@ -17,7 +17,7 @@ export class DebugPlayer extends Player {
         this._data.photo = "https://storage.googleapis.com/html5gameportal.com/images/avatar.jpg";
         this._data.isFirstPlay = false;
 
-        debug("Player initialized: ", this._data);
+        Wortal._log.debug("Player initialized: ", this._data);
         return Promise.resolve();
     }
 

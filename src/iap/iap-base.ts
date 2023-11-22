@@ -2,7 +2,6 @@ import { API_URL, WORTAL_API } from "../data/core-data";
 import { invalidOperation, invalidParams, notInitialized } from "../errors/error-handler";
 import { ValidationResult } from "../errors/interfaces/validation-result";
 import Wortal from "../index";
-import { apiCall, debug, internalCall } from "../utils/logger";
 import { isValidPurchaseConfig, isValidString } from "../utils/validators";
 import { Product } from "./interfaces/product";
 import { Purchase } from "./interfaces/purchase";
@@ -23,7 +22,7 @@ export abstract class IAPBase {
 //#region Public API
 
     public cancelSubscriptionAsync(purchaseToken: string): Promise<void> {
-        apiCall(WORTAL_API.IAP_CANCEL_SUBSCRIPTION_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.IAP_CANCEL_SUBSCRIPTION_ASYNC);
 
         const validationResult = this.validateCancelSubscriptionAsync(purchaseToken);
         if (!validationResult.valid) {
@@ -34,7 +33,7 @@ export abstract class IAPBase {
     }
 
     public consumePurchaseAsync(token: string): Promise<void> {
-        apiCall(WORTAL_API.IAP_CONSUME_PURCHASE_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.IAP_CONSUME_PURCHASE_ASYNC);
 
         const validationResult = this.validateConsumePurchaseAsync(token);
         if (!validationResult.valid) {
@@ -45,7 +44,7 @@ export abstract class IAPBase {
     }
 
     public getCatalogAsync(): Promise<Product[]> {
-        apiCall(WORTAL_API.IAP_GET_CATALOG_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.IAP_GET_CATALOG_ASYNC);
 
         const validationResult = this.validateGetCatalogAsync();
         if (!validationResult.valid) {
@@ -56,7 +55,7 @@ export abstract class IAPBase {
     }
 
     public getPurchasesAsync(): Promise<Purchase[]> {
-        apiCall(WORTAL_API.IAP_GET_PURCHASES_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.IAP_GET_PURCHASES_ASYNC);
 
         const validationResult = this.validateGetPurchasesAsync();
         if (!validationResult.valid) {
@@ -67,7 +66,7 @@ export abstract class IAPBase {
     }
 
     public getSubscribableCatalogAsync(): Promise<SubscribableProduct[]> {
-        apiCall(WORTAL_API.IAP_GET_SUBSCRIBABLE_CATALOG_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.IAP_GET_SUBSCRIBABLE_CATALOG_ASYNC);
 
         const validationResult = this.validateGetSubscribableCatalogAsync();
         if (!validationResult.valid) {
@@ -78,7 +77,7 @@ export abstract class IAPBase {
     }
 
     public getSubscriptionsAsync(): Promise<Subscription[]> {
-        apiCall(WORTAL_API.IAP_GET_SUBSCRIPTIONS_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.IAP_GET_SUBSCRIPTIONS_ASYNC);
 
         const validationResult = this.validateGetSubscriptionsAsync();
         if (!validationResult.valid) {
@@ -89,13 +88,13 @@ export abstract class IAPBase {
     }
 
     public isEnabled(): boolean {
-        apiCall(WORTAL_API.IAP_IS_ENABLED);
+        Wortal._log.apiCall(WORTAL_API.IAP_IS_ENABLED);
 
         return this.isEnabledImpl();
     }
 
     public makePurchaseAsync(purchase: PurchaseConfig): Promise<Purchase> {
-        apiCall(WORTAL_API.IAP_MAKE_PURCHASE_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.IAP_MAKE_PURCHASE_ASYNC);
 
         const validationResult = this.validateMakePurchaseAsync(purchase);
         if (!validationResult.valid) {
@@ -106,7 +105,7 @@ export abstract class IAPBase {
     }
 
     public purchaseSubscriptionAsync(productID: string): Promise<Subscription> {
-        apiCall(WORTAL_API.IAP_PURCHASE_SUBSCRIPTION_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.IAP_PURCHASE_SUBSCRIPTION_ASYNC);
 
         const validationResult = this.validatePurchaseSubscriptionAsync(productID);
         if (!validationResult.valid) {
@@ -126,9 +125,9 @@ export abstract class IAPBase {
      * @hidden
      */
     _tryEnableIAP(): void {
-        internalCall("IAP._tryEnableIAP");
+        Wortal._log.internalCall("IAP._tryEnableIAP");
 
-        debug("Checking for IAP compatibility..");
+        Wortal._log.debug("Checking for IAP compatibility..");
         return this._tryEnableIAPImpl();
     }
 

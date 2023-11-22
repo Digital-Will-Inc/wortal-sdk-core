@@ -1,7 +1,7 @@
 import { API_URL, WORTAL_API } from "../../data/core-data";
 import { notSupported } from "../../errors/error-handler";
 import Wortal from "../../index";
-import { delayUntilConditionMet, detectDevice, getAllQueryParameters } from "../../utils/wortal-utils";
+import { detectDevice, getAllQueryParameters } from "../../utils/wortal-utils";
 import { TrafficSource } from "../interfaces/traffic-source";
 import { SessionBase } from "../session-base";
 import { Device } from "../types/session-types";

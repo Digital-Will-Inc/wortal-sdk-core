@@ -2,7 +2,6 @@ import { rethrowError_CrazyGames } from "../../errors/error-handler";
 import { ErrorMessage } from "../../errors/interfaces/error-message";
 import { Error_CrazyGames } from "../../errors/types/crazygames-error-types";
 import Wortal from "../../index";
-import { debug, exception } from "../../utils/logger";
 import { delayUntilConditionMet, generateRandomID } from "../../utils/wortal-utils";
 import { ICrazyGamesPlayer } from "../interfaces/crazygames-player";
 import { Player } from "./player";
@@ -24,14 +23,14 @@ export class CrazyGamesPlayer extends Player {
         try {
             cgPlayer = await this._initializeCrazyGamesPlayer();
         } catch (error) {
-            exception("Error initializing CrazyGames player: ", error);
+            Wortal._log.exception("Error initializing CrazyGames player: ", error);
         }
 
         this._data.id = cgPlayer?.id || generateRandomID();
         this._data.name = cgPlayer?.username || "Player";
         this._data.photo = cgPlayer?.profilePictureUrl || "https://images.crazygames.com/userportal/avatars/4.png";
 
-        debug("Player initialized: ", this._data);
+        Wortal._log.debug("Player initialized: ", this._data);
         return Promise.resolve();
     }
 
@@ -55,7 +54,7 @@ export class CrazyGamesPlayer extends Player {
                 isUserAPIAvailable = isAvailable;
             })
             .catch((error: ErrorMessage) => {
-                exception(`Error checking if user API is available: ${error.message}`);
+                Wortal._log.exception(`Error checking if user API is available: ${error.message}`);
             });
 
         if (isUserAPIAvailable) {
@@ -64,7 +63,7 @@ export class CrazyGamesPlayer extends Player {
                     return player;
                 })
                 .catch((error: ErrorMessage) => {
-                    exception(`Error fetching CrazyGames player: ${error.message}`);
+                    Wortal._log.exception(`Error fetching CrazyGames player: ${error.message}`);
                 });
         }
 
@@ -77,7 +76,7 @@ export class CrazyGamesPlayer extends Player {
                 if (error) {
                     rethrowError_CrazyGames(error, "isUserAccountAvailable");
                 } else {
-                    debug("User API available: ", isAvailable);
+                    Wortal._log.debug("User API available: ", isAvailable);
                     resolve(isAvailable);
                 }
             };
@@ -92,7 +91,7 @@ export class CrazyGamesPlayer extends Player {
                 if (error) {
                     rethrowError_CrazyGames(error, "getUser");
                 } else {
-                    debug("CrazyGames player fetched:", player);
+                    Wortal._log.debug("CrazyGames player fetched:", player);
                     resolve(player);
                 }
             };

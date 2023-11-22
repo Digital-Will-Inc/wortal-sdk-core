@@ -1,6 +1,5 @@
 import { ExternalCallbacks } from "../../core/interfaces/external-callbacks";
 import Wortal from "../../index";
-import { debug, exception } from "../../utils/logger";
 import { SessionData } from "../interfaces/session-data";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -24,14 +23,14 @@ export class Session {
     private readonly _externalCallbacks: ExternalCallbacks | undefined;
 
     constructor() {
-        debug("Initializing session...");
+        Wortal._log.debug("Initializing session...");
         this._data.country = this._setCountry();
         this._data.gameID = this._setGameID();
         this._data.browser = navigator.userAgent;
         if (Wortal._internalPlatform === "gd" || Wortal._internalPlatform === "gamemonetize") {
             this._externalCallbacks = {};
         }
-        debug("Session initialized: ", this._data);
+        Wortal._log.debug("Session initialized: ", this._data);
     }
 
     get gameID(): string {
@@ -64,7 +63,7 @@ export class Session {
             // As of v1.7.0 we should always be using window.wortalGameID. Any games uploaded after this version was
             // released should have a valid wortalGameID in wortal-data.js, so this represents an error state.
             //TODO: does this work with Waves?
-            exception("Game ID not found in window.wortalGameID, attempting to fetch the platform ID from the URL.");
+            Wortal._log.exception("Game ID not found in window.wortalGameID, attempting to fetch the platform ID from the URL.");
 
             // We keep this in for backwards compatibility. As of v1.6.13 Wortal will automatically add the game ID to
             // wortal-data.js when uploading a revision, but some games have not (and may never) be updated, so we
@@ -142,7 +141,7 @@ export class Session {
             }
         }
 
-        debug("Game ID: " + id);
+        Wortal._log.debug("Game ID: " + id);
         return id;
     }
 
@@ -151,7 +150,7 @@ export class Session {
         // without using geolocation.
         const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         if (typeof zone === "undefined") {
-            debug("Could not get time zone, defaulting to unknown.");
+            Wortal._log.debug("Could not get time zone, defaulting to unknown.");
             return "unknown";
         }
         const arr = zone.split("/");

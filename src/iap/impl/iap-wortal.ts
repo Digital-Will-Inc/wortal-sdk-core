@@ -1,7 +1,6 @@
 import { API_URL, WORTAL_API } from "../../data/core-data";
 import { notSupported } from "../../errors/error-handler";
 import Wortal from "../../index";
-import { debug } from "../../utils/logger";
 import { IAPBase } from "../iap-base";
 import { Product } from "../interfaces/product";
 import { Purchase } from "../interfaces/purchase";
@@ -56,7 +55,7 @@ export class IAPWortal extends IAPBase {
 
     protected _tryEnableIAPImpl(): void {
         this._isIAPEnabled = false;
-        debug(`IAP not supported in this session. This may be due to platform, device or regional restrictions. \nPlatform: ${Wortal._internalPlatform} // Device: ${Wortal.session.getDevice()} // Region: ${Wortal.session._internalSession.country}`);
+        Wortal._log.debug(`IAP not supported in this session. This may be due to platform, device or regional restrictions. \nPlatform: ${Wortal._internalPlatform} // Device: ${Wortal.session.getDevice()} // Region: ${Wortal.session._internalSession.country}`);
     }
 
 }

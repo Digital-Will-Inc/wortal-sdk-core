@@ -1,4 +1,4 @@
-import { debug } from "../../utils/logger";
+import Wortal from "../../index";
 import { TournamentData } from "../interfaces/tournament-data";
 
 /**
@@ -13,7 +13,7 @@ export class Tournament {
 
     /** @hidden */
     constructor(id: string, contextID: string, endTime: number, title?: string, payload?: string) {
-        debug(`Creating tournament: ${id} / ${contextID} / ${endTime} / ${title} / ${payload}`);
+        Wortal._log.debug(`Creating tournament: ${id} / ${contextID} / ${endTime} / ${title} / ${payload}`);
         // FB API docs say these are strings, but we're getting numbers returned.
         this._data.id = id.toString();
         this._data.contextID = contextID.toString();

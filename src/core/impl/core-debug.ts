@@ -2,7 +2,6 @@ import { AuthPayload } from "../../auth/interfaces/auth-payload";
 import { AuthResponse } from "../../auth/interfaces/auth-response";
 import { SDK_SRC } from "../../data/core-data";
 import Wortal from "../../index";
-import { debug } from "../../utils/logger";
 import { onPauseFunctions } from "../../utils/wortal-utils";
 import { CoreBase } from "../core-base";
 
@@ -25,7 +24,7 @@ export class CoreDebug extends CoreBase {
             return this.defaultAuthenticateAsyncImpl(payload);
         }
 
-        debug("Player authenticated successfully. Payload:", payload);
+        Wortal._log.debug("Player authenticated successfully. Payload:", payload);
         const response: AuthResponse = {
             status: "success",
         };
@@ -38,7 +37,7 @@ export class CoreDebug extends CoreBase {
     }
 
     protected linkAccountAsyncImpl(): Promise<boolean> {
-        debug("Player account linked successfully.");
+        Wortal._log.debug("Player account linked successfully.");
         return Promise.resolve(true);
     }
 
@@ -47,7 +46,7 @@ export class CoreDebug extends CoreBase {
     }
 
     protected performHapticFeedbackAsyncImpl(): Promise<void> {
-        debug("Haptic feedback requested successfully.");
+        Wortal._log.debug("Haptic feedback requested successfully.");
         return Promise.resolve();
     }
 
@@ -78,12 +77,12 @@ export class CoreDebug extends CoreBase {
             metaElement.setAttribute("content", Wortal.ads._internalAdConfig.hostID);
 
             googleAdsSDK.onload = () => {
-                debug("Debug platform SDK initialized with ads.");
+                Wortal._log.debug("Debug platform SDK initialized with ads.");
                 resolve();
             }
 
             googleAdsSDK.onerror = () => {
-                debug("Ad blocker detected. Debug platform SDK initialized without ads.");
+                Wortal._log.debug("Ad blocker detected. Debug platform SDK initialized without ads.");
                 Wortal.ads._internalAdConfig.setAdBlocked(true);
                 resolve();
             };

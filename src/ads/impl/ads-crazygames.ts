@@ -2,7 +2,6 @@ import { API_URL, WORTAL_API } from "../../data/core-data";
 import { notSupported } from "../../errors/error-handler";
 import { Error_CrazyGames } from "../../errors/types/crazygames-error-types";
 import Wortal from "../../index";
-import { warn } from "../../utils/logger";
 import { AdsBase } from "../ads-base";
 import { AdConfig } from "../classes/ad-config";
 import { AdConfigNull } from "../classes/ad-config-null";
@@ -34,7 +33,7 @@ export class AdsCrazyGames extends AdsBase {
                 Wortal.analytics._logAdCall("interstitial", ad.placementType, true);
             },
             adError: (error: Error_CrazyGames) => {
-                warn(`Ad instance encountered an error or was not filled: ${error}`);
+                Wortal._log.warn(`Ad instance encountered an error or was not filled: ${error}`);
                 ad.callbacks.noFill();
                 Wortal.analytics._logAdCall("interstitial", ad.placementType, false);
             },
@@ -52,7 +51,7 @@ export class AdsCrazyGames extends AdsBase {
                 Wortal.analytics._logAdCall("rewarded", ad.placementType, true, true);
             },
             adError: (error: Error_CrazyGames) => {
-                warn(`Ad instance encountered an error or was not filled: ${error}`);
+                Wortal._log.warn(`Ad instance encountered an error or was not filled: ${error}`);
                 ad.callbacks.adDismissed?.();
                 ad.callbacks.noFill();
                 Wortal.analytics._logAdCall("rewarded", ad.placementType, false, false);

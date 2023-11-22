@@ -6,7 +6,6 @@ import { Error_CrazyGames } from "../../errors/types/crazygames-error-types";
 import Wortal from "../../index";
 import { CrazyGamesPlayer } from "../../player/classes/crazygames-player";
 import { ICrazyGamesPlayer } from "../../player/interfaces/crazygames-player";
-import { debug, exception } from "../../utils/logger";
 import { onPauseFunctions } from "../../utils/wortal-utils";
 import { CoreBase } from "../core-base";
 import { API_URL, SDK_SRC, WORTAL_API } from "../../data/core-data";
@@ -26,7 +25,7 @@ export class CoreCrazyGames extends CoreBase {
                 if (error) {
                     reject(rethrowError_CrazyGames(error, WORTAL_API.AUTHENTICATE_ASYNC, API_URL.AUTHENTICATE_ASYNC));
                 } else {
-                    debug("Crazy Games user authenticated: ", user);
+                    Wortal._log.debug("Crazy Games user authenticated: ", user);
                     Wortal.player._internalPlayer = new CrazyGamesPlayer(user);
 
                     const response: AuthResponse = {
@@ -89,18 +88,18 @@ export class CoreCrazyGames extends CoreBase {
                     reject(initializationError("Failed to load Crazy Games SDK.", "_initializePlatformAsyncImpl"));
                 }
 
-                debug("Crazy Games platform SDK loaded.");
+                Wortal._log.debug("Crazy Games platform SDK loaded.");
                 Wortal._internalPlatformSDK = window.CrazyGames.SDK;
 
                 const callback = (error: Error_CrazyGames, result: any) => {
                     if (error) {
                         // Don't reject here because not being able to check for adblock shouldn't prevent the SDK from working.
-                        exception(error);
+                        Wortal._log.exception(error);
                         resolve();
                     } else {
                         // This seems to always return false as of v1.6.9. We still guard against this when we show ads
                         // as the CrazyGames SDK will return the adError callback, which triggers our noFill callback.
-                        debug("CrazyGames adblock check complete.", result);
+                        Wortal._log.debug("CrazyGames adblock check complete.", result);
                         Wortal.ads._internalAdConfig.setAdBlocked(result);
                         resolve();
                     }

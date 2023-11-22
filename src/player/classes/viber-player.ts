@@ -1,5 +1,4 @@
 import Wortal from "../../index";
-import { debug } from "../../utils/logger";
 import { Player } from "./player";
 
 /**
@@ -17,7 +16,7 @@ export class ViberPlayer extends Player {
         this._data.photo = Wortal._internalPlatformSDK.player.getPhoto();
         this._data.isFirstPlay = !Wortal._internalPlatformSDK.player.hasPlayed();
 
-        debug("Player initialized: ", this._data);
+        Wortal._log.debug("Player initialized: ", this._data);
         return Promise.resolve();
     }
 

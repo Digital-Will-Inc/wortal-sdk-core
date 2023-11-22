@@ -2,7 +2,6 @@ import { API_URL, WORTAL_API } from "../data/core-data";
 import { invalidParams } from "../errors/error-handler";
 import { ValidationResult } from "../errors/interfaces/validation-result";
 import Wortal from "../index";
-import { apiCall, debug, warn } from "../utils/logger";
 import { isValidPlacementType, isValidString } from "../utils/validators";
 import { AdConfig } from "./classes/ad-config";
 import { AdCallbacks } from "./interfaces/ad-callbacks";
@@ -31,14 +30,14 @@ export abstract class AdsBase {
 //#region Public API
 
     public showBanner(shouldShow: boolean = true, position: BannerPosition = "bottom") {
-        apiCall(WORTAL_API.ADS_SHOW_BANNER);
+        Wortal._log.apiCall(WORTAL_API.ADS_SHOW_BANNER);
 
         this.showBannerImpl(shouldShow, position);
     }
 
     public showInterstitial(placement: PlacementType, description: string,
                             beforeAd: () => void, afterAd: () => void, noFill?: () => void): void {
-        apiCall(WORTAL_API.ADS_SHOW_INTERSTITIAL);
+        Wortal._log.apiCall(WORTAL_API.ADS_SHOW_INTERSTITIAL);
 
         const callbacks: AdCallbacks = {
             beforeAd: beforeAd,
@@ -54,7 +53,7 @@ export abstract class AdsBase {
 
         // Don't call for an ad if the ads are blocked.
         if (this._adConfig.isAdBlocked) {
-            debug("Ads are blocked, skipping..");
+            Wortal._log.debug("Ads are blocked, skipping..");
             callbacks.noFill();
             return;
         }
@@ -75,7 +74,7 @@ export abstract class AdsBase {
 
     public showRewarded(description: string, beforeAd: () => void, afterAd: () => void,
                         adDismissed: () => void, adViewed: () => void, noFill?: () => void): void {
-        apiCall(WORTAL_API.ADS_SHOW_REWARDED);
+        Wortal._log.apiCall(WORTAL_API.ADS_SHOW_REWARDED);
 
         const callbacks: AdCallbacks = {
             beforeAd: beforeAd,
@@ -94,7 +93,7 @@ export abstract class AdsBase {
 
         // Don't call for an ad if the ads are blocked.
         if (this._adConfig.isAdBlocked) {
-            debug("Ads are blocked, skipping..");
+            Wortal._log.debug("Ads are blocked, skipping..");
             callbacks.noFill();
             callbacks.adDismissed?.();
             return;
@@ -179,11 +178,11 @@ export abstract class AdsBase {
         // These aren't strictly required as in some cases ads are shown on a menu or otherwise non-gameplay screen,
         // we still log a warning to make sure the developer is aware.
         if (callbacks.beforeAd === undefined || typeof callbacks.beforeAd !== "function") {
-            callbacks.beforeAd = () => warn("beforeAd function missing or invalid. This is used to pause the game and mute audio when an ad begins.");
+            callbacks.beforeAd = () => Wortal._log.warn("beforeAd function missing or invalid. This is used to pause the game and mute audio when an ad begins.");
         }
 
         if (callbacks.afterAd === undefined || typeof callbacks.afterAd !== "function") {
-            callbacks.afterAd = () => warn("afterAd function missing or invalid. This is used to resume the game and unmute audio when an ad has finished.");
+            callbacks.afterAd = () => Wortal._log.warn("afterAd function missing or invalid. This is used to resume the game and unmute audio when an ad has finished.");
         }
 
         return { valid: true };
@@ -214,15 +213,15 @@ export abstract class AdsBase {
         // These aren't strictly required as in some cases ads are shown on a menu or otherwise non-gameplay screen,
         // we still log a warning to make sure the developer is aware.
         if (callbacks.beforeAd === undefined || typeof callbacks.beforeAd !== "function") {
-            callbacks.beforeAd = () => warn("beforeAd function missing or invalid. This is used to pause the game and mute audio when an ad begins.");
+            callbacks.beforeAd = () => Wortal._log.warn("beforeAd function missing or invalid. This is used to pause the game and mute audio when an ad begins.");
         }
 
         if (callbacks.afterAd === undefined || typeof callbacks.afterAd !== "function") {
-            callbacks.afterAd = () => warn("afterAd function missing or invalid. This is used to resume the game and unmute audio when an ad has finished.");
+            callbacks.afterAd = () => Wortal._log.warn("afterAd function missing or invalid. This is used to resume the game and unmute audio when an ad has finished.");
         }
 
         if (callbacks.adDismissed === undefined || typeof callbacks.adDismissed !== "function") {
-            callbacks.adDismissed = () => warn("adDismissed function missing or invalid. This is used to handle when the player dismisses the ad.");
+            callbacks.adDismissed = () => Wortal._log.warn("adDismissed function missing or invalid. This is used to handle when the player dismisses the ad.");
         }
 
         return { valid: true };

@@ -1,4 +1,4 @@
-import { exception } from "../utils/logger";
+import Wortal from "../index";
 import { ErrorMessage_AddictingGames } from "./interfaces/addictinggames-error";
 import { ErrorMessage } from "./interfaces/error-message";
 import { ErrorMessage_Facebook } from "./interfaces/facebook-error";
@@ -20,7 +20,7 @@ export function rethrowError_Facebook_Rakuten(original: ErrorMessage_Facebook | 
         url: url,
     }
 
-    exception(error.code, error);
+    Wortal._log.exception(error.code, error);
     return error;
 }
 
@@ -37,7 +37,7 @@ export function rethrowError_CrazyGames(original: Error_CrazyGames, context: str
         url: url,
     }
 
-    exception(error.code, error);
+    Wortal._log.exception(error.code, error);
     return error;
 }
 
@@ -54,7 +54,7 @@ export function rethrowError_AddictingGames(original: ErrorMessage_AddictingGame
         url: url,
     }
 
-    exception(error.code, error);
+    Wortal._log.exception(error.code, error);
     return error;
 }
 
@@ -72,7 +72,7 @@ export function rethrowError_Yandex(original: string, context: string, url?: str
         url: url,
     }
 
-    exception(error.code, error);
+    Wortal._log.exception(error.code, error);
     return error;
 }
 
@@ -88,7 +88,7 @@ export function invalidParams(message: string = "", context: string, url?: strin
         url: url,
     }
 
-    exception(error.code, error);
+    Wortal._log.exception(error.code, error);
     return error;
 }
 
@@ -106,7 +106,7 @@ export function invalidOperation(message: string, context: string, url?: string)
         url: url,
     }
 
-    exception(error.code, error);
+    Wortal._log.exception(error.code, error);
     return error;
 }
 
@@ -122,7 +122,7 @@ export function notSupported(message: string = "", context: string, url?: string
         url: url || "https://sdk.html5gameportal.com/api/wortal/#getsupportedapis",
     }
 
-    exception(error.code, error);
+    Wortal._log.exception(error.code, error);
     return error;
 }
 
@@ -139,7 +139,7 @@ export function operationFailed(message: string, context: string, url?: string):
         url: url,
     }
 
-    exception(error.code, error);
+    Wortal._log.exception(error.code, error);
     return error;
 }
 
@@ -157,7 +157,7 @@ export function initializationError(message: string, context: string, url?: stri
         url: url || "https://sdk.html5gameportal.com/wortal-html5/#initialization",
     }
 
-    exception(error.code, error);
+    Wortal._log.exception(error.code, error);
     return error;
 }
 
@@ -174,7 +174,7 @@ export function notInitialized(message: string = "", context: string, url?: stri
         url: url,
     }
 
-    exception(error.code, error);
+    Wortal._log.exception(error.code, error);
     return error;
 }
 

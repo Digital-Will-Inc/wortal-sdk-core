@@ -3,7 +3,6 @@ import { ValidationResult } from "../errors/interfaces/validation-result";
 import Wortal from "../index";
 import { ConnectedPlayer } from "../player/classes/connected-player";
 import { invalidParams, notInitialized } from "../errors/error-handler";
-import { apiCall } from "../utils/logger";
 import { isValidPayloadImage, isValidPayloadText, isValidString } from "../utils/validators";
 import { ChoosePayload } from "./interfaces/choose-payload";
 import { ContextSizeResponse } from "./interfaces/context-size-response";
@@ -25,7 +24,7 @@ export abstract class ContextBase {
 //#region Public API
 
     public chooseAsync(payload?: ChoosePayload): Promise<void> {
-        apiCall(WORTAL_API.CONTEXT_CHOOSE_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.CONTEXT_CHOOSE_ASYNC);
 
         const validationResult = this.validateChooseAsync(payload);
         if (!validationResult.valid) {
@@ -36,7 +35,7 @@ export abstract class ContextBase {
     }
 
     public createAsync(playerID?: string | string[]): Promise<void> {
-        apiCall(WORTAL_API.CONTEXT_CREATE_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.CONTEXT_CREATE_ASYNC);
 
         const validationResult = this.validateCreateAsync(playerID);
         if (!validationResult.valid) {
@@ -47,7 +46,7 @@ export abstract class ContextBase {
     }
 
     public getId(): string {
-        apiCall(WORTAL_API.CONTEXT_GET_ID);
+        Wortal._log.apiCall(WORTAL_API.CONTEXT_GET_ID);
 
         const validationResult = this.validateGetId();
         if (!validationResult.valid) {
@@ -58,7 +57,7 @@ export abstract class ContextBase {
     }
 
     public getPlayersAsync(): Promise<ConnectedPlayer[]> {
-        apiCall(WORTAL_API.CONTEXT_GET_PLAYERS_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.CONTEXT_GET_PLAYERS_ASYNC);
 
         const validationResult = this.validateGetPlayersAsync();
         if (!validationResult.valid) {
@@ -69,7 +68,7 @@ export abstract class ContextBase {
     }
 
     public getType(): ContextType {
-        apiCall(WORTAL_API.CONTEXT_GET_TYPE);
+        Wortal._log.apiCall(WORTAL_API.CONTEXT_GET_TYPE);
 
         const validationResult = this.validateGetType();
         if (!validationResult.valid) {
@@ -80,7 +79,7 @@ export abstract class ContextBase {
     }
 
     public inviteAsync(payload: InvitePayload): Promise<number> {
-        apiCall(WORTAL_API.CONTEXT_INVITE_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.CONTEXT_INVITE_ASYNC);
 
         const validationResult = this.validateInviteAsync(payload);
         if (!validationResult.valid) {
@@ -91,7 +90,7 @@ export abstract class ContextBase {
     }
 
     public isSizeBetween(min?: number, max?: number): ContextSizeResponse | null {
-        apiCall(WORTAL_API.CONTEXT_IS_SIZE_BETWEEN);
+        Wortal._log.apiCall(WORTAL_API.CONTEXT_IS_SIZE_BETWEEN);
 
         const validationResult = this.validateIsSizeBetween(min, max);
         if (!validationResult.valid) {
@@ -102,7 +101,7 @@ export abstract class ContextBase {
     }
 
     public shareAsync(payload: SharePayload): Promise<number> {
-        apiCall(WORTAL_API.CONTEXT_SHARE_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.CONTEXT_SHARE_ASYNC);
 
         const validationResult = this.validateShareAsync(payload);
         if (!validationResult.valid) {
@@ -113,7 +112,7 @@ export abstract class ContextBase {
     }
 
     public shareLinkAsync(payload: LinkSharePayload): Promise<string | void> {
-        apiCall(WORTAL_API.CONTEXT_SHARE_LINK_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.CONTEXT_SHARE_LINK_ASYNC);
 
         const validationResult = this.validateShareLinkAsync(payload);
         if (!validationResult.valid) {
@@ -124,7 +123,7 @@ export abstract class ContextBase {
     }
 
     public switchAsync(contextID: string, payload?: SwitchPayload): Promise<void> {
-        apiCall(WORTAL_API.CONTEXT_SWITCH_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.CONTEXT_SWITCH_ASYNC);
 
         const validationResult = this.validateSwitchAsync(contextID, payload);
         if (!validationResult.valid) {
@@ -135,7 +134,7 @@ export abstract class ContextBase {
     }
 
     public updateAsync(payload: UpdatePayload): Promise<void> {
-        apiCall(WORTAL_API.CONTEXT_UPDATE_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.CONTEXT_UPDATE_ASYNC);
 
         const validationResult = this.validateUpdateAsync(payload);
         if (!validationResult.valid) {

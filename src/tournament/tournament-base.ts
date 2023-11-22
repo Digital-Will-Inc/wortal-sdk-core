@@ -2,7 +2,6 @@ import { API_URL, WORTAL_API } from "../data/core-data";
 import { invalidParams, notInitialized } from "../errors/error-handler";
 import { ValidationResult } from "../errors/interfaces/validation-result";
 import Wortal from "../index";
-import { apiCall } from "../utils/logger";
 import { isValidNumber, isValidString } from "../utils/validators";
 import { Tournament } from "./classes/tournament";
 import { CreateTournamentPayload } from "./interfaces/create-tournament-payload";
@@ -19,7 +18,7 @@ export abstract class TournamentBase {
 //#region Public API
 
     public createAsync(payload: CreateTournamentPayload): Promise<Tournament> {
-        apiCall(WORTAL_API.TOURNAMENT_CREATE_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.TOURNAMENT_CREATE_ASYNC);
 
         const validationResult = this.validateCreateAsync(payload);
         if (!validationResult.valid) {
@@ -30,7 +29,7 @@ export abstract class TournamentBase {
     }
 
     public getAllAsync(): Promise<Tournament[]> {
-        apiCall(WORTAL_API.TOURNAMENT_GET_ALL_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.TOURNAMENT_GET_ALL_ASYNC);
 
         const validationResult = this.validateGetAllAsync();
         if (!validationResult.valid) {
@@ -41,7 +40,7 @@ export abstract class TournamentBase {
     }
 
     public getCurrentAsync(): Promise<Tournament> {
-        apiCall(WORTAL_API.TOURNAMENT_GET_CURRENT_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.TOURNAMENT_GET_CURRENT_ASYNC);
 
         const validationResult = this.validateGetCurrentAsync();
         if (!validationResult.valid) {
@@ -52,7 +51,7 @@ export abstract class TournamentBase {
     }
 
     public joinAsync(tournamentID: string): Promise<void> {
-        apiCall(WORTAL_API.TOURNAMENT_JOIN_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.TOURNAMENT_JOIN_ASYNC);
 
         const validationResult = this.validateJoinAsync(tournamentID);
         if (!validationResult.valid) {
@@ -63,7 +62,7 @@ export abstract class TournamentBase {
     }
 
     public postScoreAsync(score: number): Promise<void> {
-        apiCall(WORTAL_API.TOURNAMENT_POST_SCORE_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.TOURNAMENT_POST_SCORE_ASYNC);
 
         const validationResult = this.validatePostScoreAsync(score);
         if (!validationResult.valid) {
@@ -74,7 +73,7 @@ export abstract class TournamentBase {
     }
 
     public shareAsync(payload: ShareTournamentPayload): Promise<void> {
-        apiCall(WORTAL_API.TOURNAMENT_SHARE_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.TOURNAMENT_SHARE_ASYNC);
 
         const validationResult = this.validateShareAsync(payload);
         if (!validationResult.valid) {

@@ -3,7 +3,6 @@ import { AuthResponse } from "../../auth/interfaces/auth-response";
 import { initializationError, notSupported, rethrowError_Facebook_Rakuten } from "../../errors/error-handler";
 import { ErrorMessage_Facebook } from "../../errors/interfaces/facebook-error";
 import Wortal from "../../index";
-import { debug, info } from "../../utils/logger";
 import { CoreBase } from "../core-base";
 import { API_URL, SDK_SRC, WORTAL_API } from "../../data/core-data";
 
@@ -21,7 +20,7 @@ export class CoreFacebook extends CoreBase {
     }
 
     protected initializeAsyncImpl(): Promise<void> {
-        debug(`Initializing SDK for Facebook platform.`);
+        Wortal._log.debug(`Initializing SDK for Facebook platform.`);
         return Wortal._internalPlatformSDK.initializeAsync()
             .then(() => {
                 Wortal.iap._internalTryEnableIAP();
@@ -29,7 +28,7 @@ export class CoreFacebook extends CoreBase {
                     .then(() => {
                         Wortal.isInitialized = true;
                         window.dispatchEvent(new Event("wortal-sdk-initialized"));
-                        info("SDK initialization complete.");
+                        Wortal._log.info("SDK initialization complete.");
                     })
                     .catch((error: any) => {
                         throw initializationError(`Failed to initialize SDK during config.lateInitialize: ${error.message}`,
@@ -50,7 +49,7 @@ export class CoreFacebook extends CoreBase {
 
     protected onPauseImpl(callback: () => void): void {
         Wortal._internalPlatformSDK.onPause(() => {
-            debug("onPause callback invoked.");
+            Wortal._log.debug("onPause callback invoked.");
             callback();
         });
     }
@@ -90,7 +89,7 @@ export class CoreFacebook extends CoreBase {
                     reject(initializationError("Failed to load Facebook SDK.", "_initializePlatformAsyncImpl"));
                 }
 
-                debug("Facebook platform SDK initialized.");
+                Wortal._log.debug("Facebook platform SDK initialized.");
                 Wortal._internalPlatformSDK = FBInstant;
                 resolve();
             }
@@ -109,7 +108,7 @@ export class CoreFacebook extends CoreBase {
                 return Promise.all([Wortal.ads._internalAdConfig.initialize(), Wortal.player._internalPlayer.initialize()])
                     .then(() => {
                         Wortal.iap._internalTryEnableIAP();
-                        debug(`SDK initialized for ${Wortal._internalPlatform} platform.`);
+                        Wortal._log.debug(`SDK initialized for ${Wortal._internalPlatform} platform.`);
                         return Wortal._internalPlatformSDK.startGameAsync()
                             .then(() => {
                                 Wortal.analytics._logTrafficSource();

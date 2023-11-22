@@ -1,7 +1,6 @@
 import { rethrowError_Facebook_Rakuten } from "../../errors/error-handler";
 import { ErrorMessage_Viber } from "../../errors/interfaces/viber-error";
 import Wortal from "../../index";
-import { debug, exception, warn } from "../../utils/logger";
 import { isValidString } from "../../utils/validators";
 import { AdUnit_Link_Viber } from "../interfaces/rakuten-ads";
 import { AdConfig } from "./ad-config";
@@ -16,31 +15,31 @@ export class AdConfigViber extends AdConfig {
     }
 
     public async initialize(): Promise<void> {
-        debug("Initializing AdConfig..");
+        Wortal._log.debug("Initializing AdConfig..");
         await this._getAdUnitIDs();
-        debug("AdConfig initialized.", this._data);
+        Wortal._log.debug("AdConfig initialized.", this._data);
     }
 
     private async _getAdUnitIDs(): Promise<void> {
-        debug("Fetching ad unit IDs from Viber SDK..");
+        Wortal._log.debug("Fetching ad unit IDs from Viber SDK..");
         return Wortal._internalPlatformSDK.getAdUnitsAsync()
             .then((adUnits: AdUnit_Link_Viber[]) => {
                 if (adUnits == null || undefined) {
-                    exception("Failed to retrieve ad units. This may be due to a server error or platform malfunction.");
+                    Wortal._log.exception("Failed to retrieve ad units. This may be due to a server error or platform malfunction.");
                     return;
                 }
 
                 for (let i = 0; i < adUnits.length; i++) {
                     if (adUnits[i].type === "INTERSTITIAL") {
                         if (isValidString(this._data.interstitialId)) {
-                            warn("Multiple interstitial ad units found. Using the first one.");
+                            Wortal._log.warn("Multiple interstitial ad units found. Using the first one.");
                             continue;
                         }
 
                         this._data.interstitialId = adUnits[i].id;
                     } else if (adUnits[i].type === "REWARDED_VIDEO") {
                         if (isValidString(this._data.rewardedId)) {
-                            warn("Multiple rewarded ad units found. Using the first one.");
+                            Wortal._log.warn("Multiple rewarded ad units found. Using the first one.");
                             continue;
                         }
 

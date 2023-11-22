@@ -2,7 +2,6 @@ import { API_URL, WORTAL_API } from "../data/core-data";
 import { invalidParams, notInitialized } from "../errors/error-handler";
 import { ValidationResult } from "../errors/interfaces/validation-result";
 import Wortal from "../index";
-import { apiCall } from "../utils/logger";
 import { isValidString } from "../utils/validators";
 import { Achievement } from "./interfaces/achievement";
 
@@ -17,7 +16,7 @@ export abstract class AchievementsBase {
 //#region Public API
 
     public getAchievementsAsync(): Promise<Achievement[]> {
-        apiCall(WORTAL_API.ACHIEVEMENTS_GET_ACHIEVEMENTS_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.ACHIEVEMENTS_GET_ACHIEVEMENTS_ASYNC);
 
         const validationResult = this.validateGetAchievements();
         if (!validationResult.valid) {
@@ -28,7 +27,7 @@ export abstract class AchievementsBase {
     }
 
     public unlockAchievementAsync(achievementName: string): Promise<boolean> {
-        apiCall(WORTAL_API.ACHIEVEMENTS_UNLOCK_ACHIEVEMENT_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.ACHIEVEMENTS_UNLOCK_ACHIEVEMENT_ASYNC);
 
         const validationResult = this.validateUnlockAchievement(achievementName);
         if (!validationResult.valid) {

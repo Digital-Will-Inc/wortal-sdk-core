@@ -2,7 +2,6 @@ import { AuthPayload } from "../../auth/interfaces/auth-payload";
 import { AuthResponse } from "../../auth/interfaces/auth-response";
 import { initializationError, notSupported } from "../../errors/error-handler";
 import Wortal from "../../index";
-import { debug } from "../../utils/logger";
 import { onPauseFunctions } from "../../utils/wortal-utils";
 import { CoreBase } from "../core-base";
 import { API_URL, SDK_SRC, WORTAL_API } from "../../data/core-data";
@@ -54,7 +53,7 @@ export class CoreGamePix extends CoreBase {
                         reject(initializationError("Failed to load GamePix SDK.", "_initializePlatformAsyncImpl"));
                     }
 
-                    debug("GamePix platform SDK loaded.");
+                    Wortal._log.debug("GamePix platform SDK loaded.");
                     Wortal._internalPlatformSDK = GamePix;
                     resolve();
                 }

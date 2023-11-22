@@ -2,7 +2,6 @@ import { API_URL, WORTAL_API } from "../data/core-data";
 import { invalidParams, notInitialized } from "../errors/error-handler";
 import { ValidationResult } from "../errors/interfaces/validation-result";
 import Wortal from "../index";
-import { apiCall, internalCall } from "../utils/logger";
 import { isValidString } from "../utils/validators";
 import { GameState } from "./classes/game-state";
 import { Session } from "./classes/session";
@@ -35,7 +34,7 @@ export abstract class SessionBase {
 //#region Public API
 
     public gameplayStart(): void {
-        apiCall(WORTAL_API.SESSION_GAMEPLAY_START);
+        Wortal._log.apiCall(WORTAL_API.SESSION_GAMEPLAY_START);
 
         const validationResult = this.validateGameplayStart();
         if (!validationResult.valid) {
@@ -46,7 +45,7 @@ export abstract class SessionBase {
     }
 
     public gameplayStop(): void {
-        apiCall(WORTAL_API.SESSION_GAMEPLAY_STOP);
+        Wortal._log.apiCall(WORTAL_API.SESSION_GAMEPLAY_STOP);
 
         const validationResult = this.validateGameplayStop();
         if (!validationResult.valid) {
@@ -57,13 +56,13 @@ export abstract class SessionBase {
     }
 
     public getDevice(): Device {
-        apiCall(WORTAL_API.SESSION_GET_DEVICE);
+        Wortal._log.apiCall(WORTAL_API.SESSION_GET_DEVICE);
 
         return this.getDeviceImpl();
     }
 
     public getEntryPointAsync(): Promise<string> {
-        apiCall(WORTAL_API.SESSION_GET_ENTRY_POINT_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.SESSION_GET_ENTRY_POINT_ASYNC);
 
         const validationResult = this.validateGetEntryPointAsync();
         if (!validationResult.valid) {
@@ -74,7 +73,7 @@ export abstract class SessionBase {
     }
 
     public getEntryPointData(): Record<string, unknown> {
-        apiCall(WORTAL_API.SESSION_GET_ENTRY_POINT_DATA);
+        Wortal._log.apiCall(WORTAL_API.SESSION_GET_ENTRY_POINT_DATA);
 
         const validationResult = this.validateGetEntryPointData();
         if (!validationResult.valid) {
@@ -85,13 +84,13 @@ export abstract class SessionBase {
     }
 
     public getLocale(): string {
-        apiCall(WORTAL_API.SESSION_GET_LOCALE);
+        Wortal._log.apiCall(WORTAL_API.SESSION_GET_LOCALE);
 
         return this.getLocaleImpl();
     }
 
     public getOrientation(): Orientation {
-        apiCall(WORTAL_API.SESSION_GET_ORIENTATION);
+        Wortal._log.apiCall(WORTAL_API.SESSION_GET_ORIENTATION);
 
         const portrait = window.matchMedia("(orientation: portrait)").matches;
         if (portrait) {
@@ -102,13 +101,13 @@ export abstract class SessionBase {
     }
 
     public getPlatform(): Platform {
-        apiCall(WORTAL_API.SESSION_GET_PLATFORM);
+        Wortal._log.apiCall(WORTAL_API.SESSION_GET_PLATFORM);
 
         return Wortal._internalPlatform;
     }
 
     public getTrafficSource(): TrafficSource {
-        apiCall(WORTAL_API.SESSION_GET_TRAFFIC_SOURCE);
+        Wortal._log.apiCall(WORTAL_API.SESSION_GET_TRAFFIC_SOURCE);
 
         const validationResult = this.validateGetTrafficSource();
         if (!validationResult.valid) {
@@ -119,7 +118,7 @@ export abstract class SessionBase {
     }
 
     public happyTime(): void {
-        apiCall(WORTAL_API.SESSION_HAPPY_TIME);
+        Wortal._log.apiCall(WORTAL_API.SESSION_HAPPY_TIME);
 
         const validationResult = this.validateHappyTime();
         if (!validationResult.valid) {
@@ -130,7 +129,7 @@ export abstract class SessionBase {
     }
 
     public onOrientationChange(callback: (orientation: Orientation) => void): void {
-        apiCall(WORTAL_API.SESSION_ON_ORIENTATION_CHANGE);
+        Wortal._log.apiCall(WORTAL_API.SESSION_ON_ORIENTATION_CHANGE);
 
         const validationResult = this.validateOnOrientationChange(callback);
         if (!validationResult.valid) {
@@ -148,7 +147,7 @@ export abstract class SessionBase {
     }
 
     public setSessionData(data: Record<string, unknown>): void {
-        apiCall(WORTAL_API.SESSION_SET_SESSION_DATA);
+        Wortal._log.apiCall(WORTAL_API.SESSION_SET_SESSION_DATA);
 
         const validationResult = this.validateSetSessionData(data);
         if (!validationResult.valid) {
@@ -159,7 +158,7 @@ export abstract class SessionBase {
     }
 
     public switchGameAsync(gameID: string, data?: object): Promise<void> {
-        apiCall(WORTAL_API.SESSION_SWITCH_GAME_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.SESSION_SWITCH_GAME_ASYNC);
 
         const validationResult = this.validateSwitchGameAsync(gameID, data);
         if (!validationResult.valid) {
@@ -173,13 +172,13 @@ export abstract class SessionBase {
 //#region Internal API
 
     _gameLoadingStart(): void {
-        internalCall(WORTAL_API.SESSION_GAME_LOADING_START);
+        Wortal._log.internalCall(WORTAL_API.SESSION_GAME_LOADING_START);
 
         return this._gameLoadingStartImpl();
     }
 
     _gameLoadingStop(): void {
-        internalCall(WORTAL_API.SESSION_GAME_LOADING_STOP);
+        Wortal._log.internalCall(WORTAL_API.SESSION_GAME_LOADING_STOP);
 
         return this._gameLoadingStopImpl();
     }

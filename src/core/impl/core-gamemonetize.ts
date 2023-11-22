@@ -2,7 +2,6 @@ import { AuthPayload } from "../../auth/interfaces/auth-payload";
 import { AuthResponse } from "../../auth/interfaces/auth-response";
 import { initializationError, notSupported } from "../../errors/error-handler";
 import Wortal from "../../index";
-import { debug } from "../../utils/logger";
 import { addExternalCallback, externalSDKEventTrigger, onPauseFunctions } from "../../utils/wortal-utils";
 import { CoreBase } from "../core-base";
 import { API_URL, GD_GAME_MONETIZE_API, SDK_SRC, WORTAL_API } from "../../data/core-data";
@@ -64,7 +63,7 @@ export class CoreGameMonetize extends CoreBase {
                     reject(initializationError("Failed to load GameMonetize SDK.", "_initializePlatformAsyncImpl"));
                 }
 
-                debug("GameMonetize platform SDK initialized.");
+                Wortal._log.debug("GameMonetize platform SDK initialized.");
                 Wortal._internalPlatformSDK = sdk;
                 resolve();
             } else {
@@ -80,7 +79,7 @@ export class CoreGameMonetize extends CoreBase {
 
                     Wortal._internalPlatformSDK = sdk;
                     addExternalCallback(GD_GAME_MONETIZE_API.SDK_READY, () => {
-                        debug("GameMonetize platform SDK initialized.");
+                        Wortal._log.debug("GameMonetize platform SDK initialized.");
                         resolve();
                     });
                 }
@@ -130,7 +129,7 @@ export class CoreGameMonetize extends CoreBase {
         // ID: 5lmq5m1n60ijd3xm2pnkgfzm0mtz10to
         const url = document.URL.split("/");
         const id = url[3];
-        debug("Initializing GameMonetize SDK with game ID: " + id);
+        Wortal._log.debug("Initializing GameMonetize SDK with game ID: " + id);
         return id;
     }
 

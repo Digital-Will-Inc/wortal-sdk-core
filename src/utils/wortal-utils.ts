@@ -1,7 +1,6 @@
 import Wortal from "../index";
 import { Device } from "../session/types/session-types";
 import { invalidParams } from "../errors/error-handler";
-import { debug, exception } from "./logger";
 import { isValidShareDestination, isValidString } from "./validators";
 
 //#region SDK Utility functions
@@ -25,7 +24,7 @@ export function delayUntilConditionMet(condition: () => boolean, message: string
                 resolve();
             } else {
                 if (isValidString(message)) {
-                    debug(message);
+                    Wortal._log.debug(message);
                 }
                 setTimeout(checkIfConditionMet, 100);
             }
@@ -187,7 +186,7 @@ export function addExternalCallback(eventName: string, callback: () => void): vo
     if (typeof Wortal.session._internalSession.externalCallbacks !== "undefined") {
         Wortal.session._internalSession.externalCallbacks[eventName] = callback;
     } else {
-        exception("externalCallbacks is undefined. This is a fatal error that should have been caught during initialization.");
+        Wortal._log.exception("externalCallbacks is undefined. This is a fatal error that should have been caught during initialization.");
     }
 }
 
@@ -201,13 +200,13 @@ export function externalSDKEventTrigger(value: string): void {
     if (typeof Wortal.session._internalSession.externalCallbacks !== "undefined") {
         const callback = Wortal.session._internalSession.externalCallbacks[value];
         if (typeof callback !== "undefined") {
-            debug(`External event triggered. Event: ${value}`);
+            Wortal._log.debug(`External event triggered. Event: ${value}`);
             callback();
         } else {
-            debug(`External event triggered, but no callback is defined for this event. Event: ${value}`);
+            Wortal._log.debug(`External event triggered, but no callback is defined for this event. Event: ${value}`);
         }
     } else {
-        exception("External event triggered, but externalCallbacks is undefined. This is a fatal error that should have been caught during initialization.");
+        Wortal._log.exception("External event triggered, but externalCallbacks is undefined. This is a fatal error that should have been caught during initialization.");
     }
 }
 
@@ -224,7 +223,7 @@ export function waitForTelegramCallback(eventName: string): Promise<any> {
         const eventHandler = ({ data }: any) => {
             const playdeck = data?.playdeck;
             if (playdeck?.method === eventName) {
-                debug(`Telegram event callback. Event: ${eventName}`, playdeck?.value);
+                Wortal._log.debug(`Telegram event callback. Event: ${eventName}`, playdeck?.value);
                 window.removeEventListener("message", eventHandler);
                 clearTimeout(timeoutID);
                 resolve(playdeck?.value);

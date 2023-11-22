@@ -1,4 +1,4 @@
-import { debug } from "../../utils/logger";
+import Wortal from "../../index";
 import { NotificationData } from "../interfaces/notification-data";
 import { NotificationStatus } from "../types/notifications-types";
 
@@ -11,7 +11,7 @@ export class ScheduledNotification {
 
     /** @hidden */
     constructor(data: NotificationData) {
-        debug("ScheduledNotification created with data:", data);
+        Wortal._log.debug("ScheduledNotification created with data:", data);
         this.notificationData = data;
     }
 
