@@ -19,9 +19,12 @@ export class CoreDebug extends CoreBase {
     }
 
     protected authenticateAsyncImpl(payload?: AuthPayload): Promise<AuthResponse> {
+        // Used for testing Waves integration locally. Requires bundling a built version of the Waves SDK with the
+        // demo project.
         if (Wortal._internalIsWavesEnabled) {
             return this.defaultAuthenticateAsyncImpl(payload);
         }
+
         debug("Player authenticated successfully. Payload:", payload);
         const response: AuthResponse = {
             status: "success",

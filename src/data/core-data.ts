@@ -33,6 +33,7 @@ export const API_ENDPOINTS = {
  * @hidden
  */
 export const SDK_SRC = {
+    WAVES_BASE_URL: "https://storage.googleapis.com/html5gameportal.com/waves-client",
     GOOGLE: "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js",
     LINK: "https://lg.rgames.jp/libs/link-game-sdk/1.3.0/bundle.js",
     VIBER: "https://vbrpl.io/libs/viber-play-sdk/1.14.0/bundle.js",

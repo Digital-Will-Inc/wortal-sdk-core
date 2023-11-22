@@ -229,10 +229,9 @@ export abstract class PlayerBase {
                 }
             }
 
-            // if Waves available and authenticated, try to get data from Waves
-            if (Wortal._internalIsWavesEnabled && window.waves && window.waves.authToken) {
+            if (Wortal._internalIsWavesEnabled && waves.authToken) {
                 try {
-                    const wavesData = await window.waves.getData();
+                    const wavesData = await waves.getData();
                     if (wavesData) {
                         dataObj = {...dataObj, ...wavesData};
                     }
@@ -241,13 +240,13 @@ export abstract class PlayerBase {
                 }
             }
 
-            // filter data by keys
+            // The API allows the developer to request only a subset of the data, so we filter the result here.
             const result: Record<string, any> = {};
             keys.forEach((key: string) => {
                 result[key] = dataObj[key];
             });
-            return result;
 
+            return result;
         } catch (error: any) {
             throw operationFailed(`Error saving object to localStorage: ${error.message}`,
                 WORTAL_API.PLAYER_GET_DATA_ASYNC, API_URL.PLAYER_GET_DATA_ASYNC);
@@ -259,20 +258,23 @@ export abstract class PlayerBase {
             try {
                 localStorage.setItem(`${Wortal.session._internalSession.gameID}-save-data`, JSON.stringify(data));
                 debug("Saved data to localStorage.");
-
             } catch (error: any) {
+                //TODO: do we need to reject here?
                 reject(operationFailed(`Error saving object to localStorage: ${error.message}`,
                     WORTAL_API.PLAYER_SET_DATA_ASYNC, API_URL.PLAYER_SET_DATA_ASYNC));
             }
 
-            // if Waves available and authenticated
-            if (Wortal._internalIsWavesEnabled && window.waves && window.waves.authToken) {
-                window.waves.saveData(data)
-                    .then(() => resolve())
-                    .catch(
+            if (Wortal._internalIsWavesEnabled && waves.authToken) {
+                waves.saveData(data)
+                    .then(() => {
+                        debug("Saved data to Waves.");
+                        resolve();
+                    })
+                    .catch((error: any) => {
                         // could be caused by user cancel or network error
-                        (error: any) => reject(exception(`Error saving object to waves: ${error.message}`))
-                    );
+                        reject(operationFailed(`Error saving object to waves: ${error.message}`,
+                            WORTAL_API.PLAYER_SET_DATA_ASYNC, API_URL.PLAYER_SET_DATA_ASYNC))
+                    });
             } else {
                 resolve();
             }
@@ -292,7 +294,7 @@ export abstract class PlayerBase {
             };
         }
 
-        return { valid: true };
+        return {valid: true};
     }
 
     protected validateFlushDataAsync(): ValidationResult {
@@ -305,7 +307,7 @@ export abstract class PlayerBase {
             };
         }
 
-        return { valid: true };
+        return {valid: true};
     }
 
     protected validateGetConnectedPlayersAsync(payload?: ConnectedPlayerPayload): ValidationResult {
@@ -318,7 +320,7 @@ export abstract class PlayerBase {
             };
         }
 
-        return { valid: true };
+        return {valid: true};
     }
 
     protected validateGetDataAsync(keys: string[]): ValidationResult {
@@ -340,7 +342,7 @@ export abstract class PlayerBase {
             };
         }
 
-        return { valid: true };
+        return {valid: true};
     }
 
     protected validateGetID(): ValidationResult {
@@ -353,7 +355,7 @@ export abstract class PlayerBase {
             };
         }
 
-        return { valid: true };
+        return {valid: true};
     }
 
     protected validateGetName(): ValidationResult {
@@ -366,7 +368,7 @@ export abstract class PlayerBase {
             };
         }
 
-        return { valid: true };
+        return {valid: true};
     }
 
     protected validateGetPhoto(): ValidationResult {
@@ -379,7 +381,7 @@ export abstract class PlayerBase {
             };
         }
 
-        return { valid: true };
+        return {valid: true};
     }
 
     protected validateGetSignedASIDAsync(): ValidationResult {
@@ -392,7 +394,7 @@ export abstract class PlayerBase {
             };
         }
 
-        return { valid: true };
+        return {valid: true};
     }
 
     protected validateGetSignedPlayerInfoAsync(): ValidationResult {
@@ -405,7 +407,7 @@ export abstract class PlayerBase {
             };
         }
 
-        return { valid: true };
+        return {valid: true};
     }
 
     protected validateGetTokenAsync(): ValidationResult {
@@ -418,7 +420,7 @@ export abstract class PlayerBase {
             };
         }
 
-        return { valid: true };
+        return {valid: true};
     }
 
     protected validateIsFirstPlay(): ValidationResult {
@@ -431,7 +433,7 @@ export abstract class PlayerBase {
             };
         }
 
-        return { valid: true };
+        return {valid: true};
     }
 
     protected validateOnLogin(callback: () => void): ValidationResult {
@@ -453,7 +455,7 @@ export abstract class PlayerBase {
             };
         }
 
-        return { valid: true };
+        return {valid: true};
     }
 
     protected validateSetDataAsync(data: Record<string, unknown>): ValidationResult {
@@ -475,7 +477,7 @@ export abstract class PlayerBase {
             };
         }
 
-        return { valid: true };
+        return {valid: true};
     }
 
     protected validateSubscribeBotAsync(): ValidationResult {
@@ -488,7 +490,7 @@ export abstract class PlayerBase {
             };
         }
 
-        return { valid: true };
+        return {valid: true};
     }
 
 //#endregion
