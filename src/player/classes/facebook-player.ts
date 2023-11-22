@@ -6,11 +6,7 @@ import { Player } from "./player";
  * @hidden
  */
 export class FacebookPlayer extends Player {
-    constructor() {
-        super();
-    }
-
-    protected async initializeImpl(): Promise<void> {
+    public override async initialize(): Promise<void> {
         Wortal._log.debug("Fetching ASID...");
         await Wortal.player.getASIDAsync()
             .then((asid: string) => {

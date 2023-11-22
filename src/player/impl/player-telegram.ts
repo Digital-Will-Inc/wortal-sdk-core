@@ -18,8 +18,10 @@ import { PlayerBase } from "../player-base";
 export class PlayerTelegram extends PlayerBase {
     protected _player: Player;
 
-    constructor() {
-        super();
+    constructor(player: Player) {
+        super(player);
+        // We can't inject the TelegramPlayer in core-api because some of the code will cause the demo
+        // project upload to be blocked on Facebook.
         this._player = new TelegramPlayer();
     }
 

@@ -1,8 +1,6 @@
 import { API_URL, WORTAL_API } from "../../data/core-data";
 import { notSupported } from "../../errors/error-handler";
 import { ConnectedPlayer } from "../classes/connected-player";
-import { DebugPlayer } from "../classes/debug-player";
-import { Player } from "../classes/player";
 import { ConnectedPlayerPayload } from "../interfaces/connected-player-payload";
 import { SignedASID } from "../interfaces/facebook-player";
 import { SignedPlayerInfo } from "../interfaces/signed-player-info";
@@ -13,13 +11,6 @@ import { PlayerBase } from "../player-base";
  * @hidden
  */
 export class PlayerGamePix extends PlayerBase {
-    protected _player: Player;
-
-    constructor() {
-        super();
-        this._player = new DebugPlayer();
-    }
-
     protected canSubscribeBotAsyncImpl(): Promise<boolean> {
         return Promise.reject(notSupported(undefined, WORTAL_API.PLAYER_CAN_SUBSCRIBE_BOT_ASYNC, API_URL.PLAYER_CAN_SUBSCRIBE_BOT_ASYNC));
     }

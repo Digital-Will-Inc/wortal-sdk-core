@@ -7,6 +7,11 @@ import { AuthPayload } from "../auth/interfaces/auth-payload";
 import { AuthResponse } from "../auth/interfaces/auth-response";
 import { ContextWortal } from "../context/impl/context-wortal";
 import { SDK_SRC } from "../data/core-data";
+import { CrazyGamesPlayer } from "../player/classes/crazygames-player";
+import { FacebookPlayer } from "../player/classes/facebook-player";
+import { LinkPlayer } from "../player/classes/link-player";
+import { Player } from "../player/classes/player";
+import { ViberPlayer } from "../player/classes/viber-player";
 import { Platform } from "../session/types/session-types";
 import { initializationError } from "../errors/error-handler";
 import { StatsAPI } from "../stats/stats-api";
@@ -523,7 +528,7 @@ export class CoreAPI {
                 this.iap = new InAppPurchaseAPI(new IAPAddictingGames());
                 this.leaderboard = new LeaderboardAPI(new LeaderboardAddictingGames());
                 this.notifications = new NotificationsAPI(new NotificationsAddictingGames());
-                this.player = new PlayerAPI(new PlayerAddictingGames());
+                this.player = new PlayerAPI(new PlayerAddictingGames(new Player()));
                 this.session = new SessionAPI(new SessionAddictingGames());
                 this.stats = new StatsAPI(new StatsAddictingGames());
                 this.tournament = new TournamentAPI(new TournamentAddictingGames());
@@ -551,7 +556,7 @@ export class CoreAPI {
                 this.iap = new InAppPurchaseAPI(new IAPCrazyGames());
                 this.leaderboard = new LeaderboardAPI(new LeaderboardCrazyGames());
                 this.notifications = new NotificationsAPI(new NotificationsCrazyGames());
-                this.player = new PlayerAPI(new PlayerCrazyGames());
+                this.player = new PlayerAPI(new PlayerCrazyGames(new CrazyGamesPlayer()));
                 this.session = new SessionAPI(new SessionCrazyGames());
                 this.stats = new StatsAPI(new StatsCrazyGames());
                 this.tournament = new TournamentAPI(new TournamentCrazyGames());
@@ -579,7 +584,7 @@ export class CoreAPI {
                 this.iap = new InAppPurchaseAPI(new IAPFacebook());
                 this.leaderboard = new LeaderboardAPI(new LeaderboardFacebook());
                 this.notifications = new NotificationsAPI(new NotificationsFacebook());
-                this.player = new PlayerAPI(new PlayerFacebook());
+                this.player = new PlayerAPI(new PlayerFacebook(new FacebookPlayer()));
                 this.session = new SessionAPI(new SessionFacebook());
                 this.stats = new StatsAPI(new StatsFacebook());
                 this.tournament = new TournamentAPI(new TournamentFacebook());
@@ -607,7 +612,7 @@ export class CoreAPI {
                 this.iap = new InAppPurchaseAPI(new IAPGameMonetize());
                 this.leaderboard = new LeaderboardAPI(new LeaderboardGameMonetize());
                 this.notifications = new NotificationsAPI(new NotificationsGameMonetize());
-                this.player = new PlayerAPI(new PlayerGameMonetize());
+                this.player = new PlayerAPI(new PlayerGameMonetize(new Player()));
                 this.session = new SessionAPI(new SessionGameMonetize());
                 this.stats = new StatsAPI(new StatsGameMonetize());
                 this.tournament = new TournamentAPI(new TournamentGameMonetize());
@@ -635,7 +640,7 @@ export class CoreAPI {
                 this.iap = new InAppPurchaseAPI(new IAPGamePix());
                 this.leaderboard = new LeaderboardAPI(new LeaderboardGamePix());
                 this.notifications = new NotificationsAPI(new NotificationsGamePix());
-                this.player = new PlayerAPI(new PlayerGamePix());
+                this.player = new PlayerAPI(new PlayerGamePix(new Player()));
                 this.session = new SessionAPI(new SessionGamePix());
                 this.stats = new StatsAPI(new StatsGamePix());
                 this.tournament = new TournamentAPI(new TournamentGamePix());
@@ -663,7 +668,7 @@ export class CoreAPI {
                 this.iap = new InAppPurchaseAPI(new IAPGD());
                 this.leaderboard = new LeaderboardAPI(new LeaderboardGD());
                 this.notifications = new NotificationsAPI(new NotificationsGD());
-                this.player = new PlayerAPI(new PlayerGD());
+                this.player = new PlayerAPI(new PlayerGD(new Player()));
                 this.session = new SessionAPI(new SessionGD());
                 this.stats = new StatsAPI(new StatsGD());
                 this.tournament = new TournamentAPI(new TournamentGD());
@@ -691,7 +696,7 @@ export class CoreAPI {
                 this.iap = new InAppPurchaseAPI(new IAPLink());
                 this.leaderboard = new LeaderboardAPI(new LeaderboardLink());
                 this.notifications = new NotificationsAPI(new NotificationsLink());
-                this.player = new PlayerAPI(new PlayerLink());
+                this.player = new PlayerAPI(new PlayerLink(new LinkPlayer()));
                 this.session = new SessionAPI(new SessionLink());
                 this.stats = new StatsAPI(new StatsLink());
                 this.tournament = new TournamentAPI(new TournamentLink());
@@ -719,7 +724,7 @@ export class CoreAPI {
                 this.iap = new InAppPurchaseAPI(new IAPPoki());
                 this.leaderboard = new LeaderboardAPI(new LeaderboardPoki());
                 this.notifications = new NotificationsAPI(new NotificationsPoki());
-                this.player = new PlayerAPI(new PlayerPoki());
+                this.player = new PlayerAPI(new PlayerPoki(new Player()));
                 this.session = new SessionAPI(new SessionPoki());
                 this.stats = new StatsAPI(new StatsPoki());
                 this.tournament = new TournamentAPI(new TournamentPoki());
@@ -747,7 +752,7 @@ export class CoreAPI {
                 this.iap = new InAppPurchaseAPI(new IAPTelegram());
                 this.leaderboard = new LeaderboardAPI(new LeaderboardTelegram());
                 this.notifications = new NotificationsAPI(new NotificationsTelegram());
-                this.player = new PlayerAPI(new PlayerTelegram());
+                this.player = new PlayerAPI(new PlayerTelegram(new Player())); // We can't include the TelegramPlayer here because it will block the demo project upload to FB.
                 this.session = new SessionAPI(new SessionTelegram());
                 this.stats = new StatsAPI(new StatsTelegram());
                 this.tournament = new TournamentAPI(new TournamentTelegram());
@@ -775,7 +780,7 @@ export class CoreAPI {
                 this.iap = new InAppPurchaseAPI(new IAPViber());
                 this.leaderboard = new LeaderboardAPI(new LeaderboardViber());
                 this.notifications = new NotificationsAPI(new NotificationsViber());
-                this.player = new PlayerAPI(new PlayerViber());
+                this.player = new PlayerAPI(new PlayerViber(new ViberPlayer()));
                 this.session = new SessionAPI(new SessionViber());
                 this.stats = new StatsAPI(new StatsViber());
                 this.tournament = new TournamentAPI(new TournamentViber());
@@ -803,7 +808,7 @@ export class CoreAPI {
                 this.iap = new InAppPurchaseAPI(new IAPWortal());
                 this.leaderboard = new LeaderboardAPI(new LeaderboardWortal());
                 this.notifications = new NotificationsAPI(new NotificationsWortal());
-                this.player = new PlayerAPI(new PlayerWortal());
+                this.player = new PlayerAPI(new PlayerWortal(new Player()));
                 this.session = new SessionAPI(new SessionWortal());
                 this.stats = new StatsAPI(new StatsWortal());
                 this.tournament = new TournamentAPI(new TournamentWortal());
@@ -831,7 +836,7 @@ export class CoreAPI {
                 this.iap = new InAppPurchaseAPI(new IAPYandex());
                 this.leaderboard = new LeaderboardAPI(new LeaderboardYandex());
                 this.notifications = new NotificationsAPI(new NotificationsYandex());
-                this.player = new PlayerAPI(new PlayerYandex());
+                this.player = new PlayerAPI(new PlayerYandex(new Player())); // We construct the YandexPlayer object later because there's some funky stuff going on with the Yandex SDK.
                 this.session = new SessionAPI(new SessionYandex());
                 this.stats = new StatsAPI(new StatsYandex());
                 this.tournament = new TournamentAPI(new TournamentYandex());
@@ -859,7 +864,7 @@ export class CoreAPI {
                 this.iap = new InAppPurchaseAPI(new IAPDebug());
                 this.leaderboard = new LeaderboardAPI(new LeaderboardDebug());
                 this.notifications = new NotificationsAPI(new NotificationsDebug());
-                this.player = new PlayerAPI(new PlayerDebug());
+                this.player = new PlayerAPI(new PlayerDebug(new Player()));
                 this.session = new SessionAPI(new SessionDebug());
                 this.stats = new StatsAPI(new StatsDebug());
                 this.tournament = new TournamentAPI(new TournamentDebug());

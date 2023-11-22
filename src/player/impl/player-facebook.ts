@@ -3,8 +3,6 @@ import { notSupported, rethrowError_Facebook_Rakuten } from "../../errors/error-
 import { ErrorMessage_Facebook } from "../../errors/interfaces/facebook-error";
 import Wortal from "../../index";
 import { ConnectedPlayer } from "../classes/connected-player";
-import { FacebookPlayer } from "../classes/facebook-player";
-import { Player } from "../classes/player";
 import { ConnectedPlayerPayload } from "../interfaces/connected-player-payload";
 import {
     ConnectedPlayer_Facebook,
@@ -21,13 +19,6 @@ import { PlayerBase } from "../player-base";
  * @hidden
  */
 export class PlayerFacebook extends PlayerBase {
-    protected _player: Player;
-
-    constructor() {
-        super();
-        this._player = new FacebookPlayer();
-    }
-
     protected canSubscribeBotAsyncImpl(): Promise<boolean> {
         return Wortal._internalPlatformSDK.player.canSubscribeBotAsync()
             .then((canSubscribe: boolean) => {

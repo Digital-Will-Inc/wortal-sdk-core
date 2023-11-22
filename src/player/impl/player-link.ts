@@ -3,8 +3,6 @@ import { notSupported, rethrowError_Facebook_Rakuten } from "../../errors/error-
 import { ErrorMessage_Link } from "../../errors/interfaces/link-error";
 import Wortal from "../../index";
 import { ConnectedPlayer } from "../classes/connected-player";
-import { LinkPlayer } from "../classes/link-player";
-import { Player } from "../classes/player";
 import { ConnectedPlayerPayload } from "../interfaces/connected-player-payload";
 import { SignedASID } from "../interfaces/facebook-player";
 import { PlayerData } from "../interfaces/player-data";
@@ -17,13 +15,6 @@ import { PlayerBase } from "../player-base";
  * @hidden
  */
 export class PlayerLink extends PlayerBase {
-    protected _player: Player;
-
-    constructor() {
-        super();
-        this._player = new LinkPlayer();
-    }
-
     protected canSubscribeBotAsyncImpl(): Promise<boolean> {
         return Promise.reject(notSupported(undefined, WORTAL_API.PLAYER_CAN_SUBSCRIBE_BOT_ASYNC, API_URL.PLAYER_CAN_SUBSCRIBE_BOT_ASYNC));
     }

@@ -9,11 +9,7 @@ import { Player } from "./player";
  * @hidden
  */
 export class TelegramPlayer extends Player {
-    constructor() {
-        super();
-    }
-
-    protected async initializeImpl(): Promise<void> {
+    public override async initialize(): Promise<void> {
         let tgPlayer: ITelegramPlayer | null = null;
         try {
             tgPlayer = await this._initializeTelegramPlayer();

@@ -179,6 +179,22 @@ export function notInitialized(message: string = "", context: string, url?: stri
 }
 
 /**
+ * Throw this to indicate the SDK attempted to call an implementation function from the base layer. This should never happen.
+ * @hidden
+ */
+export function implementationError(message: string = "", context: string = "", url?: string): ErrorMessage {
+    const error: ErrorMessage = {
+        code: "IMPLEMENTATION_ERROR",
+        message: "Called implementation function from the base layer.",
+        context: context,
+        url: url,
+    }
+
+    Wortal._log.exception(error.code, error);
+    return error;
+}
+
+/**
  * All error codes and messages defined by the Wortal SDK.
  * @hidden
  */
