@@ -1,3 +1,4 @@
+import Wortal from "../../index";
 import { AdConfigData } from "../interfaces/ad-data";
 import { AdSense_Config } from "../interfaces/ad-sense";
 
@@ -5,7 +6,7 @@ import { AdSense_Config } from "../interfaces/ad-sense";
  * Config for the Ads API. Holds ad unit IDs, tracks ad calls and ad impressions.
  * @hidden
  */
-export abstract class AdConfig {
+export class AdConfig {
     protected _data: AdConfigData = {
         isAdBlocked: false,
         hasPrerollShown: false,
@@ -22,10 +23,16 @@ export abstract class AdConfig {
         hostID: ""
     };
 
-    constructor() {
+    /**
+     * Initializes the AdConfig. This fetches ad unit IDs from a remote source if necessary.
+     * @returns {Promise<void>} Promise that resolves when the AdConfig is initialized.
+     * @hidden
+     */
+    public initialize(): Promise<void> {
+        Wortal._log.debug("Initializing AdConfig..");
+        Wortal._log.debug("AdConfig initialized.", this._data);
+        return Promise.resolve();
     }
-
-    public abstract initialize(): Promise<void>;
 
     get isAdBlocked(): boolean {
         return this._data.isAdBlocked;

@@ -3,8 +3,6 @@ import { notSupported } from "../../errors/error-handler";
 import Wortal from "../../index";
 import { addExternalCallback } from "../../utils/wortal-utils";
 import { AdsBase } from "../ads-base";
-import { AdConfig } from "../classes/ad-config";
-import { AdConfigNull } from "../classes/ad-config-null";
 import { AdInstanceData } from "../interfaces/ad-data";
 import { BannerPosition } from "../types/banner-position";
 
@@ -13,13 +11,6 @@ import { BannerPosition } from "../types/banner-position";
  * @hidden
  */
 export class AdsGameMonetize extends AdsBase {
-    protected _adConfig: AdConfig;
-
-    constructor() {
-        super();
-        this._adConfig = new AdConfigNull();
-    }
-
     protected showBannerImpl(shouldShow: boolean, position: BannerPosition): void {
         throw notSupported(undefined, WORTAL_API.ADS_SHOW_BANNER, API_URL.ADS_SHOW_BANNER);
     }

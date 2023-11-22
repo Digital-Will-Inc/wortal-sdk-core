@@ -3,8 +3,6 @@ import { notSupported } from "../../errors/error-handler";
 import { ErrorMessage_Viber } from "../../errors/interfaces/viber-error";
 import Wortal from "../../index";
 import { AdsBase } from "../ads-base";
-import { AdConfig } from "../classes/ad-config";
-import { AdConfigViber } from "../classes/ad-config-viber";
 import { AdInstanceData } from "../interfaces/ad-data";
 import { AdInstance_Link_Viber } from "../interfaces/rakuten-ads";
 import { BannerPosition } from "../types/banner-position";
@@ -14,13 +12,6 @@ import { BannerPosition } from "../types/banner-position";
  * @hidden
  */
 export class AdsViber extends AdsBase {
-    protected _adConfig: AdConfig;
-
-    constructor() {
-        super();
-        this._adConfig = new AdConfigViber();
-    }
-
     protected showBannerImpl(shouldShow: boolean, position: BannerPosition): void {
         throw notSupported(undefined, WORTAL_API.ADS_SHOW_BANNER, API_URL.ADS_SHOW_BANNER);
     }

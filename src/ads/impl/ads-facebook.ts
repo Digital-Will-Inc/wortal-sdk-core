@@ -1,8 +1,6 @@
 import { ErrorMessage_Facebook } from "../../errors/interfaces/facebook-error";
 import Wortal from "../../index";
 import { AdsBase } from "../ads-base";
-import { AdConfig } from "../classes/ad-config";
-import { AdConfigFacebook } from "../classes/ad-config-facebook";
 import { AdInstanceData } from "../interfaces/ad-data";
 import { AdInstance_Facebook } from "../interfaces/facebook-ads";
 import { BannerPosition } from "../types/banner-position";
@@ -12,13 +10,6 @@ import { BannerPosition } from "../types/banner-position";
  * @hidden
  */
 export class AdsFacebook extends AdsBase {
-    protected _adConfig: AdConfig;
-
-    constructor() {
-        super();
-        this._adConfig = new AdConfigFacebook();
-    }
-
     protected showBannerImpl(shouldShow: boolean, position: BannerPosition): void {
         Wortal._internalPlatformSDK.loadBannerAdAsync(this._adConfig.bannerId, position)
             .then(() => {

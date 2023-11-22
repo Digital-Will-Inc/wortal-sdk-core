@@ -1,4 +1,8 @@
 import { AchievementsAPI } from "../achievements/achievements-api";
+import { AdConfig } from "../ads/classes/ad-config";
+import { AdConfigFacebook } from "../ads/classes/ad-config-facebook";
+import { AdConfigLink } from "../ads/classes/ad-config-link";
+import { AdConfigViber } from "../ads/classes/ad-config-viber";
 import { AuthPayload } from "../auth/interfaces/auth-payload";
 import { AuthResponse } from "../auth/interfaces/auth-response";
 import { ContextWortal } from "../context/impl/context-wortal";
@@ -55,9 +59,6 @@ export class CoreAPI {
         LinkSDK | PokiSDK | ViberSDK | YandexSDK | any;
 
     private _platform: Platform = "debug";
-
-    constructor() {
-    }
 
     /**
      * Holds a reference to the external SDK for the current platform. This is set in _initializePlatformAsync.
@@ -516,7 +517,7 @@ export class CoreAPI {
 
                 this._core = new CoreAddictingGames();
                 this.achievements = new AchievementsAPI(new AchievementsAddictingGames());
-                this.ads = new AdsAPI(new AdsAddictingGames());
+                this.ads = new AdsAPI(new AdsAddictingGames(new AdConfig()));
                 this.analytics = new AnalyticsAPI(new AnalyticsWombat());
                 this.context = new ContextAPI(new ContextAddictingGames());
                 this.iap = new InAppPurchaseAPI(new IAPAddictingGames());
@@ -544,7 +545,7 @@ export class CoreAPI {
 
                 this._core = new CoreCrazyGames();
                 this.achievements = new AchievementsAPI(new AchievementsCrazyGames());
-                this.ads = new AdsAPI(new AdsCrazyGames());
+                this.ads = new AdsAPI(new AdsCrazyGames(new AdConfig()));
                 this.analytics = new AnalyticsAPI(new AnalyticsWombat());
                 this.context = new ContextAPI(new ContextCrazyGames());
                 this.iap = new InAppPurchaseAPI(new IAPCrazyGames());
@@ -572,7 +573,7 @@ export class CoreAPI {
 
                 this._core = new CoreFacebook();
                 this.achievements = new AchievementsAPI(new AchievementsFacebook());
-                this.ads = new AdsAPI(new AdsFacebook());
+                this.ads = new AdsAPI(new AdsFacebook(new AdConfigFacebook()));
                 this.analytics = new AnalyticsAPI(new AnalyticsWombat());
                 this.context = new ContextAPI(new ContextFacebook());
                 this.iap = new InAppPurchaseAPI(new IAPFacebook());
@@ -600,7 +601,7 @@ export class CoreAPI {
 
                 this._core = new CoreGameMonetize();
                 this.achievements = new AchievementsAPI(new AchievementsGameMonetize());
-                this.ads = new AdsAPI(new AdsGameMonetize());
+                this.ads = new AdsAPI(new AdsGameMonetize(new AdConfig()));
                 this.analytics = new AnalyticsAPI(new AnalyticsWombat());
                 this.context = new ContextAPI(new ContextGameMonetize());
                 this.iap = new InAppPurchaseAPI(new IAPGameMonetize());
@@ -628,7 +629,7 @@ export class CoreAPI {
 
                 this._core = new CoreGamePix();
                 this.achievements = new AchievementsAPI(new AchievementsGamePix());
-                this.ads = new AdsAPI(new AdsGamePix());
+                this.ads = new AdsAPI(new AdsGamePix(new AdConfig()));
                 this.analytics = new AnalyticsAPI(new AnalyticsDisabled());
                 this.context = new ContextAPI(new ContextGamePix());
                 this.iap = new InAppPurchaseAPI(new IAPGamePix());
@@ -656,7 +657,7 @@ export class CoreAPI {
 
                 this._core = new CoreGD();
                 this.achievements = new AchievementsAPI(new AchievementsGD());
-                this.ads = new AdsAPI(new AdsGD());
+                this.ads = new AdsAPI(new AdsGD(new AdConfig()));
                 this.analytics = new AnalyticsAPI(new AnalyticsDisabled());
                 this.context = new ContextAPI(new ContextGD());
                 this.iap = new InAppPurchaseAPI(new IAPGD());
@@ -684,7 +685,7 @@ export class CoreAPI {
 
                 this._core = new CoreLink();
                 this.achievements = new AchievementsAPI(new AchievementsLink());
-                this.ads = new AdsAPI(new AdsLink());
+                this.ads = new AdsAPI(new AdsLink(new AdConfigLink()));
                 this.analytics = new AnalyticsAPI(new AnalyticsWombat());
                 this.context = new ContextAPI(new ContextLink());
                 this.iap = new InAppPurchaseAPI(new IAPLink());
@@ -712,7 +713,7 @@ export class CoreAPI {
 
                 this._core = new CorePoki();
                 this.achievements = new AchievementsAPI(new AchievementsPoki());
-                this.ads = new AdsAPI(new AdsPoki());
+                this.ads = new AdsAPI(new AdsPoki(new AdConfig()));
                 this.analytics = new AnalyticsAPI(new AnalyticsWombat());
                 this.context = new ContextAPI(new ContextPoki());
                 this.iap = new InAppPurchaseAPI(new IAPPoki());
@@ -740,7 +741,7 @@ export class CoreAPI {
 
                 this._core = new CoreTelegram();
                 this.achievements = new AchievementsAPI(new AchievementsTelegram());
-                this.ads = new AdsAPI(new AdsTelegram());
+                this.ads = new AdsAPI(new AdsTelegram(new AdConfig()));
                 this.analytics = new AnalyticsAPI(new AnalyticsWombat());
                 this.context = new ContextAPI(new ContextTelegram());
                 this.iap = new InAppPurchaseAPI(new IAPTelegram());
@@ -768,7 +769,7 @@ export class CoreAPI {
 
                 this._core = new CoreViber();
                 this.achievements = new AchievementsAPI(new AchievementsViber());
-                this.ads = new AdsAPI(new AdsViber());
+                this.ads = new AdsAPI(new AdsViber(new AdConfigViber()));
                 this.analytics = new AnalyticsAPI(new AnalyticsWombat());
                 this.context = new ContextAPI(new ContextViber());
                 this.iap = new InAppPurchaseAPI(new IAPViber());
@@ -796,7 +797,7 @@ export class CoreAPI {
 
                 this._core = new CoreWortal();
                 this.achievements = new AchievementsAPI(new AchievementsWortal());
-                this.ads = new AdsAPI(new AdsWortal());
+                this.ads = new AdsAPI(new AdsWortal(new AdConfig()));
                 this.analytics = new AnalyticsAPI(new AnalyticsWombat());
                 this.context = new ContextAPI(new ContextWortal());
                 this.iap = new InAppPurchaseAPI(new IAPWortal());
@@ -824,7 +825,7 @@ export class CoreAPI {
 
                 this._core = new CoreYandex();
                 this.achievements = new AchievementsAPI(new AchievementsYandex());
-                this.ads = new AdsAPI(new AdsYandex());
+                this.ads = new AdsAPI(new AdsYandex(new AdConfig()));
                 this.analytics = new AnalyticsAPI(new AnalyticsWombat());
                 this.context = new ContextAPI(new ContextYandex());
                 this.iap = new InAppPurchaseAPI(new IAPYandex());
@@ -852,7 +853,7 @@ export class CoreAPI {
 
                 this._core = new CoreDebug();
                 this.achievements = new AchievementsAPI(new AchievementsDebug());
-                this.ads = new AdsAPI(new AdsDebug());
+                this.ads = new AdsAPI(new AdsDebug(new AdConfig()));
                 this.analytics = new AnalyticsAPI(new AnalyticsDisabled());
                 this.context = new ContextAPI(new ContextDebug());
                 this.iap = new InAppPurchaseAPI(new IAPDebug());
