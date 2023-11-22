@@ -10,10 +10,6 @@ import { NotificationsBase } from "../notifications-base";
  * @hidden
  */
 export class NotificationsCrazyGames extends NotificationsBase {
-    constructor() {
-        super();
-    }
-
     protected cancelAllAsyncImpl(label?: string): Promise<boolean> {
         return Promise.reject(notSupported(undefined, WORTAL_API.NOTIFICATIONS_CANCEL_ALL_ASYNC, API_URL.NOTIFICATIONS_CANCEL_ALL_ASYNC));
     }

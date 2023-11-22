@@ -9,10 +9,6 @@ import { LeaderboardBase } from "../leaderboard-base";
  * @hidden
  */
 export class LeaderboardGameMonetize extends LeaderboardBase {
-    constructor() {
-        super();
-    }
-
     protected getConnectedPlayersEntriesAsyncImpl(name: string, count: number, offset: number): Promise<LeaderboardEntry[]> {
         return Promise.reject(notSupported(undefined, WORTAL_API.LEADERBOARD_GET_CONNECTED_PLAYER_ENTRIES_ASYNC, API_URL.LEADERBOARD_GET_CONNECTED_PLAYER_ENTRIES_ASYNC));
     }

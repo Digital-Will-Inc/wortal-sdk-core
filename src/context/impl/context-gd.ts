@@ -16,10 +16,6 @@ import { ContextType } from "../types/context-payload-property-types";
  * @hidden
  */
 export class ContextGD extends ContextBase {
-    constructor() {
-        super();
-    }
-
     protected chooseAsyncImpl(payload?: ChoosePayload): Promise<void> {
         return Promise.reject(notSupported(undefined, WORTAL_API.CONTEXT_CHOOSE_ASYNC, API_URL.CONTEXT_CHOOSE_ASYNC));
     }

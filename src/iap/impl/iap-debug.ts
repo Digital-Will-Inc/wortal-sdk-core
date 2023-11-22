@@ -12,10 +12,6 @@ import { SubscriptionTerm } from "../types/subscription-types";
  * @hidden
  */
 export class IAPDebug extends IAPBase {
-    constructor() {
-        super();
-    }
-
     protected cancelSubscriptionAsyncImpl(purchaseToken: string): Promise<void> {
         return Promise.resolve();
     }

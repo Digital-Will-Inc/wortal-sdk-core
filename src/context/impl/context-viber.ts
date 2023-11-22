@@ -21,10 +21,6 @@ import { ContextFilter, ContextType, InviteFilter } from "../types/context-paylo
  * @hidden
  */
 export class ContextViber extends ContextBase {
-    constructor() {
-        super();
-    }
-
     protected chooseAsyncImpl(payload?: ChoosePayload): Promise<void> {
         return Wortal._internalPlatformSDK.context.chooseAsync(payload)
             .catch((error: ErrorMessage_Viber) => {

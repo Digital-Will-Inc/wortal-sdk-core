@@ -22,10 +22,6 @@ import { ContextType } from "../types/context-payload-property-types";
  * @hidden
  */
 export class ContextLink extends ContextBase {
-    constructor() {
-        super();
-    }
-
     protected chooseAsyncImpl(payload?: ChoosePayload): Promise<void> {
         return Wortal._internalPlatformSDK.context.chooseAsync(payload)
             .catch((error: ErrorMessage_Link) => {

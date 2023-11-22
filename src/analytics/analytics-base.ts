@@ -1,7 +1,7 @@
 import { PlacementType } from "../ads/types/ad-sense-types";
 import { AdType } from "../ads/types/ad-type";
 import { API_URL, WORTAL_API } from "../data/core-data";
-import { invalidParams, notInitialized } from "../errors/error-handler";
+import { implementationError, invalidParams, notInitialized } from "../errors/error-handler";
 import { ValidationResult } from "../errors/interfaces/validation-result";
 import Wortal from "../index";
 import { isValidNumber, isValidString } from "../utils/validators";
@@ -10,10 +10,7 @@ import { isValidNumber, isValidString } from "../utils/validators";
  * Base class for analytics implementations. Extend this class to implement analytics for a specific platform.
  * @hidden
  */
-export abstract class AnalyticsBase {
-    constructor() {
-    }
-
+export class AnalyticsBase {
 //#region Public API
 
     public logGameChoice(decision: string, choice: string): void {
@@ -205,22 +202,22 @@ export abstract class AnalyticsBase {
 //#endregion
 //#region Implementation interface
 
-    protected abstract logGameChoiceImpl(decision: string, choice: string): void;
-    protected abstract logLevelEndImpl(level: string | number, score: string | number, wasCompleted: boolean): void;
-    protected abstract logLevelStartImpl(level: string | number): void;
-    protected abstract logLevelUpImpl(level: string | number): void;
-    protected abstract logPurchaseImpl(productID: string, details?: string): void;
-    protected abstract logPurchaseSubscriptionImpl(productID: string, details?: string): void;
-    protected abstract logScoreImpl(score: string | number): void;
-    protected abstract logSocialInviteImpl(placement: string): void;
-    protected abstract logSocialShareImpl(placement: string): void;
-    protected abstract logTutorialEndImpl(tutorial: string, wasCompleted: boolean): void;
-    protected abstract logTutorialStartImpl(tutorial: string): void;
+    protected logGameChoiceImpl(decision: string, choice: string): void { throw implementationError(); }
+    protected logLevelEndImpl(level: string | number, score: string | number, wasCompleted: boolean): void { throw implementationError(); }
+    protected logLevelStartImpl(level: string | number): void { throw implementationError(); }
+    protected logLevelUpImpl(level: string | number): void { throw implementationError(); }
+    protected logPurchaseImpl(productID: string, details?: string): void { throw implementationError(); }
+    protected logPurchaseSubscriptionImpl(productID: string, details?: string): void { throw implementationError(); }
+    protected logScoreImpl(score: string | number): void { throw implementationError(); }
+    protected logSocialInviteImpl(placement: string): void { throw implementationError(); }
+    protected logSocialShareImpl(placement: string): void { throw implementationError(); }
+    protected logTutorialEndImpl(tutorial: string, wasCompleted: boolean): void { throw implementationError(); }
+    protected logTutorialStartImpl(tutorial: string): void { throw implementationError(); }
 
-    protected abstract _logGameEndImpl(): void;
-    protected abstract _logGameStartImpl(): void;
-    protected abstract _logTrafficSourceImpl(): void;
-    protected abstract _logAdCallImpl(format: AdType, placement: PlacementType, success: boolean, viewedReward?: boolean): void;
+    protected _logGameEndImpl(): void { throw implementationError(); }
+    protected _logGameStartImpl(): void { throw implementationError(); }
+    protected _logTrafficSourceImpl(): void { throw implementationError(); }
+    protected _logAdCallImpl(format: AdType, placement: PlacementType, success: boolean, viewedReward?: boolean): void { throw implementationError(); }
 
 //#endregion
 //#region Validation

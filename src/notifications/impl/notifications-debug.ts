@@ -9,10 +9,6 @@ import { NotificationsBase } from "../notifications-base";
  * @hidden
  */
 export class NotificationsDebug extends NotificationsBase {
-    constructor() {
-        super();
-    }
-
     protected cancelAllAsyncImpl(label?: string): Promise<boolean> {
         return Promise.resolve(true);
     }

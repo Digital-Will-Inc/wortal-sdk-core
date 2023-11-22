@@ -11,10 +11,6 @@ import { CoreBase } from "../core-base";
  * @hidden
  */
 export class CorePoki extends CoreBase {
-    constructor() {
-        super();
-    }
-
     protected authenticateAsyncImpl(payload?: AuthPayload): Promise<AuthResponse> {
         return Promise.reject(notSupported(undefined, WORTAL_API.AUTHENTICATE_ASYNC, API_URL.AUTHENTICATE_ASYNC));
     }

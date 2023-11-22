@@ -12,10 +12,6 @@ import { LeaderboardBase } from "../leaderboard-base";
  * @hidden
  */
 export class LeaderboardViber extends LeaderboardBase {
-    constructor() {
-        super();
-    }
-
     protected getConnectedPlayersEntriesAsyncImpl(name: string, count: number, offset: number): Promise<LeaderboardEntry[]> {
         return Wortal._internalPlatformSDK.getLeaderboardAsync(name)
             .then((leaderboard: Leaderboard_Viber) => leaderboard.getConnectedPlayerEntriesAsync(count, offset))

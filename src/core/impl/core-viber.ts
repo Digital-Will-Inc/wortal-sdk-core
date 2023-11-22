@@ -11,10 +11,6 @@ import { API_URL, SDK_SRC, WORTAL_API } from "../../data/core-data";
  * @hidden
  */
 export class CoreViber extends CoreBase {
-    constructor() {
-        super();
-    }
-
     protected authenticateAsyncImpl(payload?: AuthPayload): Promise<AuthResponse> {
         return Promise.reject(notSupported(undefined, WORTAL_API.AUTHENTICATE_ASYNC, API_URL.AUTHENTICATE_ASYNC));
     }

@@ -8,10 +8,6 @@ import { TournamentBase } from "../tournament-base";
  * @hidden
  */
 export class TournamentDebug extends TournamentBase {
-    constructor() {
-        super();
-    }
-
     protected createAsyncImpl(payload: CreateTournamentPayload): Promise<Tournament> {
         return Promise.resolve(Tournament.mock());
     }

@@ -24,7 +24,6 @@ export class LeaderboardYandex extends LeaderboardBase {
 
     constructor() {
         super();
-
         this._setLeaderboardObject();
     }
 

@@ -1,5 +1,5 @@
 import { API_URL, WORTAL_API } from "../data/core-data";
-import { invalidParams } from "../errors/error-handler";
+import { implementationError, invalidParams } from "../errors/error-handler";
 import { ValidationResult } from "../errors/interfaces/validation-result";
 import Wortal from "../index";
 import { isValidPlacementType, isValidString } from "../utils/validators";
@@ -118,9 +118,9 @@ export class AdsBase {
 //#endregion
 //#region Implementation interface
 
-    protected showBannerImpl(shouldShow: boolean, position: BannerPosition): void {};
-    protected showInterstitialImpl(ad: AdInstanceData): void {};
-    protected showRewardedImpl(ad: AdInstanceData): void {};
+    protected showBannerImpl(shouldShow: boolean, position: BannerPosition): void { throw implementationError(); }
+    protected showInterstitialImpl(ad: AdInstanceData): void { throw implementationError(); }
+    protected showRewardedImpl(ad: AdInstanceData): void { throw implementationError(); }
 
 //#endregion
 //#region Validation

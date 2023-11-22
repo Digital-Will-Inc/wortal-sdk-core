@@ -17,7 +17,7 @@ export class LeaderboardPlayer extends Player {
         this._data.daysSinceFirstPlay = player.daysSinceFirstPlay;
     }
 
-    protected initializeImpl(): Promise<void> {
+    public override async initialize(): Promise<void> {
         return Promise.resolve();
     }
 }

@@ -1,6 +1,6 @@
 import { AuthPayload } from "../auth/interfaces/auth-payload";
 import { AuthResponse } from "../auth/interfaces/auth-response";
-import { initializationError, invalidParams, operationFailed } from "../errors/error-handler";
+import { implementationError, initializationError, invalidParams, operationFailed } from "../errors/error-handler";
 import { ValidationResult } from "../errors/interfaces/validation-result";
 import Wortal from "../index";
 import { isValidNumber } from "../utils/validators";
@@ -11,12 +11,9 @@ import { API_URL, WORTAL_API } from "../data/core-data";
  * Base class for implementations of the Wortal SDK core functionality. Extend this class to implement the core functionality.
  * @hidden
  */
-export abstract class CoreBase {
-    protected abstract _supportedAPIs: string[];
-
-    constructor() {
-    }
-
+export class CoreBase {
+    protected _supportedAPIs: string[] = [];
+    
 //#region Public API
 
     public async initializeAsync(): Promise<void> {
@@ -127,15 +124,15 @@ export abstract class CoreBase {
 //#endregion
 //#region Implementation interface
 
-    protected abstract initializeAsyncImpl(): Promise<void>;
-    protected abstract startGameAsyncImpl(): Promise<void>;
-    protected abstract authenticateAsyncImpl(payload?: AuthPayload): Promise<AuthResponse>;
-    protected abstract linkAccountAsyncImpl(): Promise<boolean>;
-    protected abstract setLoadingProgressImpl(progress: number): void;
-    protected abstract onPauseImpl(callback: () => void): void;
-    protected abstract performHapticFeedbackAsyncImpl(): Promise<void>;
-    protected abstract _initializePlatformAsyncImpl(): Promise<void>;
-    protected abstract _initializeSDKAsyncImpl(): Promise<void>;
+    protected initializeAsyncImpl(): Promise<void> { throw implementationError(); }
+    protected startGameAsyncImpl(): Promise<void> { throw implementationError(); }
+    protected authenticateAsyncImpl(payload?: AuthPayload): Promise<AuthResponse> { throw implementationError(); }
+    protected linkAccountAsyncImpl(): Promise<boolean> { throw implementationError(); }
+    protected setLoadingProgressImpl(progress: number): void { throw implementationError(); }
+    protected onPauseImpl(callback: () => void): void { throw implementationError(); }
+    protected performHapticFeedbackAsyncImpl(): Promise<void> { throw implementationError(); }
+    protected _initializePlatformAsyncImpl(): Promise<void> { throw implementationError(); }
+    protected _initializeSDKAsyncImpl(): Promise<void> { throw implementationError(); }
 
     protected defaultInitializeAsyncImpl(): Promise<void> {
         return this._initializeSDKAsyncImpl()

@@ -10,13 +10,6 @@ import { CoreBase } from "../core-base";
  * @hidden
  */
 export class CoreDebug extends CoreBase {
-    // Debug supports all APIs, so we don't need to list them here.
-    protected _supportedAPIs: string[] = [];
-
-    constructor() {
-        super();
-    }
-
     protected authenticateAsyncImpl(payload?: AuthPayload): Promise<AuthResponse> {
         // Used for testing Waves integration locally. Requires bundling a built version of the Waves SDK with the
         // demo project.

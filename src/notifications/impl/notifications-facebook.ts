@@ -11,10 +11,6 @@ import { NotificationsBase } from "../notifications-base";
  * @hidden
  */
 export class NotificationsFacebook extends NotificationsBase {
-    constructor() {
-        super();
-    }
-
     protected cancelAllAsyncImpl(label?: string): Promise<boolean> {
         const url = this._getCancelAllURL();
         if (url === undefined) {

@@ -14,10 +14,6 @@ import { Subscription } from "../interfaces/subscription";
  * @hidden
  */
 export class IAPFacebook extends IAPBase {
-    constructor() {
-        super();
-    }
-
     protected cancelSubscriptionAsyncImpl(purchaseToken: string): Promise<void> {
         return Wortal._internalPlatformSDK.payments.cancelSubscriptionAsync(purchaseToken)
             .catch((error: ErrorMessage_Facebook) => {

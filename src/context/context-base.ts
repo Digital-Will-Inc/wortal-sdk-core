@@ -2,7 +2,7 @@ import { API_URL, WORTAL_API } from "../data/core-data";
 import { ValidationResult } from "../errors/interfaces/validation-result";
 import Wortal from "../index";
 import { ConnectedPlayer } from "../player/classes/connected-player";
-import { invalidParams, notInitialized } from "../errors/error-handler";
+import { implementationError, invalidParams, notInitialized } from "../errors/error-handler";
 import { isValidPayloadImage, isValidPayloadText, isValidString } from "../utils/validators";
 import { ChoosePayload } from "./interfaces/choose-payload";
 import { ContextSizeResponse } from "./interfaces/context-size-response";
@@ -17,10 +17,7 @@ import { ContextType } from "./types/context-payload-property-types";
  * Base class for context implementations. Extend this class to implement context functionality for a specific platform.
  * @hidden
  */
-export abstract class ContextBase {
-    constructor() {
-    }
-
+export class ContextBase {
 //#region Public API
 
     public chooseAsync(payload?: ChoosePayload): Promise<void> {
@@ -147,17 +144,17 @@ export abstract class ContextBase {
 //#endregion
 //#region Implementation interface
 
-    protected abstract chooseAsyncImpl(payload?: ChoosePayload): Promise<void>;
-    protected abstract createAsyncImpl(playerID?: string | string[]): Promise<void>;
-    protected abstract getIdImpl(): string;
-    protected abstract getPlayersAsyncImpl(): Promise<ConnectedPlayer[]>;
-    protected abstract getTypeImpl(): ContextType;
-    protected abstract inviteAsyncImpl(payload: InvitePayload): Promise<number>;
-    protected abstract isSizeBetweenImpl(min?: number, max?: number): ContextSizeResponse | null;
-    protected abstract shareAsyncImpl(payload: SharePayload): Promise<number>;
-    protected abstract shareLinkAsyncImpl(payload: LinkSharePayload): Promise<string | void>;
-    protected abstract switchAsyncImpl(contextID: string, payload?: SwitchPayload): Promise<void>;
-    protected abstract updateAsyncImpl(payload: UpdatePayload): Promise<void>;
+    protected chooseAsyncImpl(payload?: ChoosePayload): Promise<void> { throw implementationError(); }
+    protected createAsyncImpl(playerID?: string | string[]): Promise<void> { throw implementationError(); }
+    protected getIdImpl(): string { throw implementationError(); }
+    protected getPlayersAsyncImpl(): Promise<ConnectedPlayer[]> { throw implementationError(); }
+    protected getTypeImpl(): ContextType { throw implementationError(); }
+    protected inviteAsyncImpl(payload: InvitePayload): Promise<number> { throw implementationError(); }
+    protected isSizeBetweenImpl(min?: number, max?: number): ContextSizeResponse | null { throw implementationError(); }
+    protected shareAsyncImpl(payload: SharePayload): Promise<number> { throw implementationError(); }
+    protected shareLinkAsyncImpl(payload: LinkSharePayload): Promise<string | void> { throw implementationError(); }
+    protected switchAsyncImpl(contextID: string, payload?: SwitchPayload): Promise<void> { throw implementationError(); }
+    protected updateAsyncImpl(payload: UpdatePayload): Promise<void> { throw implementationError(); }
 
 //#endregion
 //#region Validation
