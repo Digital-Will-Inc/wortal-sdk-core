@@ -11,10 +11,6 @@ import { Device } from "../types/session-types";
  * @hidden
  */
 export class SessionCrazyGames extends SessionBase {
-    constructor() {
-        super();
-    }
-
     protected gameplayStartImpl(): void {
         return Wortal._internalPlatformSDK.game.gameplayStart();
     }

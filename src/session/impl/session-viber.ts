@@ -11,10 +11,6 @@ import { Device } from "../types/session-types";
  * @hidden
  */
 export class SessionViber extends SessionBase {
-    constructor() {
-        super();
-    }
-
     protected gameplayStartImpl(): void {
         return;
     }
