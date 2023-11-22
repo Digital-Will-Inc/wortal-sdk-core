@@ -120,6 +120,9 @@ declare global {
         saveData<T = any>(gameData: T): Promise<{
             message: string;
         }>;
+        savePartialData<T = any>(gameData: Partial<T>): Promise<{
+            message: string;
+        }>;
         getData<T = any>(): Promise<T>;
     }
 }
