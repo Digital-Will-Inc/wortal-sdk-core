@@ -59,6 +59,24 @@ export function rethrowError_AddictingGames(original: ErrorMessage_AddictingGame
 }
 
 /**
+ * Rethrows an error from the Yandex SDK as a Wortal error. Use this in the error callback when calling the
+ * Yandex SDK to catch its errors and convert them to Wortal errors for consistent error handling.
+ * @hidden
+ */
+export function rethrowError_Yandex(original: string, context: string, url?: string): ErrorMessage {
+    //TODO: create interface for Yandex errors
+    const error: ErrorMessage = {
+        code: ErrorMessages_Yandex[original] || "UNKNOWN",
+        message: ErrorMessages[ErrorMessages_Yandex[original]] || "No message provided by the platform SDK.",
+        context: context,
+        url: url,
+    }
+
+    exception(error.code, error);
+    return error;
+}
+
+/**
  * Throw this in validation functions to indicate that the parameter is invalid.
  * @hidden
  */
@@ -203,4 +221,12 @@ const ErrorMessages_CrazyGames: Record<string, string> = {
     userCancelled: "USER_INPUT",
     showAccountLinkPromptInProgress: "LINK_IN_PROGRESS",
     unexpectedError: "UNKNOWN",
+}
+
+/**
+ * Maps Yandex error codes to Wortal error codes.
+ * @hidden
+ */
+const ErrorMessages_Yandex: Record<string, string> = {
+    USER_NOT_AUTHORIZED: "The game attempted to perform an operation that requires authentication, but the user is not authenticated.",
 }

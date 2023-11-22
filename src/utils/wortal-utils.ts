@@ -257,6 +257,16 @@ export function detectDevice(): Device {
     }
 }
 
+/**
+ * Clamps a number between a min and max value.
+ * @param num Number to clamp.
+ * @param min Minimum value.
+ * @param max Maximum value.
+ */
+export function clampNumber(num: number, min: number, max: number): number {
+    return Math.min(Math.max(num, min), max);
+}
+
 //#endregion
 //#region Wortal page functions
 

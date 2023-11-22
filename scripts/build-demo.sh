@@ -9,7 +9,8 @@ cd "$DEMO_DIR" || exit
 rm -f demo.zip
 
 # List the chunks. Skip Telegram as it will block the FB upload of the demo due to window.parent.postMessage calls.
-chunks=("wortal-core.js" "wortal-common.js" "analytics.js" "addictinggames.js" "crazygames.js" "debug.js" "facebook.js" "gamemonetize.js" "gamepix.js" "gd.js" "link.js" "poki.js" "viber.js" "wortal.js")
+chunks=("wortal-core.js" "wortal-common.js" "analytics.js" "addictinggames.js" "crazygames.js" "debug.js" "facebook.js"
+"gamemonetize.js" "gamepix.js" "gd.js" "link.js" "poki.js" "viber.js" "wortal.js" "yandex.js")
 
 # Loop through the array and copy chunks to the demo folder.
 for chunk in "${chunks[@]}"; do
