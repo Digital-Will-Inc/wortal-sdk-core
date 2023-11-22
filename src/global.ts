@@ -20,6 +20,7 @@ declare global {
     const sdk: GameMonetizeSDK;
     const PokiSDK: PokiSDK;
     const SWAGAPI: AddictingGamesSDK;
+    const waves: WavesSDK;
 
     interface Window {
         /**
@@ -84,11 +85,6 @@ declare global {
          * @hidden
          */
         shareGame: (destination: ShareTo, message: string) => void;
-
-        /**
-         * Waves client SDK instance
-         */
-        waves: Waves;
     }
 
     interface CrazyGamesSDK {
@@ -96,15 +92,15 @@ declare global {
     }
 
 
-    interface WavesOptions {
+    interface WavesInitializationOptions {
         baseUrl?: string;
         platform?: Platform;
         gameId?: number;
         authToken?: string;
     }
 
-    interface Waves {
-        init(options: WavesOptions): void;
+    interface WavesSDK {
+        init(options: WavesInitializationOptions): void;
         /**
          * authenticate will check if there is no authToken it will open a dialog
          * to prompt the user to login and save the auth token

@@ -2,10 +2,11 @@ import { AchievementsAPI } from "../achievements/achievements-api";
 import { AuthPayload } from "../auth/interfaces/auth-payload";
 import { AuthResponse } from "../auth/interfaces/auth-response";
 import { ContextWortal } from "../context/impl/context-wortal";
+import { SDK_SRC } from "../data/core-data";
 import { Platform } from "../session/types/session-types";
 import { initializationError } from "../errors/error-handler";
 import { StatsAPI } from "../stats/stats-api";
-import { debug, info, internalCall, performanceLog, status } from "../utils/logger";
+import { debug, exception, info, internalCall, performanceLog, status } from "../utils/logger";
 import {
     addGameEndEventListener,
     addLoadingListener,
@@ -457,30 +458,42 @@ export class CoreAPI {
 
     protected _loadWavesClientDeps(platform: Platform): void {
         internalCall("_loadWavesClientDeps");
-        const baseUrl = platform === "debug" ? "." : "https://storage.googleapis.com/html5gameportal.com/waves-client"
 
-        const wavesClientId = "waves-client";
-        const head = document.getElementsByTagName("head")[0];
+        // Not all platforms will allows us to use Waves, we need to check each platform's TOS to ensure
+        // we're playing by the rules.
+        //TODO: determine platform support for Waves
 
-        const wavesClientCssId = `${wavesClientId}-css`;
-        if (!document.getElementById(wavesClientCssId)) {
-            const link = document.createElement("link");
-            link.id = wavesClientCssId;
-            link.rel = "stylesheet";
-            link.type = "text/css";
-            link.href = `${baseUrl}/waves.css`;
-            head.appendChild(link);
+        ///////////////////////////////////
+        //TODO: remove this once the CSS is bundled into the Waves SDK
+        const wavesCSS = document.createElement("link");
+        wavesCSS.rel = "stylesheet";
+        wavesCSS.type = "text/css";
+        wavesCSS.href = `${SDK_SRC.WAVES_BASE_URL}/waves.css`;
+
+        wavesCSS.onerror = () => {
+            // Not fatal, but we should log it and disable Waves.
+            exception("Failed to load Waves CSS.");
+            this._isWavesEnabled = false;
         }
 
-        const wavesClientJsId = `${wavesClientId}-js`;
-        if (!document.getElementById(wavesClientJsId)) {
-            const wavesJs = document.createElement("script");
-            wavesJs.id = `${wavesClientId}-js`;
-            wavesJs.src = `${baseUrl}/waves.umd.js`;
-            head.appendChild(wavesJs);
+        document.head.prepend(wavesCSS);
+        ///////////////////////////////////
+
+        const wavesSDK = document.createElement("script");
+        wavesSDK.src = `${SDK_SRC.WAVES_BASE_URL}/waves.umd.js`;
+
+        wavesSDK.onload = () => {
+            debug("Waves SDK loaded.");
+            this._isWavesEnabled = true;
         }
 
-        this._isWavesEnabled = true;
+        wavesSDK.onerror = () => {
+            // Not fatal, but we should log it and disable Waves.
+            exception("Failed to load Waves SDK.");
+            this._isWavesEnabled = false;
+        }
+
+        document.head.prepend(wavesSDK);
     }
 
     // This is a big ugly mess. We should probably refactor this to be more elegant and less repetitive, but
@@ -493,7 +506,7 @@ export class CoreAPI {
         const {AnalyticsWombat} = await import(/* webpackChunkName: "analytics" */ "../analytics/impl/analytics-wombat");
         const {AnalyticsDisabled} = await import(/* webpackChunkName: "analytics" */ "../analytics/impl/analytics-disabled");
 
-        console.log("Loading Waves deps...")
+        status("Loading Waves SDK...");
         this._loadWavesClientDeps(platform);
 
         switch (platform) {
