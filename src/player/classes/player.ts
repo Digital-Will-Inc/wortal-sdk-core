@@ -1,10 +1,12 @@
+import Wortal from "../../index";
+import { generateRandomID } from "../../utils/wortal-utils";
 import { PlayerData } from "../interfaces/player-data";
 
 /**
  * Represents a player in the game. To access info about the current player, use the Wortal.player API.
  * This is used to access info about other players such as friends or leaderboard entries.
  */
-export abstract class Player {
+export class Player {
     protected _data: PlayerData = {
         id: "",
         name: "",
@@ -13,14 +15,15 @@ export abstract class Player {
         daysSinceFirstPlay: 0,
     };
 
-    constructor() {
-    }
-
     public async initialize(): Promise<void> {
-        await this.initializeImpl();
-    }
+        this._data.id = generateRandomID();
+        this._data.name = "Player";
+        this._data.photo = "https://storage.googleapis.com/html5gameportal.com/images/avatar.jpg";
+        this._data.isFirstPlay = false;
 
-    protected abstract initializeImpl(): Promise<void>;
+        Wortal._log.debug("Player initialized: ", this._data);
+        return Promise.resolve();
+    }
 
     /**
      * ID of the player. This is platform-dependent.

@@ -6,11 +6,7 @@ import { Player } from "./player";
  * @hidden
  */
 export class LinkPlayer extends Player {
-    constructor() {
-        super();
-    }
-
-    protected initializeImpl(): Promise<void> {
+    public override async initialize(): Promise<void> {
         this._data.id = Wortal._internalPlatformSDK.player.getID();
         this._data.name = Wortal._internalPlatformSDK.player.getName();
         this._data.photo = Wortal._internalPlatformSDK.player.getPhoto();

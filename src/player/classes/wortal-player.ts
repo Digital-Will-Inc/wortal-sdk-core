@@ -6,11 +6,7 @@ import { Player } from "./player";
  * @hidden
  */
 export class WortalPlayer extends Player {
-    constructor() {
-        super();
-    }
-
-    protected initializeImpl(): Promise<void> {
+    public override async initialize(): Promise<void> {
         this._data.id = window.wortalSessionId;
         this._data.name = "Player";
         this._data.photo = "https://storage.googleapis.com/html5gameportal.com/images/avatar.jpg";

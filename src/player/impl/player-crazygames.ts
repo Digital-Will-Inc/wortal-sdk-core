@@ -3,8 +3,6 @@ import { notSupported, rethrowError_CrazyGames } from "../../errors/error-handle
 import { Error_CrazyGames } from "../../errors/types/crazygames-error-types";
 import Wortal from "../../index";
 import { ConnectedPlayer } from "../classes/connected-player";
-import { CrazyGamesPlayer } from "../classes/crazygames-player";
-import { Player } from "../classes/player";
 import { ConnectedPlayerPayload } from "../interfaces/connected-player-payload";
 import { SignedASID } from "../interfaces/facebook-player";
 import { SignedPlayerInfo } from "../interfaces/signed-player-info";
@@ -15,13 +13,6 @@ import { PlayerBase } from "../player-base";
  * @hidden
  */
 export class PlayerCrazyGames extends PlayerBase {
-    protected _player: Player;
-
-    constructor() {
-        super();
-        this._player = new CrazyGamesPlayer();
-    }
-
     protected canSubscribeBotAsyncImpl(): Promise<boolean> {
         return Promise.reject(notSupported(undefined, WORTAL_API.PLAYER_CAN_SUBSCRIBE_BOT_ASYNC, API_URL.PLAYER_CAN_SUBSCRIBE_BOT_ASYNC));
     }

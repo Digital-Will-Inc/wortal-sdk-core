@@ -17,7 +17,7 @@ export class ConnectedPlayer extends Player {
         Wortal._log.debug("Created ConnectedPlayer:", player);
     }
 
-    protected initializeImpl(): Promise<void> {
+    public override async initialize(): Promise<void> {
         return Promise.resolve();
     }
 

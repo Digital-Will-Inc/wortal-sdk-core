@@ -18,7 +18,7 @@ export class CrazyGamesPlayer extends Player {
         this._data.photo = player?.profilePictureUrl || "https://images.crazygames.com/userportal/avatars/4.png";
     }
 
-    protected async initializeImpl(): Promise<void> {
+    public override async initialize(): Promise<void> {
         let cgPlayer: ICrazyGamesPlayer | null = null;
         try {
             cgPlayer = await this._initializeCrazyGamesPlayer();

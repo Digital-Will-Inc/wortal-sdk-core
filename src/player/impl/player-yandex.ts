@@ -20,8 +20,8 @@ export class PlayerYandex extends PlayerBase {
     protected _player!: Player;
     private _playerObject!: YandexPlayerObject;
 
-    constructor() {
-        super();
+    constructor(player: Player) {
+        super(player);
 
         // Normally this would occur in initializeImpl(), but we need to do this here as the APIs
         // we need to use exist in the YandexPlayerObject, which is not accessible from the Player class.

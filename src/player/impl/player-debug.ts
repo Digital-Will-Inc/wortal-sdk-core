@@ -1,6 +1,4 @@
 import { ConnectedPlayer } from "../classes/connected-player";
-import { DebugPlayer } from "../classes/debug-player";
-import { Player } from "../classes/player";
 import { ConnectedPlayerPayload } from "../interfaces/connected-player-payload";
 import { SignedASID } from "../interfaces/facebook-player";
 import { SignedPlayerInfo } from "../interfaces/signed-player-info";
@@ -11,13 +9,6 @@ import { PlayerBase } from "../player-base";
  * @hidden
  */
 export class PlayerDebug extends PlayerBase {
-    protected _player: Player;
-
-    constructor() {
-        super();
-        this._player = new DebugPlayer();
-    }
-
     protected canSubscribeBotAsyncImpl(): Promise<boolean> {
         return Promise.resolve(true);
     }

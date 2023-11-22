@@ -1,5 +1,5 @@
 import { API_URL, WORTAL_API } from "../data/core-data";
-import { invalidParams, notInitialized, operationFailed } from "../errors/error-handler";
+import { implementationError, invalidParams, notInitialized, operationFailed } from "../errors/error-handler";
 import { ValidationResult } from "../errors/interfaces/validation-result";
 import Wortal from "../index";
 import { ConnectedPlayer } from "./classes/connected-player";
@@ -12,10 +12,11 @@ import { SignedPlayerInfo } from "./interfaces/signed-player-info";
  * Base class for the Player API. Extend this class to implement the Player API for a specific platform.
  * @hidden
  */
-export abstract class PlayerBase {
-    protected abstract _player: Player;
+export class PlayerBase {
+    protected _player: Player;
 
-    constructor() {
+    constructor(player: Player) {
+        this._player = player;
     }
 
     /** @hidden */
@@ -201,16 +202,16 @@ export abstract class PlayerBase {
 //#endregion
 //#region Implementation interface
 
-    protected abstract canSubscribeBotAsyncImpl(): Promise<boolean>;
-    protected abstract flushDataAsyncImpl(): Promise<void>;
-    protected abstract getASIDAsyncImpl(): Promise<string>;
-    protected abstract getConnectedPlayersAsyncImpl(payload?: ConnectedPlayerPayload): Promise<ConnectedPlayer[]>;
-    protected abstract getDataAsyncImpl(keys: string[]): Promise<any>;
-    protected abstract getSignedASIDAsyncImpl(): Promise<SignedASID>;
-    protected abstract getSignedPlayerInfoAsyncImpl(): Promise<SignedPlayerInfo>;
-    protected abstract getTokenAsyncImpl(): Promise<string>;
-    protected abstract setDataAsyncImpl(data: Record<string, unknown>): Promise<void>;
-    protected abstract subscribeBotAsyncImpl(): Promise<void>;
+    protected canSubscribeBotAsyncImpl(): Promise<boolean> { throw implementationError(); };
+    protected flushDataAsyncImpl(): Promise<void> { throw implementationError(); };
+    protected getASIDAsyncImpl(): Promise<string> { throw implementationError(); };
+    protected getConnectedPlayersAsyncImpl(payload?: ConnectedPlayerPayload): Promise<ConnectedPlayer[]> { throw implementationError(); };
+    protected getDataAsyncImpl(keys: string[]): Promise<any> { throw implementationError(); };
+    protected getSignedASIDAsyncImpl(): Promise<SignedASID> { throw implementationError(); };
+    protected getSignedPlayerInfoAsyncImpl(): Promise<SignedPlayerInfo> { throw implementationError(); };
+    protected getTokenAsyncImpl(): Promise<string> { throw implementationError(); };
+    protected setDataAsyncImpl(data: Record<string, unknown>): Promise<void> { throw implementationError(); };
+    protected subscribeBotAsyncImpl(): Promise<void> { throw implementationError(); };
 
     protected async defaultGetDataAsyncImpl(keys: string[]): Promise<any> {
         try {
