@@ -1,5 +1,5 @@
 import { API_URL, WORTAL_API } from "../data/core-data";
-import { invalidParams, notInitialized } from "../errors/error-handler";
+import { implementationError, invalidParams, notInitialized } from "../errors/error-handler";
 import { ValidationResult } from "../errors/interfaces/validation-result";
 import Wortal from "../index";
 import { isValidString } from "../utils/validators";
@@ -12,13 +12,13 @@ import { Device, Orientation, Platform } from "./types/session-types";
  * Base class for Session API. Extend this class to implement the Session API on a specific platform.
  * @hidden
  */
-export abstract class SessionBase {
+export class SessionBase {
     protected _session: Session;
     protected _game: GameState;
 
-    constructor() {
-        this._game = new GameState();
-        this._session = new Session();
+    constructor(game: GameState, session: Session) {
+        this._game = game;
+        this._session = session;
     }
 
     /** @internal */
@@ -186,19 +186,19 @@ export abstract class SessionBase {
 //#endregion
 //#region Implementation interface
 
-    protected abstract gameplayStartImpl(): void;
-    protected abstract gameplayStopImpl(): void;
-    protected abstract getDeviceImpl(): Device;
-    protected abstract getEntryPointAsyncImpl(): Promise<string>;
-    protected abstract getEntryPointDataImpl(): Record<string, unknown>;
-    protected abstract getLocaleImpl(): string;
-    protected abstract getTrafficSourceImpl(): TrafficSource;
-    protected abstract happyTimeImpl(): void;
-    protected abstract setSessionDataImpl(data: Record<string, unknown>): void;
-    protected abstract switchGameAsyncImpl(gameID: string, data?: object): Promise<void>;
+    protected gameplayStartImpl(): void { throw implementationError(); }
+    protected gameplayStopImpl(): void { throw implementationError(); }
+    protected getDeviceImpl(): Device { throw implementationError(); }
+    protected getEntryPointAsyncImpl(): Promise<string> { throw implementationError(); }
+    protected getEntryPointDataImpl(): Record<string, unknown> { throw implementationError(); }
+    protected getLocaleImpl(): string { throw implementationError(); }
+    protected getTrafficSourceImpl(): TrafficSource { throw implementationError(); }
+    protected happyTimeImpl(): void { throw implementationError(); }
+    protected setSessionDataImpl(data: Record<string, unknown>): void { throw implementationError(); }
+    protected switchGameAsyncImpl(gameID: string, data?: object): Promise<void> { throw implementationError(); }
 
-    protected abstract _gameLoadingStartImpl(): void;
-    protected abstract _gameLoadingStopImpl(): void;
+    protected _gameLoadingStartImpl(): void { throw implementationError(); }
+    protected _gameLoadingStopImpl(): void { throw implementationError(); }
 
 //#endregion
 //#region Validation
