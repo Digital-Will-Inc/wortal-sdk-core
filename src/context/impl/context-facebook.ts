@@ -20,10 +20,6 @@ import { ContextType } from "../types/context-payload-property-types";
  * @hidden
  */
 export class ContextFacebook extends ContextBase {
-    constructor() {
-        super();
-    }
-
     protected chooseAsyncImpl(payload?: ChoosePayload): Promise<void> {
         return Wortal._internalPlatformSDK.context.chooseAsync(payload)
             .catch((error: ErrorMessage_Facebook) => {

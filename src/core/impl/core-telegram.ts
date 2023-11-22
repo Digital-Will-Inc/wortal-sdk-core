@@ -11,10 +11,6 @@ import { API_URL, TELEGRAM_API, WORTAL_API } from "../../data/core-data";
  * @hidden
  */
 export class CoreTelegram extends CoreBase {
-    constructor() {
-        super();
-    }
-
     protected authenticateAsyncImpl(payload?: AuthPayload): Promise<AuthResponse> {
         return Promise.reject(notSupported(undefined, WORTAL_API.AUTHENTICATE_ASYNC, API_URL.AUTHENTICATE_ASYNC));
     }

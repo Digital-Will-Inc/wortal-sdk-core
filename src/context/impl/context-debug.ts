@@ -14,10 +14,6 @@ import { ContextType } from "../types/context-payload-property-types";
  * @hidden
  */
 export class ContextDebug extends ContextBase {
-    constructor() {
-        super();
-    }
-
     protected chooseAsyncImpl(payload?: ChoosePayload): Promise<void> {
         return Promise.resolve();
     }

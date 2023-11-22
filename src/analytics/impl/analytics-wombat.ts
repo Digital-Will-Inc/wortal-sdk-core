@@ -11,10 +11,6 @@ import { AnalyticsEventData, EventData_AdCall } from "../interfaces/analytics-ev
  * @hidden
  */
 export class AnalyticsWombat extends AnalyticsBase {
-    constructor() {
-        super();
-    }
-
 //#region Public API
 
     protected logGameChoiceImpl(decision: string, choice: string): void {

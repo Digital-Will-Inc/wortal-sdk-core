@@ -7,10 +7,6 @@ import { LeaderboardBase } from "../leaderboard-base";
  * @hidden
  */
 export class LeaderboardDebug extends LeaderboardBase {
-    constructor() {
-        super();
-    }
-
     protected getConnectedPlayersEntriesAsyncImpl(name: string, count: number, offset: number): Promise<LeaderboardEntry[]> {
         const entries: LeaderboardEntry[] = [];
         for (let i = 0; i < count; i++) {

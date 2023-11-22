@@ -1,5 +1,5 @@
 import { API_URL, WORTAL_API } from "../data/core-data";
-import { invalidParams, notInitialized } from "../errors/error-handler";
+import { implementationError, invalidParams, notInitialized } from "../errors/error-handler";
 import { ValidationResult } from "../errors/interfaces/validation-result";
 import Wortal from "../index";
 import { isValidString } from "../utils/validators";
@@ -10,10 +10,7 @@ import { LeaderboardEntry } from "./classes/leaderboard-entry";
  * Base class for the Leaderboard API. Extend this class to implement the Leaderboard API for a specific platform.
  * @hidden
  */
-export abstract class LeaderboardBase {
-    constructor() {
-    }
-
+export class LeaderboardBase {
 //#region Public API
 
     public getConnectedPlayersEntriesAsync(name: string, count: number, offset: number): Promise<LeaderboardEntry[]> {
@@ -85,12 +82,12 @@ export abstract class LeaderboardBase {
 //#endregion
 //#region Implementation interface
 
-    protected abstract getConnectedPlayersEntriesAsyncImpl(name: string, count: number, offset: number): Promise<LeaderboardEntry[]>;
-    protected abstract getEntriesAsyncImpl(name: string, count: number, offset: number): Promise<LeaderboardEntry[]>;
-    protected abstract getEntryCountAsyncImpl(name: string): Promise<number>;
-    protected abstract getLeaderboardAsyncImpl(name: string): Promise<Leaderboard>;
-    protected abstract getPlayerEntryAsyncImpl(name: string): Promise<LeaderboardEntry>;
-    protected abstract sendEntryAsyncImpl(name: string, score: number, details: string): Promise<LeaderboardEntry>;
+    protected getConnectedPlayersEntriesAsyncImpl(name: string, count: number, offset: number): Promise<LeaderboardEntry[]> { throw implementationError(); }
+    protected getEntriesAsyncImpl(name: string, count: number, offset: number): Promise<LeaderboardEntry[]> { throw implementationError(); }
+    protected getEntryCountAsyncImpl(name: string): Promise<number> { throw implementationError(); }
+    protected getLeaderboardAsyncImpl(name: string): Promise<Leaderboard> { throw implementationError(); }
+    protected getPlayerEntryAsyncImpl(name: string): Promise<LeaderboardEntry> { throw implementationError(); }
+    protected sendEntryAsyncImpl(name: string, score: number, details: string): Promise<LeaderboardEntry> { throw implementationError(); }
 
 //#endregion
 //#region Validation

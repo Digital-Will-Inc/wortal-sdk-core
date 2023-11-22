@@ -1,5 +1,5 @@
 import { API_URL, WORTAL_API } from "../data/core-data";
-import { invalidParams, notInitialized } from "../errors/error-handler";
+import { implementationError, invalidParams, notInitialized } from "../errors/error-handler";
 import { ValidationResult } from "../errors/interfaces/validation-result";
 import Wortal from "../index";
 import { isValidNumber, isValidString } from "../utils/validators";
@@ -11,10 +11,7 @@ import { ShareTournamentPayload } from "./interfaces/share-tournament-payload";
  * Base class for the Tournament API. Extend this class to implement the Tournament API for a specific platform.
  * @hidden
  */
-export abstract class TournamentBase {
-    constructor() {
-    }
-
+export class TournamentBase {
 //#region Public API
 
     public createAsync(payload: CreateTournamentPayload): Promise<Tournament> {
@@ -86,12 +83,12 @@ export abstract class TournamentBase {
 //#endregion
 //#region Implementation interface
 
-    protected abstract createAsyncImpl(payload: CreateTournamentPayload): Promise<Tournament>;
-    protected abstract getAllAsyncImpl(): Promise<Tournament[]>;
-    protected abstract getCurrentAsyncImpl(): Promise<Tournament>;
-    protected abstract joinAsyncImpl(tournamentID: string): Promise<void>;
-    protected abstract postScoreAsyncImpl(score: number): Promise<void>;
-    protected abstract shareAsyncImpl(payload: ShareTournamentPayload): Promise<void>;
+    protected createAsyncImpl(payload: CreateTournamentPayload): Promise<Tournament> { throw implementationError(); }
+    protected getAllAsyncImpl(): Promise<Tournament[]> { throw implementationError(); }
+    protected getCurrentAsyncImpl(): Promise<Tournament> { throw implementationError(); }
+    protected joinAsyncImpl(tournamentID: string): Promise<void> { throw implementationError(); }
+    protected postScoreAsyncImpl(score: number): Promise<void> { throw implementationError(); }
+    protected shareAsyncImpl(payload: ShareTournamentPayload): Promise<void> { throw implementationError(); }
 
 //#endregion
 //#region Validation

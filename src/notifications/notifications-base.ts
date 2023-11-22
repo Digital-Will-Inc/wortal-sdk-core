@@ -1,5 +1,5 @@
 import { API_URL, WORTAL_API } from "../data/core-data";
-import { invalidParams, notInitialized } from "../errors/error-handler";
+import { implementationError, invalidParams, notInitialized } from "../errors/error-handler";
 import { ValidationResult } from "../errors/interfaces/validation-result";
 import Wortal from "../index";
 import { isValidString } from "../utils/validators";
@@ -11,10 +11,7 @@ import { NotificationScheduleResult } from "./interfaces/notification-schedule-r
  * Base class for Notifications API. Extend this class to implement the Notifications API for a specific platform.
  * @hidden
  */
-export abstract class NotificationsBase {
-    constructor() {
-    }
-
+export class NotificationsBase {
 //#region Public API
 
     public cancelAllAsync(label?: string): Promise<boolean> {
@@ -64,10 +61,10 @@ export abstract class NotificationsBase {
 //#endregion
 //#region Implementation interface
 
-    protected abstract cancelAllAsyncImpl(label?: string): Promise<boolean>;
-    protected abstract cancelAsyncImpl(id: string): Promise<boolean>;
-    protected abstract getHistoryAsyncImpl(): Promise<ScheduledNotification[]>;
-    protected abstract scheduleAsyncImpl(payload: NotificationPayload): Promise<NotificationScheduleResult>;
+    protected cancelAllAsyncImpl(label?: string): Promise<boolean> { throw implementationError(); }
+    protected cancelAsyncImpl(id: string): Promise<boolean> { throw implementationError(); }
+    protected getHistoryAsyncImpl(): Promise<ScheduledNotification[]> { throw implementationError(); }
+    protected scheduleAsyncImpl(payload: NotificationPayload): Promise<NotificationScheduleResult> { throw implementationError(); }
 
 //#endregion
 //#region Validation

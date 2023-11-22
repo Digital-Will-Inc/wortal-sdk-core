@@ -12,10 +12,6 @@ import { YandexSDK } from "../interfaces/yandex-sdk";
  * @hidden
  */
 export class CoreYandex extends CoreBase {
-    constructor() {
-        super();
-    }
-
     protected authenticateAsyncImpl(payload?: AuthPayload): Promise<AuthResponse> {
         return Wortal._internalPlatformSDK.auth.openAuthDialog()
             .then(() => {

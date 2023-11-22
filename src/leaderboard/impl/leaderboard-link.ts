@@ -12,10 +12,6 @@ import { LeaderboardBase } from "../leaderboard-base";
  * @hidden
  */
 export class LeaderboardLink extends LeaderboardBase {
-    constructor() {
-        super();
-    }
-
     protected getConnectedPlayersEntriesAsyncImpl(name: string, count: number, offset: number): Promise<LeaderboardEntry[]> {
         return Wortal._internalPlatformSDK.getLeaderboardAsync(name)
             .then((leaderboard: Leaderboard_Link) => leaderboard.getConnectedPlayerEntriesAsync(count, offset))

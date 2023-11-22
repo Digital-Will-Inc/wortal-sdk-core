@@ -1,5 +1,5 @@
 import { API_URL, WORTAL_API } from "../data/core-data";
-import { invalidOperation, invalidParams, notInitialized } from "../errors/error-handler";
+import { implementationError, invalidOperation, invalidParams, notInitialized } from "../errors/error-handler";
 import { ValidationResult } from "../errors/interfaces/validation-result";
 import Wortal from "../index";
 import { isValidPurchaseConfig, isValidString } from "../utils/validators";
@@ -13,11 +13,8 @@ import { Subscription } from "./interfaces/subscription";
  * Base implementation of the IAP API. Extend this class to implement the IAP API for a specific platform.
  * @hidden
  */
-export abstract class IAPBase {
+export class IAPBase {
     protected _isIAPEnabled: boolean = false;
-
-    constructor() {
-    }
 
 //#region Public API
 
@@ -134,16 +131,16 @@ export abstract class IAPBase {
 //#endregion
 //#region Implementation interface
 
-    protected abstract cancelSubscriptionAsyncImpl(purchaseToken: string): Promise<void>;
-    protected abstract consumePurchaseAsyncImpl(token: string): Promise<void>;
-    protected abstract getCatalogAsyncImpl(): Promise<Product[]>;
-    protected abstract getPurchasesAsyncImpl(): Promise<Purchase[]>;
-    protected abstract getSubscribableCatalogAsyncImpl(): Promise<SubscribableProduct[]>;
-    protected abstract getSubscriptionsAsyncImpl(): Promise<Subscription[]>;
-    protected abstract isEnabledImpl(): boolean;
-    protected abstract makePurchaseAsyncImpl(purchase: PurchaseConfig): Promise<Purchase>;
-    protected abstract purchaseSubscriptionAsyncImpl(productID: string): Promise<Subscription>;
-    protected abstract _tryEnableIAPImpl(): void;
+    protected cancelSubscriptionAsyncImpl(purchaseToken: string): Promise<void> { throw implementationError(); }
+    protected consumePurchaseAsyncImpl(token: string): Promise<void> { throw implementationError(); }
+    protected getCatalogAsyncImpl(): Promise<Product[]> { throw implementationError(); }
+    protected getPurchasesAsyncImpl(): Promise<Purchase[]> { throw implementationError(); }
+    protected getSubscribableCatalogAsyncImpl(): Promise<SubscribableProduct[]> { throw implementationError(); }
+    protected getSubscriptionsAsyncImpl(): Promise<Subscription[]> { throw implementationError(); }
+    protected isEnabledImpl(): boolean { throw implementationError(); }
+    protected makePurchaseAsyncImpl(purchase: PurchaseConfig): Promise<Purchase> { throw implementationError(); }
+    protected purchaseSubscriptionAsyncImpl(productID: string): Promise<Subscription> { throw implementationError(); }
+    protected _tryEnableIAPImpl(): void { throw implementationError(); }
 
 //#endregion
 //#region Validation

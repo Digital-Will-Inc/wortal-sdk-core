@@ -8,9 +8,6 @@ import { AnalyticsBase } from "../analytics-base";
  * @hidden
  */
 export class AnalyticsDisabled extends AnalyticsBase {
-    constructor() {
-        super();
-    }
 
     protected logGameChoiceImpl(decision: string, choice: string): void {
     }

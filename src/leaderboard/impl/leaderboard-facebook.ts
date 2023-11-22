@@ -17,10 +17,6 @@ export class LeaderboardFacebook extends LeaderboardBase {
     // from what the developer passes into the API. If the player is not currently in a context, we throw an error
     // because no leaderboard can exist in that case.
 
-    constructor() {
-        super();
-    }
-
     protected getConnectedPlayersEntriesAsyncImpl(name: string, count: number, offset: number): Promise<LeaderboardEntry[]> {
         const contextID = Wortal.context.getId();
         if (!isValidString(contextID)) {

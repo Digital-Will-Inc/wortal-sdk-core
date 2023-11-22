@@ -10,10 +10,6 @@ import { TournamentBase } from "../tournament-base";
  * @hidden
  */
 export class TournamentGD extends TournamentBase {
-    constructor() {
-        super();
-    }
-
     protected createAsyncImpl(payload: CreateTournamentPayload): Promise<Tournament> {
         return Promise.reject(notSupported(undefined, WORTAL_API.TOURNAMENT_CREATE_ASYNC, API_URL.TOURNAMENT_CREATE_ASYNC));
     }

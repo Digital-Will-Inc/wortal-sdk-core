@@ -14,10 +14,6 @@ import { TournamentBase } from "../tournament-base";
  * @hidden
  */
 export class TournamentFacebook extends TournamentBase {
-    constructor() {
-        super();
-    }
-
     protected createAsyncImpl(payload: CreateTournamentPayload): Promise<Tournament> {
         return Wortal._internalPlatformSDK.tournament.createAsync(payload)
             .then((tournament: FacebookTournament) => {

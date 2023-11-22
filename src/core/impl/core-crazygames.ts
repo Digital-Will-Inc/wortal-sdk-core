@@ -15,10 +15,6 @@ import { API_URL, SDK_SRC, WORTAL_API } from "../../data/core-data";
  * @hidden
  */
 export class CoreCrazyGames extends CoreBase {
-    constructor() {
-        super();
-    }
-
     protected authenticateAsyncImpl(payload?: AuthPayload): Promise<AuthResponse> {
         return new Promise((resolve, reject) => {
             const callback = (error: Error_CrazyGames, user: ICrazyGamesPlayer) => {

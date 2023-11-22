@@ -13,10 +13,6 @@ import { Subscription } from "../interfaces/subscription";
  * @hidden
  */
 export class IAPGD extends IAPBase {
-    constructor() {
-        super();
-    }
-
     protected cancelSubscriptionAsyncImpl(purchaseToken: string): Promise<void> {
         return Promise.reject(notSupported(undefined, WORTAL_API.IAP_CANCEL_SUBSCRIPTION_ASYNC, API_URL.IAP_CANCEL_SUBSCRIPTION_ASYNC));
     }

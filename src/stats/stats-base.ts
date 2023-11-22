@@ -1,5 +1,5 @@
 import { API_URL, WORTAL_API } from "../data/core-data";
-import { invalidParams, notInitialized } from "../errors/error-handler";
+import { implementationError, invalidParams, notInitialized } from "../errors/error-handler";
 import { ValidationResult } from "../errors/interfaces/validation-result";
 import Wortal from "../index";
 import { isValidNumber, isValidString } from "../utils/validators";
@@ -11,10 +11,7 @@ import { Stats } from "./interfaces/stats";
  * Base implementation for the Stats API. Extend this class to implement the Stats API for a specific platform.
  * @hidden
  */
-export abstract class StatsBase {
-    constructor() {
-    }
-
+export class StatsBase {
 //#region Public API
 
     public getStatsAsync(level: string | number, payload?: GetStatsPayload): Promise<Stats[]> {
@@ -42,8 +39,8 @@ export abstract class StatsBase {
 //#endregion
 //#region Implementation interface
 
-    protected abstract getStatsAsyncImpl(level: string | number, payload?: GetStatsPayload): Promise<any>;
-    protected abstract postStatsAsyncImpl(level: string | number, value: number, payload?: PostStatsPayload): Promise<any>;
+    protected getStatsAsyncImpl(level: string | number, payload?: GetStatsPayload): Promise<any> { throw implementationError(); }
+    protected postStatsAsyncImpl(level: string | number, value: number, payload?: PostStatsPayload): Promise<any> { throw implementationError(); }
 
 //#endregion
 //#region Validation

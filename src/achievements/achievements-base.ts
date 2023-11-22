@@ -1,5 +1,5 @@
 import { API_URL, WORTAL_API } from "../data/core-data";
-import { invalidParams, notInitialized } from "../errors/error-handler";
+import { implementationError, invalidParams, notInitialized } from "../errors/error-handler";
 import { ValidationResult } from "../errors/interfaces/validation-result";
 import Wortal from "../index";
 import { isValidString } from "../utils/validators";
@@ -9,10 +9,7 @@ import { Achievement } from "./interfaces/achievement";
  * Base implementation for the Achievements API. Extend this class to implement the Achievements API for a specific platform.
  * @hidden
  */
-export abstract class AchievementsBase {
-    constructor() {
-    }
-
+export class AchievementsBase {
 //#region Public API
 
     public getAchievementsAsync(): Promise<Achievement[]> {
@@ -40,8 +37,8 @@ export abstract class AchievementsBase {
 //#endregion
 //#region Implementation interface
 
-    protected abstract getAchievementsAsyncImpl(): Promise<Achievement[]>;
-    protected abstract unlockAchievementAsyncImpl(achievementName: string): Promise<boolean>;
+    protected getAchievementsAsyncImpl(): Promise<Achievement[]> { throw implementationError(); }
+    protected unlockAchievementAsyncImpl(achievementName: string): Promise<boolean> { throw implementationError(); }
 
 //#endregion
 //#region Validation
