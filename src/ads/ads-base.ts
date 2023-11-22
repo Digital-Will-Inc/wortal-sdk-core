@@ -1,5 +1,5 @@
 import { API_URL, WORTAL_API } from "../data/core-data";
-import { implementationError, invalidParams } from "../errors/error-handler";
+import { invalidParams } from "../errors/error-handler";
 import { ValidationResult } from "../errors/interfaces/validation-result";
 import Wortal from "../index";
 import { isValidPlacementType, isValidString } from "../utils/validators";
@@ -32,6 +32,11 @@ export class AdsBase {
     public showBanner(shouldShow: boolean = true, position: BannerPosition = "bottom") {
         Wortal._log.apiCall(WORTAL_API.ADS_SHOW_BANNER);
 
+        const validationResult: ValidationResult = this.validateShowBanner(shouldShow, position);
+        if (!validationResult.valid) {
+            throw validationResult.error;
+        }
+
         this.showBannerImpl(shouldShow, position);
     }
 
@@ -47,14 +52,14 @@ export class AdsBase {
 
         const validationResult: ValidationResult = this.validateShowInterstitial(placement, callbacks);
         if (!validationResult.valid) {
-            callbacks.noFill();
+            callbacks.noFill?.();
             throw validationResult.error;
         }
 
         // Don't call for an ad if the ads are blocked.
         if (this._adConfig.isAdBlocked) {
             Wortal._log.debug("Ads are blocked, skipping..");
-            callbacks.noFill();
+            callbacks.noFill?.();
             return;
         }
 
@@ -69,7 +74,12 @@ export class AdsBase {
             }
         };
 
-        this.showInterstitialImpl(ad);
+        try {
+            this.showInterstitialImpl(ad);
+        } catch (error: any) {
+            callbacks.noFill?.();
+            throw error;
+        }
     }
 
     public showRewarded(description: string, beforeAd: () => void, afterAd: () => void,
@@ -86,7 +96,7 @@ export class AdsBase {
 
         const validationResult: ValidationResult = this.validateShowRewarded(callbacks);
         if (!validationResult.valid) {
-            callbacks.noFill();
+            callbacks.noFill?.();
             callbacks.adDismissed?.();
             throw validationResult.error;
         }
@@ -94,7 +104,7 @@ export class AdsBase {
         // Don't call for an ad if the ads are blocked.
         if (this._adConfig.isAdBlocked) {
             Wortal._log.debug("Ads are blocked, skipping..");
-            callbacks.noFill();
+            callbacks.noFill?.();
             callbacks.adDismissed?.();
             return;
         }
@@ -112,18 +122,46 @@ export class AdsBase {
             }
         };
 
-        this.showRewardedImpl(ad);
+        try {
+            this.showRewardedImpl(ad);
+        } catch (error: any) {
+            callbacks.noFill?.();
+            callbacks.adDismissed?.();
+            throw error;
+        }
     }
 
 //#endregion
 //#region Implementation interface
 
-    protected showBannerImpl(shouldShow: boolean, position: BannerPosition): void { throw implementationError(); }
-    protected showInterstitialImpl(ad: AdInstanceData): void { throw implementationError(); }
-    protected showRewardedImpl(ad: AdInstanceData): void { throw implementationError(); }
+    protected showBannerImpl(shouldShow: boolean, position: BannerPosition): void { }
+    protected showInterstitialImpl(ad: AdInstanceData): void { }
+    protected showRewardedImpl(ad: AdInstanceData): void { }
 
 //#endregion
 //#region Validation
+
+    protected validateShowBanner(shouldShow: boolean, position: BannerPosition): ValidationResult {
+        if (typeof shouldShow !== "boolean") {
+            return {
+                valid: false,
+                error: invalidParams(`showBanner called with invalid shouldShow parameter. Expected boolean, got ${typeof shouldShow}`,
+                    WORTAL_API.ADS_SHOW_BANNER,
+                    API_URL.ADS_SHOW_BANNER)
+            };
+        }
+
+        if (typeof position !== "string" || (position !== "top" && position !== "bottom")) {
+            return {
+                valid: false,
+                error: invalidParams(`showBanner called with invalid position: Expected "top" or "bottom", got ${position}`,
+                    WORTAL_API.ADS_SHOW_BANNER,
+                    API_URL.ADS_SHOW_BANNER)
+            };
+        }
+
+        return { valid: true };
+    }
 
     protected validateShowInterstitial(placement: PlacementType, callbacks: AdCallbacks): ValidationResult {
         const platform = Wortal._internalPlatform;
