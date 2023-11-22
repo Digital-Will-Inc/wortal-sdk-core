@@ -10,11 +10,7 @@ import { AdConfig } from "./ad-config";
  * @hidden
  */
 export class AdConfigFacebook extends AdConfig {
-    constructor() {
-        super();
-    }
-
-    public async initialize(): Promise<void> {
+    public override async initialize(): Promise<void> {
         Wortal._log.debug("Initializing AdConfig..")
         await this._getAdUnitIDs();
         Wortal._log.debug("AdConfig initialized.", this._data);

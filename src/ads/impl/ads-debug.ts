@@ -3,7 +3,6 @@ import { notSupported } from "../../errors/error-handler";
 import Wortal from "../../index";
 import { AdsBase } from "../ads-base";
 import { AdConfig } from "../classes/ad-config";
-import { AdConfigNull } from "../classes/ad-config-null";
 import { AdInstanceData } from "../interfaces/ad-data";
 import { AdSense_AdBreakParams, AdSense_PlacementInfo } from "../interfaces/ad-sense";
 import { BannerPosition } from "../types/banner-position";
@@ -14,11 +13,8 @@ import { BannerPosition } from "../types/banner-position";
  * @hidden
  */
 export class AdsDebug extends AdsBase {
-   protected _adConfig: AdConfig;
-
-    constructor() {
-        super();
-        this._adConfig = new AdConfigNull();
+    constructor(config: AdConfig) {
+        super(config);
 
         // This is the global function that the AdSense SDK uses to register ad breaks.
         // https://developers.google.com/ad-placement/docs/html5-game-structure

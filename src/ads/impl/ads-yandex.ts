@@ -1,7 +1,5 @@
 import Wortal from "../../index";
 import { AdsBase } from "../ads-base";
-import { AdConfig } from "../classes/ad-config";
-import { AdConfigNull } from "../classes/ad-config-null";
 import { AdInstanceData } from "../interfaces/ad-data";
 import { AdStatus_Yandex } from "../interfaces/yandex-ads";
 import { BannerPosition } from "../types/banner-position";
@@ -11,13 +9,6 @@ import { BannerPosition } from "../types/banner-position";
  * @hidden
  */
 export class AdsYandex extends AdsBase {
-    protected _adConfig: AdConfig;
-
-    constructor() {
-        super();
-        this._adConfig = new AdConfigNull();
-    }
-
     protected showBannerImpl(shouldShow: boolean, position: BannerPosition): void {
         Wortal._internalPlatformSDK.adv.getBannerAdvStatus()
             .then((status: AdStatus_Yandex) => {

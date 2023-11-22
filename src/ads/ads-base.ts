@@ -13,12 +13,12 @@ import { PlacementType } from "./types/ad-sense-types";
  * Base class for ads implementation. Extend this class to implement ads for a specific platform.
  * @hidden
  */
-export abstract class AdsBase {
+export class AdsBase {
 //#region Internal
+    protected _adConfig: AdConfig;
 
-    protected abstract _adConfig: AdConfig;
-
-    constructor() {
+    constructor(config: AdConfig) {
+        this._adConfig = config;
     }
 
     /** @internal */
@@ -118,9 +118,9 @@ export abstract class AdsBase {
 //#endregion
 //#region Implementation interface
 
-    protected abstract showBannerImpl(shouldShow: boolean, position: BannerPosition): void;
-    protected abstract showInterstitialImpl(ad: AdInstanceData): void;
-    protected abstract showRewardedImpl(ad: AdInstanceData): void;
+    protected showBannerImpl(shouldShow: boolean, position: BannerPosition): void {};
+    protected showInterstitialImpl(ad: AdInstanceData): void {};
+    protected showRewardedImpl(ad: AdInstanceData): void {};
 
 //#endregion
 //#region Validation
