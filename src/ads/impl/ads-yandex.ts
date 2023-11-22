@@ -1,5 +1,4 @@
 import Wortal from "../../index";
-import { exception, warn } from "../../utils/logger";
 import { AdsBase } from "../ads-base";
 import { AdConfig } from "../classes/ad-config";
 import { AdConfigNull } from "../classes/ad-config-null";
@@ -23,7 +22,7 @@ export class AdsYandex extends AdsBase {
         Wortal._internalPlatformSDK.adv.getBannerAdvStatus()
             .then((status: AdStatus_Yandex) => {
                 if (!status.stickyAdvIsShowing && typeof status.reason !== "undefined") {
-                    exception("Banner ad failed to load.", status.reason);
+                    Wortal._log.exception("Banner ad failed to load.", status.reason);
                     return;
                 }
 
@@ -38,7 +37,7 @@ export class AdsYandex extends AdsBase {
                 }
             })
             .catch((error: any) => {
-                exception("Ad instance encountered an error or was not filled.", error);
+                Wortal._log.exception("Ad instance encountered an error or was not filled.", error);
                 Wortal.analytics._logAdCall("banner", "pause", false);
             });
     }
@@ -55,12 +54,12 @@ export class AdsYandex extends AdsBase {
                 },
                 onError: (error: unknown) => {
                     ad.callbacks.noFill();
-                    exception("Ad instance encountered an error or was not filled.", error);
+                    Wortal._log.exception("Ad instance encountered an error or was not filled.", error);
                     Wortal.analytics._logAdCall("interstitial", ad.placementType, false);
                 },
                 onOffline: () => {
                     ad.callbacks.noFill();
-                    warn("Ad instance not shown due to network error. Please check your internet connection.");
+                    Wortal._log.warn("Ad instance not shown due to network error. Please check your internet connection.");
                     Wortal.analytics._logAdCall("interstitial", ad.placementType, false);
                 }
             }
@@ -80,7 +79,7 @@ export class AdsYandex extends AdsBase {
                 onError: (error: unknown) => {
                     ad.callbacks.noFill();
                     ad.callbacks.adDismissed?.();
-                    exception("Ad instance encountered an error or was not filled.", error);
+                    Wortal._log.exception("Ad instance encountered an error or was not filled.", error);
                     Wortal.analytics._logAdCall("rewarded", ad.placementType, false);
                 },
                 onRewarded: () => {

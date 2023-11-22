@@ -2,7 +2,6 @@ import { AuthPayload } from "../../auth/interfaces/auth-payload";
 import { AuthResponse } from "../../auth/interfaces/auth-response";
 import { notSupported } from "../../errors/error-handler";
 import Wortal from "../../index";
-import { debug, exception } from "../../utils/logger";
 import { onPauseFunctions, waitForTelegramCallback } from "../../utils/wortal-utils";
 import { CoreBase } from "../core-base";
 import { API_URL, TELEGRAM_API, WORTAL_API } from "../../data/core-data";
@@ -56,10 +55,10 @@ export class CoreTelegram extends CoreBase {
                     //TODO: remove this when Telegram ads are implemented
                     Wortal.ads._internalAdConfig.setAdBlocked(true);
                     Wortal.session._internalSession.locale = locale;
-                    debug("Telegram platform SDK loaded.");
+                    Wortal._log.debug("Telegram platform SDK loaded.");
                 })
                 .catch((error) => {
-                    exception("Failed to fetch user locale.", error);
+                    Wortal._log.exception("Failed to fetch user locale.", error);
                 });
         });
     }

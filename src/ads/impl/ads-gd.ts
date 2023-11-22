@@ -1,7 +1,6 @@
 import { API_URL, GD_GAME_MONETIZE_API, WORTAL_API } from "../../data/core-data";
 import { notSupported } from "../../errors/error-handler";
 import Wortal from "../../index";
-import { warn } from "../../utils/logger";
 import { addExternalCallback } from "../../utils/wortal-utils";
 import { AdsBase } from "../ads-base";
 import { AdConfig } from "../classes/ad-config";
@@ -49,12 +48,12 @@ export class AdsGD extends AdsBase {
                         Wortal.analytics._logAdCall("rewarded", ad.placementType, true, true);
                     })
                     .catch((error: any) => {
-                        warn("Ad instance encountered an error or was not filled.", error);
+                        Wortal._log.warn("Ad instance encountered an error or was not filled.", error);
                         Wortal.analytics._logAdCall("rewarded", ad.placementType, false, false);
                     });
             })
             .catch((error: any) => {
-                warn("Ad instance encountered an error or was not filled.", error);
+                Wortal._log.warn("Ad instance encountered an error or was not filled.", error);
                 Wortal.analytics._logAdCall("rewarded", ad.placementType, false, false);
             });
     }

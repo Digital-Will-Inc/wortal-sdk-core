@@ -1,7 +1,6 @@
 import { API_URL, WORTAL_API } from "../../data/core-data";
 import { notSupported } from "../../errors/error-handler";
 import Wortal from "../../index";
-import { debug, warn } from "../../utils/logger";
 import { AdsBase } from "../ads-base";
 import { AdConfig } from "../classes/ad-config";
 import { AdConfigNull } from "../classes/ad-config-null";
@@ -35,13 +34,13 @@ export class AdsGamePix extends AdsBase {
                     ad.callbacks.afterAd();
                     Wortal.analytics._logAdCall("interstitial", ad.placementType, true);
                 } else {
-                    warn("Ad instance encountered an error or was not filled.");
+                    Wortal._log.warn("Ad instance encountered an error or was not filled.");
                     ad.callbacks.noFill();
                     Wortal.analytics._logAdCall("interstitial", ad.placementType, false);
                 }
             })
             .catch((error: any) => {
-                warn("Ad instance encountered an error or was not filled.", error);
+                Wortal._log.warn("Ad instance encountered an error or was not filled.", error);
                 ad.callbacks.noFill();
                 Wortal.analytics._logAdCall("interstitial", ad.placementType, false);
             });
@@ -51,7 +50,7 @@ export class AdsGamePix extends AdsBase {
         ad.callbacks.beforeAd();
         Wortal._internalPlatformSDK.rewardAd()
             .then((result: AdResult_GamePix) => {
-                debug("Rewarded ad result", result);
+                Wortal._log.debug("Rewarded ad result", result);
                 if (result.success) {
                     ad.callbacks.adViewed?.();
                     ad.callbacks.afterAd();
@@ -59,11 +58,11 @@ export class AdsGamePix extends AdsBase {
                 } else {
                     // A message property is added when there was an error, if undefined it indicates the player dismissed the ad.
                     if (typeof result.message !== "undefined") {
-                        warn("Ad instance encountered an error or was not filled.", result.message);
+                        Wortal._log.warn("Ad instance encountered an error or was not filled.", result.message);
                         ad.callbacks.noFill();
                         Wortal.analytics._logAdCall("rewarded", ad.placementType, false, false);
                     } else {
-                        debug("Rewarded ad dismissed by player.");
+                        Wortal._log.debug("Rewarded ad dismissed by player.");
                         ad.callbacks.adDismissed?.();
                         ad.callbacks.afterAd();
                         Wortal.analytics._logAdCall("rewarded", ad.placementType, true, false);
@@ -71,7 +70,7 @@ export class AdsGamePix extends AdsBase {
                 }
             })
             .catch((error: any) => {
-                warn("Ad instance encountered an error or was not filled.", error);
+                Wortal._log.warn("Ad instance encountered an error or was not filled.", error);
                 ad.callbacks.adDismissed?.();
                 ad.callbacks.noFill();
                 Wortal.analytics._logAdCall("rewarded", ad.placementType, false, false);

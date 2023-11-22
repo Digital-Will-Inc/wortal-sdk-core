@@ -1,7 +1,7 @@
 import { WombatEvent } from "../../analytics/classes/WombatEvent";
 import { API_URL, WORTAL_API } from "../../data/core-data";
 import { notSupported } from "../../errors/error-handler";
-import { debug } from "../../utils/logger";
+import Wortal from "../../index";
 import { AdsBase } from "../ads-base";
 import { AdConfig } from "../classes/ad-config";
 import { AdConfigNull } from "../classes/ad-config-null";
@@ -33,7 +33,7 @@ export class AdsWortal extends AdsBase {
     }
 
     protected showInterstitialImpl(ad: AdInstanceData): void {
-        debug(`Attempting to show placement: ${ad.placementType} // ${ad.description}`);
+        Wortal._log.debug(`Attempting to show placement: ${ad.placementType} // ${ad.description}`);
         this._adConfig.adCalled();
 
         // Params are what we pass into the adBreak function, which is a global function provided by the AdSense SDK.
@@ -68,7 +68,7 @@ export class AdsWortal extends AdsBase {
     }
 
     protected showRewardedImpl(ad: AdInstanceData): void {
-        debug(`Attempting to show placement: ${ad.placementType} // ${ad.description}`);
+        Wortal._log.debug(`Attempting to show placement: ${ad.placementType} // ${ad.description}`);
 
         // Params are what we pass into the adBreak function.
         const params: AdSense_AdBreakParams = {
@@ -98,7 +98,7 @@ export class AdsWortal extends AdsBase {
     // These events were used for ad tracking before we developed the Wortal SDK. To maintain historical data, we'll
     // continue to send these. This is only used by Wortal platform. All other platforms use the AdCall event.
     private _logAdBreakDone(placementInfo: AdSense_PlacementInfo, placementType: string): void {
-        debug("Placement info", placementInfo);
+        Wortal._log.debug("Placement info", placementInfo);
         const event = new WombatEvent({
             name: "AdBreakDone",
             features: {

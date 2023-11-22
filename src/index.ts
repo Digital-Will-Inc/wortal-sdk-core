@@ -2,7 +2,6 @@ import { CoreAPI } from "./core/core-api";
 import { InitializationOptions } from "./core/interfaces/initialization-options";
 import { PLATFORM_DOMAINS } from "./data/core-data";
 import { Platform } from "./session/types/session-types";
-import { exception } from "./utils/logger";
 import { getParameterByName } from "./utils/wortal-utils";
 
 const Wortal = new CoreAPI();
@@ -16,7 +15,7 @@ const options: InitializationOptions = {
 
 Wortal._loadCoreAsync(options)
     .catch((error: any) => {
-        exception("SDK failed to initialize.", error);
+        console.error("SDK failed to initialize.", error);
     });
 
 function isAutoInitEnabled(): boolean {

@@ -2,7 +2,6 @@ import { AuthPayload } from "../../auth/interfaces/auth-payload";
 import { AuthResponse } from "../../auth/interfaces/auth-response";
 import { initializationError, notSupported } from "../../errors/error-handler";
 import Wortal from "../../index";
-import { debug, warn } from "../../utils/logger";
 import { isValidString } from "../../utils/validators";
 import { getParameterByName, onPauseFunctions, removeLoadingCover } from "../../utils/wortal-utils";
 import { CoreBase } from "../core-base";
@@ -61,11 +60,11 @@ export class CoreWortal extends CoreBase {
 
             // We don't reject these because they are likely not present in the test environment.
             if (!isValidString(hostIdParam)) {
-                warn("Configuration \"hostid\" missing. Using default value. If testing in the Wortal dashboard than this can be safely ignored.");
+                Wortal._log.warn("Configuration \"hostid\" missing. Using default value. If testing in the Wortal dashboard than this can be safely ignored.");
             }
 
             if (!isValidString(channelIdParam)) {
-                warn("Configuration \"channelid\" missing. Using default value. If testing in the Wortal dashboard than this can be safely ignored.");
+                Wortal._log.warn("Configuration \"channelid\" missing. Using default value. If testing in the Wortal dashboard than this can be safely ignored.");
             }
 
             Wortal.ads._internalAdConfig.setClientID(clientIdParam!);
@@ -94,13 +93,13 @@ export class CoreWortal extends CoreBase {
             metaElement.setAttribute("content", Wortal.ads._internalAdConfig.hostID);
 
             googleAdsSDK.onload = () => {
-                debug("Wortal platform SDK initialized with ads.");
+                Wortal._log.debug("Wortal platform SDK initialized with ads.");
                 resolve();
             }
 
             //TODO: find a workaround for ad blockers on Wortal
             googleAdsSDK.onerror = () => {
-                debug("Ad blocker detected. Wortal platform SDK initialized without ads.");
+                Wortal._log.debug("Ad blocker detected. Wortal platform SDK initialized without ads.");
                 Wortal.ads._internalAdConfig.setAdBlocked(true);
                 resolve();
             };
@@ -114,14 +113,14 @@ export class CoreWortal extends CoreBase {
         return Promise.all([Wortal.ads._internalAdConfig.initialize(), Wortal.player._internalPlayer.initialize()])
             .then(() => {
                 Wortal.iap._internalTryEnableIAP();
-                debug(`SDK initialized for ${Wortal._internalPlatform} platform.`);
+                Wortal._log.debug(`SDK initialized for ${Wortal._internalPlatform} platform.`);
 
                 if (Wortal.ads._internalAdConfig.isAdBlocked) {
                     removeLoadingCover();
                     return;
                 }
 
-                debug("Showing pre-roll ad.");
+                Wortal._log.debug("Showing pre-roll ad.");
                 Wortal.ads.showInterstitial("preroll", "Preroll",
                     () => {
                         Wortal.ads._internalAdConfig.adCalled();

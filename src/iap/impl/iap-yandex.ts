@@ -2,7 +2,6 @@ import { YandexIAPObject } from "../../core/interfaces/yandex-sdk";
 import { API_URL, WORTAL_API } from "../../data/core-data";
 import { notSupported, rethrowError_Yandex } from "../../errors/error-handler";
 import Wortal from "../../index";
-import { exception, warn } from "../../utils/logger";
 import { IAPBase } from "../iap-base";
 import { Product } from "../interfaces/product";
 import { Purchase } from "../interfaces/purchase";
@@ -74,7 +73,7 @@ export class IAPYandex extends IAPBase {
             })
             .catch((error: any) => {
                 //TODO: remove this warning after typing out all possible errors
-                warn("Purchase failed: no product with this id exists in the developer dashboard, the user didn't log in, changed their mind, and closed the payment window, the purchase timed out, there were insufficient funds, or for any other reason.")
+                Wortal._log.warn("Purchase failed: no product with this id exists in the developer dashboard, the user didn't log in, changed their mind, and closed the payment window, the purchase timed out, there were insufficient funds, or for any other reason.")
                 throw rethrowError_Yandex(error, WORTAL_API.IAP_MAKE_PURCHASE_ASYNC, API_URL.IAP_MAKE_PURCHASE_ASYNC);
             });
     }
@@ -94,8 +93,8 @@ export class IAPYandex extends IAPBase {
                 // https://yandex.com/dev/games/doc/en/sdk/sdk-purchases#install
                 // TODO: handle error properly
                 this._isIAPEnabled = false;
-                exception(error);
-                warn("Purchases are unavailable. Enable monetization in the developer dashboard. Make sure the Purchases tab in the developer dashboard features a table with at least one in-game product and the \"Purchases are allowed\" label.");
+                Wortal._log.exception(error);
+                Wortal._log.warn("Purchases are unavailable. Enable monetization in the developer dashboard. Make sure the Purchases tab in the developer dashboard features a table with at least one in-game product and the \"Purchases are allowed\" label.");
             });
     }
 

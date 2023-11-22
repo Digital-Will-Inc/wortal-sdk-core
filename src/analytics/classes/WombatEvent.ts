@@ -1,4 +1,4 @@
-import { debug } from "../../utils/logger";
+import Wortal from "../../index";
 import { AnalyticsEventData } from "../interfaces/analytics-event-data";
 
 /**
@@ -16,7 +16,7 @@ export class WombatEvent {
     }
 
     send(): void {
-        debug("Sending analytics event to Wombat", this._data);
+        Wortal._log.debug("Sending analytics event to Wombat", this._data);
         const name = this._data.name;
         const features = this._data.features;
         const request = new XMLHttpRequest();

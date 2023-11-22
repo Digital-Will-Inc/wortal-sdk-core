@@ -1,5 +1,5 @@
+import Wortal from "../../index";
 import { ConnectedPlayer } from "../../player/classes/connected-player";
-import { debug } from "../../utils/logger";
 import { LeaderboardEntryData } from "../interfaces/leaderboard-data";
 import { LeaderboardPlayer } from "./leaderboard-player";
 
@@ -17,7 +17,7 @@ export class LeaderboardEntry {
 
     /** @hidden */
     constructor(entry: LeaderboardEntryData) {
-        debug("Creating leaderboard entry", entry);
+        Wortal._log.debug("Creating leaderboard entry", entry);
         this._data.player = entry.player;
         this._data.rank = entry.rank;
         this._data.score = entry.score;

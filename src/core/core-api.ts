@@ -6,7 +6,7 @@ import { SDK_SRC } from "../data/core-data";
 import { Platform } from "../session/types/session-types";
 import { initializationError } from "../errors/error-handler";
 import { StatsAPI } from "../stats/stats-api";
-import { debug, exception, info, internalCall, performanceLog, status } from "../utils/logger";
+import { WortalLogger } from "../utils/logger";
 import {
     addGameEndEventListener,
     addLoadingListener,
@@ -121,6 +121,12 @@ export class CoreAPI {
     get _internalIsWavesEnabled(): boolean {
         return this._isWavesEnabled;
     }
+
+    /**
+     * Logger for the SDK. This is used to log messages to the console. Use this instead of console logging directly.
+     * @internal
+     */
+    _log: WortalLogger = new WortalLogger();
 
 //#endregion
 //#region Public API
@@ -317,18 +323,18 @@ export class CoreAPI {
      * @hidden
      */
     async _loadCoreAsync(options: InitializationOptions): Promise<void> {
-        internalCall("_loadCoreAsync");
+        this._log.internalCall("_loadCoreAsync");
         if (this._isInitialized) {
             return Promise.reject(initializationError("SDK already initialized.", "_loadCoreAsync"));
         }
 
         // Parse the initialization options first.
-        info("Initializing SDK " + __VERSION__);
+        this._log.info("Initializing SDK " + __VERSION__);
         this._platform = options.platform;
         if (!options.autoInitialize) {
             this._isAutoInit = false;
         }
-        debug("Platform: " + this._platform);
+        this._log.debug("Platform: " + this._platform);
 
         // We might end the initialization process in several different places, we just listen for this event to know
         // when the SDK is finished initializing.
@@ -336,12 +342,12 @@ export class CoreAPI {
         window.addEventListener("wortal-sdk-initialized", () => {
             const sdkEndTime: number = performance.now();
             const sdkExecutionTime: number = sdkEndTime - sdkStartTime;
-            performanceLog(`Wortal SDK initialized in ${sdkExecutionTime}ms.`);
+            this._log.performanceLog(`Wortal SDK initialized in ${sdkExecutionTime}ms.`);
         });
 
         // First we load the chunks we need for this platform. This includes wortal-common and the platform specific chunk.
         try {
-            status("Loading chunks...");
+            this._log.status("Loading chunks...");
             const startTime: number = performance.now();
 
             // Debug mode requires the chunks to be included in the bundle.
@@ -352,14 +358,14 @@ export class CoreAPI {
             const endTime: number = performance.now();
             const executionTime: number = endTime - startTime;
 
-            performanceLog(`Chunks loaded in ${executionTime}ms.`);
+            this._log.performanceLog(`Chunks loaded in ${executionTime}ms.`);
         } catch (error: any) {
             return Promise.reject(initializationError(`Failed to initialize SDK during loadChunksAsync: ${error.message}`, "_loadCoreAsync"));
         }
 
         // Next we dynamically import the API implementations for the current platform.
         try {
-            status("Loading APIs...");
+            this._log.status("Loading APIs...");
             const startTime: number = performance.now();
 
             await this._loadAPIsAsync(this._platform);
@@ -367,7 +373,7 @@ export class CoreAPI {
             const endTime: number = performance.now();
             const executionTime: number = endTime - startTime;
 
-            performanceLog(`APIs loaded in ${executionTime}ms.`);
+            this._log.performanceLog(`APIs loaded in ${executionTime}ms.`);
         } catch (error: any) {
             return Promise.reject(initializationError(`Failed to initialize SDK during loadAPIsAsync: ${error.message}`, "_loadCoreAsync"));
         }
@@ -381,7 +387,7 @@ export class CoreAPI {
         // Now we can initialize the platform. This will initialize the platform's SDK any do any other initialization
         // required on the current platform.
         try {
-            status("Initializing platform...");
+            this._log.status("Initializing platform...");
             const startTime: number = performance.now();
 
             await this._core._initializePlatformAsync();
@@ -389,7 +395,7 @@ export class CoreAPI {
             const endTime: number = performance.now();
             const executionTime: number = endTime - startTime;
 
-            performanceLog(`Platform initialized in ${executionTime}ms.`);
+            this._log.performanceLog(`Platform initialized in ${executionTime}ms.`);
         } catch (error: any) {
             return Promise.reject(initializationError(`Failed to initialize SDK during initializePlatformAsync: ${error.message}`, "_loadCoreAsync"));
         }
@@ -401,7 +407,7 @@ export class CoreAPI {
         // We've finished the internal initialization that's still necessary in manual initialization mode, so we can
         // resolve here and wait for the developer to finish the initialization process.
         if (!this._isAutoInit) {
-            debug("Manual initialization requested. Platform initialization finished, awaiting manual initialization..");
+            this._log.debug("Manual initialization requested. Platform initialization finished, awaiting manual initialization..");
             return Promise.resolve();
         }
 
@@ -420,11 +426,11 @@ export class CoreAPI {
         this.isInitialized = true;
         window.dispatchEvent(new Event("wortal-sdk-initialized"));
 
-        info("SDK initialization complete.");
+        this._log.info("SDK initialization complete.");
     }
 
     async _loadChunksAsync(platform: Platform): Promise<void> {
-        internalCall("_loadChunksAsync");
+        this._log.internalCall("_loadChunksAsync");
 
         const baseURL: string = "https://storage.googleapis.com/html5gameportal.com/wortal-sdk/v1/";
         const chunks: string[] = [];
@@ -458,7 +464,7 @@ export class CoreAPI {
     }
 
     protected _loadWavesClientDeps(platform: Platform): void {
-        internalCall("_loadWavesClientDeps");
+        this._log.internalCall("_loadWavesClientDeps");
 
         // Not all platforms will allows us to use Waves, we need to check each platform's TOS to ensure
         // we're playing by the rules.
@@ -473,7 +479,7 @@ export class CoreAPI {
 
         wavesCSS.onerror = () => {
             // Not fatal, but we should log it and disable Waves.
-            exception("Failed to load Waves CSS.");
+            this._log.exception("Failed to load Waves CSS.");
             this._isWavesEnabled = false;
         }
 
@@ -484,13 +490,13 @@ export class CoreAPI {
         wavesSDK.src = `${SDK_SRC.WAVES_BASE_URL}/waves.umd.js`;
 
         wavesSDK.onload = () => {
-            debug("Waves SDK loaded.");
+            this._log.debug("Waves SDK loaded.");
             this._isWavesEnabled = true;
         }
 
         wavesSDK.onerror = () => {
             // Not fatal, but we should log it and disable Waves.
-            exception("Failed to load Waves SDK.");
+            this._log.exception("Failed to load Waves SDK.");
             this._isWavesEnabled = false;
         }
 
@@ -502,12 +508,12 @@ export class CoreAPI {
     // better idea of how to do it.
     //TODO: find a better way to do this without breaking the dynamic import and chunking
     async _loadAPIsAsync(platform: Platform): Promise<void> {
-        internalCall("_loadAPIsAsync");
+        this._log.internalCall("_loadAPIsAsync");
 
         const {AnalyticsWombat} = await import(/* webpackChunkName: "analytics" */ "../analytics/impl/analytics-wombat");
         const {AnalyticsDisabled} = await import(/* webpackChunkName: "analytics" */ "../analytics/impl/analytics-disabled");
 
-        status("Loading Waves SDK...");
+        this._log.status("Loading Waves SDK...");
         this._loadWavesClientDeps(platform);
 
         switch (platform) {

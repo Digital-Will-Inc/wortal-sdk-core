@@ -2,7 +2,6 @@ import { PlacementType } from "../../ads/types/ad-sense-types";
 import { AdType } from "../../ads/types/ad-type";
 import { ErrorMessage_Viber } from "../../errors/interfaces/viber-error";
 import Wortal from "../../index";
-import { exception } from "../../utils/logger";
 import { AnalyticsBase } from "../analytics-base";
 import { WombatEvent } from "../classes/WombatEvent";
 import { AnalyticsEventData, EventData_AdCall } from "../interfaces/analytics-event-data";
@@ -266,7 +265,7 @@ export class AnalyticsWombat extends AnalyticsBase {
             })
             .catch((error: ErrorMessage_Viber) => {
                 // Even if we get an error we should still try and send the traffic source.
-                exception(error.code);
+                Wortal._log.exception(error.code);
                 const data: AnalyticsEventData = {
                     name: "TrafficSource",
                     features: {

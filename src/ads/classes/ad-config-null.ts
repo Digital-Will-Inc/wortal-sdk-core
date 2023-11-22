@@ -1,4 +1,4 @@
-import { debug } from "../../utils/logger";
+import Wortal from "../../index";
 import { AdConfig } from "./ad-config";
 
 /**
@@ -12,8 +12,8 @@ export class AdConfigNull extends AdConfig {
     }
 
     public initialize(): Promise<void> {
-        debug("Initializing AdConfig..");
-        debug("AdConfig initialized.", this._data);
+        Wortal._log.debug("Initializing AdConfig..");
+        Wortal._log.debug("AdConfig initialized.", this._data);
         return Promise.resolve();
     }
 }

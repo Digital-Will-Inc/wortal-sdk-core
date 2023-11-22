@@ -1,4 +1,4 @@
-import { debug } from "../../utils/logger";
+import Wortal from "../../index";
 import { PlayerData } from "../interfaces/player-data";
 import { Player } from "./player";
 
@@ -14,7 +14,7 @@ export class ConnectedPlayer extends Player {
         this._data.photo = player.photo;
         this._data.isFirstPlay = player.isFirstPlay;
         this._data.daysSinceFirstPlay = player.daysSinceFirstPlay;
-        debug("Created ConnectedPlayer:", player);
+        Wortal._log.debug("Created ConnectedPlayer:", player);
     }
 
     protected initializeImpl(): Promise<void> {
@@ -30,7 +30,7 @@ export class ConnectedPlayer extends Player {
             daysSinceFirstPlay: 0,
         };
 
-        debug("Mocking ConnectedPlayer...", data);
+        Wortal._log.debug("Mocking ConnectedPlayer...", data);
         return new ConnectedPlayer(data);
     }
 

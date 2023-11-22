@@ -1,4 +1,4 @@
-import { debug } from "../../utils/logger";
+import Wortal from "../../index";
 import { LeaderboardData } from "../interfaces/leaderboard-data";
 
 /**
@@ -13,7 +13,7 @@ export class Leaderboard {
 
     /** @hidden */
     constructor(id: number, name: string, contextId: string = "") {
-        debug(`Creating leaderboard: ${name} / ${id} / ${contextId}`);
+        Wortal._log.debug(`Creating leaderboard: ${name} / ${id} / ${contextId}`);
         this._data.id = id;
         this._data.name = name;
         this._data.contextId = contextId;

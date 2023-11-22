@@ -3,7 +3,6 @@ import { AuthResponse } from "../auth/interfaces/auth-response";
 import { initializationError, invalidParams, operationFailed } from "../errors/error-handler";
 import { ValidationResult } from "../errors/interfaces/validation-result";
 import Wortal from "../index";
-import { apiCall, debug, info, internalCall } from "../utils/logger";
 import { isValidNumber } from "../utils/validators";
 import { delayUntilConditionMet, removeLoadingCover } from "../utils/wortal-utils";
 import { API_URL, WORTAL_API } from "../data/core-data";
@@ -21,10 +20,10 @@ export abstract class CoreBase {
 //#region Public API
 
     public async initializeAsync(): Promise<void> {
-        apiCall(WORTAL_API.INITIALIZE_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.INITIALIZE_ASYNC);
 
         if (!Wortal._internalIsPlatformInitialized) {
-            debug("Platform not initialized yet, awaiting platform initialization..");
+            Wortal._log.debug("Platform not initialized yet, awaiting platform initialization..");
             await delayUntilConditionMet(() => Wortal._internalIsPlatformInitialized,
                 "Platform not initialized yet, awaiting platform initialization..");
         }
@@ -38,7 +37,7 @@ export abstract class CoreBase {
     }
 
     public async startGameAsync(): Promise<void> {
-        apiCall(WORTAL_API.START_GAME_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.START_GAME_ASYNC);
 
         const validationResult: ValidationResult = this.validateStartGameAsync();
         if (!validationResult.valid) {
@@ -49,13 +48,15 @@ export abstract class CoreBase {
     }
 
     public authenticateAsync(payload?: AuthPayload): Promise<AuthResponse> {
-        apiCall(WORTAL_API.AUTHENTICATE_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.AUTHENTICATE_ASYNC);
+
         //TODO: validate auth payload
+
         return this.authenticateAsyncImpl(payload);
     }
 
     public linkAccountAsync(): Promise<boolean> {
-        apiCall(WORTAL_API.LINK_ACCOUNT_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.LINK_ACCOUNT_ASYNC);
 
         return this.linkAccountAsyncImpl();
     }
@@ -73,7 +74,7 @@ export abstract class CoreBase {
     }
 
     public onPause(callback: () => void): void {
-        apiCall(WORTAL_API.ON_PAUSE);
+        Wortal._log.apiCall(WORTAL_API.ON_PAUSE);
 
         const validationResult: ValidationResult = this.validateOnPause(callback);
         if (!validationResult.valid) {
@@ -84,13 +85,13 @@ export abstract class CoreBase {
     }
 
     public performHapticFeedbackAsync(): Promise<void> {
-        apiCall(WORTAL_API.PERFORM_HAPTIC_FEEDBACK_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.PERFORM_HAPTIC_FEEDBACK_ASYNC);
 
         return this.performHapticFeedbackAsyncImpl();
     }
 
     public getSupportedAPIs(): string[] {
-        apiCall(WORTAL_API.GET_SUPPORTED_APIS);
+        Wortal._log.apiCall(WORTAL_API.GET_SUPPORTED_APIS);
 
         return this._supportedAPIs;
     }
@@ -106,7 +107,7 @@ export abstract class CoreBase {
      * @hidden
      */
     _initializePlatformAsync(): Promise<void> {
-        internalCall("_initializePlatformAsync");
+        Wortal._log.internalCall("_initializePlatformAsync");
 
         return this._initializePlatformAsyncImpl();
     }
@@ -118,7 +119,7 @@ export abstract class CoreBase {
      * @hidden
      */
     _initializeSDKAsync(): Promise<void> {
-        internalCall("_initializeSDKAsync");
+        Wortal._log.internalCall("_initializeSDKAsync");
 
         return this._initializeSDKAsyncImpl();
     }
@@ -141,7 +142,7 @@ export abstract class CoreBase {
             .then(() => {
                 Wortal.isInitialized = true;
                 window.dispatchEvent(new Event("wortal-sdk-initialized"));
-                info("SDK initialization complete.");
+                Wortal._log.info("SDK initialization complete.");
             })
             .catch((error: any) => {
                 throw initializationError(`Failed to initialize SDK during _initializeSDK: ${error.message}`,
@@ -162,7 +163,7 @@ export abstract class CoreBase {
                 Wortal.ads._internalAdConfig.setPrerollShown(true);
                 Wortal.iap._internalTryEnableIAP();
                 removeLoadingCover();
-                debug(`SDK initialized for ${Wortal._internalPlatform} platform.`);
+                Wortal._log.debug(`SDK initialized for ${Wortal._internalPlatform} platform.`);
             })
             .catch((error: any) => {
                 throw initializationError(`Failed to initialize SDK during config.lateInitialize: ${error.message}`, `_initializeSDKAsyncGenericImpl`);

@@ -3,7 +3,6 @@ import { AuthResponse } from "../../auth/interfaces/auth-response";
 import { API_URL, SDK_SRC, WORTAL_API } from "../../data/core-data";
 import { initializationError, notSupported } from "../../errors/error-handler";
 import Wortal from "../../index";
-import { debug } from "../../utils/logger";
 import { onPauseFunctions } from "../../utils/wortal-utils";
 import { CoreBase } from "../core-base";
 
@@ -57,7 +56,7 @@ export class CorePoki extends CoreBase {
                     reject(initializationError("Failed to load Poki SDK.", "_initializePlatformAsyncImpl"));
                 }
 
-                debug("Poki platform SDK loaded.");
+                Wortal._log.debug("Poki platform SDK loaded.");
                 Wortal._internalPlatformSDK = PokiSDK;
                 resolve();
             }

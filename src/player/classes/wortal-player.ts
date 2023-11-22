@@ -1,5 +1,4 @@
 import Wortal from "../../index";
-import { debug } from "../../utils/logger";
 import { Player } from "./player";
 
 /**
@@ -17,7 +16,7 @@ export class WortalPlayer extends Player {
         this._data.photo = "https://storage.googleapis.com/html5gameportal.com/images/avatar.jpg";
         this._data.isFirstPlay = this._isWortalFirstPlay();
 
-        debug("Player initialized: ", this._data);
+        Wortal._log.debug("Player initialized: ", this._data);
         return Promise.resolve(undefined);
     }
 

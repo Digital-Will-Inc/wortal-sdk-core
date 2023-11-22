@@ -1,5 +1,5 @@
 import { TELEGRAM_API } from "../../data/core-data";
-import { debug, exception } from "../../utils/logger";
+import Wortal from "../../index";
 import { generateRandomID, waitForTelegramCallback } from "../../utils/wortal-utils";
 import { ITelegramPlayer } from "../interfaces/telegram-player";
 import { Player } from "./player";
@@ -18,14 +18,14 @@ export class TelegramPlayer extends Player {
         try {
             tgPlayer = await this._initializeTelegramPlayer();
         } catch (error) {
-            exception("Error initializing Telegram player: ", error);
+            Wortal._log.exception("Error initializing Telegram player: ", error);
         }
 
         this._data.id = tgPlayer?.id || generateRandomID();
         this._data.name = tgPlayer?.username || "Player";
         this._data.photo = "https://storage.googleapis.com/html5gameportal.com/images/avatar.jpg";
 
-        debug("Player initialized: ", this._data);
+        Wortal._log.debug("Player initialized: ", this._data);
     }
 
     private async _initializeTelegramPlayer(): Promise<ITelegramPlayer> {
@@ -41,7 +41,7 @@ export class TelegramPlayer extends Player {
                 return player;
             })
             .catch((error: any) => {
-                exception("Error fetching Telegram player: ", error);
+                Wortal._log.exception("Error fetching Telegram player: ", error);
             });
 
         return defaultPlayer;

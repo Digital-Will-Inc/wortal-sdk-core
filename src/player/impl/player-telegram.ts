@@ -1,7 +1,6 @@
 import { API_URL, TELEGRAM_API, WORTAL_API } from "../../data/core-data";
 import { notSupported, operationFailed } from "../../errors/error-handler";
 import Wortal from "../../index";
-import { debug } from "../../utils/logger";
 import { isValidString } from "../../utils/validators";
 import { delayUntilConditionMet, waitForTelegramCallback } from "../../utils/wortal-utils";
 import { ConnectedPlayer } from "../classes/connected-player";
@@ -163,7 +162,7 @@ export class PlayerTelegram extends PlayerBase {
             setData(`${Wortal.session._internalSession.gameID}-save-data-0`, dataString);
         }
 
-        debug("Saved data to Telegram storage.");
+        Wortal._log.debug("Saved data to Telegram storage.");
         return Promise.resolve();
     }
 

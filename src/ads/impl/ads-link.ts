@@ -2,7 +2,6 @@ import { API_URL, WORTAL_API } from "../../data/core-data";
 import { notSupported } from "../../errors/error-handler";
 import { ErrorMessage_Link } from "../../errors/interfaces/link-error";
 import Wortal from "../../index";
-import { debug, warn } from "../../utils/logger";
 import { AdsBase } from "../ads-base";
 import { AdConfig } from "../classes/ad-config";
 import { AdConfigLink } from "../classes/ad-config-link";
@@ -30,27 +29,27 @@ export class AdsLink extends AdsBase {
         let preloadedInterstitial: AdInstance_Link_Viber;
         Wortal._internalPlatformSDK.getInterstitialAdAsync(ad.adUnitId)
             .then((interstitial: AdInstance_Link_Viber) => {
-                debug("Interstitial ad fetched successfully. Attempting to load..", interstitial);
+                Wortal._log.debug("Interstitial ad fetched successfully. Attempting to load..", interstitial);
                 ad.callbacks.beforeAd();
                 preloadedInterstitial = interstitial;
                 return preloadedInterstitial.loadAsync();
             })
             .then(() => {
-                debug("Interstitial ad loaded successfully. Attempting to show..");
+                Wortal._log.debug("Interstitial ad loaded successfully. Attempting to show..");
                 preloadedInterstitial.showAsync()
                     .then(() => {
-                        debug("Interstitial ad finished successfully.");
+                        Wortal._log.debug("Interstitial ad finished successfully.");
                         ad.callbacks.afterAd();
                         Wortal.analytics._logAdCall("interstitial", ad.placementType, true);
                     })
                     .catch((error: ErrorMessage_Link) => {
-                        warn("Ad instance encountered an error or was not filled.", error);
+                        Wortal._log.warn("Ad instance encountered an error or was not filled.", error);
                         ad.callbacks.noFill();
                         Wortal.analytics._logAdCall("interstitial", ad.placementType, false);
                     });
             })
             .catch((error: ErrorMessage_Link) => {
-                warn("Ad instance encountered an error or was not filled.", error);
+                Wortal._log.warn("Ad instance encountered an error or was not filled.", error);
                 ad.callbacks.noFill();
                 Wortal.analytics._logAdCall("interstitial", ad.placementType, false);
             });
@@ -60,29 +59,29 @@ export class AdsLink extends AdsBase {
         let preloadedRewardedVideo: AdInstance_Link_Viber;
         Wortal._internalPlatformSDK.getRewardedVideoAsync(ad.adUnitId)
             .then((rewarded: AdInstance_Link_Viber) => {
-                debug("Rewarded video fetched successfully. Attempting to load..", rewarded);
+                Wortal._log.debug("Rewarded video fetched successfully. Attempting to load..", rewarded);
                 ad.callbacks.beforeAd();
                 preloadedRewardedVideo = rewarded;
                 return preloadedRewardedVideo.loadAsync();
             })
             .then(() => {
-                debug("Rewarded video loaded successfully. Attempting to show..");
+                Wortal._log.debug("Rewarded video loaded successfully. Attempting to show..");
                 preloadedRewardedVideo.showAsync()
                     .then(() => {
-                        debug("Rewarded video watched successfully");
+                        Wortal._log.debug("Rewarded video watched successfully");
                         ad.callbacks.adViewed?.();
                         ad.callbacks.afterAd();
                         Wortal.analytics._logAdCall("rewarded", ad.placementType, true, true);
                     })
                     .catch((error: ErrorMessage_Link) => {
-                        warn("Ad instance encountered an error or was not filled.", error);
+                        Wortal._log.warn("Ad instance encountered an error or was not filled.", error);
                         ad.callbacks.adDismissed?.();
                         ad.callbacks.noFill();
                         Wortal.analytics._logAdCall("rewarded", ad.placementType, false, false);
                     });
             })
             .catch((error: ErrorMessage_Link) => {
-                warn("Ad instance encountered an error or was not filled.", error);
+                Wortal._log.warn("Ad instance encountered an error or was not filled.", error);
                 ad.callbacks.noFill();
                 Wortal.analytics._logAdCall("rewarded", ad.placementType, false, false);
             });

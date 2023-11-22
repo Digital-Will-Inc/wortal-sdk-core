@@ -4,7 +4,6 @@ import { API_URL, WORTAL_API } from "../data/core-data";
 import { invalidParams, notInitialized } from "../errors/error-handler";
 import { ValidationResult } from "../errors/interfaces/validation-result";
 import Wortal from "../index";
-import { apiCall, internalCall } from "../utils/logger";
 import { isValidNumber, isValidString } from "../utils/validators";
 
 /**
@@ -18,7 +17,7 @@ export abstract class AnalyticsBase {
 //#region Public API
 
     public logGameChoice(decision: string, choice: string): void {
-        apiCall(WORTAL_API.ANALYTICS_LOG_GAME_CHOICE);
+        Wortal._log.apiCall(WORTAL_API.ANALYTICS_LOG_GAME_CHOICE);
 
         const validation = this.validateLogGameChoice(decision, choice);
         if (!validation.valid) {
@@ -29,7 +28,7 @@ export abstract class AnalyticsBase {
     }
 
     public logLevelEnd(level: string | number, score: string | number, wasCompleted: boolean): void {
-        apiCall(WORTAL_API.ANALYTICS_LOG_LEVEL_END);
+        Wortal._log.apiCall(WORTAL_API.ANALYTICS_LOG_LEVEL_END);
 
         const validation = this.validateLogLevelEnd(level, score, wasCompleted);
         if (!validation.valid) {
@@ -51,7 +50,7 @@ export abstract class AnalyticsBase {
     }
 
     public logLevelStart(level: string | number): void {
-        apiCall(WORTAL_API.ANALYTICS_LOG_LEVEL_START);
+        Wortal._log.apiCall(WORTAL_API.ANALYTICS_LOG_LEVEL_START);
 
         const validation = this.validateLogLevelStart(level);
         if (!validation.valid) {
@@ -71,7 +70,7 @@ export abstract class AnalyticsBase {
     }
 
     public logLevelUp(level: string | number): void {
-        apiCall(WORTAL_API.ANALYTICS_LOG_LEVEL_UP);
+        Wortal._log.apiCall(WORTAL_API.ANALYTICS_LOG_LEVEL_UP);
 
         const validation = this.validateLogLevelUp(level);
         if (!validation.valid) {
@@ -82,7 +81,7 @@ export abstract class AnalyticsBase {
     }
 
     public logPurchase(productID: string, details?: string): void {
-        apiCall(WORTAL_API.ANALYTICS_LOG_PURCHASE);
+        Wortal._log.apiCall(WORTAL_API.ANALYTICS_LOG_PURCHASE);
 
         const validation = this.validateLogPurchase(productID, details);
         if (!validation.valid) {
@@ -93,7 +92,7 @@ export abstract class AnalyticsBase {
     }
 
     public logPurchaseSubscription(productID: string, details?: string): void {
-        apiCall(WORTAL_API.ANALYTICS_LOG_PURCHASE_SUBSCRIPTION);
+        Wortal._log.apiCall(WORTAL_API.ANALYTICS_LOG_PURCHASE_SUBSCRIPTION);
 
         const validation = this.validateLogPurchaseSubscription(productID, details);
         if (!validation.valid) {
@@ -104,7 +103,7 @@ export abstract class AnalyticsBase {
     }
 
     public logScore(score: string | number): void {
-        apiCall(WORTAL_API.ANALYTICS_LOG_SCORE);
+        Wortal._log.apiCall(WORTAL_API.ANALYTICS_LOG_SCORE);
 
         const validation = this.validateLogScore(score);
         if (!validation.valid) {
@@ -115,7 +114,7 @@ export abstract class AnalyticsBase {
     }
 
     public logSocialInvite(placement: string): void {
-        apiCall(WORTAL_API.ANALYTICS_LOG_SOCIAL_INVITE);
+        Wortal._log.apiCall(WORTAL_API.ANALYTICS_LOG_SOCIAL_INVITE);
 
         const validation = this.validateLogSocialInvite(placement);
         if (!validation.valid) {
@@ -126,7 +125,7 @@ export abstract class AnalyticsBase {
     }
 
     public logSocialShare(placement: string): void {
-        apiCall(WORTAL_API.ANALYTICS_LOG_SOCIAL_SHARE);
+        Wortal._log.apiCall(WORTAL_API.ANALYTICS_LOG_SOCIAL_SHARE);
 
         const validation = this.validateLogSocialShare(placement);
         if (!validation.valid) {
@@ -137,7 +136,7 @@ export abstract class AnalyticsBase {
     }
 
     public logTutorialEnd(tutorial: string = "Tutorial", wasCompleted: boolean = true): void {
-        apiCall(WORTAL_API.ANALYTICS_LOG_TUTORIAL_END);
+        Wortal._log.apiCall(WORTAL_API.ANALYTICS_LOG_TUTORIAL_END);
 
         const validation = this.validateLogTutorialEnd(tutorial, wasCompleted);
         if (!validation.valid) {
@@ -155,7 +154,7 @@ export abstract class AnalyticsBase {
     }
 
     public logTutorialStart(tutorial: string = "Tutorial"): void {
-        apiCall(WORTAL_API.ANALYTICS_LOG_TUTORIAL_START);
+        Wortal._log.apiCall(WORTAL_API.ANALYTICS_LOG_TUTORIAL_START);
 
         const validation = this.validateLogTutorialStart(tutorial);
         if (!validation.valid) {
@@ -176,13 +175,13 @@ export abstract class AnalyticsBase {
     // No need to validate these, they are internal and may be called before the SDK is initialized.
 
     _logGameEnd(): void {
-        internalCall("analytics._logGameEnd");
+        Wortal._log.internalCall("analytics._logGameEnd");
 
         this._logGameEndImpl();
     }
 
     _logGameStart(): void {
-        internalCall("analytics._logGameStart");
+        Wortal._log.internalCall("analytics._logGameStart");
 
         Wortal.session._internalGameState.startGameTimer();
 
@@ -190,7 +189,7 @@ export abstract class AnalyticsBase {
     }
 
     _logTrafficSource(): void {
-        internalCall("analytics._logTrafficSource");
+        Wortal._log.internalCall("analytics._logTrafficSource");
 
         this._logTrafficSourceImpl();
     }
@@ -198,7 +197,7 @@ export abstract class AnalyticsBase {
     // This is used by all platforms other than Wortal/Debug to log ad call events.
     // We log different events for Wortal platform which are handled within the ad show function itself.
     _logAdCall(format: AdType, placement: PlacementType, success: boolean, viewedReward?: boolean): void {
-        internalCall("analytics._logAdCall");
+        Wortal._log.internalCall("analytics._logAdCall");
 
         this._logAdCallImpl(format, placement, success, viewedReward);
     }

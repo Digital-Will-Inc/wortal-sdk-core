@@ -2,7 +2,6 @@ import { API_URL, WORTAL_API } from "../../data/core-data";
 import { notSupported, rethrowError_Facebook_Rakuten } from "../../errors/error-handler";
 import { ErrorMessage_Viber } from "../../errors/interfaces/viber-error";
 import Wortal from "../../index";
-import { debug } from "../../utils/logger";
 import { ConnectedPlayer } from "../classes/connected-player";
 import { ViberPlayer } from "../classes/viber-player";
 import { Player } from "../classes/player";
@@ -94,7 +93,7 @@ export class PlayerViber extends PlayerBase {
     protected setDataAsyncImpl(data: Record<string, unknown>): Promise<void> {
         return Wortal._internalPlatformSDK.player.setDataAsync(data)
             .then(() => {
-                debug("Saved data to cloud storage.");
+                Wortal._log.debug("Saved data to cloud storage.");
             })
             .catch((error: ErrorMessage_Viber) => {
                 throw rethrowError_Facebook_Rakuten(error, WORTAL_API.PLAYER_SET_DATA_ASYNC, API_URL.PLAYER_SET_DATA_ASYNC);

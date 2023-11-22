@@ -2,7 +2,6 @@ import { API_URL, WORTAL_API } from "../data/core-data";
 import { invalidParams, notInitialized, operationFailed } from "../errors/error-handler";
 import { ValidationResult } from "../errors/interfaces/validation-result";
 import Wortal from "../index";
-import { apiCall, debug, exception } from "../utils/logger";
 import { ConnectedPlayer } from "./classes/connected-player";
 import { Player } from "./classes/player";
 import { ConnectedPlayerPayload } from "./interfaces/connected-player-payload";
@@ -32,7 +31,7 @@ export abstract class PlayerBase {
 //#region Public API
 
     public canSubscribeBotAsync(): Promise<boolean> {
-        apiCall(WORTAL_API.PLAYER_CAN_SUBSCRIBE_BOT_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.PLAYER_CAN_SUBSCRIBE_BOT_ASYNC);
 
         const validationResult: ValidationResult = this.validateCanSubscribeBotAsync();
         if (!validationResult.valid) {
@@ -43,7 +42,7 @@ export abstract class PlayerBase {
     }
 
     public flushDataAsync(): Promise<void> {
-        apiCall(WORTAL_API.PLAYER_FLUSH_DATA_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.PLAYER_FLUSH_DATA_ASYNC);
 
         const validationResult: ValidationResult = this.validateFlushDataAsync();
         if (!validationResult.valid) {
@@ -54,7 +53,7 @@ export abstract class PlayerBase {
     }
 
     public getASIDAsync(): Promise<string> {
-        apiCall(WORTAL_API.PLAYER_GET_ASID_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.PLAYER_GET_ASID_ASYNC);
 
         // We don't validate this call because it's called from the SDK itself during Player initialization on FB.
         // We need the ASID to fetch the ad unit IDs from the Wortal API, so we can't have this fail.
@@ -63,7 +62,7 @@ export abstract class PlayerBase {
     }
 
     public getConnectedPlayersAsync(payload?: ConnectedPlayerPayload): Promise<ConnectedPlayer[]> {
-        apiCall(WORTAL_API.PLAYER_GET_CONNECTED_PLAYERS_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.PLAYER_GET_CONNECTED_PLAYERS_ASYNC);
 
         const validationResult: ValidationResult = this.validateGetConnectedPlayersAsync(payload);
         if (!validationResult.valid) {
@@ -74,7 +73,7 @@ export abstract class PlayerBase {
     }
 
     public getDataAsync(keys: string[]): Promise<any> {
-        apiCall(WORTAL_API.PLAYER_GET_DATA_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.PLAYER_GET_DATA_ASYNC);
 
         const validationResult: ValidationResult = this.validateGetDataAsync(keys);
         if (!validationResult.valid) {
@@ -85,7 +84,7 @@ export abstract class PlayerBase {
     }
 
     public getID(): string | null {
-        apiCall(WORTAL_API.PLAYER_GET_ID);
+        Wortal._log.apiCall(WORTAL_API.PLAYER_GET_ID);
 
         const validationResult: ValidationResult = this.validateGetID();
         if (!validationResult.valid) {
@@ -96,7 +95,7 @@ export abstract class PlayerBase {
     }
 
     public getName(): string | null {
-        apiCall(WORTAL_API.PLAYER_GET_NAME);
+        Wortal._log.apiCall(WORTAL_API.PLAYER_GET_NAME);
 
         const validationResult: ValidationResult = this.validateGetName();
         if (!validationResult.valid) {
@@ -107,7 +106,7 @@ export abstract class PlayerBase {
     }
 
     public getPhoto(): string | null {
-        apiCall(WORTAL_API.PLAYER_GET_PHOTO);
+        Wortal._log.apiCall(WORTAL_API.PLAYER_GET_PHOTO);
 
         const validationResult: ValidationResult = this.validateGetPhoto();
         if (!validationResult.valid) {
@@ -118,7 +117,7 @@ export abstract class PlayerBase {
     }
 
     public getSignedASIDAsync(): Promise<SignedASID> {
-        apiCall(WORTAL_API.PLAYER_GET_SIGNED_ASID_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.PLAYER_GET_SIGNED_ASID_ASYNC);
 
         const validationResult: ValidationResult = this.validateGetSignedASIDAsync();
         if (!validationResult.valid) {
@@ -129,7 +128,7 @@ export abstract class PlayerBase {
     }
 
     public getSignedPlayerInfoAsync(): Promise<SignedPlayerInfo> {
-        apiCall(WORTAL_API.PLAYER_GET_SIGNED_PLAYER_INFO_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.PLAYER_GET_SIGNED_PLAYER_INFO_ASYNC);
 
         const validationResult: ValidationResult = this.validateGetSignedPlayerInfoAsync();
         if (!validationResult.valid) {
@@ -140,7 +139,7 @@ export abstract class PlayerBase {
     }
 
     public getTokenAsync(): Promise<string> {
-        apiCall(WORTAL_API.PLAYER_GET_TOKEN_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.PLAYER_GET_TOKEN_ASYNC);
 
         const validationResult: ValidationResult = this.validateGetTokenAsync();
         if (!validationResult.valid) {
@@ -151,7 +150,7 @@ export abstract class PlayerBase {
     }
 
     public isFirstPlay(): boolean {
-        apiCall(WORTAL_API.PLAYER_IS_FIRST_PLAY);
+        Wortal._log.apiCall(WORTAL_API.PLAYER_IS_FIRST_PLAY);
 
         const validationResult: ValidationResult = this.validateIsFirstPlay();
         if (!validationResult.valid) {
@@ -162,7 +161,7 @@ export abstract class PlayerBase {
     }
 
     public onLogin(callback: () => void): void {
-        apiCall(WORTAL_API.PLAYER_ON_LOGIN);
+        Wortal._log.apiCall(WORTAL_API.PLAYER_ON_LOGIN);
 
         const validationResult: ValidationResult = this.validateOnLogin(callback);
         if (!validationResult.valid) {
@@ -178,7 +177,7 @@ export abstract class PlayerBase {
     }
 
     public setDataAsync(data: Record<string, unknown>): Promise<void> {
-        apiCall(WORTAL_API.PLAYER_SET_DATA_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.PLAYER_SET_DATA_ASYNC);
 
         const validationResult: ValidationResult = this.validateSetDataAsync(data);
         if (!validationResult.valid) {
@@ -189,7 +188,7 @@ export abstract class PlayerBase {
     }
 
     public subscribeBotAsync(): Promise<void> {
-        apiCall(WORTAL_API.PLAYER_SUBSCRIBE_BOT_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.PLAYER_SUBSCRIBE_BOT_ASYNC);
 
         const validationResult: ValidationResult = this.validateSubscribeBotAsync();
         if (!validationResult.valid) {
@@ -225,7 +224,7 @@ export abstract class PlayerBase {
                         dataObj = {...dataObj, ...localSaveData};
                     }
                 } catch (error: any) {
-                    exception(`Error loading object from localStorage: ${error.message}`);
+                    Wortal._log.exception(`Error loading object from localStorage: ${error.message}`);
                 }
             }
 
@@ -236,7 +235,7 @@ export abstract class PlayerBase {
                         dataObj = {...dataObj, ...wavesData};
                     }
                 } catch (error: any) {
-                    exception(`Error loading object from waves: ${error.message}`);
+                    Wortal._log.exception(`Error loading object from waves: ${error.message}`);
                 }
             }
 
@@ -257,7 +256,7 @@ export abstract class PlayerBase {
         return new Promise((resolve, reject) => {
             try {
                 localStorage.setItem(`${Wortal.session._internalSession.gameID}-save-data`, JSON.stringify(data));
-                debug("Saved data to localStorage.");
+                Wortal._log.debug("Saved data to localStorage.");
             } catch (error: any) {
                 //TODO: do we need to reject here?
                 reject(operationFailed(`Error saving object to localStorage: ${error.message}`,
@@ -267,7 +266,7 @@ export abstract class PlayerBase {
             if (Wortal._internalIsWavesEnabled && waves.authToken) {
                 waves.saveData(data)
                     .then(() => {
-                        debug("Saved data to Waves.");
+                        Wortal._log.debug("Saved data to Waves.");
                         resolve();
                     })
                     .catch((error: any) => {

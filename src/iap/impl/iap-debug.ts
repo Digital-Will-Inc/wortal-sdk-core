@@ -1,4 +1,4 @@
-import { debug } from "../../utils/logger";
+import Wortal from "../../index";
 import { IAPBase } from "../iap-base";
 import { Product } from "../interfaces/product";
 import { Purchase } from "../interfaces/purchase";
@@ -54,7 +54,7 @@ export class IAPDebug extends IAPBase {
 
     protected _tryEnableIAPImpl(): void {
         this._isIAPEnabled = true;
-        debug("IAP initialized for debugging.");
+        Wortal._log.debug("IAP initialized for debugging.");
     }
 
     private _getMockProduct(): Product {

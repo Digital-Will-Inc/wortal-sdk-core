@@ -2,7 +2,6 @@ import { API_URL, WORTAL_API } from "../data/core-data";
 import { invalidParams, notInitialized } from "../errors/error-handler";
 import { ValidationResult } from "../errors/interfaces/validation-result";
 import Wortal from "../index";
-import { apiCall } from "../utils/logger";
 import { isValidString } from "../utils/validators";
 import { Leaderboard } from "./classes/leaderboard";
 import { LeaderboardEntry } from "./classes/leaderboard-entry";
@@ -18,7 +17,7 @@ export abstract class LeaderboardBase {
 //#region Public API
 
     public getConnectedPlayersEntriesAsync(name: string, count: number, offset: number): Promise<LeaderboardEntry[]> {
-        apiCall(WORTAL_API.LEADERBOARD_GET_CONNECTED_PLAYER_ENTRIES_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.LEADERBOARD_GET_CONNECTED_PLAYER_ENTRIES_ASYNC);
 
         const validationResult = this.validateGetConnectedPlayersEntriesAsync(name, count, offset);
         if (!validationResult.valid) {
@@ -29,7 +28,7 @@ export abstract class LeaderboardBase {
     }
 
     public getEntriesAsync(name: string, count: number, offset: number = 0): Promise<LeaderboardEntry[]> {
-        apiCall(WORTAL_API.LEADERBOARD_GET_ENTRIES_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.LEADERBOARD_GET_ENTRIES_ASYNC);
 
         const validationResult = this.validateGetEntriesAsync(name, count, offset);
         if (!validationResult.valid) {
@@ -40,7 +39,7 @@ export abstract class LeaderboardBase {
     }
 
     public getEntryCountAsync(name: string): Promise<number> {
-        apiCall(WORTAL_API.LEADERBOARD_GET_ENTRY_COUNT_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.LEADERBOARD_GET_ENTRY_COUNT_ASYNC);
 
         const validationResult = this.validateGetEntryCountAsync(name);
         if (!validationResult.valid) {
@@ -51,7 +50,7 @@ export abstract class LeaderboardBase {
     }
 
     public getLeaderboardAsync(name: string): Promise<Leaderboard> {
-        apiCall(WORTAL_API.LEADERBOARD_GET_LEADERBOARD_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.LEADERBOARD_GET_LEADERBOARD_ASYNC);
 
         const validationResult = this.validateGetLeaderboardAsync(name);
         if (!validationResult.valid) {
@@ -62,7 +61,7 @@ export abstract class LeaderboardBase {
     }
 
     public getPlayerEntryAsync(name: string): Promise<LeaderboardEntry> {
-        apiCall(WORTAL_API.LEADERBOARD_GET_PLAYER_ENTRY_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.LEADERBOARD_GET_PLAYER_ENTRY_ASYNC);
 
         const validationResult = this.validateGetPlayerEntryAsync(name);
         if (!validationResult.valid) {
@@ -73,7 +72,7 @@ export abstract class LeaderboardBase {
     }
 
     public sendEntryAsync(name: string, score: number, details: string = ""): Promise<LeaderboardEntry> {
-        apiCall(WORTAL_API.LEADERBOARD_SEND_ENTRY_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.LEADERBOARD_SEND_ENTRY_ASYNC);
 
         const validationResult = this.validateSendEntryAsync(name, score, details);
         if (!validationResult.valid) {

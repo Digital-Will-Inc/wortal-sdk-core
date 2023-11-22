@@ -2,7 +2,6 @@ import { API_URL, WORTAL_API } from "../data/core-data";
 import { invalidParams, notInitialized } from "../errors/error-handler";
 import { ValidationResult } from "../errors/interfaces/validation-result";
 import Wortal from "../index";
-import { apiCall } from "../utils/logger";
 import { isValidNumber, isValidString } from "../utils/validators";
 import { GetStatsPayload } from "./interfaces/get-stats-payload";
 import { PostStatsPayload } from "./interfaces/post-stats-payload";
@@ -19,7 +18,7 @@ export abstract class StatsBase {
 //#region Public API
 
     public getStatsAsync(level: string | number, payload?: GetStatsPayload): Promise<Stats[]> {
-        apiCall(WORTAL_API.STATS_GET_STATS_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.STATS_GET_STATS_ASYNC);
 
         const validationResult = this.validateGetStats(level, payload);
         if (!validationResult.valid) {
@@ -30,7 +29,7 @@ export abstract class StatsBase {
     }
 
     public postStatsAsync(level: string | number, value: number, payload?: PostStatsPayload): Promise<void> {
-        apiCall(WORTAL_API.STATS_POST_STATS_ASYNC);
+        Wortal._log.apiCall(WORTAL_API.STATS_POST_STATS_ASYNC);
 
         const validationResult = this.validatePostStats(level, value, payload);
         if (!validationResult.valid) {
