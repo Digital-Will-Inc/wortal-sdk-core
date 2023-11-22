@@ -470,22 +470,6 @@ export class CoreAPI {
         // we're playing by the rules.
         //TODO: determine platform support for Waves
 
-        ///////////////////////////////////
-        //TODO: remove this once the CSS is bundled into the Waves SDK
-        const wavesCSS = document.createElement("link");
-        wavesCSS.rel = "stylesheet";
-        wavesCSS.type = "text/css";
-        wavesCSS.href = `${SDK_SRC.WAVES_BASE_URL}/waves.css`;
-
-        wavesCSS.onerror = () => {
-            // Not fatal, but we should log it and disable Waves.
-            this._log.exception("Failed to load Waves CSS.");
-            this._isWavesEnabled = false;
-        }
-
-        document.head.prepend(wavesCSS);
-        ///////////////////////////////////
-
         const wavesSDK = document.createElement("script");
         wavesSDK.src = `${SDK_SRC.WAVES_BASE_URL}/waves.umd.js`;
 
