@@ -8,7 +8,10 @@
         "strict": true,
         "outDir": "dist",
         "declaration": true,
-        "types": ["node"],
+        "types": [
+            "node",
+            "jest",
+        ],
     },
     "include": [
         "src/**/*",
@@ -16,5 +19,6 @@
     "exclude": [
         "node_modules",
         "demo",
+        "tests",
     ]
 }
