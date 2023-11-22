@@ -31,7 +31,7 @@ export class AdsGameMonetize extends AdsBase {
 
         // GameMonetize uses the showBanner API even though it is an interstitial.
         Wortal._internalPlatformSDK.showBanner();
-        this.logAdCall("interstitial", ad.placementType, true);
+        Wortal.analytics._logAdCall("interstitial", ad.placementType, true);
     }
 
     protected showRewardedImpl(ad: AdInstanceData): void {

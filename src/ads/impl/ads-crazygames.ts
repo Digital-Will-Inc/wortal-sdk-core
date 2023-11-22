@@ -31,12 +31,12 @@ export class AdsCrazyGames extends AdsBase {
             adStarted: ad.callbacks.beforeAd,
             adFinished: () => {
                 ad.callbacks.afterAd();
-                this.logAdCall("interstitial", ad.placementType, true);
+                Wortal.analytics._logAdCall("interstitial", ad.placementType, true);
             },
             adError: (error: Error_CrazyGames) => {
                 warn(`Ad instance encountered an error or was not filled: ${error}`);
                 ad.callbacks.noFill();
-                this.logAdCall("interstitial", ad.placementType, false);
+                Wortal.analytics._logAdCall("interstitial", ad.placementType, false);
             },
         };
 
@@ -49,13 +49,13 @@ export class AdsCrazyGames extends AdsBase {
             adFinished: () => {
                 ad.callbacks.adViewed?.();
                 ad.callbacks.afterAd();
-                this.logAdCall("rewarded", ad.placementType, true, true);
+                Wortal.analytics._logAdCall("rewarded", ad.placementType, true, true);
             },
             adError: (error: Error_CrazyGames) => {
                 warn(`Ad instance encountered an error or was not filled: ${error}`);
                 ad.callbacks.adDismissed?.();
                 ad.callbacks.noFill();
-                this.logAdCall("rewarded", ad.placementType, false, false);
+                Wortal.analytics._logAdCall("rewarded", ad.placementType, false, false);
             },
         };
 

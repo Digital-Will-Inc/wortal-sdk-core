@@ -1,3 +1,5 @@
+import { PlacementType } from "../ads/types/ad-sense-types";
+import { AdType } from "../ads/types/ad-type";
 import { API_URL, WORTAL_API } from "../data/core-data";
 import { invalidParams, notInitialized } from "../errors/error-handler";
 import { ValidationResult } from "../errors/interfaces/validation-result";
@@ -193,6 +195,14 @@ export abstract class AnalyticsBase {
         this._logTrafficSourceImpl();
     }
 
+    // This is used by all platforms other than Wortal/Debug to log ad call events.
+    // We log different events for Wortal platform which are handled within the ad show function itself.
+    _logAdCall(format: AdType, placement: PlacementType, success: boolean, viewedReward?: boolean): void {
+        internalCall("analytics._logAdCall");
+
+        this._logAdCallImpl(format, placement, success, viewedReward);
+    }
+
 //#endregion
 //#region Implementation interface
 
@@ -211,6 +221,7 @@ export abstract class AnalyticsBase {
     protected abstract _logGameEndImpl(): void;
     protected abstract _logGameStartImpl(): void;
     protected abstract _logTrafficSourceImpl(): void;
+    protected abstract _logAdCallImpl(format: AdType, placement: PlacementType, success: boolean, viewedReward?: boolean): void;
 
 //#endregion
 //#region Validation

@@ -1,3 +1,5 @@
+import { PlacementType } from "../ads/types/ad-sense-types";
+import { AdType } from "../ads/types/ad-type";
 import { AnalyticsBase } from "./analytics-base";
 
 /**
@@ -179,6 +181,11 @@ export class AnalyticsAPI {
     /** @internal */
     _logTrafficSource(): void {
         this._analytics._logTrafficSource();
+    }
+
+    /** @internal */
+    _logAdCall(format: AdType, placement: PlacementType, success: boolean, viewedReward?: boolean): void {
+        this._analytics._logAdCall(format, placement, success, viewedReward);
     }
 
 //#endregion

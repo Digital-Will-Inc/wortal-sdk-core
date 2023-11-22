@@ -41,18 +41,18 @@ export class AdsViber extends AdsBase {
                     .then(() => {
                         debug("Interstitial ad finished successfully.");
                         ad.callbacks.afterAd();
-                        this.logAdCall("interstitial", ad.placementType, true);
+                        Wortal.analytics._logAdCall("interstitial", ad.placementType, true);
                     })
                     .catch((error: ErrorMessage_Viber) => {
                         warn("Ad instance encountered an error or was not filled.", error);
                         ad.callbacks.noFill();
-                        this.logAdCall("interstitial", ad.placementType, false);
+                        Wortal.analytics._logAdCall("interstitial", ad.placementType, false);
                     });
             })
             .catch((error: ErrorMessage_Viber) => {
                 warn("Ad instance encountered an error or was not filled.", error);
                 ad.callbacks.noFill();
-                this.logAdCall("interstitial", ad.placementType, false);
+                Wortal.analytics._logAdCall("interstitial", ad.placementType, false);
             });
     }
 
@@ -72,19 +72,19 @@ export class AdsViber extends AdsBase {
                         debug("Rewarded video watched successfully");
                         ad.callbacks.adViewed?.();
                         ad.callbacks.afterAd();
-                        this.logAdCall("rewarded", ad.placementType, true, true);
+                        Wortal.analytics._logAdCall("rewarded", ad.placementType, true, true);
                     })
                     .catch((error: ErrorMessage_Viber) => {
                         warn("Ad instance encountered an error or was not filled.", error);
                         ad.callbacks.adDismissed?.();
                         ad.callbacks.noFill();
-                        this.logAdCall("rewarded", ad.placementType, false, false);
+                        Wortal.analytics._logAdCall("rewarded", ad.placementType, false, false);
                     });
             })
             .catch((error: ErrorMessage_Viber) => {
                 warn("Ad instance encountered an error or was not filled.", error);
                 ad.callbacks.noFill();
-                this.logAdCall("rewarded", ad.placementType, false, false);
+                Wortal.analytics._logAdCall("rewarded", ad.placementType, false, false);
             });
     }
 

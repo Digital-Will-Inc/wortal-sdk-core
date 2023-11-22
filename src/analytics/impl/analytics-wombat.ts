@@ -1,9 +1,11 @@
+import { PlacementType } from "../../ads/types/ad-sense-types";
+import { AdType } from "../../ads/types/ad-type";
 import { ErrorMessage_Viber } from "../../errors/interfaces/viber-error";
 import Wortal from "../../index";
 import { exception } from "../../utils/logger";
 import { AnalyticsBase } from "../analytics-base";
 import { WombatEvent } from "../classes/WombatEvent";
-import { AnalyticsEventData } from "../interfaces/analytics-event-data";
+import { AnalyticsEventData, EventData_AdCall } from "../interfaces/analytics-event-data";
 
 /**
  * Wombat Analytics implementation. This sends events to the Wortal backend for processing.
@@ -280,6 +282,27 @@ export class AnalyticsWombat extends AnalyticsBase {
                 const event = new WombatEvent(data);
                 event.send();
             });
+    }
+
+    protected _logAdCallImpl(format: AdType, placement: PlacementType, success: boolean, viewedReward?: boolean) {
+        const data: EventData_AdCall = {
+            format: format,
+            placement: placement,
+            platform: Wortal._internalPlatform,
+            success: success,
+            viewedRewarded: viewedReward,
+            playerID: Wortal.player._internalPlayer.id,
+            gameID: Wortal.session._internalSession.gameID,
+            playTimeAtCall: Wortal.session._internalGameState.gameTimer,
+        };
+
+        const eventData: AnalyticsEventData = {
+            name: "AdCall",
+            features: data,
+        };
+
+        const event = new WombatEvent(eventData);
+        event.send();
     }
 
 //#endregion

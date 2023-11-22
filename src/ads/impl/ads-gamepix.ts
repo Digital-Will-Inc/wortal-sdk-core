@@ -33,17 +33,17 @@ export class AdsGamePix extends AdsBase {
                 // the ad showing successfully.
                 if (result) {
                     ad.callbacks.afterAd();
-                    this.logAdCall("interstitial", ad.placementType, true);
+                    Wortal.analytics._logAdCall("interstitial", ad.placementType, true);
                 } else {
                     warn("Ad instance encountered an error or was not filled.");
                     ad.callbacks.noFill();
-                    this.logAdCall("interstitial", ad.placementType, false);
+                    Wortal.analytics._logAdCall("interstitial", ad.placementType, false);
                 }
             })
             .catch((error: any) => {
                 warn("Ad instance encountered an error or was not filled.", error);
                 ad.callbacks.noFill();
-                this.logAdCall("interstitial", ad.placementType, false);
+                Wortal.analytics._logAdCall("interstitial", ad.placementType, false);
             });
     }
 
@@ -55,18 +55,18 @@ export class AdsGamePix extends AdsBase {
                 if (result.success) {
                     ad.callbacks.adViewed?.();
                     ad.callbacks.afterAd();
-                    this.logAdCall("rewarded", ad.placementType, true, true);
+                    Wortal.analytics._logAdCall("rewarded", ad.placementType, true, true);
                 } else {
                     // A message property is added when there was an error, if undefined it indicates the player dismissed the ad.
                     if (typeof result.message !== "undefined") {
                         warn("Ad instance encountered an error or was not filled.", result.message);
                         ad.callbacks.noFill();
-                        this.logAdCall("rewarded", ad.placementType, false, false);
+                        Wortal.analytics._logAdCall("rewarded", ad.placementType, false, false);
                     } else {
                         debug("Rewarded ad dismissed by player.");
                         ad.callbacks.adDismissed?.();
                         ad.callbacks.afterAd();
-                        this.logAdCall("rewarded", ad.placementType, true, false);
+                        Wortal.analytics._logAdCall("rewarded", ad.placementType, true, false);
                     }
                 }
             })
@@ -74,7 +74,7 @@ export class AdsGamePix extends AdsBase {
                 warn("Ad instance encountered an error or was not filled.", error);
                 ad.callbacks.adDismissed?.();
                 ad.callbacks.noFill();
-                this.logAdCall("rewarded", ad.placementType, false, false);
+                Wortal.analytics._logAdCall("rewarded", ad.placementType, false, false);
             });
     }
 
