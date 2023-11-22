@@ -27,11 +27,11 @@ export class AdsPoki extends AdsBase {
         Wortal._internalPlatformSDK.commercialBreak(ad.callbacks.beforeAd)
             .then(() => {
                 ad.callbacks.afterAd();
-                this.logAdCall("interstitial", ad.placementType, true);
+                Wortal.analytics._logAdCall("interstitial", ad.placementType, true);
             })
             .catch(() => {
                 ad.callbacks.noFill();
-                this.logAdCall("interstitial", ad.placementType, false);
+                Wortal.analytics._logAdCall("interstitial", ad.placementType, false);
             });
     }
 
@@ -45,12 +45,12 @@ export class AdsPoki extends AdsBase {
                 }
 
                 ad.callbacks.afterAd();
-                this.logAdCall("rewarded", ad.placementType, rewarded);
+                Wortal.analytics._logAdCall("rewarded", ad.placementType, rewarded);
             })
             .catch(() => {
                 ad.callbacks.adDismissed?.();
                 ad.callbacks.noFill();
-                this.logAdCall("rewarded", ad.placementType, false);
+                Wortal.analytics._logAdCall("rewarded", ad.placementType, false);
             });
     }
 

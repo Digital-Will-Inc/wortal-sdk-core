@@ -1,5 +1,3 @@
-import { WombatEvent } from "../analytics/classes/WombatEvent";
-import { EventData_AdCall, AnalyticsEventData } from "../analytics/interfaces/analytics-event-data";
 import { API_URL, WORTAL_API } from "../data/core-data";
 import { invalidParams } from "../errors/error-handler";
 import { ValidationResult } from "../errors/interfaces/validation-result";
@@ -9,7 +7,6 @@ import { isValidPlacementType, isValidString } from "../utils/validators";
 import { AdConfig } from "./classes/ad-config";
 import { AdCallbacks } from "./interfaces/ad-callbacks";
 import { AdInstanceData } from "./interfaces/ad-data";
-import { AdType } from "./types/ad-type";
 import { BannerPosition } from "./types/banner-position";
 import { PlacementType } from "./types/ad-sense-types";
 
@@ -125,29 +122,6 @@ export abstract class AdsBase {
     protected abstract showBannerImpl(shouldShow: boolean, position: BannerPosition): void;
     protected abstract showInterstitialImpl(ad: AdInstanceData): void;
     protected abstract showRewardedImpl(ad: AdInstanceData): void;
-
-    // This is used by all platforms other than Wortal/Debug to log ad call events.
-    // We log different events for Wortal platform which are handled within the ad show function itself.
-    protected logAdCall(format: AdType, placement: PlacementType, success: boolean, viewedReward?: boolean): void {
-        const data: EventData_AdCall = {
-            format: format,
-            placement: placement,
-            platform: Wortal._internalPlatform,
-            success: success,
-            viewedRewarded: viewedReward,
-            playerID: Wortal.player._internalPlayer.id,
-            gameID: Wortal.session._internalSession.gameID,
-            playTimeAtCall: Wortal.session._internalGameState.gameTimer,
-        };
-
-        const eventData: AnalyticsEventData = {
-            name: "AdCall",
-            features: data,
-        };
-
-        const event = new WombatEvent(eventData);
-        event.send();
-    }
 
 //#endregion
 //#region Validation

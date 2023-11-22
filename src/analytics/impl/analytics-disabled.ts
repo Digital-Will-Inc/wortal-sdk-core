@@ -1,3 +1,5 @@
+import { PlacementType } from "../../ads/types/ad-sense-types";
+import { AdType } from "../../ads/types/ad-type";
 import { AnalyticsBase } from "../analytics-base";
 
 /**
@@ -50,6 +52,9 @@ export class AnalyticsDisabled extends AnalyticsBase {
     }
 
     protected _logTrafficSourceImpl(): void {
+    }
+
+    protected _logAdCallImpl(format: AdType, placement: PlacementType, success: boolean, viewedReward?: boolean) {
     }
 
 }

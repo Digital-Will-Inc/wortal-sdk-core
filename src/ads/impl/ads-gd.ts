@@ -31,7 +31,7 @@ export class AdsGD extends AdsBase {
         addExternalCallback(GD_GAME_MONETIZE_API.NO_FILL, ad.callbacks.noFill);
 
         Wortal._internalPlatformSDK.showAd("interstitial");
-        this.logAdCall("interstitial", ad.placementType, true);
+        Wortal.analytics._logAdCall("interstitial", ad.placementType, true);
     }
 
     protected showRewardedImpl(ad: AdInstanceData): void {
@@ -46,16 +46,16 @@ export class AdsGD extends AdsBase {
             .then(() => {
                 Wortal._internalPlatformSDK.showAd("rewarded")
                     .then(() => {
-                        this.logAdCall("rewarded", ad.placementType, true, true);
+                        Wortal.analytics._logAdCall("rewarded", ad.placementType, true, true);
                     })
                     .catch((error: any) => {
                         warn("Ad instance encountered an error or was not filled.", error);
-                        this.logAdCall("rewarded", ad.placementType, false, false);
+                        Wortal.analytics._logAdCall("rewarded", ad.placementType, false, false);
                     });
             })
             .catch((error: any) => {
                 warn("Ad instance encountered an error or was not filled.", error);
-                this.logAdCall("rewarded", ad.placementType, false, false);
+                Wortal.analytics._logAdCall("rewarded", ad.placementType, false, false);
             });
     }
 

@@ -27,11 +27,11 @@ export class AdsAddictingGames extends AdsBase {
         Wortal._internalPlatformSDK.showAd()
             .then(() => {
                 ad.callbacks.afterAd();
-                this.logAdCall("interstitial", ad.placementType, true);
+                Wortal.analytics._logAdCall("interstitial", ad.placementType, true);
             })
             .catch(() => {
                 ad.callbacks.noFill();
-                this.logAdCall("interstitial", ad.placementType, false);
+                Wortal.analytics._logAdCall("interstitial", ad.placementType, false);
             });
     }
 
