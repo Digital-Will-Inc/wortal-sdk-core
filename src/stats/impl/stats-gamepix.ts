@@ -1,5 +1,6 @@
 import { API_URL, WORTAL_API } from "../../data/core-data";
 import { notSupported } from "../../errors/error-handler";
+import Wortal from "../../index";
 import { GetStatsPayload } from "../interfaces/get-stats-payload";
 import { PostStatsPayload } from "../interfaces/post-stats-payload";
 import { Stats } from "../interfaces/stats";
@@ -15,7 +16,7 @@ export class StatsGamePix extends StatsBase {
     }
 
     protected postStatsAsyncImpl(level: string | number, value: number, payload?: PostStatsPayload): Promise<void> {
-        return Promise.reject(notSupported(undefined, WORTAL_API.STATS_POST_STATS_ASYNC, API_URL.STATS_POST_STATS_ASYNC));
+        return Wortal._internalPlatformSDK.updateScore(value);
     }
 
 }

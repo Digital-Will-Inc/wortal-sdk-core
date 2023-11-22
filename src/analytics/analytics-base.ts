@@ -2,7 +2,7 @@ import { API_URL, WORTAL_API } from "../data/core-data";
 import { invalidParams, notInitialized } from "../errors/error-handler";
 import { ValidationResult } from "../errors/interfaces/validation-result";
 import Wortal from "../index";
-import { apiCall, internalCall, warn } from "../utils/logger";
+import { apiCall, internalCall } from "../utils/logger";
 import { isValidNumber, isValidString } from "../utils/validators";
 
 /**
@@ -76,21 +76,6 @@ export abstract class AnalyticsBase {
             throw validation.error;
         }
 
-        // We report levels to GamePix via this analytics call because it's the closest API we have to
-        // match theirs. This is done so that we don't have to ask game devs to change their code.
-        //TODO: move this elsewhere (Stats API?)
-        if (Wortal._internalPlatform === "gamepix") {
-            if (!isValidNumber(level)) {
-                const levelNumber = this._convertStringToNumber(level);
-                if (levelNumber) {
-                    Wortal._internalPlatformSDK.updateLevel(levelNumber);
-                } else {
-                    throw invalidParams(`GamePix requires a number for the level param, but one could not be extracted from the arg: ${level}`,
-                        WORTAL_API.ANALYTICS_LOG_SCORE, API_URL.ANALYTICS_LOG_SCORE);
-                }
-            }
-        }
-
         this.logLevelUpImpl(level);
     }
 
@@ -122,21 +107,6 @@ export abstract class AnalyticsBase {
         const validation = this.validateLogScore(score);
         if (!validation.valid) {
             throw validation.error;
-        }
-
-        // We report scores to GamePix via this analytics call because it's the closest API we have to
-        // match theirs. This is done so that we don't have to ask game devs to change their code.
-        //TODO: move this elsewhere (Stats API?)
-        if (Wortal._internalPlatform === "gamepix") {
-            if (!isValidNumber(score)) {
-                const scoreNumber = this._convertStringToNumber(score);
-                if (scoreNumber) {
-                    Wortal._internalPlatformSDK.updateScore(scoreNumber);
-                } else {
-                    throw invalidParams(`GamePix requires a number for the score param, but one could not be extracted from the arg: ${score}`,
-                        WORTAL_API.ANALYTICS_LOG_SCORE, API_URL.ANALYTICS_LOG_SCORE);
-                }
-            }
         }
 
         this.logScoreImpl(score);
@@ -473,37 +443,6 @@ export abstract class AnalyticsBase {
         }
 
         return { valid: true };
-    }
-
-//#endregion
-//#region Utils
-
-    /**
-     * Attempts to convert a string to a number. This will extract the first number from the string.
-     * @example
-     * convertStringToNumber("Level 1") // 1
-     * convertStringToNumber("100 points") // 100
-     * @param value String to convert. Passing a non-string will result in a warning and null being returned.
-     * @returns {number|null} The first number extracted from the string, or null if no number was found.
-     * @hidden
-     */
-    private _convertStringToNumber(value: any): number | null {
-        if (typeof value !== "string") {
-            warn(`convertStringToNumber: value is not a string. (value: ${value})`, typeof value);
-            return null;
-        }
-
-        const match = value.match(/\d+/);
-        if (match) {
-            const result = parseInt(match[0], 10);
-            if (isNaN(result)) {
-                return null;
-            } else {
-                return result;
-            }
-        } else {
-            return null;
-        }
     }
 
 //#endregion
