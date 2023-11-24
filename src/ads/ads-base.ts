@@ -183,6 +183,7 @@ export class AdsBase {
             };
         }
 
+        //TODO: confirm which platforms support preroll ads then refactor this
         if (placement === "preroll" && (platform === "link" || platform === "viber" || platform === "facebook")) {
             return {
                 valid: false,
