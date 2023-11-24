@@ -17,7 +17,7 @@ export function isValidNumber(obj: any): boolean {
     if (typeof obj !== "number") {
         return false;
     } else {
-        return !isNaN(obj);
+        return !isNaN(obj) && isFinite(obj);
     }
 }
 
