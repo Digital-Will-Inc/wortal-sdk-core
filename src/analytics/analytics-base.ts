@@ -202,37 +202,28 @@ export class AnalyticsBase {
 //#endregion
 //#region Implementation interface
 
-    protected logGameChoiceImpl(decision: string, choice: string): void { throw implementationError(); }
-    protected logLevelEndImpl(level: string | number, score: string | number, wasCompleted: boolean): void { throw implementationError(); }
-    protected logLevelStartImpl(level: string | number): void { throw implementationError(); }
-    protected logLevelUpImpl(level: string | number): void { throw implementationError(); }
-    protected logPurchaseImpl(productID: string, details?: string): void { throw implementationError(); }
-    protected logPurchaseSubscriptionImpl(productID: string, details?: string): void { throw implementationError(); }
-    protected logScoreImpl(score: string | number): void { throw implementationError(); }
-    protected logSocialInviteImpl(placement: string): void { throw implementationError(); }
-    protected logSocialShareImpl(placement: string): void { throw implementationError(); }
-    protected logTutorialEndImpl(tutorial: string, wasCompleted: boolean): void { throw implementationError(); }
-    protected logTutorialStartImpl(tutorial: string): void { throw implementationError(); }
+    protected logGameChoiceImpl(decision: string, choice: string): void { }
+    protected logLevelEndImpl(level: string | number, score: string | number, wasCompleted: boolean): void { }
+    protected logLevelStartImpl(level: string | number): void { }
+    protected logLevelUpImpl(level: string | number): void { }
+    protected logPurchaseImpl(productID: string, details?: string): void { }
+    protected logPurchaseSubscriptionImpl(productID: string, details?: string): void { }
+    protected logScoreImpl(score: string | number): void { }
+    protected logSocialInviteImpl(placement: string): void { }
+    protected logSocialShareImpl(placement: string): void { }
+    protected logTutorialEndImpl(tutorial: string, wasCompleted: boolean): void { }
+    protected logTutorialStartImpl(tutorial: string): void { }
 
-    protected _logGameEndImpl(): void { throw implementationError(); }
-    protected _logGameStartImpl(): void { throw implementationError(); }
-    protected _logTrafficSourceImpl(): void { throw implementationError(); }
+    protected _logGameEndImpl(): void { }
+    protected _logGameStartImpl(): void { }
+    protected _logTrafficSourceImpl(): void { }
     protected _logAdCallImpl(format: AdType, placement: PlacementType, success: boolean, viewedReward?: boolean): void { throw implementationError(); }
 
 //#endregion
 //#region Validation
 
     protected validateLogGameChoice(decision: string, choice: string): ValidationResult {
-        if (!isValidString(decision)) {
-            return {
-                valid: false,
-                error: invalidParams(undefined,
-                    WORTAL_API.ANALYTICS_LOG_GAME_CHOICE,
-                    API_URL.ANALYTICS_LOG_GAME_CHOICE),
-            };
-        }
-
-        if (!isValidString(choice)) {
+        if (!isValidString(decision) || !isValidString(choice)) {
             return {
                 valid: false,
                 error: invalidParams(undefined,
@@ -264,6 +255,15 @@ export class AnalyticsBase {
         }
 
         if (!isValidString(score) && !isValidNumber(score)) {
+            return {
+                valid: false,
+                error: invalidParams(undefined,
+                    WORTAL_API.ANALYTICS_LOG_LEVEL_END,
+                    API_URL.ANALYTICS_LOG_LEVEL_END),
+            };
+        }
+
+        if (typeof wasCompleted !== "boolean") {
             return {
                 valid: false,
                 error: invalidParams(undefined,
@@ -310,7 +310,9 @@ export class AnalyticsBase {
         if (!isValidString(level) && !isValidNumber(level)) {
             return {
                 valid: false,
-                error: invalidParams(undefined, WORTAL_API.ANALYTICS_LOG_LEVEL_UP, API_URL.ANALYTICS_LOG_LEVEL_UP),
+                error: invalidParams(undefined,
+                    WORTAL_API.ANALYTICS_LOG_LEVEL_UP,
+                    API_URL.ANALYTICS_LOG_LEVEL_UP),
             };
         }
 
@@ -330,7 +332,18 @@ export class AnalyticsBase {
         if (!isValidString(productID)) {
             return {
                 valid: false,
-                error: invalidParams(undefined, WORTAL_API.ANALYTICS_LOG_PURCHASE, API_URL.ANALYTICS_LOG_PURCHASE),
+                error: invalidParams(undefined,
+                    WORTAL_API.ANALYTICS_LOG_PURCHASE,
+                    API_URL.ANALYTICS_LOG_PURCHASE),
+            };
+        }
+
+        if (details && !isValidString(details)) {
+            return {
+                valid: false,
+                error: invalidParams(undefined,
+                    WORTAL_API.ANALYTICS_LOG_PURCHASE,
+                    API_URL.ANALYTICS_LOG_PURCHASE),
             };
         }
 
@@ -350,7 +363,18 @@ export class AnalyticsBase {
         if (!isValidString(productID)) {
             return {
                 valid: false,
-                error: invalidParams(undefined, WORTAL_API.ANALYTICS_LOG_PURCHASE_SUBSCRIPTION, API_URL.ANALYTICS_LOG_PURCHASE_SUBSCRIPTION),
+                error: invalidParams(undefined,
+                    WORTAL_API.ANALYTICS_LOG_PURCHASE_SUBSCRIPTION,
+                    API_URL.ANALYTICS_LOG_PURCHASE_SUBSCRIPTION),
+            };
+        }
+
+        if (details && !isValidString(details)) {
+            return {
+                valid: false,
+                error: invalidParams(undefined,
+                    WORTAL_API.ANALYTICS_LOG_PURCHASE,
+                    API_URL.ANALYTICS_LOG_PURCHASE),
             };
         }
 
@@ -370,7 +394,9 @@ export class AnalyticsBase {
         if (!isValidString(score) && !isValidNumber(score)) {
             return {
                 valid: false,
-                error: invalidParams(undefined, WORTAL_API.ANALYTICS_LOG_SCORE, API_URL.ANALYTICS_LOG_SCORE),
+                error: invalidParams(undefined,
+                    WORTAL_API.ANALYTICS_LOG_SCORE,
+                    API_URL.ANALYTICS_LOG_SCORE),
             };
         }
 
@@ -390,7 +416,9 @@ export class AnalyticsBase {
         if (!isValidString(placement)) {
             return {
                 valid: false,
-                error: invalidParams(undefined, WORTAL_API.ANALYTICS_LOG_SOCIAL_INVITE, API_URL.ANALYTICS_LOG_SOCIAL_INVITE),
+                error: invalidParams(undefined,
+                    WORTAL_API.ANALYTICS_LOG_SOCIAL_INVITE,
+                    API_URL.ANALYTICS_LOG_SOCIAL_INVITE),
             };
         }
 
@@ -410,7 +438,9 @@ export class AnalyticsBase {
         if (!isValidString(placement)) {
             return {
                 valid: false,
-                error: invalidParams(undefined, WORTAL_API.ANALYTICS_LOG_SOCIAL_SHARE, API_URL.ANALYTICS_LOG_SOCIAL_SHARE),
+                error: invalidParams(undefined,
+                    WORTAL_API.ANALYTICS_LOG_SOCIAL_SHARE,
+                    API_URL.ANALYTICS_LOG_SOCIAL_SHARE),
             };
         }
 
@@ -427,6 +457,24 @@ export class AnalyticsBase {
     }
 
     protected validateLogTutorialEnd(tutorial: string, wasCompleted: boolean): ValidationResult {
+        if (!isValidString(tutorial)) {
+            return {
+                valid: false,
+                error: invalidParams(undefined,
+                    WORTAL_API.ANALYTICS_LOG_TUTORIAL_END,
+                    API_URL.ANALYTICS_LOG_TUTORIAL_END),
+            };
+        }
+
+        if (typeof wasCompleted !== "boolean") {
+            return {
+                valid: false,
+                error: invalidParams(undefined,
+                    WORTAL_API.ANALYTICS_LOG_TUTORIAL_END,
+                    API_URL.ANALYTICS_LOG_TUTORIAL_END),
+            };
+        }
+
         if (!Wortal.isInitialized) {
             return {
                 valid: false,
@@ -440,6 +488,15 @@ export class AnalyticsBase {
     }
 
     protected validateLogTutorialStart(tutorial: string): ValidationResult {
+        if (!isValidString(tutorial)) {
+            return {
+                valid: false,
+                error: invalidParams(undefined,
+                    WORTAL_API.ANALYTICS_LOG_TUTORIAL_START,
+                    API_URL.ANALYTICS_LOG_TUTORIAL_START),
+            };
+        }
+
         if (!Wortal.isInitialized) {
             return {
                 valid: false,
