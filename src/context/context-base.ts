@@ -2,7 +2,7 @@ import { API_URL, WORTAL_API } from "../data/core-data";
 import { ValidationResult } from "../errors/interfaces/validation-result";
 import Wortal from "../index";
 import { ConnectedPlayer } from "../player/classes/connected-player";
-import { implementationError, invalidParams, notInitialized } from "../errors/error-handler";
+import { invalidParams, notInitialized } from "../errors/error-handler";
 import { isValidPayloadImage, isValidPayloadText, isValidString } from "../utils/validators";
 import { ChoosePayload } from "./interfaces/choose-payload";
 import { ContextSizeResponse } from "./interfaces/context-size-response";
@@ -144,22 +144,42 @@ export class ContextBase {
 //#endregion
 //#region Implementation interface
 
-    protected chooseAsyncImpl(payload?: ChoosePayload): Promise<void> { throw implementationError(); }
-    protected createAsyncImpl(playerID?: string | string[]): Promise<void> { throw implementationError(); }
-    protected getIdImpl(): string { throw implementationError(); }
-    protected getPlayersAsyncImpl(): Promise<ConnectedPlayer[]> { throw implementationError(); }
-    protected getTypeImpl(): ContextType { throw implementationError(); }
-    protected inviteAsyncImpl(payload: InvitePayload): Promise<number> { throw implementationError(); }
-    protected isSizeBetweenImpl(min?: number, max?: number): ContextSizeResponse | null { throw implementationError(); }
-    protected shareAsyncImpl(payload: SharePayload): Promise<number> { throw implementationError(); }
-    protected shareLinkAsyncImpl(payload: LinkSharePayload): Promise<string | void> { throw implementationError(); }
-    protected switchAsyncImpl(contextID: string, payload?: SwitchPayload): Promise<void> { throw implementationError(); }
-    protected updateAsyncImpl(payload: UpdatePayload): Promise<void> { throw implementationError(); }
+    protected chooseAsyncImpl(payload?: ChoosePayload): Promise<void> { return Promise.resolve(); }
+    protected createAsyncImpl(playerID?: string | string[]): Promise<void> { return Promise.resolve(); }
+    protected getIdImpl(): string { return ""; }
+    protected getPlayersAsyncImpl(): Promise<ConnectedPlayer[]> { return Promise.resolve([]); }
+    protected getTypeImpl(): ContextType { return "SOLO"; }
+    protected inviteAsyncImpl(payload: InvitePayload): Promise<number> { return Promise.resolve(-1); }
+    protected isSizeBetweenImpl(min?: number, max?: number): ContextSizeResponse | null { return null; }
+    protected shareAsyncImpl(payload: SharePayload): Promise<number> { return Promise.resolve(-1); }
+    protected shareLinkAsyncImpl(payload: LinkSharePayload): Promise<string | void> { return Promise.resolve(); }
+    protected switchAsyncImpl(contextID: string, payload?: SwitchPayload): Promise<void> { return Promise.resolve(); }
+    protected updateAsyncImpl(payload: UpdatePayload): Promise<void> { return Promise.resolve(); }
 
 //#endregion
 //#region Validation
 
     protected validateChooseAsync(payload?: ChoosePayload): ValidationResult {
+        if (payload) {
+            if (!isValidPayloadText(payload.text)) {
+                return {
+                    valid: false,
+                    error: invalidParams(undefined,
+                        WORTAL_API.CONTEXT_CHOOSE_ASYNC,
+                        API_URL.CONTEXT_CHOOSE_ASYNC)
+                };
+            }
+
+            if (!isValidPayloadImage(payload.image)) {
+                return {
+                    valid: false,
+                    error: invalidParams(undefined,
+                        WORTAL_API.CONTEXT_CHOOSE_ASYNC,
+                        API_URL.CONTEXT_CHOOSE_ASYNC)
+                };
+            }
+        }
+
         if (!Wortal.isInitialized) {
             return {
                 valid: false,
