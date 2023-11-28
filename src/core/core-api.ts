@@ -12,6 +12,7 @@ import { FacebookPlayer } from "../player/classes/facebook-player";
 import { LinkPlayer } from "../player/classes/link-player";
 import { Player } from "../player/classes/player";
 import { ViberPlayer } from "../player/classes/viber-player";
+import { YandexPlayer } from "../player/classes/yandex-player";
 import { GameState } from "../session/classes/game-state";
 import { Session } from "../session/classes/session";
 import { Platform } from "../session/types/session-types";
@@ -847,7 +848,7 @@ export class CoreAPI {
                 this.iap = new InAppPurchaseAPI(new IAPYandex());
                 this.leaderboard = new LeaderboardAPI(new LeaderboardYandex());
                 this.notifications = new NotificationsAPI(new NotificationsYandex());
-                this.player = new PlayerAPI(new PlayerYandex(new Player())); // We construct the YandexPlayer object later because there's some funky stuff going on with the Yandex SDK.
+                this.player = new PlayerAPI(new PlayerYandex(new YandexPlayer()));
                 this.session = new SessionAPI(new SessionYandex(new GameState(), new Session()));
                 this.stats = new StatsAPI(new StatsYandex());
                 this.tournament = new TournamentAPI(new TournamentYandex());
