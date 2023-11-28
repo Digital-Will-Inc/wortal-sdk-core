@@ -59,7 +59,7 @@ export class IAPYandex extends IAPBase {
     }
 
     protected isEnabledImpl(): boolean {
-        return false;
+        return this._isIAPEnabled;
     }
 
     protected makePurchaseAsyncImpl(purchase: PurchaseConfig): Promise<Purchase> {
