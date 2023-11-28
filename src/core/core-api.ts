@@ -6,7 +6,7 @@ import { AdConfigViber } from "../ads/classes/ad-config-viber";
 import { AuthPayload } from "../auth/interfaces/auth-payload";
 import { AuthResponse } from "../auth/interfaces/auth-response";
 import { ContextWortal } from "../context/impl/context-wortal";
-import { SDK_SRC } from "../data/core-data";
+import { LOCAL_CHUNKS_ONLY, SDK_SRC } from "../data/core-data";
 import { CrazyGamesPlayer } from "../player/classes/crazygames-player";
 import { FacebookPlayer } from "../player/classes/facebook-player";
 import { LinkPlayer } from "../player/classes/link-player";
@@ -439,6 +439,15 @@ export class CoreAPI {
 
     async _loadChunksAsync(platform: Platform): Promise<void> {
         this._log.internalCall("_loadChunksAsync");
+
+        // Some platforms impose CRS restrictions that prevent us from loading chunks from a CDN. In these cases
+        // we need to load the chunks locally.
+        for (const localOnlyPlatform of LOCAL_CHUNKS_ONLY) {
+            if (platform === localOnlyPlatform) {
+                this._log.debug("Loading chunks locally for platform: " + platform);
+                return Promise.resolve();
+            }
+        }
 
         const baseURL: string = "https://storage.googleapis.com/html5gameportal.com/wortal-sdk/v1/";
         const chunks: string[] = [];

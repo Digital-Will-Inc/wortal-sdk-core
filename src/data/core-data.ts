@@ -1,9 +1,11 @@
+import { Platform } from "../session/types/session-types";
+
 /**
  * Domain names for each platform. These are used to detect which platform the game is being played on.
  * @hidden
  */
 export const PLATFORM_DOMAINS: PlatformDomains = {
-    "yandex": ["yandex.com", "yandex.ru"],
+    "yandex": ["yandex.com", "yandex.ru", "yandex.net"],
     "viber": ["vbrplsbx.io"],
     "link": ["rgsbx.net", "lgsbx.net"],
     "wortal": ["html5gameportal.com", "html5gameportal.dev"],
@@ -18,6 +20,14 @@ export const PLATFORM_DOMAINS: PlatformDomains = {
     "poki": ["poki.com", "poki.dev", "poki-user-content.com"],
     "addictinggames": ["addictinggames.com", "shockwave.com"],
 }
+
+/**
+ * List of platforms that only support local chunks. This is used to determine whether to load chunks from the CDN or locally.
+ * Some platforms impose CRS restrictions that prevent loading chunks from the CDN. In these cases we add the chunks
+ * to the game bundle in the backend.
+ * @hidden
+ */
+export const LOCAL_CHUNKS_ONLY: Platform[] = ["poki", "yandex"];
 
 /**
  * Different endpoints for Wortal API. Always ends with a slash.

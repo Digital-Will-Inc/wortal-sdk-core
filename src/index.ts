@@ -54,7 +54,8 @@ function parseURLParamsForPlatform(): Platform {
         // This is the WART bot on Telegram. It's a special case because the normal Telegram platform
         // uses the Playdeck SDK, but WART does not. We'll initialize this as Wortal for now, but we
         // need to sort out the details of this implementation.
-        //TODO: Figure out how to handle WART bot on Telegram
+        //
+        // Update (11/28/23): Brian says it should run as a Wortal session, so I guess we can leave this. -Tim
         return "wortal";
     } else if (getParameterByName("viber")) {
         return "viber";
