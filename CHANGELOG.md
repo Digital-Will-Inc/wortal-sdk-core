@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.8.0] - 2023-11-28
+### Added
+- Core
+  - Achievements module
+  - Stats module
+  - Support for AddictingGames platform
+  - Support for Poki platform
+  - Support for Yandex platform
+- IAP
+  - Subscriptions on Facebook
+
+### Fixed
+- Analytics
+  - Duplicate logGameStart event
+- Core
+  - Error messages including the wrong URL
+  - Possible unhandled exception when calling APIs before initialization
+- IAP
+  - Possible exception when calling IAP functions when IAP is not supported
+
 ## [1.7.0] - 2023-11-01
 ### BREAKING CHANGE
 - NPM package/bundled SDK are no longer supported. SDK must be included at runtime via CDN.
