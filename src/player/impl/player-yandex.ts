@@ -1,14 +1,10 @@
-import { YandexPlayerObject } from "../../core/interfaces/yandex-sdk";
 import { API_URL, WORTAL_API } from "../../data/core-data";
 import { notSupported, rethrowError_Yandex } from "../../errors/error-handler";
-import Wortal from "../../index";
-import { delayUntilConditionMet } from "../../utils/wortal-utils";
 import { ConnectedPlayer } from "../classes/connected-player";
 import { Player } from "../classes/player";
 import { YandexPlayer } from "../classes/yandex-player";
 import { ConnectedPlayerPayload } from "../interfaces/connected-player-payload";
 import { SignedASID } from "../interfaces/facebook-player";
-import { PlayerData } from "../interfaces/player-data";
 import { SignedPlayerInfo } from "../interfaces/signed-player-info";
 import { PlayerBase } from "../player-base";
 
@@ -17,25 +13,12 @@ import { PlayerBase } from "../player-base";
  * @hidden
  */
 export class PlayerYandex extends PlayerBase {
-    protected _player!: Player;
-    private _playerObject!: YandexPlayerObject;
+    protected _player!: YandexPlayer;
 
     constructor(player: Player) {
         super(player);
 
-        // Normally this would occur in initializeImpl(), but we need to do this here as the APIs
-        // we need to use exist in the YandexPlayerObject, which is not accessible from the Player class.
-        this._setPlayerObject().then(() => {
-            const playerData: PlayerData = {
-                id: this._playerObject.getUniqueID(),
-                name: this._playerObject.getName(),
-                photo: this._playerObject.getPhoto("medium"), //TODO: check if this is the right size
-                isFirstPlay: false,
-                daysSinceFirstPlay: 0,
-            };
-
-            this._player = new YandexPlayer(playerData);
-        });
+        this._player = new YandexPlayer();
     }
 
     get _internalPlayer(): Player {
@@ -61,7 +44,7 @@ export class PlayerYandex extends PlayerBase {
     }
 
     protected getDataAsyncImpl(keys: string[]): Promise<any> {
-        return this._playerObject.getData(keys)
+        return this._player.playerObject.getData(keys)
             .then((data: any) => {
                 return data;
             })
@@ -83,7 +66,7 @@ export class PlayerYandex extends PlayerBase {
     }
 
     protected setDataAsyncImpl(data: Record<string, unknown>): Promise<void> {
-        return this._playerObject.setData(data, false)
+        return this._player.playerObject.setData(data, false)
             .catch((error: any) => {
                 return Promise.reject(rethrowError_Yandex(error, WORTAL_API.PLAYER_SET_DATA_ASYNC, API_URL.PLAYER_SET_DATA_ASYNC));
             });
@@ -91,20 +74,6 @@ export class PlayerYandex extends PlayerBase {
 
     protected subscribeBotAsyncImpl(): Promise<void> {
         return Promise.reject(notSupported(undefined, WORTAL_API.PLAYER_SUBSCRIBE_BOT_ASYNC, API_URL.PLAYER_SUBSCRIBE_BOT_ASYNC));
-    }
-
-    private async _setPlayerObject(): Promise<void> {
-        if (typeof this._playerObject !== "undefined") {
-            return;
-        }
-
-        // This might be called before the platform SDK is available.
-        if (typeof Wortal._internalPlatformSDK === "undefined") {
-            await delayUntilConditionMet(() => typeof Wortal._internalPlatformSDK !== "undefined",
-                "Waiting for Wortal._internalPlatformSDK to be defined.");
-        }
-
-        this._playerObject = Wortal._internalPlatformSDK.getPlayer();
     }
 
 }
