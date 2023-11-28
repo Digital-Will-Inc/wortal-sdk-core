@@ -440,7 +440,7 @@ export class CoreAPI {
     async _loadChunksAsync(platform: Platform): Promise<void> {
         this._log.internalCall("_loadChunksAsync");
 
-        // Some platforms impose CRS restrictions that prevent us from loading chunks from a CDN. In these cases
+        // Some platforms impose CSP restrictions that prevent us from loading chunks from a CDN. In these cases
         // we need to load the chunks locally.
         for (const localOnlyPlatform of LOCAL_CHUNKS_ONLY) {
             if (platform === localOnlyPlatform) {

@@ -23,7 +23,7 @@ export const PLATFORM_DOMAINS: PlatformDomains = {
 
 /**
  * List of platforms that only support local chunks. This is used to determine whether to load chunks from the CDN or locally.
- * Some platforms impose CRS restrictions that prevent loading chunks from the CDN. In these cases we add the chunks
+ * Some platforms impose CSP restrictions that prevent loading chunks from the CDN. In these cases we add the chunks
  * to the game bundle in the backend.
  * @hidden
  */
