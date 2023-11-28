@@ -1,6 +1,6 @@
 let productID = "mock.product.123";
 let token = "mock.purchase.123";
-let subscriptionProductID = "mock.subscription.123";
+let subscriptionProductID = "subscription.test";
 let subscriptionToken = "mock.subscriptionPurchase.123";
 
 function iapIsEnabled() {
@@ -44,7 +44,10 @@ function iapGetSubscribableCatalogAsync() {
 
 function iapPurchaseSubscriptionAsync() {
     Wortal.iap.purchaseSubscriptionAsync(subscriptionProductID)
-        .then(result => appendText(JSON.stringify(result)))
+        .then(result => {
+            subscriptionToken = result.purchaseToken;
+            appendText(JSON.stringify(result))
+        })
         .catch(error => appendText(error));
 }
 
