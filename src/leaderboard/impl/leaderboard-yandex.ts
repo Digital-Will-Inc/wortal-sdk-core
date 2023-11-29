@@ -112,15 +112,17 @@ export class LeaderboardYandex extends LeaderboardBase {
             return;
         }
 
-        // It's most likely (guaranteed?) this will be called before the SDK is finished initializing,
-        // so we need to wait for that to finish so that we have access to the platform SDK.
-        if (Wortal.isInitialized) {
-            this._leaderboardObject = Wortal._internalPlatformSDK.getLeaderboards();
-        } else {
-            window.addEventListener("wortal-sdk-initialized", () => {
-                this._leaderboardObject = Wortal._internalPlatformSDK.getLeaderboards();
-            });
-        }
+        // This is called in the constructor before the platform initialization begins, so we need to wait for the
+        // initialization to complete before getting the leaderboard object.
+        window.addEventListener("wortal-sdk-initialized", () => {
+            Wortal._internalPlatformSDK.getLeaderboards()
+                .then((leaderboardObject: YandexLeaderboardObject) => {
+                    this._leaderboardObject = leaderboardObject;
+                })
+                .catch((error: any) => {
+                    throw rethrowError_Yandex(error, "_setLeaderboardObject");
+                });
+        });
     }
 
     private _convertToWortalLeaderboard(leaderboard: Leaderboard_Yandex): Leaderboard {
@@ -134,20 +136,20 @@ export class LeaderboardYandex extends LeaderboardBase {
 
     private _convertToWortalLeaderboardEntry(entry: LeaderboardEntry_Yandex): LeaderboardEntry {
         return new LeaderboardEntry({
-            rank: entry.rank,
-            score: entry.score,
-            formattedScore: entry.formattedScore,
+            rank: entry?.rank || -1,
+            score: entry?.score || -1,
+            formattedScore: entry?.formattedScore || "",
             timestamp: -1, // No timestamp available on Yandex.
-            details: entry.extraData,
-            player: this._convertToWortalLeaderboardPlayer(entry.player),
+            details: entry?.extraData || "",
+            player: this._convertToWortalLeaderboardPlayer(entry?.player) || undefined,
         });
     }
 
     private _convertToWortalLeaderboardPlayer(player: LeaderboardPlayer_Yandex): LeaderboardPlayer {
         return new LeaderboardPlayer({
-            id: player.uniqueID,
-            name: player.publicName,
-            photo: player.getAvatarSrc("medium"), //TODO: check the sizes here and return whatever is appropriate
+            id: player?.uniqueID || "",
+            name: player?.publicName || "",
+            photo: player?.getAvatarSrc("medium") || "", //TODO: check the sizes here and return whatever is appropriate
             isFirstPlay: false,
             daysSinceFirstPlay: 0,
         });
