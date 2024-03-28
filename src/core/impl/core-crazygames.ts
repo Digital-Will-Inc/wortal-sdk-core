@@ -1,11 +1,8 @@
 import { AuthPayload } from "../../auth/interfaces/auth-payload";
 import { AuthResponse } from "../../auth/interfaces/auth-response";
-import { AuthResponse_CrazyGames } from "../../auth/interfaces/crazygames-auth";
 import { initializationError, notSupported, rethrowError_CrazyGames } from "../../errors/error-handler";
-import { Error_CrazyGames } from "../../errors/types/crazygames-error-types";
 import Wortal from "../../index";
 import { CrazyGamesPlayer } from "../../player/classes/crazygames-player";
-import { ICrazyGamesPlayer } from "../../player/interfaces/crazygames-player";
 import { onPauseFunctions } from "../../utils/wortal-utils";
 import { CoreBase } from "../core-base";
 import { API_URL, SDK_SRC, WORTAL_API } from "../../data/core-data";
@@ -16,23 +13,20 @@ import { API_URL, SDK_SRC, WORTAL_API } from "../../data/core-data";
  */
 export class CoreCrazyGames extends CoreBase {
     protected authenticateAsyncImpl(payload?: AuthPayload): Promise<AuthResponse> {
-        return new Promise((resolve, reject) => {
-            const callback = (error: Error_CrazyGames, user: ICrazyGamesPlayer) => {
-                if (error) {
-                    reject(rethrowError_CrazyGames(error, WORTAL_API.AUTHENTICATE_ASYNC, API_URL.AUTHENTICATE_ASYNC));
-                } else {
-                    Wortal._log.debug("Crazy Games user authenticated: ", user);
-                    Wortal.player._internalPlayer = new CrazyGamesPlayer(user);
+        return new Promise(async (resolve, reject) => {
+            try {
+                const user = await Wortal._internalPlatformSDK.user.showAuthPrompt();
+                Wortal._log.debug("Crazy Games user authenticated: ", user);
+                Wortal.player._internalPlayer = new CrazyGamesPlayer(user);
 
-                    const response: AuthResponse = {
-                        status: "success",
-                    };
+                const response: AuthResponse = {
+                    status: "success",
+                };
 
-                    resolve(response);
-                }
-            };
-
-            Wortal._internalPlatformSDK.user.showAuthPrompt(callback);
+                resolve(response);
+            } catch (error: any) {
+                reject(rethrowError_CrazyGames(error, WORTAL_API.AUTHENTICATE_ASYNC, API_URL.AUTHENTICATE_ASYNC));
+            }
         });
     }
 
@@ -41,20 +35,17 @@ export class CoreCrazyGames extends CoreBase {
     }
 
     protected linkAccountAsyncImpl(): Promise<boolean> {
-        return new Promise((resolve, reject) => {
-            const callback = (error: Error_CrazyGames, response: AuthResponse_CrazyGames) => {
-                if (error) {
-                    reject(rethrowError_CrazyGames(error, WORTAL_API.LINK_ACCOUNT_ASYNC, API_URL.LINK_ACCOUNT_ASYNC));
+        return new Promise(async (resolve, reject) => {
+            try {
+                const response = await Wortal._internalPlatformSDK.user.showAccountLinkPrompt();
+                if (response.response === "yes") {
+                    resolve(true);
                 } else {
-                    if (response.response === "yes") {
-                        resolve(true);
-                    } else {
-                        resolve(false);
-                    }
+                    resolve(false);
                 }
-            };
-
-            Wortal._internalPlatformSDK.user.showAccountLinkPrompt(callback);
+            } catch (error: any) {
+                reject(rethrowError_CrazyGames(error, WORTAL_API.LINK_ACCOUNT_ASYNC, API_URL.LINK_ACCOUNT_ASYNC));
+            }
         });
     }
 
@@ -78,6 +69,17 @@ export class CoreCrazyGames extends CoreBase {
         return new Promise((resolve, reject) => {
             const crazyGamesSDK = document.createElement("script");
             crazyGamesSDK.src = SDK_SRC.CRAZY_GAMES;
+
+            // Need better place to init this for other platforms
+            var xsollaPayStation = document.createElement('script');
+            xsollaPayStation.type = "text/javascript";
+            xsollaPayStation.src = SDK_SRC.XSOLLA_PAY_STATION;
+            var head = document.getElementsByTagName('head')[0];
+            head.appendChild(xsollaPayStation);
+
+            xsollaPayStation.addEventListener('load', function (e) {
+                Wortal.iap._payStationWidget = window.XPayStationWidget;
+            }, false);
 
             crazyGamesSDK.onload = async () => {
                 if (typeof window.CrazyGames.SDK === "undefined") {

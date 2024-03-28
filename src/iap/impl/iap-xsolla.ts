@@ -139,45 +139,56 @@ export class IAPXsolla extends IAPBase {
                     sku: purchase.productID,
                     quantity: 1,
                     settings: {
-                        return_url: "https://games.wortal.ai/redirected.html",
                         redirect_policy: {
-                            redirect_conditions: 'any',
-                            delay: 5,
+                            redirect_conditions: 'none',
                             status_for_manual_redirection: 'none'
                         }
                     }
                 });
 
-                const paymentUrl = sandbox ? `https://sandbox-secure.xsolla.com/paystation4/?token=${response.token}` : `https://secure.xsolla.com/paystation4/?token=${response.token}`;
-                const paymentWindow = window.open(paymentUrl, "payment", "popup");
-    
-                window.addEventListener('message', receiveMessage, false);
-    
-                async function receiveMessage(event: any) {
-                    if (event.source !== paymentWindow) {
-                        return;
-                    }
+                let paymentCompleted = false;
+                Wortal.iap._payStationWidget.init({
+                    access_token: response.token,
+                    sandbox: sandbox
+                })
 
-                    const data = JSON.parse(event.data);
-                    console.log(data);
-    
-                    if (data.command === 'status') {
-                        const orderStatus = data.data.paymentInfo.status;
-                        if (orderStatus === 'done' || orderStatus === 'paid') {
-                            resolve({
-                                productID: purchase.productID,
-                                purchaseToken: purchase.productID,
-                                purchaseTime: new Date().toJSON(),
-                                signedRequest: response.token,
-                                paymentID: response.order_id.toString(),
-                            });
-                        } else {
-                            reject(new Error('payment cancelled'));
-                        }
-                        
-                        window.removeEventListener('message', receiveMessage);
+                Wortal.iap._payStationWidget.on("status-delivering", () => {
+                    paymentCompleted = true;
+                    resolve({
+                        productID: purchase.productID,
+                        purchaseToken: purchase.productID,
+                        purchaseTime: new Date().toJSON(),
+                        signedRequest: response.token,
+                        paymentID: response.order_id.toString(),
+                    });
+                })
+
+                Wortal.iap._payStationWidget.on("status-done", () => {
+                    paymentCompleted = true;
+                    resolve({
+                        productID: purchase.productID,
+                        purchaseToken: purchase.productID,
+                        purchaseTime: new Date().toJSON(),
+                        signedRequest: response.token,
+                        paymentID: response.order_id.toString(),
+                    });
+                })
+
+                Wortal.iap._payStationWidget.on("status-troubled", () => {
+                    reject(new Error('payment cancelled'));
+                })
+
+                Wortal.iap._payStationWidget.on("error", () => {
+                    reject(new Error('payment cancelled'));
+                })
+
+                Wortal.iap._payStationWidget.on("close", () => {
+                    if (!paymentCompleted) {
+                        reject(new Error('payment cancelled'));
                     }
-                }
+                })
+
+                Wortal.iap._payStationWidget.open();
             } catch (error) {
                 reject(error); // Reject the promise if any error occurs
             }

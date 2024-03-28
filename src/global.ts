@@ -117,6 +117,7 @@ declare global {
          * @hidden
          */
         shareGame: (destination: ShareTo, message: string) => void;
+        XPayStationWidget: any;
     }
 
 

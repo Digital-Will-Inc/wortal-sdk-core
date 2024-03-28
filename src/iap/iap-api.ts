@@ -18,6 +18,8 @@ export class InAppPurchaseAPI {
     }
 
     /** @internal */
+    _payStationWidget: any;
+    
     _internalTryEnableIAP(): void {
         this._iap._tryEnableIAP();
     }

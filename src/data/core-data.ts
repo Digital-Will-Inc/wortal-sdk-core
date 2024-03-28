@@ -60,6 +60,7 @@ export const SDK_SRC = {
     ADDICTING_GAMES_CSS: "https://swagapi.shockwave.com/dist/swag-api.css",
     YANDEX: "https://yandex.ru/games/sdk/v2",
     XSOLLA: "https://login-sdk.xsolla.com/latest/",
+    XSOLLA_PAY_STATION: "https://cdn.xsolla.net/embed/paystation/1.2.7/widget.min.js"
 }
 
 /**
